@@ -4,80 +4,98 @@
 
 namespace SDFOp
 {
-	void SDFOperation::execute(double& distance, Vec3 p, double time, const Vec3 colorIn, Vec3* colorOut)
+	void SDFOperation::execute(double& distance, Vec3& p, double time, const Vec3 colorIn, Vec3* colorOut)
 	{
 		switch (opType())
 		{
-		case SDFOperationType::Combine: {
+		case SDFOperationType::Combine:{
 			Vec2 v{ distance, 0.0 };
 			CombinationOperation* comOp = dynamic_cast<CombinationOperation*>(this);
-			double distanceb = comOp->m_combineObj->signedDistance(p, time, colorOut);
-			comOp->combine(v, distanceb);
-			distance = v.x;
-			if (colorOut) {
-				double blendRemap = comOp->m_colorBlending;
-				v.y *= blendRemap;
-				v.y -= 0.5 * (blendRemap - 1.0);
-				v.y = v.y < 0.0 ? 0.0 : v.y;
-				v.y = v.y > 1.0 ? 1.0 : v.y;
-				*colorOut = colorIn.lerp(*colorOut, comOp->m_colorBlendBias * v.y);
-				return;
-			}
-			break;
+			distance = comOp->combine(distance, comOp->m_combineObj->signedDistance(p, time, colorOut));
+			return;
 		}
 		case SDFOperationType::Surface: {
 			SurfaceOperation* surfOp = dynamic_cast<SurfaceOperation*>(this);
 			distance = surfOp->resurface(distance);
-			break;
+			return;
 		}
-		case SDFOperationType::Spacial:
-			break;
-		case SDFOperationType::Transform:
-			break;
+		case SDFOperationType::Repeat: {
+			RepeatOperation* repOp = dynamic_cast<RepeatOperation*>(this);
+			repOp->repeat(p);
+			return;
+		}
+		case SDFOperationType::Transform: {
+			return;
+		}
 		default:
 			break;
 		}
-
-
-		if (colorOut) {
-			*colorOut = colorIn;
-		}
 	}
 
-	void Add::combine(Vec2& a, double b) noexcept {
-		a.x = a.x < b ? a.x : b;
-		a.y = 0.0;
+	double Add::combine(double a, double b) noexcept {
+		return a < b ? a : b;
 	}
 
-	void Subtract::combine(Vec2& a, double b) noexcept {
-		a.x = a.x > -b ? a.x : -b;
-		a.y = 0.0;
+	double Subtract::combine(double a, double b) noexcept {
+		return a > -b ? a : -b;
 	}
 
-	void Intersect::combine(Vec2& a, double b) noexcept {
-		a.x = a.x > b ? a.x : b;
-		a.y = 0.0;
+	double Intersect::combine(double a, double b) noexcept {
+		return a > b ? a : b;
 	}
 
-	void JoinSmooth::combine(Vec2& a, double b) noexcept {
-		double h = std::clamp(0.5 + 0.5 * (b - a.x) / m_smoothing, 0.0, 1.0);
-		a.x = std::lerp(b, a.x, h) - m_smoothing * h * (1.0 - h);
-		a.y = 1.0 - h;
+	double JoinSmooth::combine(double a, double b) noexcept {
+		double h = std::clamp(0.5 + 0.5 * (b - a) / m_smoothing, 0.0, 1.0);
+		return std::lerp(b, a, h) - m_smoothing * h * (1.0 - h);
+		//a.y = 1.0 - h;
 	}
 
-	void SubtractSmooth::combine(Vec2& a, double b) noexcept {
-		double h = m_smoothing - abs(-b - a.x);
+	double SubtractSmooth::combine(double a, double b) noexcept {
+		double h = m_smoothing - abs(-b - a);
 		h = h < 0.0 ? 0.0 : h;
-		a.x = (a.x > -b ? a.x : -b) + h * h * 0.25 / m_smoothing;
+		return (a > -b ? a : -b) + h * h * 0.25 / m_smoothing;
 	}
 
-	void IntersectSmooth::combine(Vec2& a, double b) noexcept {
-		double h = std::clamp(0.5 - 0.5 * (b - a.x) / m_smoothing, 0.0, 1.0);
-		a.x = std::lerp(b, a.x, h) + m_smoothing * h * (1.0 - h);
-		a.y = 1.0 - h;
+	double IntersectSmooth::combine(double a, double b) noexcept {
+		double h = std::clamp(0.5 - 0.5 * (b - a) / m_smoothing, 0.0, 1.0);
+		return std::lerp(b, a, h) + m_smoothing * h * (1.0 - h);
+		//a.y = 1.0 - h;
 	}
 
 	double Onion::resurface(double distance) {
 		return abs(distance) - m_magnitude;
+	}
+
+	void MirrorX::repeat(Vec3& p) noexcept
+	{
+		p.x = abs(p.x);
+	}
+
+	void MirrorY::repeat(Vec3& p) noexcept
+	{
+		p.y = abs(p.x);
+	}
+
+	void MirrorZ::repeat(Vec3& p) noexcept
+	{
+		p.z = abs(p.z);
+	}
+
+	void MirrorXY::repeat(Vec3& p) noexcept
+	{
+		p.x = abs(p.x);
+		p.y = abs(p.y);
+	}
+
+	void MirrorXZ::repeat(Vec3& p) noexcept
+	{
+		p.x = abs(p.x);
+		p.z = abs(p.z);
+	}
+
+	void MirrorYZ::repeat(Vec3& p) noexcept
+	{
+		p.y = abs(p.y);
+		p.z = abs(p.z);
 	}
 }

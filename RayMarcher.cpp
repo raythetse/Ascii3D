@@ -92,7 +92,7 @@ void RayMarcher::march( PixelField& field,
                 }
             }
 
-            sample.buildRenderParams(hitObj, sample.samplePoint, m_maxDistance, hit ? objects[sample.objectIndex]->lit() : true, directLights, time);
+            sample.buildRenderParams(hitObj, sample.samplePoint, m_maxDistance, objects[sample.objectIndex]->lit(), directLights, time);
         }
         else {
             sample.buildRenderParams(nullptr, sample.samplePoint, m_maxDistance, true, directLights, time);

@@ -1,5 +1,6 @@
 #include "SceneObject.h"
 #include <algorithm>
+#include <limits>
 #include "Vec2.h"
 #include "Operation.h"
 
@@ -37,7 +38,7 @@ bool SceneObject::lit() const
     return m_lit;
 }
 
-void SceneObject::addOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
+void SceneObject::pushOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
 {
     m_operations.push_back(std::move(operation));
 }
@@ -48,6 +49,18 @@ Vec3 SceneObject::position() const
 }
 
 double SceneObject::signedDistance(Vec3 p, double time, Vec3* colorOut) const
+{
+    double distance = std::numeric_limits<double>::max();
+    for (auto& op : m_operations) {
+        op->execute(distance, p, time, m_color, colorOut);
+    }
+    if (colorOut && m_operations.size() == 0) {
+        *colorOut = m_color;
+    }
+    return distance;
+}
+
+double VisualObject::signedDistance(Vec3 p, double time, Vec3* colorOut) const
 {
     double distance{ signedDistanceInner(p, time) };
     for (auto& op : m_operations) {
@@ -60,7 +73,7 @@ double SceneObject::signedDistance(Vec3 p, double time, Vec3* colorOut) const
 }
 
 Box::Box(Vec3 position, Vec3 rotation, Vec3 dimensions, Vec3 color, double rounding, bool lit)
-    : SceneObject(position, rotation, color, rounding, lit), m_dimensions(dimensions) {}
+    : VisualObject(position, rotation, color, rounding, lit), m_dimensions(dimensions) {}
 
 double Box::signedDistanceInner(Vec3 p, double time) const
 {
@@ -72,7 +85,7 @@ double Box::signedDistanceInner(Vec3 p, double time) const
 }
 
 Sphere::Sphere(Vec3 position, double radius, Vec3 color, bool lit)
-    : SceneObject(position, Vec3::Zero, color, radius, lit) {}
+    : VisualObject(position, Vec3::Zero, color, radius, lit) {}
 
 double Sphere::signedDistanceInner(Vec3 p, double time) const
 {
@@ -80,7 +93,7 @@ double Sphere::signedDistanceInner(Vec3 p, double time) const
 }
 
 Torus::Torus(Vec3 position, Vec3 rotation, Vec2 radii, Vec3 color, bool lit)
-    : SceneObject(position, rotation, color, 0.0, lit), m_radii(radii) {}
+    : VisualObject(position, rotation, color, 0.0, lit), m_radii(radii) {}
 
 double Torus::signedDistanceInner(Vec3 p, double time) const
 {
