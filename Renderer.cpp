@@ -1,0 +1,40 @@
+#include <iostream>
+#include "Renderer.h"
+
+Renderer::Renderer(size_t numPixels)
+{
+	m_frameBuffer.reserve(numPixels * 40);
+}
+
+void Renderer::render(PixelField& field)
+{
+	m_frameBuffer.clear();
+	size_t fieldSize = field.width() * field.height() * 40;
+	if (m_frameBuffer.capacity() < fieldSize) {
+		m_frameBuffer.reserve(fieldSize);
+	}
+	m_frameBuffer += "\033[1;1H"; // Set cursor to top left
+	Vec3 pColor{-1, -1, -1};
+
+	for (int row{}; row < field.height(); ++row) {
+		for (int col{}; col < field.width(); ++col) {
+			if (firstRun) {
+				m_frameBuffer += field(row, col).colorCode;
+				m_frameBuffer += field(row, col).renderChar;
+				firstRun = false;
+			}
+			else {
+				Vec3 color = field(row, col).renderColor;
+				bool updateColor = (field.changedColor(row, col) || color != pColor);
+				if (updateColor) {
+					m_frameBuffer += field(row, col).colorCode;
+				}
+				m_frameBuffer += field(row, col).renderChar;
+				pColor = color;
+			}
+		}
+		m_frameBuffer += '\n';
+	}
+	std::cout.write(m_frameBuffer.data(), m_frameBuffer.size());
+	std::cout.flush();
+}
