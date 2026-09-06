@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include "Vec3.h"
 
 const Vec3 Vec3::Up{ 0.0, 1.0, 0.0 };
@@ -9,6 +10,31 @@ const Vec3 Vec3::Forward{ 0.0, 0.0, 1.0 };
 const Vec3 Vec3::Backward{ 0.0, 0.0, -1.0 };
 const Vec3 Vec3::One{ 1.0 };
 const Vec3 Vec3::Zero{ 0.0 };
+
+const Vec3 Vec3::Black{ 0.0, 0.0, 0.0 };
+const Vec3 Vec3::LightGray{ 0.75, 0.75, 0.75 };
+const Vec3 Vec3::MediumGray{ 0.5, 0.5, 0.5 };
+const Vec3 Vec3::DarkGray{ 0.25, 0.25, 0.25 };
+const Vec3 Vec3::White{ 1.0, 1.0, 1.0 };
+
+const Vec3 Vec3::Red{ 1.0, 0.0, 0.0 };
+const Vec3 Vec3::Orange{ 1.0, 0.5, 0.0 };
+const Vec3 Vec3::DeepPink{ 1.0, 0.0, 0.5 };
+const Vec3 Vec3::Pink{ 1.0, 0.5, 0.5 };
+
+const Vec3 Vec3::Green{ 0.0, 1.0, 0.0 };
+const Vec3 Vec3::ChartreuseGreen{ 0.5, 1.0, 0.0 };
+const Vec3 Vec3::SpringGreen{ 0.0, 1.0, 0.5 };
+const Vec3 Vec3::LightGreen{ 0.5, 1.0, 0.5 };
+
+const Vec3 Vec3::Blue{ 0.0, 0.0, 1.0 };
+const Vec3 Vec3::Violet{ 0.5, 0.0, 1.0 };
+const Vec3 Vec3::AzureBlue{ 0.0, 0.5, 1.0 };
+const Vec3 Vec3::LightBlue{ 0.5, 0.5, 1.0 };
+
+const Vec3 Vec3::Yellow{ 1.0, 1.0, 0.0 };
+const Vec3 Vec3::Magenta{ 1.0, 0.0, 1.0 };
+const Vec3 Vec3::Teal{ 0.0, 1.0, 1.0 };
 
 double Vec3::length() const
 {
@@ -25,14 +51,24 @@ double Vec3::dot(const Vec3& p)
     return x * p.x + y * p.y + z * p.z;
 }
 
-Vec3 Vec3::maximum(double m)
+Vec3 Vec3::maximum(double m) const
 {
     return Vec3(m > x ? m : x, m > y ? m : y, m > z ? m : z);
 }
 
-Vec3 Vec3::minimum(double m)
+Vec3 Vec3::minimum(double m) const
 {
     return Vec3(m < x ? m : x, m < y ? m : y, m < z ? m : z);
+}
+
+Vec3 Vec3::clamp(double min, double max) const
+{
+    return maximum(max).minimum(min);
+}
+
+Vec3 Vec3::saturate() const
+{
+    return Vec3::clamp(0.0, 1.0);
 }
 
 Vec3 Vec3::cross(const Vec3& p)
@@ -88,6 +124,11 @@ Vec3 Vec3::quantize(size_t level)
 Vec3 Vec3::floor() const
 {
     return Vec3(x - std::floor(x), y - std::floor(y), z - std::floor(z));
+}
+
+Vec3 Vec3::abs() const
+{
+    return Vec3(std::abs(x), std::abs(y), std::abs(z));
 }
 
 Vec3 Vec3::operator+(const Vec3& p) const
@@ -154,9 +195,4 @@ Vec3::operator bool() const
 std::ostream& operator<<(std::ostream& os, const Vec3& p)
 {
     return os << "Point3D[" << p.x << ", " << p.y << ", " << p.z << "]";
-}
-
-Vec3 abs(const Vec3 v)
-{
-    return Vec3(abs(v.x), abs(v.y), abs(v.z));
 }

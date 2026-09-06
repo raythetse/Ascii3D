@@ -18,8 +18,6 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 			light = light > 1.0 ? 1.0 : light;
 
 			double dot = lightDir.dot(normal);
-			//dot += 0.15;
-			//dot /= 1.15;
 			dot = dot < 0.0 ? 0.0 : dot;
 			light *= dot;
 			totalLight += light;
@@ -31,7 +29,7 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 		totalLight = 1.0;
 	}
 
-	Vec3 color{};
+	Color color{};
 	if (object) {
 		object->signedDistance(p, time, &color);
 		color = color.quantize(16);

@@ -36,8 +36,6 @@ public:
 
 		switch (unit)
 		{
-		case Stopwatch::Second:
-			return std::chrono::duration_cast<DurSecond>(elapsed).count();
 		case Stopwatch::Milli:
 			return std::chrono::duration_cast<DurMilli>(elapsed).count();
 		case Stopwatch::Micro:
@@ -55,8 +53,6 @@ public:
 
 		switch (unit)
 		{
-		case Stopwatch::Second:
-			return std::chrono::duration_cast<DurSecond>(totalTime).count();
 		case Stopwatch::Milli:
 			return std::chrono::duration_cast<DurMilli>(totalTime).count();
 		case Stopwatch::Micro:

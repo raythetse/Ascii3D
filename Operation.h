@@ -18,8 +18,7 @@ namespace SDFOp
 	class SDFOperation
 	{
 	public:
-
-		void execute(double& distance, Vec3& p, double time, const Vec3 colorIn, Vec3* colorOut);
+		void execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
 		virtual SDFOperationType opType() = 0;
 	};
 
@@ -28,12 +27,12 @@ namespace SDFOp
 	protected:
 		double m_smoothing;
 		double m_colorBlending;
-		double m_colorBlendBias;
 		std::unique_ptr<VisualObject> m_combineObj;
-		virtual double combine(double a, double b) = 0;
+		void blendColors(double blendRate, Vec3 colorIn, Vec3* colorOut);
+		virtual double combine(double a, double b, Color colorIn, Color* colorOut) = 0;
 	public:
-		CombinationOperation(std::unique_ptr<VisualObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double colorBlendBias = 1.0)
-			: m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending), m_colorBlendBias(colorBlendBias) {}
+		CombinationOperation(std::unique_ptr<VisualObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0)
+			: m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending) {}
 		SDFOperationType opType() override { return SDFOperationType::Combine; }
 		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Vec3 colorIn, Vec3* colorOut);
 	};
@@ -41,7 +40,7 @@ namespace SDFOp
 	class Add : public CombinationOperation
 	{
 	protected:
-		double combine(double, double b) noexcept override;
+		double combine(double, double b, Color colorIn, Color* colorOut) noexcept override;
 	public:
 		Add(std::unique_ptr<VisualObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 	};
@@ -49,7 +48,7 @@ namespace SDFOp
 	class Subtract : public CombinationOperation
 	{
 	protected:
-		double combine(double, double b) noexcept override;
+		double combine(double, double b, Color colorIn, Color* colorOut) noexcept override;
 	public:
 		Subtract(std::unique_ptr<VisualObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 	};
@@ -57,36 +56,36 @@ namespace SDFOp
 	class Intersect : public CombinationOperation
 	{
 	protected:
-		double combine(double, double b) noexcept override;
+		double combine(double, double b, Color colorIn, Vec3* colorOut) noexcept override;
 	public:
 		Intersect(std::unique_ptr<VisualObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 	};
 
-	class JoinSmooth : public CombinationOperation
+	class AddSmooth : public CombinationOperation
 	{
 	protected:
-		double combine(double, double b) noexcept override;
+		double combine(double, double b, Color colorIn, Color* colorOut) noexcept override;
 	public:
-		JoinSmooth(std::unique_ptr<VisualObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double coloBlendBias = 1.0)
-			: CombinationOperation(std::move(combineObj), smoothing, colorBlending, coloBlendBias) {}
+		AddSmooth(std::unique_ptr<VisualObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0)
+			: CombinationOperation(std::move(combineObj), smoothing, colorBlending) {}
 	};
 
 	class SubtractSmooth : public CombinationOperation
 	{
 	protected:
-		double combine(double, double b) noexcept override;
+		double combine(double, double b, Color colorIn, Color* colorOut) noexcept override;
 	public:
-		SubtractSmooth(std::unique_ptr<VisualObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorBlendBias = 1.0)
-			: CombinationOperation(std::move(objectPtr), smoothing, colorBlending, colorBlendBias) {}
+		SubtractSmooth(std::unique_ptr<VisualObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0)
+			: CombinationOperation(std::move(objectPtr), smoothing, colorBlending) {}
 	};
 
 	class IntersectSmooth : public CombinationOperation
 	{
 	protected:
-		double combine(double, double b) noexcept override;
+		double combine(double, double b, Color colorIn, Color* colorOut) noexcept override;
 	public:
-		IntersectSmooth(std::unique_ptr<VisualObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorBlendBias = 1.0)
-			: CombinationOperation(std::move(objectPtr), smoothing, colorBlending, colorBlendBias) {}
+		IntersectSmooth(std::unique_ptr<VisualObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0)
+			: CombinationOperation(std::move(objectPtr), smoothing, colorBlending) {}
 	};
 
 	class SurfaceOperation : public SDFOperation
@@ -97,7 +96,7 @@ namespace SDFOp
 	public:
 		SurfaceOperation(double magnitude = 0.01) : m_magnitude(magnitude) {}
 		SDFOperationType opType() override { return SDFOperationType::Surface; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Vec3 colorIn, Vec3* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
 	};
 
 	class Onion : public SurfaceOperation
@@ -116,7 +115,7 @@ namespace SDFOp
 	public:
 		RepeatOperation(double spacing = 1.0) : m_spacing(spacing) {};
 		SDFOperationType opType() override { return SDFOperationType::Repeat; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Vec3 colorIn, Vec3* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
 	};
 
 	class MirrorX : public RepeatOperation
@@ -165,5 +164,13 @@ namespace SDFOp
 		void repeat(Vec3& p) noexcept override;
 	public:
 		MirrorYZ() {};
+	};
+
+	class MirrorXYZ : public RepeatOperation
+	{
+	protected:
+		void repeat(Vec3& p) noexcept override;
+	public:
+		MirrorXYZ() {};
 	};
 }

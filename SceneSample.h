@@ -15,7 +15,7 @@ public:
 	Vec3 samplePoint{};
 	size_t objectIndex{};
 	Vec3 normal{};
-	Vec3 renderColor{};
+	Color renderColor{};
 	char renderChar{};
 	std::string colorCode;
 
