@@ -2,7 +2,7 @@
 #include "Vec3.h"
 #include "SceneObject.h"
 
-class LightSource : private SceneObject
+class LightSource : private VisualObject
 {
 private:
 	double m_luminance;

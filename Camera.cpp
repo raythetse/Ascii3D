@@ -1,6 +1,7 @@
 #define OEMRESOURCE
 #include "Camera.h"
 #include "Mat3.h"
+#include "Vec2.h"
 
 Camera::Camera(const double viewportWidth, const double viewportHeight, const double lookSpeed, const double moveSpeed)
     : m_viewportWidth(viewportWidth)
@@ -32,14 +33,14 @@ void Camera::update(double deltaTime)
             double x = (SHORT)cursorPos.x;
             double y = (SHORT)cursorPos.y;
 
-            double diffX = x - m_screenCentre.x;
-            double diffY = y - m_screenCentre.y;
+            Vec2 diff{ x - m_screenCentre.x, y - m_screenCentre.y };
+            diff.normalize();
 
-            if (diffX != 0 || diffY != 0) {
-                m_rotation.x += diffY * m_lookSpeed * deltaTime;
+            if (diff.x != 0 || diff.y != 0) {
+                m_rotation.x += diff.y * m_lookSpeed * deltaTime;
                 m_rotation.x = (m_rotation.x < -1.57 ? -1.57 : m_rotation.x);
                 m_rotation.x = (m_rotation.x > 1.57 ? 1.57 : m_rotation.x);
-                m_rotation.y += diffX * m_lookSpeed * deltaTime;
+                m_rotation.y += diff.x * m_lookSpeed * deltaTime;
 
                 Mat3 rotX = Mat3::fromAxisAngle({ 1.0, 0.0, 0.0 }, m_rotation.x);
                 Mat3 rotY = Mat3::fromAxisAngle({ 0.0, 1.0, 0.0 }, m_rotation.y);

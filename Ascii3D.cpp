@@ -26,7 +26,7 @@ int main()
 {
     setupConsole();
     double time{};
-    GameEngine gEngine{ 270, 75, 50.0, 0.01 };
+    GameEngine gEngine{ 270, 75, 25.0, 0.01 };
     //GameEngine gEngine{ 200, 55, 15.0, 0.01 };
     PerfMonitor pMonitor{};
     auto framePM = pMonitor.add("FPS", PerfMonitor::FPS);
@@ -42,9 +42,8 @@ int main()
             pMonitor.sample(updatePM, [&gEngine]() { gEngine.update(); });
             pMonitor.sample(marchPM, [&gEngine]() { gEngine.march(); });
             pMonitor.sample(renderPM, [&gEngine]() { gEngine.render(); });
-
-            pMonitor.printMonitors();
         });
+        pMonitor.printMonitors();
     }
 
     return 0;

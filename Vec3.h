@@ -13,6 +13,31 @@ public:
 	static const Vec3 One;
 	static const Vec3 Zero;
 
+	static const Vec3 Black;
+	static const Vec3 LightGray;
+	static const Vec3 MediumGray;
+	static const Vec3 DarkGray;
+	static const Vec3 White;
+	
+	static const Vec3 Red;
+	static const Vec3 Orange;
+	static const Vec3 DeepPink;
+	static const Vec3 Pink;
+	
+	static const Vec3 Green;
+	static const Vec3 ChartreuseGreen;
+	static const Vec3 SpringGreen;
+	static const Vec3 LightGreen;
+	
+	static const Vec3 Blue;
+	static const Vec3 Violet;
+	static const Vec3 AzureBlue;
+	static const Vec3 LightBlue;
+	
+	static const Vec3 Yellow;
+	static const Vec3 Magenta;
+	static const Vec3 Teal;
+
 	double x{};
 	double y{};
 	double z{};
@@ -23,8 +48,10 @@ public:
 	double length() const;
 	double distance(const Vec3& p) const;
 	double dot(const Vec3& p);
-	Vec3 maximum(double m);
-	Vec3 minimum(double m);
+	Vec3 maximum(double max) const;
+	Vec3 minimum(double min) const;
+	Vec3 clamp(double min, double max) const;
+	Vec3 saturate() const;
 	Vec3 cross(const Vec3& p);
 	Vec3 lerp(Vec3 v, double weight) const;
 	void normalize();
@@ -34,6 +61,7 @@ public:
 	Vec3 getNormal() const ;
 	Vec3 quantize(size_t level);
 	Vec3 floor() const;
+	Vec3 abs() const;
 	Vec3 operator-(const Vec3& p) const;
 	Vec3 operator*(const Vec3& p) const;
 	Vec3 operator/(const Vec3& p) const;
@@ -49,31 +77,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p);
-Vec3 abs(const Vec3 v);
 
-namespace Color {
-	const Vec3 Black{ 0.0, 0.0, 0.0 };
-	const Vec3 LightGray{ 0.75, 0.75, 0.75 };
-	const Vec3 MediumGray{ 0.5, 0.5, 0.5 };
-	const Vec3 DarkGray{ 0.25, 0.25, 0.25 };
-	const Vec3 White{ 1.0, 1.0, 1.0 };
+	
 
-	const Vec3 Red{ 1.0, 0.0, 0.0 };
-	const Vec3 Orange{ 1.0, 0.5, 0.0 };
-	const Vec3 DeepPink{ 1.0, 0.0, 0.5 };
-	const Vec3 Pink{ 1.0, 0.5, 0.5 };
-
-	const Vec3 Green{ 0.0, 1.0, 0.0 };
-	const Vec3 ChartreuseGreen{ 0.5, 1.0, 0.0 };
-	const Vec3 SpringGreen{ 0.0, 1.0, 0.5 };
-	const Vec3 LightGreen{ 0.5, 1.0, 0.5 };
-
-	const Vec3 Blue{ 0.0, 0.0, 1.0 };
-	const Vec3 Violet{ 0.5, 0.0, 1.0 };
-	const Vec3 AzureBlue{ 0.0, 0.5, 1.0 };
-	const Vec3 LightBlue{ 0.5, 0.5, 1.0 };
-
-	const Vec3 Yellow{ 1.0, 1.0, 0.0 };
-	const Vec3 Magenta{ 1.0, 0.0, 1.0 };
-	const Vec3 Teal{ 0.0, 1.0, 1.0 };
-}
+using Color = Vec3;

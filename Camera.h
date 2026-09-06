@@ -20,7 +20,7 @@ private:
 	POINT m_screenCentre;
 
 public:
-	Camera(const double viewportWidth, const double viewportHeight, const double lookSpeed = 2.0, const double moveSpeed = 3.0);
+	Camera(const double viewportWidth, const double viewportHeight, const double lookSpeed = 3.0, const double moveSpeed = 3.0);
 	void update(const double deltaTime);
 	void reset();
 	Vec3 getPosition() const { return m_position; }
