@@ -1,6 +1,6 @@
 #include "SceneObject.h"
-#include "Vec2.h"
 #include <algorithm>
+#include "Vec2.h"
 #include "Operation.h"
 
 SceneObject::SceneObject(
@@ -37,7 +37,7 @@ bool SceneObject::lit() const
     return m_lit;
 }
 
-void SceneObject::addOperation(std::unique_ptr<Operation> operation)
+void SceneObject::addOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
 {
     m_operations.push_back(std::move(operation));
 }
