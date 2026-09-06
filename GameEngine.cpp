@@ -21,10 +21,10 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
     auto obj1 = std::make_unique<Sphere>(Vec3{ 0.0, 1.0, 5.0 }, 1.0, Color::Red);
     auto obj2 = std::make_unique<Sphere>(Vec3{ 1.0, 1.0, 5.0 }, 1.5, Color::Green);
 
-    obj1->addOperation(std::move(std::make_unique<OpSurface::Onion>(0.4)));
-    obj1->addOperation(std::move(std::make_unique<OpSurface::Onion>(0.2)));
-    obj1->addOperation(std::move(std::make_unique<OpSurface::Onion>(0.1)));
-    obj1->addOperation(std::move(std::make_unique<OpCombine::Subtract>(std::move(obj2))));
+    obj1->addOperation(std::move(std::make_unique<SDFOp::Onion>(0.4)));
+    obj1->addOperation(std::move(std::make_unique<SDFOp::Onion>(0.2)));
+    obj1->addOperation(std::move(std::make_unique<SDFOp::Onion>(0.1)));
+    obj1->addOperation(std::move(std::make_unique<SDFOp::Subtract>(std::move(obj2))));
 
     m_objects.push_back(std::move(obj1));
     //m_objects.push_back(std::move(obj2));

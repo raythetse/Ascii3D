@@ -2,49 +2,49 @@
 #include "Operation.h"
 #include "SceneObject.h"
 
-void Operation::execute(double& distance, Vec3 p, double time, const Vec3 colorIn, Vec3* colorOut)
+namespace SDFOp
 {
-	switch (m_opType)
+	void SDFOperation::execute(double& distance, Vec3 p, double time, const Vec3 colorIn, Vec3* colorOut)
 	{
-	case Operation::Combination: {
-		Vec2 v{ distance, 0.0 };
-		OpCombine::CombineOperation* comOp = dynamic_cast<OpCombine::CombineOperation*>(this);
-		double distanceb = comOp->m_combineObj->signedDistance(p, time, colorOut);
-		comOp->combine(v, distanceb);
-		distance = v.x;
-		if (colorOut) {
-			double blendRemap = comOp->m_colorBlending;
-			v.y *= blendRemap;
-			v.y -= 0.5 * (blendRemap - 1.0);
-			v.y = v.y < 0.0 ? 0.0 : v.y;
-			v.y = v.y > 1.0 ? 1.0 : v.y;
-			*colorOut = colorIn.lerp(*colorOut, comOp->m_colorBlendBias * v.y);
-			return;
+		switch (opType())
+		{
+		case SDFOperationType::Combine: {
+			Vec2 v{ distance, 0.0 };
+			CombinationOperation* comOp = dynamic_cast<CombinationOperation*>(this);
+			double distanceb = comOp->m_combineObj->signedDistance(p, time, colorOut);
+			comOp->combine(v, distanceb);
+			distance = v.x;
+			if (colorOut) {
+				double blendRemap = comOp->m_colorBlending;
+				v.y *= blendRemap;
+				v.y -= 0.5 * (blendRemap - 1.0);
+				v.y = v.y < 0.0 ? 0.0 : v.y;
+				v.y = v.y > 1.0 ? 1.0 : v.y;
+				*colorOut = colorIn.lerp(*colorOut, comOp->m_colorBlendBias * v.y);
+				return;
+			}
+			break;
 		}
-		break;
-	}
-	case Operation::Surface: {
-		OpSurface::SurfaceOperation* surfOp = dynamic_cast<OpSurface::SurfaceOperation*>(this);
-		distance = surfOp->resurface(distance);
-		break;
-	}
-	case Operation::Spacial:
-		break;
-	case Operation::Transform:
-		break;
-	default:
-		break;
-	}
-		
+		case SDFOperationType::Surface: {
+			SurfaceOperation* surfOp = dynamic_cast<SurfaceOperation*>(this);
+			distance = surfOp->resurface(distance);
+			break;
+		}
+		case SDFOperationType::Spacial:
+			break;
+		case SDFOperationType::Transform:
+			break;
+		default:
+			break;
+		}
 
-	if (colorOut) {
-		*colorOut = colorIn;
-	}
-}
 
-namespace OpCombine
-{
-	void Join::combine(Vec2& a, double b) noexcept {
+		if (colorOut) {
+			*colorOut = colorIn;
+		}
+	}
+
+	void Add::combine(Vec2& a, double b) noexcept {
 		a.x = a.x < b ? a.x : b;
 		a.y = 0.0;
 	}
@@ -76,11 +76,8 @@ namespace OpCombine
 		a.x = std::lerp(b, a.x, h) + m_smoothing * h * (1.0 - h);
 		a.y = 1.0 - h;
 	}
-}
 
-namespace OpSurface
-{
-	double Onion::resurface(double distance)	{
+	double Onion::resurface(double distance) {
 		return abs(distance) - m_magnitude;
-	}	
+	}
 }

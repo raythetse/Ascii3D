@@ -6,7 +6,10 @@
 #include "Vec2.h"
 #include "Vec3.h"
 
-class Operation;
+namespace SDFOp
+{
+	class SDFOperation;
+}
 
 class SceneObject
 {
@@ -19,7 +22,7 @@ protected:
 	bool m_lit;
 	double m_rounding;
 	std::unique_ptr<Behaviour> m_behaviour;
-	std::vector<std::unique_ptr<Operation>> m_operations;
+	std::vector<std::unique_ptr<SDFOp::SDFOperation>> m_operations;
 	SceneObject(Vec3 position, Vec3 rotation, Vec3 color, double rounding, bool lit);
 	virtual double signedDistanceInner(Vec3 p, double time) const = 0;
 public:
@@ -28,7 +31,7 @@ public:
 	Vec3 position() const;
 	double signedDistance(Vec3 p, double time, Vec3* colorOut = nullptr) const;
 	bool lit() const;
-	void addOperation(std::unique_ptr<Operation> operation);
+	void addOperation(std::unique_ptr<SDFOp::SDFOperation> operation);
 private:
 };
 

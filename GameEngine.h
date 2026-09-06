@@ -3,6 +3,7 @@
 #include "PixelField.h"
 #include "RayMarcher.h"
 #include "Renderer.h"
+#include "SceneObject.h"
 #include "Stopwatch.h"
 
 class GameEngine
