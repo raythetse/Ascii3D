@@ -5,7 +5,8 @@
 class Camera
 {
 private:
-	Vec3 m_position{ 0.0, 1.0, 0.0 };
+	Vec3 m_position{};
+	Vec3 m_initialPosition{};
 	Vec3 m_rotation{};
 	Vec3 m_forward{ 0.0, 0.0, 1.0 };
 	Vec3 m_up{ 0.0, 1.0, 0.0 };
@@ -20,7 +21,7 @@ private:
 	POINT m_screenCentre;
 
 public:
-	Camera(const double viewportWidth, const double viewportHeight, const double lookSpeed = 3.0, const double moveSpeed = 3.0);
+	Camera(const double viewportWidth, const double viewportHeight, const Vec3 position = { 0.0, 0.0, -5.0 }, const double lookSpeed = 3.5, const double moveSpeed = 3.0);
 	void update(const double deltaTime);
 	void reset();
 	Vec3 getPosition() const { return m_position; }

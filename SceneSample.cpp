@@ -36,7 +36,7 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 		//totalLight *= 1.0 - (camDistance / maxDistance);
 	}
 
-	size_t index = static_cast<size_t>(ceil(totalLight * (charGradient.length() - 1)));
+	size_t index = static_cast<size_t>(totalLight * (charGradient.length() - 1));
 	renderChar = lit ? (camDistance >= maxDistance ? ' ' : charGradient[index]) : charGradient[charGradient.length() - 1];
 	renderColor = lit ? (camDistance >= maxDistance ? 0 : color * 255) : color * 255;
 

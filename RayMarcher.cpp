@@ -87,6 +87,7 @@ void RayMarcher::march( PixelField& field,
                 Vec3 diff = sample.samplePoint - light->position();
                 marchRay(diff.getNormal(), light->position(), objects, shadowSample, time);
                 if (shadowSample.objectIndex == sample.objectIndex) {
+                //if ((shadowSample.samplePoint - sample.samplePoint).length() < m_tolerance) { // Attempt at self-shadowing repeats, too many errors
                     auto l = light.operator->();
                     directLights.push_back(light.operator->());
                 }

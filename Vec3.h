@@ -51,6 +51,7 @@ public:
 	Vec3 maximum(double max) const;
 	Vec3 minimum(double min) const;
 	Vec3 clamp(double min, double max) const;
+	Vec3 clamp(Vec3 min, Vec3 max) const;
 	Vec3 saturate() const;
 	Vec3 cross(const Vec3& p);
 	Vec3 lerp(Vec3 v, double weight) const;
@@ -61,7 +62,10 @@ public:
 	Vec3 getNormal() const ;
 	Vec3 quantize(size_t level);
 	Vec3 floor() const;
+	Vec3 ceil() const;
+	Vec3 round() const;
 	Vec3 abs() const;
+	Vec3 operator-() const;
 	Vec3 operator-(const Vec3& p) const;
 	Vec3 operator*(const Vec3& p) const;
 	Vec3 operator/(const Vec3& p) const;
@@ -71,8 +75,17 @@ public:
 	Vec3& operator-=(const Vec3& p);
 	Vec3& operator*=(const Vec3& p);
 	Vec3& operator/=(const Vec3& p);
+	Vec3 operator+(const double d) const;
+	Vec3 operator-(const double d) const;
 	Vec3 operator*(const double d) const;
+	Vec3 operator/(const double d) const;
+	Vec3& operator=(const double d);
+	Vec3& operator+=(const double d);
+	Vec3& operator-=(const double d);
+	Vec3& operator*=(const double d);
+	Vec3& operator/=(const double d);
 	bool operator==(const Vec3& p) const;
+	bool operator==(double d) const;
 	explicit operator bool() const;
 };
 

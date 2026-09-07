@@ -11,8 +11,9 @@ namespace SDFOp
 	enum SDFOperationType {
 		Combine,
 		Surface,
-		Repeat,
-		Transform
+		Mirror,
+		Domain,
+		Transform,
 	};
 
 	class SDFOperation
@@ -107,70 +108,146 @@ namespace SDFOp
 		Onion(double magnitude = 0.01) : SurfaceOperation(magnitude) {}
 	};
 
-	class RepeatOperation : public SDFOperation
+	class MirrorOperation : public SDFOperation
 	{
 	protected:
-		double m_spacing;
-		virtual void repeat(Vec3& p) = 0;
+		virtual void reflect(Vec3& p) = 0;
 	public:
-		RepeatOperation(double spacing = 1.0) : m_spacing(spacing) {};
-		SDFOperationType opType() override { return SDFOperationType::Repeat; }
+		MirrorOperation() {};
+		SDFOperationType opType() override { return SDFOperationType::Mirror; }
 		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
 	};
 
-	class MirrorX : public RepeatOperation
+	class MirrorX : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorX() {};
 	};
 
-	class MirrorY : public RepeatOperation
+	class MirrorY : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorY() {};
 	};
 
-	class MirrorZ : public RepeatOperation
+	class MirrorZ : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorZ() {};
 	};
 
-	class MirrorXY : public RepeatOperation
+	class MirrorXY : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorXY() {};
 	};
 
-	class MirrorXZ : public RepeatOperation
+	class MirrorXZ : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorXZ() {};
 	};
 
-	class MirrorYZ : public RepeatOperation
+	class MirrorYZ : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorYZ() {};
 	};
 
-	class MirrorXYZ : public RepeatOperation
+	class MirrorXYZ : public MirrorOperation
 	{
 	protected:
-		void repeat(Vec3& p) noexcept override;
+		void reflect(Vec3& p) noexcept override;
 	public:
 		MirrorXYZ() {};
+	};
+
+	class DomainOperation : public SDFOperation
+	{
+	protected:
+		Vec3 m_spacing;
+		virtual void repeat(Vec3& p) = 0;
+	public:
+		DomainOperation(Vec3 spacing = Vec3::One) : m_spacing(spacing) {};
+		SDFOperationType opType() override { return SDFOperationType::Domain; }
+		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+	};
+
+	class RepeatX : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatX(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatY : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatY(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatZ : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatZ(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatXY : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatXY(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatXZ : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatXZ(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatYZ : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatYZ(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatXYZ : public DomainOperation
+	{
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatXYZ(Vec3 spacing = Vec3::One) : DomainOperation(spacing) {}
+	};
+
+	class RepeatLimited : public DomainOperation
+	{
+	private:
+		Vec3 m_limits;
+	protected:
+		void repeat(Vec3& p) override;
+	public:
+		RepeatLimited(Vec3 limits = Vec3::One, Vec3 spacing = Vec3::One) : DomainOperation(spacing), m_limits(limits) {}
 	};
 }
