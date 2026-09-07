@@ -32,6 +32,8 @@ namespace SDFOp
 			return;
 		}
 		case SDFOperationType::Transform: {
+			TransformOperation* TransOp = dynamic_cast<TransformOperation*>(this);
+			TransOp->transform(p);
 			return;
 		}
 		default:
@@ -174,5 +176,15 @@ namespace SDFOp
 	{
 		if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 		p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
+	}
+
+	void Translate::transform(Vec3& p)
+	{
+		p -= m_transposition;
+	}
+
+	void Rotate::transform(Vec3& p)
+	{
+		p = m_rotMat * p;
 	}
 }

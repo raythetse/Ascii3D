@@ -1,6 +1,8 @@
 #pragma once
 #include <algorithm>
 #include <memory>
+#include "Mat3.h"
+#include "MathFunctions.h"
 #include "Vec2.h"
 #include "Vec3.h"
 
@@ -249,5 +251,35 @@ namespace SDFOp
 		void repeat(Vec3& p) override;
 	public:
 		RepeatLimited(Vec3 limits = Vec3::One, Vec3 spacing = Vec3::One) : DomainOperation(spacing), m_limits(limits) {}
+	};
+
+	class TransformOperation : public SDFOperation
+	{
+	protected:
+		virtual void transform(Vec3& p) = 0;
+	public:
+		TransformOperation() {};
+		SDFOperationType opType() override { return SDFOperationType::Transform; }
+		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+	};
+
+	class Translate : public TransformOperation
+	{
+	private:
+		Vec3 m_transposition;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		Translate(Vec3 transposition) : m_transposition(transposition) {}
+	};
+
+	class Rotate : public TransformOperation
+	{
+	private:
+		Mat3 m_rotMat;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns * MF::TAU)) {}
 	};
 }
