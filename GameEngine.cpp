@@ -19,20 +19,18 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     m_objects.push_back(std::move(floor));
 
     auto baseObj = std::make_unique<SceneObject>();
-    auto obj1 = std::make_unique<Torus>(Vec3::Zero, Vec3::Zero, Vec2{ 1.0, 0.25 }, Color::LightGreen);
-    auto obj2 = std::make_unique<Sphere>(Vec3{ 0.0, 1.0, 0.0 }, 0.25, Color::Green);
-    auto obj3 = std::make_unique<Sphere>(Vec3{ 0.0, 2.0, 0.0 }, 0.25, Color::Blue);
+    auto obj1 = std::make_unique<Box>(Vec3{ 0.5, 0.0, 0.0 }, Vec3::Right * 0.125, Vec3::One, Color::LightGreen);
+    auto obj2 = std::make_unique<Box>(Vec3{ -0.5, 0.0, 0.0 }, Vec3{ 1.0, -1.0, 0.0 }.getNormal() * 0.25, Vec3::One, Color::LightBlue);
+    auto obj3 = std::make_unique<Box>(Vec3{ 0.0, 1.0, 0.0 }, Vec3{ -1.0, -1.0, 0.0 }.getNormal() * 0.25, Vec3::One, Color::Pink);
 
-    baseObj->pushOperation(std::move(std::make_unique<SDFOp::Bend>(2.0)));
-    //baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj1))));
-    //baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj2))));
-    baseObj->pushOperation(std::move(std::make_unique<SDFOp::Add>(std::move(obj1))));
+    baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj1), 0.5, 10.0)));
+    //baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj2), 0.5, 10.0)));
+    //baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj3), 0.5, 10.0)));
+    baseObj->pushOperation(std::move(std::make_unique<SDFOp::RoundOff>(0.1)));
 
     m_objects.push_back(std::move(baseObj));
-    m_objects.push_back(std::move(obj2));
-    m_objects.push_back(std::move(obj3));
 
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 0.0, 1.5, -2.0 }, 0.25));
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 0.0, 3.0, -4.0 }, 0.25));
 
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
 
