@@ -21,7 +21,7 @@ SceneObject::SceneObject(
     m_objId = id++;
 
     if (rotation) {
-        m_rotationMat = Mat3::fromAxisAngle(rotation.getNormal(), rotation.length());
+        m_rotationMat = Mat3::fromAxisAngle(rotation.getNormal(), rotation.length() * MF::TAU);
     }
     else {
         m_rotationMat = Mat3::Identity;

@@ -32,7 +32,7 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 	Color color{};
 	if (object) {
 		object->signedDistance(p, time, &color);
-		color = color.quantize(16);
+		//color = color.quantize(16);
 		//totalLight *= 1.0 - (camDistance / maxDistance);
 	}
 

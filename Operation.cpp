@@ -91,6 +91,11 @@ namespace SDFOp
 		return std::lerp(b, a, h) + m_smoothing * h * (1.0 - h);
 	}
 
+	double RoundOff::resurface(double distance)
+	{
+		return distance - m_magnitude;
+	}
+
 	double Onion::resurface(double distance) {
 		return abs(distance) - m_magnitude;
 	}

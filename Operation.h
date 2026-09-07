@@ -103,6 +103,14 @@ namespace SDFOp
 		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
 	};
 
+	class RoundOff : public SurfaceOperation
+	{
+	protected:
+		double resurface(double distance) override;
+	public:
+		RoundOff(double magnitude = 0.1) : SurfaceOperation(magnitude) {}
+	};
+
 	class Onion : public SurfaceOperation
 	{
 	protected:
