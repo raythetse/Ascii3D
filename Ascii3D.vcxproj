@@ -144,6 +144,7 @@
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
     <ClCompile Include="LightSource.cpp" />
+    <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="Mat3.cpp" />
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="PerfMonitor.cpp" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\HelloWorld\Stopwatch.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="PerfMonitor.h" />

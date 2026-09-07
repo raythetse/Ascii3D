@@ -1,6 +1,7 @@
 #pragma once
 #include "Operation.h"
 #include "SceneObject.h"
+#include "Mat2.h"
 
 namespace SDFOp
 {
@@ -34,6 +35,11 @@ namespace SDFOp
 		case SDFOperationType::Transform: {
 			TransformOperation* TransOp = dynamic_cast<TransformOperation*>(this);
 			TransOp->transform(p);
+			return;
+		}
+		case SDFOperationType::Distort: {
+			DistortOperation* DistOp = dynamic_cast<DistortOperation*>(this);
+			DistOp->distort(p);
 			return;
 		}
 		default:
@@ -186,5 +192,21 @@ namespace SDFOp
 	void Rotate::transform(Vec3& p)
 	{
 		p = m_rotMat * p;
+	}
+
+	void Twist::distort(Vec3& p)
+	{
+		Vec2 sc = MF::fast_sincos(m_magnitude * p.y);
+		Mat2  m = Mat2{ { sc.y, -sc.x, sc.x, sc.y} };
+		Vec2 xz = m * Vec2{p.x, p.z };
+		p = Vec3(xz.x, xz.y, p.y);
+	}
+
+	void Bend::distort(Vec3& p)
+	{
+		Vec2 sc = MF::fast_sincos(m_magnitude * p.x);
+		Mat2  m = Mat2{ { sc.y, -sc.x, sc.x, sc.y } };
+		Vec2 xy = m * Vec2{ p.x, p.y };
+		p = Vec3(xy.x, xy.y, p.z);
 	}
 }

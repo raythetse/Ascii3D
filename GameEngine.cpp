@@ -3,11 +3,11 @@
 #include <ranges>
 #include "Operation.h"
 
-GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double tolerance)
+GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double stepFactor, double tolerance)
 	: m_dimensions{ width, height }
 	, m_sceneDepth{ sceneDepth }
 	, m_pixelField{ width, height }
-	, m_rayMarcher{ sceneDepth, tolerance }
+	, m_rayMarcher{ sceneDepth, stepFactor, tolerance }
 	, m_renderer{ width * height }
 	, m_camera{ width * .005, height * .01 }
     , m_pixelRange{ std::views::iota(size_t(0), width * height) }
@@ -19,12 +19,11 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
     m_objects.push_back(std::move(floor));
 
     auto baseObj = std::make_unique<SceneObject>();
-    auto obj1 = std::make_unique<Box>(Vec3::Down, Vec3::Zero, Vec3{ 1.0 }, Color::ChartreuseGreen);
+    auto obj1 = std::make_unique<Torus>(Vec3::Zero, Vec3::Zero, Vec2{ 1.0, 0.25 }, Color::LightGreen);
     auto obj2 = std::make_unique<Sphere>(Vec3{ 0.0, 1.0, 0.0 }, 0.25, Color::Green);
     auto obj3 = std::make_unique<Sphere>(Vec3{ 0.0, 2.0, 0.0 }, 0.25, Color::Blue);
 
-
-    //baseObj->pushOperation(std::move(std::make_unique<SDFOp::RepeatLimited>(Vec3{2.0, 0.0, 1.0}, Vec3{1.0})));
+    baseObj->pushOperation(std::move(std::make_unique<SDFOp::Bend>(2.0)));
     //baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj1))));
     //baseObj->pushOperation(std::move(std::make_unique<SDFOp::AddSmooth>(std::move(obj2))));
     baseObj->pushOperation(std::move(std::make_unique<SDFOp::Add>(std::move(obj1))));

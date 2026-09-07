@@ -11,6 +11,7 @@ class RayMarcher
 private:
 	const double s_normalCheckOffset{ 0.001 };
 	const int m_maxSamples{ 300 };
+	double m_stepFactor;
 	double m_tolerance;
 	double m_maxDistance;
 
@@ -18,8 +19,9 @@ private:
 	void SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double & surfDist, size_t& objectIndex, double time);
 
 public:
-	RayMarcher(const double maxDistance, const double tolerance = 0.001)
+	RayMarcher(const double maxDistance, const double stepFactor = 1.0, const double tolerance = 0.001)
 		: m_maxDistance(maxDistance)
+		, m_stepFactor(stepFactor)
 		, m_tolerance(tolerance) {}
 	void march(	PixelField& field,
 				const std::vector<std::unique_ptr<SceneObject>>& objects,
