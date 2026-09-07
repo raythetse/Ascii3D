@@ -21,7 +21,7 @@ void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_p
             sample.objectIndex = objectIndex;
             return;
         }
-		rayDist += surfDist;
+		rayDist += m_stepFactor * surfDist;
         ++samples;
 	}
     sample.camDistance = m_maxDistance;

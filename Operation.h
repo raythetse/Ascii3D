@@ -16,6 +16,7 @@ namespace SDFOp
 		Mirror,
 		Domain,
 		Transform,
+		Distort,
 	};
 
 	class SDFOperation
@@ -281,5 +282,32 @@ namespace SDFOp
 		void transform(Vec3& p) override;
 	public:
 		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns * MF::TAU)) {}
+	};
+
+	class DistortOperation : public SDFOperation
+	{
+	protected:
+		double m_magnitude;
+		virtual void distort(Vec3& p) = 0;
+	public:
+		DistortOperation(double magnitude) : m_magnitude(magnitude) {};
+		SDFOperationType opType() override { return SDFOperationType::Distort; }
+		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+	};
+
+	class Twist : public DistortOperation
+	{
+	protected:
+		void distort(Vec3& p);
+	public:
+		Twist(double turns = 1.0) : DistortOperation(turns) {}
+	};
+
+	class Bend : public DistortOperation
+	{
+	protected:
+		void distort(Vec3& p);
+	public:
+		Bend(double turns = 1.0) : DistortOperation(turns) {}
 	};
 }

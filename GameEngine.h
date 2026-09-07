@@ -24,7 +24,7 @@ private:
 	double m_time{};
 
 public:
-	GameEngine(size_t width, size_t height, double maxSceneDepth, double tolerance);
+	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);
 	void update();
 	void march();
 	void render();
