@@ -21,9 +21,14 @@ namespace SDFOp
 			distanceA = surfOp->resurface(distanceA);
 			return;
 		}
-		case SDFOperationType::Repeat: {
-			RepeatOperation* repOp = dynamic_cast<RepeatOperation*>(this);
-			repOp->repeat(p);
+		case SDFOperationType::Mirror: {
+			MirrorOperation* mirpOp = dynamic_cast<MirrorOperation*>(this);
+			mirpOp->reflect(p);
+			return;
+		}
+		case SDFOperationType::Domain: {
+			DomainOperation* domOp = dynamic_cast<DomainOperation*>(this);
+			domOp->repeat(p);
 			return;
 		}
 		case SDFOperationType::Transform: {
@@ -32,7 +37,9 @@ namespace SDFOp
 		default:
 			break;
 		}
-	}void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
+	}
+	
+	void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
 	{
 		alpha *= m_colorBlending;
 		alpha -= 0.5 * (m_colorBlending - 1.0);
@@ -80,40 +87,92 @@ namespace SDFOp
 		return abs(distance) - m_magnitude;
 	}
 
-	void MirrorX::repeat(Vec3& p) noexcept
+	void MirrorX::reflect(Vec3& p) noexcept
 	{
 		p.x = abs(p.x);
 	}
 
-	void MirrorY::repeat(Vec3& p) noexcept
+	void MirrorY::reflect(Vec3& p) noexcept
 	{
 		p.y = abs(p.x);
 	}
 
-	void MirrorZ::repeat(Vec3& p) noexcept
+	void MirrorZ::reflect(Vec3& p) noexcept
 	{
 		p.z = abs(p.z);
 	}
 
-	void MirrorXY::repeat(Vec3& p) noexcept
+	void MirrorXY::reflect(Vec3& p) noexcept
 	{
 		p.x = abs(p.x);
 		p.y = abs(p.y);
 	}
 
-	void MirrorXZ::repeat(Vec3& p) noexcept
+	void MirrorXZ::reflect(Vec3& p) noexcept
 	{
 		p.x = abs(p.x);
 		p.z = abs(p.z);
 	}
 
-	void MirrorYZ::repeat(Vec3& p) noexcept
+	void MirrorYZ::reflect(Vec3& p) noexcept
 	{
 		p.y = abs(p.y);
 		p.z = abs(p.z);
 	}
-	void MirrorXYZ::repeat(Vec3& p) noexcept
+
+	void MirrorXYZ::reflect(Vec3& p) noexcept
 	{
 		p = p.abs();
+	}
+
+	void RepeatX::repeat(Vec3& p)
+	{
+		if (!m_spacing.x) return;
+		p.x -= m_spacing.x * round(p.x / m_spacing.x);
+	}
+
+	void RepeatY::repeat(Vec3& p)
+	{
+		if (!m_spacing.y) return;
+		p.y -= m_spacing.y * round(p.y / m_spacing.y);
+	}
+
+	void RepeatZ::repeat(Vec3& p)
+	{
+		if (!m_spacing.z) return;
+		p.z -= m_spacing.z * round(p.z / m_spacing.z);
+	}
+
+	void RepeatXY::repeat(Vec3& p)
+	{
+		if (!m_spacing.x || !m_spacing.y) return;
+		p.x -= m_spacing.x * round(p.x / m_spacing.x);
+		p.y -= m_spacing.y * round(p.y / m_spacing.y);
+	}
+
+	void RepeatXZ::repeat(Vec3& p)
+	{
+		if (!m_spacing.x || !m_spacing.z) return;
+		p.x -= m_spacing.x * round(p.x / m_spacing.x);
+		p.z -= m_spacing.z * round(p.z / m_spacing.z);
+	}
+
+	void RepeatYZ::repeat(Vec3& p)
+	{
+		if (!m_spacing.y || !m_spacing.z) return;
+		p.y -= m_spacing.y * round(p.y / m_spacing.y);
+		p.z -= m_spacing.z * round(p.z / m_spacing.z);
+	}
+
+	void RepeatXYZ::repeat(Vec3& p)
+	{
+		if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
+		p -= m_spacing * (p / m_spacing).round();
+	}
+
+	void RepeatLimited::repeat(Vec3& p)
+	{
+		if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
+		p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
 	}
 }

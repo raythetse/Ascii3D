@@ -53,17 +53,22 @@ double Vec3::dot(const Vec3& p)
 
 Vec3 Vec3::maximum(double m) const
 {
-    return Vec3(m > x ? m : x, m > y ? m : y, m > z ? m : z);
+    return { m > x ? m : x, m > y ? m : y, m > z ? m : z };
 }
 
 Vec3 Vec3::minimum(double m) const
 {
-    return Vec3(m < x ? m : x, m < y ? m : y, m < z ? m : z);
+    return { m < x ? m : x, m < y ? m : y, m < z ? m : z };
 }
 
 Vec3 Vec3::clamp(double min, double max) const
 {
     return maximum(max).minimum(min);
+}
+
+Vec3 Vec3::clamp(Vec3 min, Vec3 max) const
+{
+    return Vec3{ std::clamp(x, min.x, max.x), std::clamp(y, min.y, max.y), std::clamp(z, min.z, max.z) };
 }
 
 Vec3 Vec3::saturate() const
@@ -73,7 +78,7 @@ Vec3 Vec3::saturate() const
 
 Vec3 Vec3::cross(const Vec3& p)
 {
-    return Vec3(y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x);
+    return { y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x };
 }
 
 Vec3 Vec3::lerp(Vec3 v, double weight) const
@@ -92,65 +97,82 @@ Vec3 Vec3::rotateXAxis(const double rads) const
 {
     double c = cos(rads);
     double s = sin(rads);
-    return Vec3(x, y * c - z * s, y * s + z * c);
+    return { x, y * c - z * s, y * s + z * c };
 }
 
 Vec3 Vec3::rotateYAxis(const double rads) const
 {
     double c = cos(rads);
     double s = sin(rads);
-    return Vec3(x * c + z * s, y, -x * s + z * c);
+    return { x * c + z * s, y, -x * s + z * c };
 }
 
 Vec3 Vec3::rotateZAxis(const double rads) const
 {
     double c = cos(rads);
     double s = sin(rads);
-    return Vec3(x * c - y * s, x * s + y * c, z);
+    return { x * c - y * s, x * s + y * c, z };
 }
 
 Vec3 Vec3::getNormal() const
 {
     const double m = length();
-    return !m ? Vec3{} : Vec3(x / m, y / m, z / m);
+    return !m ? Vec3{} : Vec3{ x / m, y / m, z / m };
 }
 
 Vec3 Vec3::quantize(size_t level)
 {
     if (level <= 0) return *this;
-    return {std::floor(level * x) / level, std::floor(level * y) / level, std::floor(level * z) / level};
+    return { std::floor(level * x) / level, std::floor(level * y) / level, std::floor(level * z) / level };
 }
 
 Vec3 Vec3::floor() const
 {
-    return Vec3(x - std::floor(x), y - std::floor(y), z - std::floor(z));
+    return { x - std::floor(x), y - std::floor(y), z - std::floor(z) };
+}
+
+Vec3 Vec3::ceil() const
+{
+    return { std::ceil(x), std::ceil(y), std::ceil(z) };
+}
+
+Vec3 Vec3::round() const
+{
+    return { std::round(x), std::round(y), std::round(z) };
 }
 
 Vec3 Vec3::abs() const
 {
-    return Vec3(std::abs(x), std::abs(y), std::abs(z));
+    return { std::abs(x), std::abs(y), std::abs(z) };
+}
+
+Vec3 Vec3::operator-() const
+{
+    return { -x, -y, -z };
 }
 
 Vec3 Vec3::operator+(const Vec3& p) const
 {
-    return Vec3{ x + p.x, y + p.y, z + p.z };
+    return { x + p.x, y + p.y, z + p.z };
 }
 
 Vec3 Vec3::operator-(const Vec3& p) const
 {
-    return Vec3{ x - p.x, y - p.y, z - p.z };
+    return { x - p.x, y - p.y, z - p.z };
 }
 
 Vec3 Vec3::operator*(const Vec3& p) const
 {
-    return Vec3{ x * p.x, y * p.y, z * p.z };
+    return { x * p.x, y * p.y, z * p.z };
 }
 
 Vec3 Vec3::operator/(const Vec3& p) const
 {
-    return Vec3{ p.x == 0.0 ? 0.0 : x / p.x, p.y == 0.0 ? 0.0 : y / p.y, p.z == 0.0 ? 0.0 : z / p.z };
+    return { p.x == 0.0 ? 0.0 : x / p.x, p.y == 0.0 ? 0.0 : y / p.y, p.z == 0.0 ? 0.0 : z / p.z };
 }
-Vec3& Vec3::operator=(const Vec3& p) {
+
+Vec3& Vec3::operator=(const Vec3& p)
+{
     x = p.x; y = p.y; z = p.z;
     return *this;
 }
@@ -175,16 +197,63 @@ Vec3& Vec3::operator*=(const Vec3& p)
 
 Vec3& Vec3::operator/=(const Vec3& p)
 {
-    x = p.x == 0 ? 0 : p.x; y = p.y == 0.0 ? 0.0 : y / p.y; z = p.z == 0.0 ? 0.0 : z / p.z;
+    x = p.x == 0 ? 0 : p.x;
+    y = p.y == 0.0 ? 0.0 : y / p.y;
+    z = p.z == 0.0 ? 0.0 : z / p.z;
     return *this;
 }
 
-Vec3 Vec3::operator*(const double d) const {
-    return Vec3(x * d, y * d, z * d);
+Vec3 Vec3::operator+(const double d) const
+{
+    return { x + d, y + d, z + d };
+}
+
+Vec3 Vec3::operator-(const double d) const
+{
+    return { x - d, y - d, z - d };
+}
+
+Vec3 Vec3::operator*(const double d) const
+{
+    return { x * d, y * d, z * d };
+}
+
+Vec3 Vec3::operator/(const double d) const
+{
+    return d == 0.0 ? Vec3::Zero : *this / Vec3{ d };
+}
+
+Vec3& Vec3::operator=(const double d)
+{
+    return *this = Vec3{ d };
+}
+
+Vec3& Vec3::operator+=(const double d)
+{
+    return *this += Vec3{ d };
+}
+
+Vec3& Vec3::operator-=(const double d)
+{
+    return *this -= Vec3{ d };
+}
+
+Vec3& Vec3::operator*=(const double d)
+{
+    return *this *= Vec3{ d };
+}
+
+Vec3& Vec3::operator/=(const double d)
+{
+    return *this /= (d) ? Vec3{ d } : Vec3{ 1.0 };
 }
 
 bool Vec3::operator==(const Vec3& p) const {
     return (x == p.x && y == p.y && z == p.z);
+}
+
+bool Vec3::operator==(const double d) const {
+    return (x == d && y == d && z == d);
 }
 
 Vec3::operator bool() const
