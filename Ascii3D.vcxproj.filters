@@ -90,6 +90,9 @@
     <ClCompile Include="Mat2.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
+    <ClCompile Include="SceneObjectBuilder.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -142,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="Mat2.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneObjectBuilder.h">
+      <Filter>Header Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

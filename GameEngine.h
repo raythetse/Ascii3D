@@ -4,6 +4,7 @@
 #include "RayMarcher.h"
 #include "Renderer.h"
 #include "SceneObject.h"
+#include "SceneObjectBuilder.h"
 #include "Stopwatch.h"
 
 class GameEngine
@@ -22,6 +23,7 @@ private:
 	Stopwatch m_gameTimer{};
 	double m_deltaTime{};
 	double m_time{};
+	void add(SOBuilder& obj);
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);

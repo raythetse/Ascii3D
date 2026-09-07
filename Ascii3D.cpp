@@ -26,7 +26,7 @@ int main()
 {
     setupConsole();
     double time{};
-    GameEngine gEngine{ 270, 75, 25.0, 1.0, 0.01 };
+    GameEngine gEngine{ 270, 75, 15.0, 1.0, 0.01 };
     //GameEngine gEngine{ 200, 55, 15.0, 0.01 };
     PerfMonitor pMonitor{};
     auto framePM = pMonitor.add("FPS", PerfMonitor::FPS);
