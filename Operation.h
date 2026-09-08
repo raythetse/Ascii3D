@@ -282,6 +282,19 @@ namespace SDFOp
 		Translate(Vec3 transposition) : m_transposition(transposition) {}
 	};
 
+	class TranslateSine : public TransformOperation
+	{
+	private:
+		Vec3 m_axis;
+		double m_amplitude;
+		double m_frequency;
+		double m_phase;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		TranslateSine(Vec3 axis = Vec3::Up, double amplitude = 1.0, double frequency = 0.25, double phase = 0.0) : m_axis(axis), m_amplitude(amplitude), m_frequency(frequency), m_phase(phase) {}
+	};
+
 	class Rotate : public TransformOperation
 	{
 	private:

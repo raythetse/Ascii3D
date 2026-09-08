@@ -2,14 +2,16 @@ Required:
 - bounding boxes for efficiency
 - input/output scene from/to file
 - object motion
-- object self-shadowing
 - console input for field dimensions
+- disable light attenuation (per light)
 
 Optional:
 - camera track
 - dynamic pixel field resizing
 - console input for various other params
 - try matrix style renderer
+- ambient light in shadow
+- transparency/reflection
 
 Ongoing:
 - design new SDFs and Operations
