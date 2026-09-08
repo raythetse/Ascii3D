@@ -115,7 +115,7 @@ namespace SDF
 	private:
 		Vec2 m_radii;
 	public:
-		Torus(Vec3 position, Vec3 rotation, Vec2 radii, Color color = Color::White, bool lit = true)
+		Torus(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, bool lit = true)
 			: VisualObject(position, rotation, color, lit), m_radii(radii) {}
 		double signedDistanceInner(Vec3 p, double time) const override;
 	};

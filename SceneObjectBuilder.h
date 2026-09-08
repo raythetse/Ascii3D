@@ -10,7 +10,7 @@ public:
     std::unique_ptr<SceneObject> get();
 	template <std::derived_from<SDFOp::SDFOperation> T, typename... Args>
     SOBuilder& pushOp(Args&&... args);
-    template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<SceneObject> U, typename... ArgsT>
+    template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<VisualObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
     SOBuilder& back();
     SOBuilder& back(size_t steps);
@@ -23,7 +23,7 @@ SOBuilder& SOBuilder::pushOp(Args&&... args) {
     return *this;
 }
 
-template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<SceneObject> U, typename... ArgsT>
+template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<VisualObject> U, typename... ArgsT>
 auto SOBuilder::pushOp(ArgsT&&... argst) {
     return [this, ...captured_args = std::forward<ArgsT>(argst)](auto&&... argsu) mutable -> auto& {
         auto obj = std::make_unique<U>(std::move(captured_args)...);

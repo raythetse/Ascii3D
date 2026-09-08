@@ -177,6 +177,9 @@
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="SceneSample.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="TODO.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
