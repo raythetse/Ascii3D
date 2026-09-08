@@ -16,6 +16,7 @@ private:
 	double m_viewportHeight;
 	double m_lookSpeed;
 	double m_moveSpeed;
+	bool m_skipFrame{ true };
 	HWND m_console;
 	HCURSOR m_oldCursor{};
 	POINT m_screenCentre;

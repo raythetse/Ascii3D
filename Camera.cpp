@@ -30,32 +30,34 @@ void Camera::update()
 
     if (GetAsyncKeyState(VK_BACK) & 0x8000) reset();
 
-    if (GetCursorPos(&cursorPos)) {
-        RECT rect;
-        GetClientRect(m_console, &rect);
+    if (!m_skipFrame) {
+        if (GetCursorPos(&cursorPos)) {
+            RECT rect;
+            GetClientRect(m_console, &rect);
 
-        if (ScreenToClient(m_console, &cursorPos)) {
-            double x = (SHORT)cursorPos.x;
-            double y = (SHORT)cursorPos.y;
+            if (ScreenToClient(m_console, &cursorPos)) {
+                double x = (SHORT)cursorPos.x;
+                double y = (SHORT)cursorPos.y;
 
-            Vec2 diff{ x - m_screenCentre.x, y - m_screenCentre.y };
-            //diff.normalize();
+                Vec2 diff{ x - m_screenCentre.x, y - m_screenCentre.y };
 
-            if (diff.x != 0 || diff.y != 0) {
-                m_rotation.x += diff.y * m_lookSpeed;
-                m_rotation.x = (m_rotation.x < -1.57 ? -1.57 : m_rotation.x);
-                m_rotation.x = (m_rotation.x > 1.57 ? 1.57 : m_rotation.x);
-                m_rotation.y += diff.x * m_lookSpeed;
+                if (diff.x != 0 || diff.y != 0) {
+                    m_rotation.x += diff.y * m_lookSpeed;
+                    m_rotation.x = (m_rotation.x < -1.57 ? -1.57 : m_rotation.x);
+                    m_rotation.x = (m_rotation.x > 1.57 ? 1.57 : m_rotation.x);
+                    m_rotation.y += diff.x * m_lookSpeed;
 
-                Mat3 rotX = Mat3::fromAxisAngle({ 1.0, 0.0, 0.0 }, m_rotation.x);
-                Mat3 rotY = Mat3::fromAxisAngle({ 0.0, 1.0, 0.0 }, m_rotation.y);
-                Mat3 m = rotY * rotX;
-
-                m_forward = m * Vec3{ 0.0, 0.0, 1.0 };
-                m_up = m * Vec3{ 0.0, 1.0, 0.0 };
-                m_right = m * Vec3{ 1.0, 0.0, 0.0 };
+                    Mat3 rotX = Mat3::fromAxisAngle({ 1.0, 0.0, 0.0 }, m_rotation.x);
+                    Mat3 rotY = Mat3::fromAxisAngle({ 0.0, 1.0, 0.0 }, m_rotation.y);
+                    Mat3 m = rotY * rotX;
+                    m_forward = m * Vec3{ 0.0, 0.0, 1.0 };
+                    m_up = m * Vec3{ 0.0, 1.0, 0.0 };
+                    m_right = m * Vec3{ 1.0, 0.0, 0.0 };
+                }
             }
         }
+    } else {
+        m_skipFrame = false;
     }
     SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 
