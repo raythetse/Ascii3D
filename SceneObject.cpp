@@ -93,6 +93,16 @@ double Box::signedDistanceInner(Vec3 p, double time) const
     return p.maximum(0.0).length();
 }
 
+double BoxFrame::signedDistanceInner(Vec3 p, double time) const
+{
+    p = p.abs() - m_dimensions;
+    Vec3 q = (p + m_edgeThickness).abs() - m_edgeThickness;
+    return std::min(std::min(
+        Vec3(p.x, q.y, q.z).maximum(0.0).length() + std::min(std::max(p.x, std::max(q.y, q.z)), 0.0),
+        Vec3(q.x, p.y, q.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(p.y, q.z)), 0.0)),
+        Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
+}
+
 Sphere::Sphere(Vec3 position, double radius, Color color, bool lit)
     : VisualObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
 
