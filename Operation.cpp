@@ -195,7 +195,12 @@ namespace SDFOp
 
 	void Translate::transform(Vec3& p)
 	{
-		p -= m_transposition;
+		p -= m_translation;
+	}
+
+	void TranslateSine::transform(Vec3& p)
+	{
+		p -= m_axis * m_amplitude * sin(GameTimer::totalTime() * m_frequency * MF::TAU + m_phase * MF::TAU);
 	}
 
 	void Rotate::transform(Vec3& p)
@@ -203,14 +208,9 @@ namespace SDFOp
 		p = m_rotMat * p;
 	}
 
-	void TranslateSine::transform(Vec3& p)
-	{
-		p -= m_axis * m_amplitude * sin(GameTimer::totalTime() * m_frequency * MF::TAU + m_phase);
-	}
-
 	void RotateActive::transform(Vec3& p)
 	{
-		Mat3 m = Mat3::fromAxisAngle(m_axis, GameTimer::totalTime() * m_turnsPerSecond * MF::TAU);
+		Mat3 m = Mat3::fromAxisAngle(m_axis, GameTimer::totalTime() * m_turnsPerSecond * MF::TAU + m_phase * MF::TAU);
 		p = m * p;
 	}
 

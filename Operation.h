@@ -275,11 +275,11 @@ namespace SDFOp
 	class Translate : public TransformOperation
 	{
 	private:
-		Vec3 m_transposition;
+		Vec3 m_translation;
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		Translate(Vec3 transposition) : m_transposition(transposition) {}
+		Translate(Vec3 transposition) : m_translation(transposition) {}
 	};
 
 	class TranslateSine : public TransformOperation
@@ -310,10 +310,11 @@ namespace SDFOp
 	private:
 		Vec3 m_axis;
 		double m_turnsPerSecond;
+		double m_phase;
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		RotateActive(Vec3 axis = Vec3::Up, double turnsPerSecond = 0.25) : m_axis(axis), m_turnsPerSecond(turnsPerSecond) {}
+		RotateActive(Vec3 axis = Vec3::Up, double turnsPerSecond = 0.25, double phase = 0.0) : m_axis(axis), m_turnsPerSecond(turnsPerSecond), m_phase(phase) {}
 	};
 
 	class DistortOperation : public SDFOperation

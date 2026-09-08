@@ -33,6 +33,7 @@ public:
 	static const Vec3 Violet;
 	static const Vec3 AzureBlue;
 	static const Vec3 LightBlue;
+	static const Vec3 SkyBlue;
 	
 	static const Vec3 Yellow;
 	static const Vec3 Magenta;

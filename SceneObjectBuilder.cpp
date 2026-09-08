@@ -12,25 +12,13 @@ std::unique_ptr<SceneObject> SOBuilder::get() {
     return std::move(m_baseObject);
 }
 
-SOBuilder& SOBuilder::back() {
-    if (m_objChain.size() == 1) return *this;
-    m_objChain.pop_back();
-
-    return *this;
-}
-
 SOBuilder& SOBuilder::back(size_t steps)
 {
+    if (!steps) steps = m_objChain.size() - 1;
     for (size_t i{}; i < steps; ++i)
     {
-        back();
-    }
-    return *this;
-}
-
-SOBuilder& SOBuilder::backFull() {
-    while (m_objChain.size() > 1) {
-        back();
+        if (m_objChain.size() == 1) return *this;
+        m_objChain.pop_back();
     }
     return *this;
 }
