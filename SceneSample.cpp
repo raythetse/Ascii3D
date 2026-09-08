@@ -1,8 +1,6 @@
 #include "SceneSample.h"
 #include <cmath>
 
-//const std::string SceneSample::charGradient{ ".:;vzX6@" };
-//const std::string SceneSample::charGradient{ ".:vz6D@" };
 const std::string SceneSample::charGradient{ ".~<=vri325EB" };
 
 void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights)
@@ -32,7 +30,7 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 	Color color{};
 	if (object) {
 		object->signedDistance(p, &color);
-		//color = color.quantize(16);
+		color = color.quantize(16);
 		//totalLight *= 1.0 - (camDistance / maxDistance);
 	}
 

@@ -14,18 +14,20 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_pixelField{ width, height }, m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_renderer{ width * height }
 	, m_camera{ width * .005, height * .01 }, m_pixelRange{ std::views::iota(size_t(0), width * height) }, m_objectRange{ std::views::iota(size_t(0), width * height) }
 {
-    add(SOBuilder().pushOp<SDFOp::Add, SDF::PlaneXZ>(-2.0)());
+    //add(SOBuilder().pushOp<SDFOp::Add, SDF::PlaneXZ>(-3.0)());
 
     add(
         SOBuilder()
+        .pushOp<SDFOp::RepeatXYZ>(Vec3{ 15.0 })
         .pushOp<SDFOp::RotateActive>(Vec3::Up, 0.1)
         .pushOp<SDFOp::RotateActive>(Vec3::Right, 0.1)
         .pushOp<SDFOp::RotateActive>(Vec3::Forward, 0.1)
-        .pushOp<SDFOp::Add, SDF::BoxFrame>(Vec3::Up, Vec3::Zero, Vec3::One * 1.5, 0.05, Color::White)()
+        .pushOp<SDFOp::Add, SDF::BoxFrame>(Vec3::Up, Vec3::Zero, Vec3{ 1.75 }, 0.1, Color::Gold)()
+        .pushOp<SDFOp::TranslateSine>(Vec3::Up, 2.0)
         .pushOp<SDFOp::RotateActive>(Vec3::Down, 0.1)
         .pushOp<SDFOp::RotateActive>(Vec3::Left, 0.1)
         .pushOp<SDFOp::RotateActive>(Vec3::Backward, 0.1)
-        .pushOp<SDFOp::AddSmooth, SDF::Box>(Vec3{ 0.5, -0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Red)(0.5, 10.0)
+        .pushOp<SDFOp::Add, SDF::Box>(Vec3{ 0.5, -0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Red)()
         .pushOp<SDFOp::Add, SDF::Box>(Vec3{ -0.5, -0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Orange)()
         .pushOp<SDFOp::Add, SDF::Box>(Vec3{ -0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Magenta)()
         .pushOp<SDFOp::Add, SDF::Box>(Vec3{ 0.5, 0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::MediumGray)().back(3).pushOp<SDFOp::RoundOff>(0.1)

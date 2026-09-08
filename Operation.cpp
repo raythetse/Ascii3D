@@ -203,6 +203,11 @@ namespace SDFOp
 		p = m_rotMat * p;
 	}
 
+	void TranslateSine::transform(Vec3& p)
+	{
+		p -= m_axis * m_amplitude * sin(GameTimer::totalTime() * m_frequency * MF::TAU + m_phase);
+	}
+
 	void RotateActive::transform(Vec3& p)
 	{
 		Mat3 m = Mat3::fromAxisAngle(m_axis, GameTimer::totalTime() * m_turnsPerSecond * MF::TAU);
