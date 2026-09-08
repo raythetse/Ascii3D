@@ -22,7 +22,7 @@ namespace SDFOp
 	class SDFOperation
 	{
 	public:
-		void execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+		void execute(double& distance, Vec3& p, const Color colorIn, Color* colorOut);
 		virtual SDFOperationType opType() = 0;
 	};
 
@@ -38,7 +38,7 @@ namespace SDFOp
 		CombinationOperation(std::unique_ptr<VisualObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0)
 			: m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending) {}
 		SDFOperationType opType() override { return SDFOperationType::Combine; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Vec3 colorIn, Vec3* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, const Vec3 colorIn, Vec3* colorOut);
 	};
 
 	class Add : public CombinationOperation
@@ -100,7 +100,7 @@ namespace SDFOp
 	public:
 		SurfaceOperation(double magnitude = 0.01) : m_magnitude(magnitude) {}
 		SDFOperationType opType() override { return SDFOperationType::Surface; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, const Color colorIn, Color* colorOut);
 	};
 
 	class RoundOff : public SurfaceOperation
@@ -126,7 +126,7 @@ namespace SDFOp
 	public:
 		MirrorOperation() {};
 		SDFOperationType opType() override { return SDFOperationType::Mirror; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, const Color colorIn, Color* colorOut);
 	};
 
 	class MirrorX : public MirrorOperation
@@ -193,7 +193,7 @@ namespace SDFOp
 	public:
 		DomainOperation(Vec3 spacing = Vec3::One) : m_spacing(spacing) {};
 		SDFOperationType opType() override { return SDFOperationType::Domain; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, const Color colorIn, Color* colorOut);
 	};
 
 	class RepeatX : public DomainOperation
@@ -269,7 +269,7 @@ namespace SDFOp
 	public:
 		TransformOperation() {};
 		SDFOperationType opType() override { return SDFOperationType::Transform; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, const Color colorIn, Color* colorOut);
 	};
 
 	class Translate : public TransformOperation
@@ -300,7 +300,7 @@ namespace SDFOp
 	public:
 		DistortOperation(double magnitude) : m_magnitude(magnitude) {};
 		SDFOperationType opType() override { return SDFOperationType::Distort; }
-		friend void SDFOperation::execute(double& distance, Vec3& p, double time, const Color colorIn, Color* colorOut);
+		friend void SDFOperation::execute(double& distance, Vec3& p, const Color colorIn, Color* colorOut);
 	};
 
 	class Twist : public DistortOperation

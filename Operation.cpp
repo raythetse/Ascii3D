@@ -7,13 +7,13 @@ namespace SDFOp
 {
 	
 
-	void SDFOperation::execute(double& distanceA, Vec3& p, double time, const Color colorIn, Color* colorOut)
+	void SDFOperation::execute(double& distanceA, Vec3& p, const Color colorIn, Color* colorOut)
 	{
 		switch (opType())
 		{
 		case SDFOperationType::Combine:{
 			CombinationOperation* comOp = dynamic_cast<CombinationOperation*>(this);
-			double distanceB = comOp->m_combineObj->signedDistance(p, time, colorOut);
+			double distanceB = comOp->m_combineObj->signedDistance(p, colorOut);
 			distanceA = comOp->combine(distanceA, distanceB, colorIn, colorOut);
 			return;
 		}

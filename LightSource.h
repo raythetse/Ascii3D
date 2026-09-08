@@ -10,8 +10,7 @@ public:
 	LightSource(Vec3 position, double luminance = 1.0);
 	virtual ~LightSource() = default;
 	double luminance();
-	using SceneObject::update;
 	using SceneObject::position;
-	double signedDistanceInner(Vec3 p, double time) const override;
+	double signedDistanceInner(Vec3 p) const override;
 };
 

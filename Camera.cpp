@@ -1,5 +1,6 @@
 #define OEMRESOURCE
 #include "Camera.h"
+#include "GameTimer.h"
 #include "Mat3.h"
 #include "Vec2.h"
 
@@ -23,7 +24,7 @@ Camera::Camera(const double viewportWidth, const double viewportHeight, const Ve
     SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 }
 
-void Camera::update(double deltaTime)
+void Camera::update()
 {
     POINT cursorPos;
 
@@ -56,27 +57,28 @@ void Camera::update(double deltaTime)
     }
     SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 
+    double delta = GameTimer::Delta();
     if (GetAsyncKeyState('A') & 0x8000) {
         Vec3 right = Vec3{ m_right.x, 0.0, m_right.z }.getNormal();
-        m_position -= right * m_moveSpeed * deltaTime;
+        m_position -= right * m_moveSpeed * delta;
     }
     if (GetAsyncKeyState('D') & 0x8000) {
         Vec3 right = Vec3{ m_right.x, 0.0, m_right.z }.getNormal();
-        m_position += right * m_moveSpeed * deltaTime;
+        m_position += right * m_moveSpeed * delta;
     }
     if (GetAsyncKeyState('W') & 0x8000) {
         Vec3 forward = Vec3{ m_forward.x, 0.0, m_forward.z }.getNormal();
-        m_position += forward * m_moveSpeed * deltaTime;
+        m_position += forward * m_moveSpeed * delta;
     }
     if (GetAsyncKeyState('S') & 0x8000) {
         Vec3 forward = Vec3{ m_forward.x, 0.0, m_forward.z }.getNormal();
-        m_position -= forward * m_moveSpeed * deltaTime;
+        m_position -= forward * m_moveSpeed * delta;
     }
     if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
-        m_position += Vec3::Down * m_moveSpeed * deltaTime;
+        m_position += Vec3::Down * m_moveSpeed * delta;
     }
     if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-        m_position += Vec3::Up * m_moveSpeed * deltaTime;
+        m_position += Vec3::Up * m_moveSpeed * delta;
     }
 }
 

@@ -5,7 +5,7 @@
 //const std::string SceneSample::charGradient{ ".:vz6D@" };
 const std::string SceneSample::charGradient{ ".~<=vri325EB" };
 
-void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights, double time)
+void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights)
 {
 	double totalLight{};
 
@@ -31,7 +31,7 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 
 	Color color{};
 	if (object) {
-		object->signedDistance(p, time, &color);
+		object->signedDistance(p, &color);
 		//color = color.quantize(16);
 		//totalLight *= 1.0 - (camDistance / maxDistance);
 	}

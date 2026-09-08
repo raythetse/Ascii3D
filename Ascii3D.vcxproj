@@ -158,8 +158,8 @@
     <ClCompile Include="SceneSample.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\HelloWorld\Stopwatch.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="Operation.h" />
@@ -171,6 +171,7 @@
     <ClInclude Include="PixelField.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SceneObjectBuilder.h" />
+    <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="RayMarcher.h" />
