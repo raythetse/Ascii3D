@@ -27,8 +27,9 @@ private:
 	void add(SOBuilder&& obj);
 
 	// Demo scenes
-	void buildCubes();
-	void buildAtom();
+	void buildCubesDemo();
+	void buildAtomDemo();
+	void buildMotionDemo();
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);

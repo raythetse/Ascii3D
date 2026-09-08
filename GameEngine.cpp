@@ -20,7 +20,9 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 	, m_camera{ width * .005, height * .01 }, m_pixelRange{ std::views::iota(size_t(0), width * height) }, m_objectRange{ std::views::iota(size_t(0), width * height) }
 {
     //buildCubes();
-    buildAtom();
+    //buildAtom();
+    buildMotionDemo();
+    
 
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
@@ -39,7 +41,7 @@ void GameEngine::render()
     m_pixelField.swap();
 }
 
-void GameEngine::buildCubes()
+void GameEngine::buildCubesDemo()
 {
     add(SOBuilder{}.pushOp<SDFOp::Add, SDF::Box>(Vec3::Down * 3.0, Vec3::Zero, Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
     add(SOBuilder{}
@@ -63,26 +65,34 @@ void GameEngine::buildCubes()
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.0));
 }
 
-void GameEngine::buildAtom()
+void GameEngine::buildAtomDemo()
 {
     auto builder = SOBuilder{};
     builder.pushOp<SDFOp::RotateActive>(Vec3::Forward, 0.171264)
-        .pushOp<SDFOp::Add, SDF::Sphere>(Vec3::Down, 0.5, Color::Red)();
+        .pushOp<SDFOp::Add, SDF::Sphere>(Vec3::Zero, 0.5, Color::Red)();
 
     // electrons
-    for (size_t i{}; i < 8; ++i) {
-        double offset{ i * 0.125 };
+    
+    for (size_t i{}; i < 4; ++i) {
+        double offset{ i * 0.25 };
         builder
-            .pushOp<SDFOp::TranslateSine>(Vec3::Left, 1.0, 1.0)
-            .pushOp<SDFOp::Translate>(Vec3::Right)
-            .pushOp<SDFOp::TranslateSine>(Vec3::Right, 2.0, .5)
-            .pushOp<SDFOp::TranslateSine>(Vec3::Up, 1.0, 1.0, 0.25)
-            .pushOp<SDFOp::Translate>(Vec3::Down)
-            .pushOp<SDFOp::TranslateSine>(Vec3::Down, 2.0, .5, 0.75)
-            .pushOp<SDFOp::Translate>(Vec3::Left)
-            .pushOp<SDFOp::Add, SDF::Sphere>(Vec3::Zero, 0.25)().back(0);
+            .pushOp<SDFOp::Rotate>(Vec3::One, offset)
+            .pushOp<SDFOp::TranslateSine>(Vec3::Left, 1.5, 2.0)
+            .pushOp<SDFOp::TranslateSine>(Vec3::Up, 1.5, 2.0)
+            .pushOp<SDFOp::TranslateSine>(Vec3::Forward, 1.5, 2.0, 0.25)
+            .pushOp<SDFOp::Add, SDF::Sphere>(Vec3::Zero, 0.1)().back(3);
     }
 
     add(std::move(builder));
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.0));
+}
+
+void GameEngine::buildMotionDemo()
+{
+    add(SOBuilder()
+        .pushOp<SDFOp::TranslateLinear>(Vec3::Up * 2.0, 1.0, 1.0)
+        .pushOp<SDFOp::TranslateLinear>(Vec3::Right * 3.0, 1.0, 1.0, 1.0)
+        .pushOp<SDFOp::Add, SDF::Sphere>()()
+    );
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.0));
 }
