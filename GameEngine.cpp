@@ -26,7 +26,6 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
-    m_camera.reset();
 }
 
 void GameEngine::update()
