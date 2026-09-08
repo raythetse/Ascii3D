@@ -1,5 +1,7 @@
 #pragma once
 #include "Operation.h"
+
+#include <cmath>
 #include "GameTimer.h"
 #include "SceneObject.h"
 #include "Mat2.h"
@@ -200,7 +202,29 @@ namespace SDFOp
 
 	void TranslateSine::transform(Vec3& p)
 	{
-		p -= m_axis * m_amplitude * sin(GameTimer::gameTime() * m_frequency * MF::TAU + m_phase * MF::TAU);
+		p -= m_axis * m_amplitude * sin(GameTimer::gameTime() / m_period * MF::TAU + m_phase * MF::TAU);
+	}
+
+	void TranslateLinear::transform(Vec3& p)
+	{
+		double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
+		if (time <= m_transitTimes.x) {
+			time /= m_transitTimes.x;
+			p -= m_start.lerp(m_end, time);
+			return;
+		}
+		double timeFrame = m_transitTimes.x + m_endDelays.x;
+		if (time <= timeFrame) {
+			p -= m_end;
+			return;
+		}
+		timeFrame += m_transitTimes.y;
+		if (time <= timeFrame) {
+			time = (time - m_transitTimes.x - m_endDelays.x) / m_transitTimes.y;
+			p -= m_end.lerp(m_start, time);
+			return;
+		}
+		p -= m_start;
 	}
 
 	void Rotate::transform(Vec3& p)

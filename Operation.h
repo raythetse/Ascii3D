@@ -287,12 +287,30 @@ namespace SDFOp
 	private:
 		Vec3 m_axis;
 		double m_amplitude;
-		double m_frequency;
+		double m_period;
 		double m_phase;
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		TranslateSine(Vec3 axis = Vec3::Up, double amplitude = 1.0, double frequency = 0.25, double phase = 0.0) : m_axis(axis), m_amplitude(amplitude), m_frequency(frequency), m_phase(phase) {}
+		TranslateSine(Vec3 axis = Vec3::Up, double amplitude = 1.0, double period = 4.0, double phase = 0.0) : m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
+	};
+
+	class TranslateLinear : public TransformOperation
+	{
+	private:
+		Vec3 m_start;
+		Vec3 m_end;
+		Vec2 m_transitTimes;
+		Vec2 m_endDelays;
+		double m_phase;
+		double m_cycleTime;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		TranslateLinear(Vec3 vector = Vec3::Up, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
+			: m_start(vector * -0.5), m_end(vector * 0.5), m_transitTimes(transitTimes)
+			, m_endDelays(endDelays), m_phase(phase + transitTimes.x * 0.5)
+			, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
 	};
 
 	class Rotate : public TransformOperation
@@ -302,7 +320,7 @@ namespace SDFOp
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns* MF::TAU)) {}
+		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns * MF::TAU)) {}
 	};
 
 	class RotateActive : public TransformOperation
