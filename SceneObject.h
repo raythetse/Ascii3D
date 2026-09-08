@@ -19,7 +19,7 @@ class SceneObject
 public:
 protected:
 	size_t m_objId;
-	Vec3 m_startPosition{};
+	Vec3 m_position{};
 	Mat3 m_rotationMat{};
 	Color m_color;
 	bool m_lit;

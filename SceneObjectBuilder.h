@@ -19,7 +19,7 @@ public:
 
 template <std::derived_from<SDFOp::SDFOperation> T, typename... Args>
 SOBuilder& SOBuilder::pushOp(Args&&... args) {
-    m_objChain.back()->pushOperation<T>(std::forward<T>(args)...);
+    m_objChain.back()->pushOperation<T>(std::forward<Args>(args)...);
     return *this;
 }
 
