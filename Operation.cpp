@@ -20,26 +20,31 @@ namespace SDFOp
 		case SDFOperationType::Surface: {
 			SurfaceOperation* surfOp = dynamic_cast<SurfaceOperation*>(this);
 			distanceA = surfOp->resurface(distanceA);
+			if (colorOut) *colorOut = colorIn;
 			return;
 		}
 		case SDFOperationType::Mirror: {
 			MirrorOperation* mirpOp = dynamic_cast<MirrorOperation*>(this);
 			mirpOp->reflect(p);
+			if (colorOut) *colorOut = colorIn;
 			return;
 		}
 		case SDFOperationType::Domain: {
 			DomainOperation* domOp = dynamic_cast<DomainOperation*>(this);
 			domOp->repeat(p);
+			if (colorOut) *colorOut = colorIn;
 			return;
 		}
 		case SDFOperationType::Transform: {
 			TransformOperation* TransOp = dynamic_cast<TransformOperation*>(this);
 			TransOp->transform(p);
+			if (colorOut) *colorOut = colorIn;
 			return;
 		}
 		case SDFOperationType::Distort: {
 			DistortOperation* DistOp = dynamic_cast<DistortOperation*>(this);
 			DistOp->distort(p);
+			if (colorOut) *colorOut = colorIn;
 			return;
 		}
 		default:
