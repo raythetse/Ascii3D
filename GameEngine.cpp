@@ -22,15 +22,13 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     //buildCubes();
     buildAtom();
 
-    
-
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
 }
 
 void GameEngine::update()
 {
-    GameTimer::Tick();
+    GameTimer::tick();
     m_camera.update();
     m_rayMarcher.march(m_pixelField, m_objects, m_lights, m_camera, m_pixelRange);
 }
@@ -82,7 +80,7 @@ void GameEngine::buildAtom()
             .pushOp<SDFOp::Translate>(Vec3::Down)
             .pushOp<SDFOp::TranslateSine>(Vec3::Down, 2.0, .5, 0.75)
             .pushOp<SDFOp::Translate>(Vec3::Left)
-            .pushOp<SDFOp::Add, SDF::Sphere>(Vec3::Zero, 0.25)().back();
+            .pushOp<SDFOp::Add, SDF::Sphere>(Vec3::Zero, 0.25)().back(0);
     }
 
     add(std::move(builder));

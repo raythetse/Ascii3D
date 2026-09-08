@@ -38,10 +38,18 @@ int main()
     auto updatePM = pMonitor.add("Update");
     auto renderPM = pMonitor.add("Render");
     Stopwatch sw{};
+    bool pausePressed{};
 
     sw.reset();
     while (true) {
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) break;
+        if (GetAsyncKeyState('P') & 0x8000) {
+            if (!pausePressed) GameTimer::togglePause();
+            pausePressed = true;
+        }
+        else {
+            pausePressed = false;
+        }
         pMonitor.sample(framePM, [&gEngine, &pMonitor, &updatePM, &renderPM, &time, &sw]() {
             pMonitor.sample(updatePM, [&gEngine]() { gEngine.update(); });
             pMonitor.sample(renderPM, [&gEngine]() { gEngine.render(); });

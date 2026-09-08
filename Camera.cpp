@@ -61,7 +61,7 @@ void Camera::update()
     }
     SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 
-    double delta = GameTimer::Delta();
+    double delta = GameTimer::delta();
     if (GetAsyncKeyState('A') & 0x8000) {
         Vec3 right = Vec3{ m_right.x, 0.0, m_right.z }.getNormal();
         m_position -= right * m_moveSpeed * delta;
