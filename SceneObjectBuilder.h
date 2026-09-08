@@ -12,9 +12,7 @@ public:
     SOBuilder& pushOp(Args&&... args);
     template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<VisualObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
-    SOBuilder& back();
-    SOBuilder& back(size_t steps);
-    SOBuilder& backFull();
+    SOBuilder& back(size_t steps = 1);
 };
 
 template <std::derived_from<SDFOp::SDFOperation> T, typename... Args>

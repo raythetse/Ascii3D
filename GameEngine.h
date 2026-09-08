@@ -24,6 +24,11 @@ private:
 	double m_deltaTime{};
 	double m_time{};
 	void add(SOBuilder& obj);
+	void add(SOBuilder&& obj);
+
+	// Demo scenes
+	void buildCubes();
+	void buildAtom();
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);

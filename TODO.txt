@@ -1,4 +1,5 @@
 Required:
+- Refactor engine/scene design
 - bounding boxes for efficiency
 - input/output scene from/to file
 - object motion
@@ -10,7 +11,7 @@ Optional:
 - dynamic pixel field resizing
 - console input for various other params
 - try matrix style renderer
-- ambient light in shadow
+- ambient color bounce
 - transparency/reflection
 
 Ongoing:

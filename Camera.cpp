@@ -28,6 +28,8 @@ void Camera::update()
 {
     POINT cursorPos;
 
+    if (GetAsyncKeyState(VK_BACK) & 0x8000) reset();
+
     if (GetCursorPos(&cursorPos)) {
         RECT rect;
         GetClientRect(m_console, &rect);

@@ -35,7 +35,7 @@ Vec3 Mat3::operator*(const Vec3& p) const {
 Mat3 Mat3::fromAxisAngle(Vec3 axis, const double rads)
 {
     Mat3 result;
-    auto sc = MF::fast_sincos(rads);
+    Vec2 sc = MF::fast_sincos(rads);
     double omc = 1.0f - sc.y;
 
     axis.normalize();

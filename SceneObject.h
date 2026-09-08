@@ -104,7 +104,7 @@ namespace SDF
 	private:
 		double m_radius;
 	public:
-		Sphere(Vec3 position, double radius, Color color = Color::White, bool lit = true);
+		Sphere(Vec3 position = Vec3::Zero, double radius = 0.5, Color color = Color::White, bool lit = true);
 		double signedDistanceInner(Vec3 p) const override;
 	};
 
