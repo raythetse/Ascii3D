@@ -1,0 +1,12 @@
+Required:
+- bounding boxes for efficiency
+- input/output scene from/to file
+- object motion
+- object self-shadowing
+
+Optional:
+- camera track
+- dynamic pixel field resizing
+
+Ongoing:
+- design new SDFs and Operations
