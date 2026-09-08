@@ -13,6 +13,7 @@ public:
     template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<SceneObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
     SOBuilder& back();
+    SOBuilder& back(size_t steps);
     SOBuilder& backFull();
 };
 

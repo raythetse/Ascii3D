@@ -19,6 +19,15 @@ SOBuilder& SOBuilder::back() {
     return *this;
 }
 
+SOBuilder& SOBuilder::back(size_t steps)
+{
+    for (size_t i{}; i < steps; ++i)
+    {
+        back();
+    }
+    return *this;
+}
+
 SOBuilder& SOBuilder::backFull() {
     while (m_objChain.size() > 1) {
         back();
