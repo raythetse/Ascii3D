@@ -16,10 +16,15 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     //add(SOBuilder().pushOp<SDFOp::Add, PlaneXZ>()());
 
     add(
-        SOBuilder().pushOp<SDFOp::Add, Box>(Vec3::Up, Vec3::Zero, Vec3::One, Color::Red)()
-            .pushOp<SDFOp::AddSmooth, Box>(Vec3{ 0.5 }, Vec3::Zero, Vec3::One, Color::Green)()
-                //.back()
-                .pushOp<SDFOp::Add, Box>(Vec3{ -0.5, 0.5, 0.5 }, Vec3::One.getNormal() * 0.125, Vec3::One, Color::Blue)()
+        SOBuilder().pushOp<SDFOp::Add, BoxFrame>(Vec3::Up, Vec3::Zero, Vec3::One * 1.25, 0.1, Color::White)()
+        .pushOp<SDFOp::AddSmooth, Box>(Vec3{ 0.5 }, Vec3::Zero, Vec3::One, Color::Black)(0.5, 5.0)
+        .pushOp<SDFOp::Add, Box>(Vec3{ -0.5, -0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Red)()
+        .pushOp<SDFOp::Add, Box>(Vec3{ 0.5, -0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Orange)()
+        .pushOp<SDFOp::Add, Box>(Vec3{ 0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Yellow)()
+        .pushOp<SDFOp::Add, Box>(Vec3{ 0.5, -0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Green)()
+        .pushOp<SDFOp::Add, Box>(Vec3{ -0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Blue)()
+        .pushOp<SDFOp::Add, Box>(Vec3{ -0.5, 0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Violet)()
+        .pushOp<SDFOp::Add, Box>(Vec3{ -0.5, -0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Magenta)()
     );
 
     m_lights.push_back(std::make_unique<LightSource>((Vec3::Up + Vec3::Right + Vec3::Backward) * 4.0, 0.5));

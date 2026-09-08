@@ -85,6 +85,17 @@ public:
 	double signedDistanceInner(Vec3 p, double time) const override;
 };
 
+class BoxFrame : public VisualObject
+{
+private:
+	Vec3 m_dimensions;
+	double m_edgeThickness;
+public:
+	BoxFrame(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, bool lit = true)
+		: VisualObject(position, rotation, color, lit), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
+	double signedDistanceInner(Vec3 p, double time) const override;
+};
+
 class Sphere : public VisualObject
 {
 private:
