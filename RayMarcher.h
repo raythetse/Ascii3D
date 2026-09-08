@@ -15,8 +15,8 @@ private:
 	double m_tolerance;
 	double m_maxDistance;
 
-	void marchRay(Vec3 ray, Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample, double time);
-	void SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double & surfDist, size_t& objectIndex, double time);
+	void marchRay(Vec3 ray, Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample);
+	void SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double & surfDist, size_t& objectIndex);
 
 public:
 	RayMarcher(const double maxDistance, const double stepFactor = 1.0, const double tolerance = 0.001)
@@ -27,7 +27,6 @@ public:
 				const std::vector<std::unique_ptr<SceneObject>>& objects,
 				const std::vector<std::unique_ptr<LightSource>>& lights,
 				const Camera& camera,
-				std::ranges::iota_view<size_t, size_t>& range,
-				double time);
+				std::ranges::iota_view<size_t, size_t>& range);
 };
 

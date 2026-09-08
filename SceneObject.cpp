@@ -5,7 +5,7 @@
 #include "Operation.h"
 
 SceneObject::SceneObject(Vec3 position, Vec3 rotation, Color color, bool lit)
-    : m_startPosition(position), m_currentPosition(position), m_color(color), m_lit(lit)
+    : m_startPosition(position), m_color(color), m_lit(lit)
 {
     static size_t id{};
     m_objId = id++;
@@ -16,11 +16,6 @@ SceneObject::SceneObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     else {
         m_rotationMat = Mat3::Identity;
     }
-}
-
-void SceneObject::update(double time)
-{
-    m_currentPosition = m_startPosition;
 }
 
 SceneObject::~SceneObject()
@@ -38,15 +33,15 @@ void SceneObject::pushOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
 
 Vec3 SceneObject::position() const
 {
-    return m_currentPosition;
+    return m_startPosition;
 }
 
-double SceneObject::signedDistance(Vec3 p, double time, Color* colorOut) const
+double SceneObject::signedDistance(Vec3 p, Color* colorOut) const
 {
     double distance = std::numeric_limits<double>::max();
     Color colorIn = m_color;
     for (auto& op : m_operations) {
-        op->execute(distance, p, time, colorIn, colorOut);
+        op->execute(distance, p, colorIn, colorOut);
         if (colorOut) colorIn = *colorOut;
     }
     if (colorOut && m_operations.size() == 0) {
@@ -55,12 +50,12 @@ double SceneObject::signedDistance(Vec3 p, double time, Color* colorOut) const
     return distance;
 }
 
-double VisualObject::signedDistance(Vec3 p, double time, Color* colorOut) const
+double VisualObject::signedDistance(Vec3 p, Color* colorOut) const
 {
-    double distance{ signedDistanceInner(p, time) };
+    double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
     for (auto& op : m_operations) {
-        op->execute(distance, p, time, colorIn, colorOut);
+        op->execute(distance, p, colorIn, colorOut);
         if (colorOut) colorIn = *colorOut;
     }
     if (colorOut && m_operations.size() == 0) {
@@ -71,31 +66,31 @@ double VisualObject::signedDistance(Vec3 p, double time, Color* colorOut) const
 
 namespace SDF
 {
-    double PlaneXZ::signedDistanceInner(Vec3 p, double time) const
+    double PlaneXZ::signedDistanceInner(Vec3 p) const
     {
-        return abs(p.y) - m_currentPosition.y;
+        return abs(p.y) - m_startPosition.y;
     }
 
-    double PlaneYZ::signedDistanceInner(Vec3 p, double time) const
+    double PlaneYZ::signedDistanceInner(Vec3 p) const
     {
-        return abs(p.x) - m_currentPosition.x;
+        return abs(p.x) - m_startPosition.x;
     }
 
-    double PlaneXY::signedDistanceInner(Vec3 p, double time) const
+    double PlaneXY::signedDistanceInner(Vec3 p) const
     {
-        return abs(p.z) - m_currentPosition.z;
+        return abs(p.z) - m_startPosition.z;
     }
 
-    double Box::signedDistanceInner(Vec3 p, double time) const
+    double Box::signedDistanceInner(Vec3 p) const
     {
-        p -= m_currentPosition;
+        p -= m_startPosition;
         p = m_rotationMat * p;
         p = p.abs();
         p -= Vec3(m_dimensions) * 0.5;
         return p.maximum(0.0).length();
     }
 
-    double BoxFrame::signedDistanceInner(Vec3 p, double time) const
+    double BoxFrame::signedDistanceInner(Vec3 p) const
     {
         p = p.abs() - m_dimensions;
         Vec3 q = (p + m_edgeThickness).abs() - m_edgeThickness;
@@ -108,14 +103,14 @@ namespace SDF
     Sphere::Sphere(Vec3 position, double radius, Color color, bool lit)
         : VisualObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
 
-    double Sphere::signedDistanceInner(Vec3 p, double time) const
+    double Sphere::signedDistanceInner(Vec3 p) const
     {
-        return p.distance(m_currentPosition) - m_radius;
+        return p.distance(m_startPosition) - m_radius;
     }
 
-    double Torus::signedDistanceInner(Vec3 p, double time) const
+    double Torus::signedDistanceInner(Vec3 p) const
     {
-        p -= m_currentPosition;
+        p -= m_startPosition;
         p = m_rotationMat * p;
         return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
     }

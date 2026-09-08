@@ -28,7 +28,6 @@ private:
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);
 	void update();
-	void march();
 	void render();
 };
 

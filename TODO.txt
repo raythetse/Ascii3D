@@ -3,10 +3,12 @@ Required:
 - input/output scene from/to file
 - object motion
 - object self-shadowing
+- console input for field dimensions
 
 Optional:
 - camera track
 - dynamic pixel field resizing
+- console input for various other params
 
 Ongoing:
 - design new SDFs and Operations

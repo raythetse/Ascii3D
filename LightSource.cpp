@@ -8,7 +8,7 @@ double LightSource::luminance()
 	return m_luminance;
 }
 
-double LightSource::signedDistanceInner(Vec3 p, double time) const
+double LightSource::signedDistanceInner(Vec3 p) const
 {
 	return 0.0;
 }

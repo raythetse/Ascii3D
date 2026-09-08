@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "PerfMonitor.h"
 #include "Stopwatch.h"
+#include "GameTimer.h"
 
 #include "GameEngine.h"
 
@@ -22,25 +23,27 @@ void setupConsole() {
     std::cout << "\033[?25l" << std::flush;
 }
 
+void closeConsole() {
+    HWND myConsole = GetConsoleWindow();
+    PostMessage(myConsole, WM_CLOSE, 0, 0);
+}
+
 int main()
 {
     setupConsole();
     double time{};
-    GameEngine gEngine{ 270, 75, 15.0, 1.0, 0.01 };
-    //GameEngine gEngine{ 200, 55, 15.0, 0.01 };
+    GameEngine gEngine{ 270, 75, 15.0, 1.0, 0.005 };
     PerfMonitor pMonitor{};
     auto framePM = pMonitor.add("FPS", PerfMonitor::FPS);
-    auto updatePM = pMonitor.add("Update", PerfMonitor::Micro);
-    auto marchPM = pMonitor.add("March", PerfMonitor::Milli);
+    auto updatePM = pMonitor.add("Update");
     auto renderPM = pMonitor.add("Render");
     Stopwatch sw{};
 
     sw.reset();
     while (true) {
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) break;
-        pMonitor.sample(framePM, [&gEngine, &pMonitor, &updatePM, &marchPM, &renderPM, &time, &sw]() {
+        pMonitor.sample(framePM, [&gEngine, &pMonitor, &updatePM, &renderPM, &time, &sw]() {
             pMonitor.sample(updatePM, [&gEngine]() { gEngine.update(); });
-            pMonitor.sample(marchPM, [&gEngine]() { gEngine.march(); });
             pMonitor.sample(renderPM, [&gEngine]() { gEngine.render(); });
         });
         pMonitor.printMonitors();

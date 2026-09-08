@@ -21,6 +21,6 @@ public:
 
 	SceneSample() = default;
 	SceneSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}
-	void buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance, bool lit, const std::vector<LightSource*>& lights, double time);
+	void buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance, bool lit, const std::vector<LightSource*>& lights);
 };
 
