@@ -4,15 +4,16 @@
 #include <execution>
 #include <ranges>
 
-void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample)
+void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample, double* shadowMax, Vec3* lightPos)
 {
 	double rayDist{ 0 };
-    double surfDist{ m_maxDistance };
+    double surfDist{ shadowMax ? *shadowMax : m_maxDistance };
     int samples{};
     size_t objectIndex{};
 
-	while (rayDist < m_maxDistance && samples <= m_maxSamples) {
+	while (rayDist < (shadowMax ? *shadowMax : m_maxDistance) && samples <= m_maxSamples) {
         Vec3 p = camPos + ray * rayDist;
+        if (lightPos) surfDist = min(surfDist, (p - *lightPos).length());
         SampleScene(p, objects, surfDist, objectIndex);
         if (surfDist < m_tolerance) {
             sample.camDistance = rayDist;
@@ -24,13 +25,13 @@ void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_p
 		rayDist += m_stepFactor * surfDist;
         ++samples;
 	}
-    sample.camDistance = m_maxDistance;
+    sample.camDistance = shadowMax ? *shadowMax : m_maxDistance;
 }
 
-void RayMarcher::SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double& surfDist, size_t& objectIndex)
+void RayMarcher::SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double& surfDist, size_t& objectIndex, double* shadowMax, Vec3* lightPos)
 {
     Vec3 color{};
-    surfDist = m_maxDistance;
+    surfDist = shadowMax ? *shadowMax : m_maxDistance;
 
     for (int i{}; i < objects.size(); ++i) {
         double d = objects[i]->signedDistance(p);
@@ -83,12 +84,14 @@ void RayMarcher::march( PixelField& field,
 
             for (auto& light : lights) {
                 SceneSample shadowSample;
-                Vec3 diff = sample.samplePoint - light->position();
-                marchRay(diff.getNormal(), light->position(), objects, shadowSample);
-                if (shadowSample.objectIndex == sample.objectIndex) {
-                //if ((shadowSample.samplePoint - sample.samplePoint).length() < m_tolerance) { // Attempt at self-shadowing repeats, too many errors
-                    auto l = light.operator->();
-                    directLights.push_back(light.operator->());
+                Vec3 lightPos = light->position();
+                Vec3 diff = lightPos - sample.samplePoint;
+                double shadowMax = diff.length();
+                Vec3 ray = diff.getNormal();
+                marchRay(ray, sample.samplePoint + ray * s_shadowTolerance, objects, shadowSample, &shadowMax, &lightPos);
+                //if (shadowSample.objectIndex == sample.objectIndex) {
+                if (shadowSample.camDistance == shadowMax) {
+                    directLights.push_back(light.get());
                 }
             }
 

@@ -5,7 +5,7 @@
 #include "Operation.h"
 
 SceneObject::SceneObject(Vec3 position, Vec3 rotation, Color color, bool lit)
-    : m_startPosition(position), m_color(color), m_lit(lit)
+    : m_position(position), m_color(color), m_lit(lit)
 {
     static size_t id{};
     m_objId = id++;
@@ -33,7 +33,7 @@ void SceneObject::pushOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
 
 Vec3 SceneObject::position() const
 {
-    return m_startPosition;
+    return m_position;
 }
 
 double SceneObject::signedDistance(Vec3 p, Color* colorOut) const
@@ -68,22 +68,22 @@ namespace SDF
 {
     double PlaneXZ::signedDistanceInner(Vec3 p) const
     {
-        return abs(p.y) - m_startPosition.y;
+        return p.y - m_position.y;
     }
 
     double PlaneYZ::signedDistanceInner(Vec3 p) const
     {
-        return abs(p.x) - m_startPosition.x;
+        return p.x - m_position.x;
     }
 
     double PlaneXY::signedDistanceInner(Vec3 p) const
     {
-        return abs(p.z) - m_startPosition.z;
+        return p.z - m_position.z;
     }
 
     double Box::signedDistanceInner(Vec3 p) const
     {
-        p -= m_startPosition;
+        p -= m_position;
         p = m_rotationMat * p;
         p = p.abs();
         p -= Vec3(m_dimensions) * 0.5;
@@ -105,12 +105,12 @@ namespace SDF
 
     double Sphere::signedDistanceInner(Vec3 p) const
     {
-        return p.distance(m_startPosition) - m_radius;
+        return p.distance(m_position) - m_radius;
     }
 
     double Torus::signedDistanceInner(Vec3 p) const
     {
-        p -= m_startPosition;
+        p -= m_position;
         p = m_rotationMat * p;
         return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
     }

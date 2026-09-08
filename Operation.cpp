@@ -1,12 +1,11 @@
 #pragma once
 #include "Operation.h"
+#include "GameTimer.h"
 #include "SceneObject.h"
 #include "Mat2.h"
 
 namespace SDFOp
 {
-	
-
 	void SDFOperation::execute(double& distanceA, Vec3& p, const Color colorIn, Color* colorOut)
 	{
 		switch (opType())
@@ -202,6 +201,12 @@ namespace SDFOp
 	void Rotate::transform(Vec3& p)
 	{
 		p = m_rotMat * p;
+	}
+
+	void RotateActive::transform(Vec3& p)
+	{
+		Mat3 m = Mat3::fromAxisAngle(m_axis, GameTimer::totalTime() * m_turnsPerSecond * MF::TAU);
+		p = m * p;
 	}
 
 	void Twist::distort(Vec3& p)

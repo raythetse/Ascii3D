@@ -9,6 +9,7 @@ Optional:
 - camera track
 - dynamic pixel field resizing
 - console input for various other params
+- try matrix style renderer
 
 Ongoing:
 - design new SDFs and Operations

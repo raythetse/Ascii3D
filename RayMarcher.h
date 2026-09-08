@@ -10,13 +10,14 @@ class RayMarcher
 {
 private:
 	const double s_normalCheckOffset{ 0.001 };
+	const double s_shadowTolerance{ 0.1 };
 	const int m_maxSamples{ 300 };
 	double m_stepFactor;
 	double m_tolerance;
 	double m_maxDistance;
 
-	void marchRay(Vec3 ray, Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample);
-	void SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double & surfDist, size_t& objectIndex);
+	void marchRay(Vec3 ray, Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample, double* shadowMax = nullptr, Vec3* lightPos = nullptr);
+	void SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double & surfDist, size_t& objectIndex, double* shadowMax = nullptr, Vec3* lightPos = nullptr);
 
 public:
 	RayMarcher(const double maxDistance, const double stepFactor = 1.0, const double tolerance = 0.001)

@@ -289,7 +289,18 @@ namespace SDFOp
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns * MF::TAU)) {}
+		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns* MF::TAU)) {}
+	};
+
+	class RotateActive : public TransformOperation
+	{
+	private:
+		Vec3 m_axis;
+		double m_turnsPerSecond;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		RotateActive(Vec3 axis = Vec3::Up, double turnsPerSecond = 0.25) : m_axis(axis), m_turnsPerSecond(turnsPerSecond) {}
 	};
 
 	class DistortOperation : public SDFOperation
