@@ -13,6 +13,7 @@ public:
     template <std::derived_from<SDFOp::SDFOperation> T, std::derived_from<VisualObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
     SOBuilder& back(size_t steps = 1);
+    SOBuilder& color(Vec3 color);
 };
 
 template <std::derived_from<SDFOp::SDFOperation> T, typename... Args>

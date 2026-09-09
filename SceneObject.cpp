@@ -31,6 +31,11 @@ void SceneObject::pushOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
     m_operations.push_back(std::move(operation));
 }
 
+void SceneObject::setColor(Color color)
+{
+    m_color = color;
+}
+
 Vec3 SceneObject::position() const
 {
     return m_position;

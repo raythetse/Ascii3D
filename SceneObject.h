@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include "Behaviour.h"
+#include "Mat3.h"
 #include "Vec2.h"
 #include "Vec3.h"
 
@@ -23,7 +23,6 @@ protected:
 	Mat3 m_rotationMat{};
 	Color m_color;
 	bool m_lit;
-	std::unique_ptr<Behaviour> m_behaviour;
 	std::vector<std::unique_ptr<SDFOp::SDFOperation>> m_operations;
 public:
 	SceneObject(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
@@ -34,6 +33,7 @@ public:
 	void pushOperation(std::unique_ptr<SDFOp::SDFOperation> operation);
 	template <typename T, typename... Args>
 	SceneObject* pushOperation(Args&&... args);
+	void setColor(Color color);
 };
 
 template <typename T, typename... Args>
@@ -58,7 +58,7 @@ namespace SDF
 	{
 	public:
 		PlaneXZ(double yPos = 0.0, Color color = Color::White, bool lit = true)
-			: VisualObject(Vec3::Up* yPos, Vec3::Zero, color, lit) {}
+			: VisualObject(Vec3::Up * yPos, Vec3::Zero, color, lit) {}
 		double signedDistanceInner(Vec3 p) const override;
 	};
 

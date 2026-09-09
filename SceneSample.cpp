@@ -13,7 +13,7 @@ void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, 
 			Vec3 lightDir = (l->position() - samplePoint).getNormal();
 			double lightDist = lightPos.distance(samplePoint);
 			double light = l->luminance() / (4.0 * 3.14159265359 * lightDist * lightDist);
-			light = light > 1.0 ? 1.0 : light;
+			//light = light > 1.0 ? 1.0 : light;
 
 			double dot = lightDir.dot(normal);
 			dot = dot < 0.0 ? 0.0 : dot;

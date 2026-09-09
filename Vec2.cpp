@@ -1,6 +1,8 @@
+#pragma once
+#include "Vec2.h"
 #include <cmath>
 #include <limits>
-#include "Vec2.h"
+#include "MathFunctions.h"
 
 const Vec2 Vec2::Up{ 0.0, 1.0 };
 const Vec2 Vec2::Down{ 0.0, -1.0 };
@@ -48,9 +50,8 @@ void Vec2::normalize()
 
 Vec2 Vec2::rotate(const double rads) const
 {
-    double c = cos(rads);
-    double s = sin(rads);
-    return Vec2(x * c - y * s, x * s + y * c);
+    Vec2 sc = MF::fast_sincos(rads);
+    return Vec2(x * sc.y - y * sc.x, x * sc.x + y * sc.y);
 }
 
 Vec2 Vec2::getNormal() const
