@@ -1,9 +1,9 @@
-#include "SceneSample.h"
+#include "PixelSample.h"
 #include <cmath>
 
-const std::string SceneSample::charGradient{ ".~<=vri325EB" };
+const std::string PixelSample::charGradient{ ".~<=vri325EB" };
 
-void SceneSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights)
+void PixelSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights)
 {
 	double totalLight{};
 

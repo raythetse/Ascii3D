@@ -4,7 +4,7 @@
 #include <execution>
 #include <ranges>
 
-void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_ptr<SDFObject>>& objects, SceneSample& sample, double* shadowMax, Vec3* lightPos)
+void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_ptr<SDFObject>>& objects, PixelSample& sample, double* shadowMax, Vec3* lightPos)
 {
 	double rayDist{ 0 };
     double surfDist{ shadowMax ? *shadowMax : m_maxDistance };
@@ -64,7 +64,7 @@ void RayMarcher::march( PixelField& field,
         Vec3 ray = camera.getViewportRay(static_cast<double>(col) / static_cast<double>(width), static_cast<double>(row) / static_cast<double>(height)).getNormal();
         marchRay(ray, camera.getPosition(), objects, field(row, col));
 
-        SceneSample& sample = field(row, col);
+        PixelSample& sample = field(row, col);
         std::vector<LightSource*> directLights{};
 
         bool hit = sample.camDistance < m_maxDistance;
@@ -83,7 +83,7 @@ void RayMarcher::march( PixelField& field,
             sample.normal = Vec3(dx, dy, dz).getNormal();
 
             for (auto& light : lights) {
-                SceneSample shadowSample;
+                PixelSample shadowSample;
                 Vec3 lightPos = light->position();
                 Vec3 diff = lightPos - sample.samplePoint;
                 double shadowMax = diff.length();

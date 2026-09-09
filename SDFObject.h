@@ -8,7 +8,7 @@
 
 class SDFOperation;
 
-// Scene objects use 'Signed-Distance Fields' (SDFs) to build out a scene
+// SDFObjects use 'Signed-Distance Fields' (SDFs) to build out a scene
 // For more information on SDFs: https://iquilezles.org/articles/distfunctions/
 // Most (if not all) SDF functions are adapted from this article.
 class SDFObject
