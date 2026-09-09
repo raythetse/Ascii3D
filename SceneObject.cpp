@@ -11,7 +11,7 @@ SceneObject::SceneObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     m_objId = id++;
 
     if (rotation) {
-        m_rotationMat = Mat3::fromAxisAngle(rotation.getNormal(), rotation.length() * MF::TAU);
+        Mat3::fromAxisAngle(rotation.getNormal(), m_rotationMat, rotation.length() * MF::TAU);
     }
     else {
         m_rotationMat = Mat3::Identity;
@@ -26,7 +26,7 @@ bool SceneObject::lit() const
     return m_lit;
 }
 
-void SceneObject::pushOperation(std::unique_ptr<SDFOp::SDFOperation> operation)
+void SceneObject::pushOperation(std::unique_ptr<SDFOperation> operation)
 {
     m_operations.push_back(std::move(operation));
 }
@@ -43,24 +43,10 @@ Vec3 SceneObject::position() const
 
 double SceneObject::signedDistance(Vec3 p, Color* colorOut) const
 {
-    double distance = std::numeric_limits<double>::max();
-    Color colorIn = m_color;
-    for (auto& op : m_operations) {
-        op->execute(distance, p, colorIn, colorOut);
-        if (colorOut) colorIn = *colorOut;
-    }
-    if (colorOut && m_operations.size() == 0) {
-        *colorOut = m_color;
-    }
-    return distance;
-}
-
-double VisualObject::signedDistance(Vec3 p, Color* colorOut) const
-{
     double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
     for (auto& op : m_operations) {
-        op->execute(distance, p, colorIn, colorOut);
+        op->execute(p, distance, colorIn, colorOut);
         if (colorOut) colorIn = *colorOut;
     }
     if (colorOut && m_operations.size() == 0) {
@@ -69,54 +55,56 @@ double VisualObject::signedDistance(Vec3 p, Color* colorOut) const
     return distance;
 }
 
-namespace SDF
+double SceneObject::signedDistanceInner(Vec3 p) const
 {
-    double PlaneXZ::signedDistanceInner(Vec3 p) const
-    {
-        return p.y - m_position.y;
-    }
+    return std::numeric_limits<double>::max();
+}
 
-    double PlaneYZ::signedDistanceInner(Vec3 p) const
-    {
-        return p.x - m_position.x;
-    }
+double PlaneXZ::signedDistanceInner(Vec3 p) const
+{
+    return p.y - m_position.y;
+}
 
-    double PlaneXY::signedDistanceInner(Vec3 p) const
-    {
-        return p.z - m_position.z;
-    }
+double PlaneYZ::signedDistanceInner(Vec3 p) const
+{
+    return p.x - m_position.x;
+}
 
-    double Box::signedDistanceInner(Vec3 p) const
-    {
-        p -= m_position;
-        p = m_rotationMat * p;
-        p = p.abs();
-        p -= Vec3(m_dimensions) * 0.5;
-        return p.maximum(0.0).length();
-    }
+double PlaneXY::signedDistanceInner(Vec3 p) const
+{
+    return p.z - m_position.z;
+}
 
-    double BoxFrame::signedDistanceInner(Vec3 p) const
-    {
-        p = p.abs() - m_dimensions;
-        Vec3 q = (p + m_edgeThickness).abs() - m_edgeThickness;
-        return std::min(std::min(
-            Vec3(p.x, q.y, q.z).maximum(0.0).length() + std::min(std::max(p.x, std::max(q.y, q.z)), 0.0),
-            Vec3(q.x, p.y, q.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(p.y, q.z)), 0.0)),
-            Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
-    }
+double Box::signedDistanceInner(Vec3 p) const
+{
+    p -= m_position;
+    p = m_rotationMat * p;
+    p = p.abs();
+    p -= Vec3(m_dimensions) * 0.5;
+    return p.maximum(0.0).length();
+}
 
-    Sphere::Sphere(Vec3 position, double radius, Color color, bool lit)
-        : VisualObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
+double BoxFrame::signedDistanceInner(Vec3 p) const
+{
+    p = p.abs() - m_dimensions;
+    Vec3 q = (p + m_edgeThickness).abs() - m_edgeThickness;
+    return std::min(std::min(
+        Vec3(p.x, q.y, q.z).maximum(0.0).length() + std::min(std::max(p.x, std::max(q.y, q.z)), 0.0),
+        Vec3(q.x, p.y, q.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(p.y, q.z)), 0.0)),
+        Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
+}
 
-    double Sphere::signedDistanceInner(Vec3 p) const
-    {
-        return p.distance(m_position) - m_radius;
-    }
+Sphere::Sphere(Vec3 position, double radius, Color color, bool lit)
+    : SceneObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
 
-    double Torus::signedDistanceInner(Vec3 p) const
-    {
-        p -= m_position;
-        p = m_rotationMat * p;
-        return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
-    }
+double Sphere::signedDistanceInner(Vec3 p) const
+{
+    return p.distance(m_position) - m_radius;
+}
+
+double Torus::signedDistanceInner(Vec3 p) const
+{
+    p -= m_position;
+    p = m_rotationMat * p;
+    return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
