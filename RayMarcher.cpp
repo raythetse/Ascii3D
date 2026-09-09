@@ -4,7 +4,7 @@
 #include <execution>
 #include <ranges>
 
-void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_ptr<SceneObject>>& objects, SceneSample& sample, double* shadowMax, Vec3* lightPos)
+void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_ptr<SDFObject>>& objects, SceneSample& sample, double* shadowMax, Vec3* lightPos)
 {
 	double rayDist{ 0 };
     double surfDist{ shadowMax ? *shadowMax : m_maxDistance };
@@ -28,7 +28,7 @@ void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, const std::vector<std::unique_p
     sample.camDistance = shadowMax ? *shadowMax : m_maxDistance;
 }
 
-void RayMarcher::SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObject>>& objects, double& surfDist, size_t& objectIndex, double* shadowMax, Vec3* lightPos)
+void RayMarcher::SampleScene(Vec3 p, const std::vector<std::unique_ptr<SDFObject>>& objects, double& surfDist, size_t& objectIndex, double* shadowMax, Vec3* lightPos)
 {
     Vec3 color{};
     surfDist = shadowMax ? *shadowMax : m_maxDistance;
@@ -46,7 +46,7 @@ void RayMarcher::SampleScene(Vec3 p, const std::vector<std::unique_ptr<SceneObje
 }
 
 void RayMarcher::march( PixelField& field,
-                        const std::vector<std::unique_ptr<SceneObject>>& objects,
+                        const std::vector<std::unique_ptr<SDFObject>>& objects,
                         const std::vector<std::unique_ptr<LightSource>>& lights,
                         const Camera& camera,
                         std::ranges::iota_view<size_t, size_t>& range)

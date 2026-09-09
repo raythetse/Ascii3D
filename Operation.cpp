@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include "GameTimer.h"
-#include "SceneObject.h"
+#include "SDFObject.h"
 #include "Mat2.h"
 
 void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut)

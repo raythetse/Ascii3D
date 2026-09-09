@@ -11,7 +11,7 @@ class SDFOperation;
 // Scene objects use 'Signed-Distance Fields' (SDFs) to build out a scene
 // For more information on SDFs: https://iquilezles.org/articles/distfunctions/
 // Most (if not all) SDF functions are adapted from this article.
-class SceneObject
+class SDFObject
 {
 public:
 protected:
@@ -23,69 +23,69 @@ protected:
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
 	virtual double signedDistanceInner(Vec3 p) const;
 public:
-	SceneObject(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
-	~SceneObject();
+	SDFObject(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
+	~SDFObject();
 	Vec3 position() const;
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	bool lit() const;
 	void pushOperation(std::unique_ptr<SDFOperation> operation);
 	template <typename T, typename... Args>
-	SceneObject* pushOperation(Args&&... args);
+	SDFObject* pushOperation(Args&&... args);
 	void setColor(Color color);
 };
 
 template <typename T, typename... Args>
-SceneObject* SceneObject::pushOperation(Args&&... args) {
+SDFObject* SDFObject::pushOperation(Args&&... args) {
 	m_operations.push_back(std::make_unique<T>(std::forward<Args>(args)...));
 	return this;
 }
 
-class PlaneXZ : public SceneObject
+class PlaneXZ : public SDFObject
 {
 public:
 	PlaneXZ(double yPos = 0.0, Color color = Color::White, bool lit = true)
-		: SceneObject(Vec3::Up * yPos, Vec3::Zero, color, lit) {}
+		: SDFObject(Vec3::Up * yPos, Vec3::Zero, color, lit) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class PlaneYZ : public SceneObject
+class PlaneYZ : public SDFObject
 {
 public:
 	PlaneYZ(double xPos = 0.0, Color color = Color::White, bool lit = true)
-		: SceneObject(Vec3::Right* xPos, Vec3::Zero, color, lit) {}
+		: SDFObject(Vec3::Right* xPos, Vec3::Zero, color, lit) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class PlaneXY : public SceneObject
+class PlaneXY : public SDFObject
 {
 public:
 	PlaneXY(double zPos = 0.0, Color color = Color::White, bool lit = true)
-		: SceneObject(Vec3::Forward* zPos, Vec3::Zero, color, lit) {}
+		: SDFObject(Vec3::Forward* zPos, Vec3::Zero, color, lit) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Box : public SceneObject
+class Box : public SDFObject
 {
 private:
 	Vec3 m_dimensions;
 public:
 	Box(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Vec3 dimensions = Vec3::One, Color color = Color::White, bool lit = true)
-		: SceneObject(position, rotation, color, lit), m_dimensions(dimensions) {}
+		: SDFObject(position, rotation, color, lit), m_dimensions(dimensions) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class BoxFrame : public SceneObject
+class BoxFrame : public SDFObject
 {
 private:
 	Vec3 m_dimensions;
 	double m_edgeThickness;
 public:
 	BoxFrame(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, bool lit = true)
-		: SceneObject(position, rotation, color, lit), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
+		: SDFObject(position, rotation, color, lit), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Sphere : public SceneObject
+class Sphere : public SDFObject
 {
 private:
 	double m_radius;
@@ -94,13 +94,13 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Torus : public SceneObject
+class Torus : public SDFObject
 {
 private:
 	Vec2 m_radii;
 public:
 	Torus(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, bool lit = true)
-		: SceneObject(position, rotation, color, lit), m_radii(radii) {}
+		: SDFObject(position, rotation, color, lit), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

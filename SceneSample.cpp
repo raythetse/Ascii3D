@@ -3,7 +3,7 @@
 
 const std::string SceneSample::charGradient{ ".~<=vri325EB" };
 
-void SceneSample::buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights)
+void SceneSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Vec3 p, double maxDistance,	bool lit, const std::vector<LightSource*>& lights)
 {
 	double totalLight{};
 

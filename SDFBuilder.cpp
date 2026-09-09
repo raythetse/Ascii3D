@@ -1,18 +1,18 @@
-#include "SceneObjectBuilder.h"
+#include "SDFBuilder.h"
 
 #pragma once
-#include "SceneObject.h"
+#include "SDFObject.h"
 
-SOBuilder::SOBuilder(Vec3 position, Vec3 rotation, Color color, bool lit) {
-    m_baseObject = std::make_unique<SceneObject>(position, rotation, color, lit);
+SDFBuilder::SDFBuilder(Vec3 position, Vec3 rotation, Color color, bool lit) {
+    m_baseObject = std::make_unique<SDFObject>(position, rotation, color, lit);
     m_objChain.push_back(m_baseObject.get());
 }
 
-std::unique_ptr<SceneObject> SOBuilder::get() {
+std::unique_ptr<SDFObject> SDFBuilder::get() {
     return std::move(m_baseObject);
 }
 
-SOBuilder& SOBuilder::back(size_t steps)
+SDFBuilder& SDFBuilder::back(size_t steps)
 {
     if (!steps) steps = m_objChain.size() - 1;
     for (size_t i{}; i < steps; ++i)
@@ -23,7 +23,7 @@ SOBuilder& SOBuilder::back(size_t steps)
     return *this;
 }
 
-SOBuilder& SOBuilder::color(Vec3 color)
+SDFBuilder& SDFBuilder::color(Vec3 color)
 {
     m_objChain.back()->setColor(color);
     return *this;

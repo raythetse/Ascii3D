@@ -1,10 +1,10 @@
-#include "SceneObject.h"
+#include "SDFObject.h"
 #include <algorithm>
 #include <limits>
 #include "Vec2.h"
 #include "Operation.h"
 
-SceneObject::SceneObject(Vec3 position, Vec3 rotation, Color color, bool lit)
+SDFObject::SDFObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     : m_position(position), m_color(color), m_lit(lit)
 {
     static size_t id{};
@@ -18,30 +18,30 @@ SceneObject::SceneObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     }
 }
 
-SceneObject::~SceneObject()
+SDFObject::~SDFObject()
 {}
 
-bool SceneObject::lit() const
+bool SDFObject::lit() const
 {
     return m_lit;
 }
 
-void SceneObject::pushOperation(std::unique_ptr<SDFOperation> operation)
+void SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
 {
     m_operations.push_back(std::move(operation));
 }
 
-void SceneObject::setColor(Color color)
+void SDFObject::setColor(Color color)
 {
     m_color = color;
 }
 
-Vec3 SceneObject::position() const
+Vec3 SDFObject::position() const
 {
     return m_position;
 }
 
-double SceneObject::signedDistance(Vec3 p, Color* colorOut) const
+double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
     double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
@@ -55,7 +55,7 @@ double SceneObject::signedDistance(Vec3 p, Color* colorOut) const
     return distance;
 }
 
-double SceneObject::signedDistanceInner(Vec3 p) const
+double SDFObject::signedDistanceInner(Vec3 p) const
 {
     return std::numeric_limits<double>::max();
 }
@@ -95,7 +95,7 @@ double BoxFrame::signedDistanceInner(Vec3 p) const
 }
 
 Sphere::Sphere(Vec3 position, double radius, Color color, bool lit)
-    : SceneObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
+    : SDFObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
 
 double Sphere::signedDistanceInner(Vec3 p) const
 {
