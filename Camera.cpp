@@ -47,8 +47,8 @@ void Camera::update()
                     m_rotation.x = (m_rotation.x > 1.57 ? 1.57 : m_rotation.x);
                     m_rotation.y += diff.x * m_lookSpeed;
 
-                    Mat3 rotX = Mat3::fromAxisAngle({ 1.0, 0.0, 0.0 }, m_rotation.x);
-                    Mat3 rotY = Mat3::fromAxisAngle({ 0.0, 1.0, 0.0 }, m_rotation.y);
+                    Mat3 rotX; Mat3::fromAxisAngle({ 1.0, 0.0, 0.0 }, rotX, m_rotation.x);
+                    Mat3 rotY; Mat3::fromAxisAngle({ 0.0, 1.0, 0.0 }, rotY, m_rotation.y);
                     Mat3 m = rotY * rotX;
                     m_forward = m * Vec3{ 0.0, 0.0, 1.0 };
                     m_up = m * Vec3{ 0.0, 1.0, 0.0 };

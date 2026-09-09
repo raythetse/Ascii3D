@@ -11,6 +11,6 @@ public:
 	Mat3(std::vector<double> values);
 	Mat3 operator*(const Mat3& b) const;
 	Vec3 operator*(const Vec3& b) const;
-	static Mat3 fromAxisAngle(Vec3 axis, const double rads);
+	static void fromAxisAngle(Vec3 axis, Mat3& mat, const double rads);
 };
 

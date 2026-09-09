@@ -2,7 +2,7 @@
 #include "Vec3.h"
 #include "SceneObject.h"
 
-class LightSource : private VisualObject
+class LightSource : private SceneObject
 {
 private:
 	double m_luminance;
@@ -13,4 +13,3 @@ public:
 	using SceneObject::position;
 	double signedDistanceInner(Vec3 p) const override;
 };
-
