@@ -66,7 +66,7 @@ void RayMarcher::march( PixelField& field,
 
         SceneSample& sample = field(row, col);
         std::vector<LightSource*> directLights{};
-        // Get normal
+
         bool hit = sample.camDistance < m_maxDistance;
         if (hit) {
             auto& hitObj = objects[sample.objectIndex];
@@ -89,7 +89,6 @@ void RayMarcher::march( PixelField& field,
                 double shadowMax = diff.length();
                 Vec3 ray = diff.getNormal();
                 marchRay(ray, sample.samplePoint + ray * s_shadowTolerance, objects, shadowSample, &shadowMax, &lightPos);
-                //if (shadowSample.objectIndex == sample.objectIndex) {
                 if (shadowSample.camDistance == shadowMax) {
                     directLights.push_back(light.get());
                 }

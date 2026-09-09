@@ -223,7 +223,7 @@ void Rotate::transform(Vec3& p) const
 
 void RotateContinuous::transform(Vec3& p) const
 {
-	Mat3 m; Mat3::fromAxisAngle(m_axis, m, GameTimer::gameTime() * m_rotationsPerSecond * MF::TAU + m_phase * MF::TAU);
+	Mat3 m; Mat3::fromAxisAngle(m_axis, m, (GameTimer::gameTime() + (m_phase / m_rotationsPerSecond)) * m_rotationsPerSecond * MF::TAU);
 	p = m * p;
 }
 
