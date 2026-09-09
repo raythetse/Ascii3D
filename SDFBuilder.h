@@ -1,29 +1,29 @@
 #pragma once
-#include "SceneObject.h"
+#include "SDFObject.h"
 
-class SOBuilder {
+class SDFBuilder {
 private:
-    std::unique_ptr<SceneObject> m_baseObject;
-    std::vector<SceneObject*> m_objChain;
+    std::unique_ptr<SDFObject> m_baseObject;
+    std::vector<SDFObject*> m_objChain;
 public:
-    SOBuilder(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
-    std::unique_ptr<SceneObject> get();
+    SDFBuilder(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
+    std::unique_ptr<SDFObject> get();
 	template <std::derived_from<SDFOperation> T, typename... Args>
-    SOBuilder& pushOp(Args&&... args);
-    template <std::derived_from<SDFOperation> T, std::derived_from<SceneObject> U, typename... ArgsT>
+    SDFBuilder& pushOp(Args&&... args);
+    template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
-    SOBuilder& back(size_t steps = 1);
-    SOBuilder& color(Vec3 color);
+    SDFBuilder& back(size_t steps = 1);
+    SDFBuilder& color(Vec3 color);
 };
 
 template <std::derived_from<SDFOperation> T, typename... Args>
-SOBuilder& SOBuilder::pushOp(Args&&... args) {
+SDFBuilder& SDFBuilder::pushOp(Args&&... args) {
     m_objChain.back()->pushOperation<T>(std::forward<Args>(args)...);
     return *this;
 }
 
-template <std::derived_from<SDFOperation> T, std::derived_from<SceneObject> U, typename... ArgsT>
-auto SOBuilder::pushOp(ArgsT&&... argst) {
+template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
+auto SDFBuilder::pushOp(ArgsT&&... argst) {
     return [this, ...captured_args = std::forward<ArgsT>(argst)](auto&&... argsu) mutable -> auto& {
         auto obj = std::make_unique<U>(std::move(captured_args)...);
         auto prev = m_objChain.back();

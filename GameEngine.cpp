@@ -3,15 +3,15 @@
 #include <ranges>
 #include "GameTimer.h"
 #include "Operation.h"
-#include "SceneObjectBuilder.h"
+#include "SDFBuilder.h"
 #include "MathFunctions.h"
 
-void GameEngine::add(SOBuilder& obj)
+void GameEngine::add(SDFBuilder& obj)
 {
     m_objects.push_back(obj.get());
 }
 
-void GameEngine::add(SOBuilder&& obj)
+void GameEngine::add(SDFBuilder&& obj)
 {
     m_objects.push_back(obj.get());
 }
@@ -43,8 +43,8 @@ void GameEngine::render()
 
 void GameEngine::frameDemo()
 {
-    add(SOBuilder{}.pushOp<Add, Box>(Vec3::Down * 3.0, Vec3::Zero, Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
-    add(SOBuilder{}
+    add(SDFBuilder{}.pushOp<Add, Box>(Vec3::Down * 3.0, Vec3::Zero, Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
+    add(SDFBuilder{}
         .pushOp<RotateContinuous>(Vec3::Up, 0.1)
         .pushOp<RotateContinuous>(Vec3::Right, 0.1)
         .pushOp<RotateContinuous>(Vec3::Forward, 0.1)
@@ -72,7 +72,7 @@ void GameEngine::gyroDemo() {
 
 void GameEngine::oxygenDemo()
 {
-    auto builder = SOBuilder{};
+    auto builder = SDFBuilder{};
     
     size_t numElectrons = 8;
 
@@ -83,7 +83,7 @@ void GameEngine::oxygenDemo()
         dist = 1.5 + dist;
         double rotPerSec = i % 2 ? 0.5 : -0.5 ;
         builder
-            .pushOp<Add, SceneObject>()()
+            .pushOp<Add, SDFObject>()()
             .pushOp<RotateContinuous>(Vec3::One, 0.01, phase)
             .pushOp<RotateContinuous>(Vec3::Up, rotPerSec, phase)
             .pushOp<Translate>(Vec3::Right * dist)
@@ -93,7 +93,7 @@ void GameEngine::oxygenDemo()
     builder.back().pushOp<RotateContinuous>(Vec3::Forward, 71264);
 
     add(std::move(builder));
-    add(SOBuilder{}
+    add(SDFBuilder{}
         .pushOp<RotateContinuous>(Vec3::Up, 0.25)
         .pushOp<Add, Sphere>(Vec3{ 0.224, 0.2468, -0.18 }, 0.25, Color::Red)()
         .pushOp<Add, Sphere>(Vec3{ -0.1287, -0.14864, .167 }, 0.25, Color::Blue)()
@@ -111,15 +111,15 @@ void GameEngine::cubesDemo()
 {
     double smoothing{ 0.1 };
     double colorBlending{ 0.95 };
-    add(SOBuilder()
-        .pushOp<Add, SceneObject>()()
+    add(SDFBuilder()
+        .pushOp<Add, SDFObject>()()
          .pushOp<CubeRollHeight>(1.0, 1.0, 0.5)
          .pushOp<TranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
          .pushOp<TranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
          .pushOp<CubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
          .pushOp<Add, Box>()().color(Color::Red)
           .back(2)
-        .pushOp<AddSmooth, SceneObject>()(smoothing, colorBlending)
+        .pushOp<AddSmooth, SDFObject>()(smoothing, colorBlending)
          .pushOp<Translate>()
          .pushOp<CubeRollHeight>(3.0, 1.0, 0.5)
          .pushOp<TranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
@@ -127,7 +127,7 @@ void GameEngine::cubesDemo()
          .pushOp<CubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
          .pushOp<Add, Box>()().color(Color::Yellow)
           .back(2)
-        .pushOp<AddSmooth, SceneObject>()(smoothing, colorBlending)
+        .pushOp<AddSmooth, SDFObject>()(smoothing, colorBlending)
          .pushOp<Rotate>()
          .pushOp<CubeRollHeight>(1.0, 1.0, 0.5)
          .pushOp<TranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
@@ -135,7 +135,7 @@ void GameEngine::cubesDemo()
          .pushOp<CubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
          .pushOp<Add, Box>()().color(Color::Blue)
           .back(2)
-        .pushOp<AddSmooth, SceneObject>()(smoothing, colorBlending)
+        .pushOp<AddSmooth, SDFObject>()(smoothing, colorBlending)
          .pushOp<Translate>()
          .pushOp<Rotate>()
          .pushOp<CubeRollHeight>(3.0, 1.0, 0.5)

@@ -2,7 +2,7 @@
 #include "Vec3.h"
 #include <string>
 #include <vector>
-#include "SceneObject.h"
+#include "SDFObject.h"
 #include "LightSource.h"
 
 class SceneSample
@@ -21,6 +21,6 @@ public:
 
 	SceneSample() = default;
 	SceneSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}
-	void buildRenderParams(const std::unique_ptr<SceneObject>& object, Vec3 p, double maxDistance, bool lit, const std::vector<LightSource*>& lights);
+	void buildRenderParams(const std::unique_ptr<SDFObject>& object, Vec3 p, double maxDistance, bool lit, const std::vector<LightSource*>& lights);
 };
 

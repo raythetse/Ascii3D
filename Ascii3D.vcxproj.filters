@@ -45,7 +45,7 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="SceneObject.cpp">
+    <ClCompile Include="SDFObject.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
     <ClCompile Include="PixelField.cpp">
@@ -87,7 +87,7 @@
     <ClCompile Include="Mat2.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="SceneObjectBuilder.cpp">
+    <ClCompile Include="SDFBuilder.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,7 +101,7 @@
     <ClInclude Include="SceneSample.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SceneObject.h">
+    <ClInclude Include="SDFObject.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
     <ClInclude Include="PixelField.h">
@@ -140,7 +140,7 @@
     <ClInclude Include="Mat2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SceneObjectBuilder.h">
+    <ClInclude Include="SDFBuilder.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">

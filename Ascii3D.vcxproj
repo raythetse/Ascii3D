@@ -150,11 +150,11 @@
     <ClCompile Include="PerfMonitor.cpp" />
     <ClCompile Include="PixelField.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="SceneObjectBuilder.cpp" />
+    <ClCompile Include="SDFBuilder.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="RayMarcher.cpp" />
-    <ClCompile Include="SceneObject.cpp" />
+    <ClCompile Include="SDFObject.cpp" />
     <ClCompile Include="SceneSample.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,12 +170,12 @@
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="PixelField.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="SceneObjectBuilder.h" />
+    <ClInclude Include="SDFBuilder.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="RayMarcher.h" />
-    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="SDFObject.h" />
     <ClInclude Include="SceneSample.h" />
   </ItemGroup>
   <ItemGroup>

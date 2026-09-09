@@ -1,8 +1,8 @@
 #pragma once
 #include "Vec3.h"
-#include "SceneObject.h"
+#include "SDFObject.h"
 
-class LightSource : private SceneObject
+class LightSource : private SDFObject
 {
 private:
 	double m_luminance;
@@ -10,6 +10,6 @@ public:
 	LightSource(Vec3 position, double luminance = 1.0);
 	virtual ~LightSource() = default;
 	double luminance();
-	using SceneObject::position;
+	using SDFObject::position;
 	double signedDistanceInner(Vec3 p) const override;
 };
