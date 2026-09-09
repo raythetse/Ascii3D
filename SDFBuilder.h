@@ -12,7 +12,8 @@ public:
     SDFBuilder& pushOp(Args&&... args);
     template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
-    SDFBuilder& back(size_t steps = 1);
+    SDFBuilder& pushOp(std::unique_ptr<SDFOperation> opPtr);
+    SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Vec3 color);
 };
 

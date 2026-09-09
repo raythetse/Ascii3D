@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <limits>
 #include "Vec2.h"
-#include "Operation.h"
+#include "SDFOperation.h"
 
 SDFObject::SDFObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     : m_position(position), m_color(color), m_lit(lit)
