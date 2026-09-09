@@ -1,11 +1,12 @@
 Required:
-- Add non-visual holder object
 - Refactor engine/scene design
 - bounding boxes for efficiency
 - input/output scene from/to file
 - object motion
 - console input for field dimensions
 - disable light attenuation (per light)
+- startup options
+- comment everything
 
 Optional:
 - camera track
