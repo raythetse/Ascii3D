@@ -57,7 +57,7 @@
     <ClCompile Include="RayMarcher.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="SceneSample.cpp">
+    <ClCompile Include="PixelSample.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Vec3.cpp">
@@ -98,7 +98,7 @@
     <ClInclude Include="RayMarcher.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="SceneSample.h">
+    <ClInclude Include="PixelSample.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="SDFObject.h">

@@ -155,7 +155,7 @@
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="RayMarcher.cpp" />
     <ClCompile Include="SDFObject.cpp" />
-    <ClCompile Include="SceneSample.cpp" />
+    <ClCompile Include="PixelSample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h" />
@@ -176,7 +176,7 @@
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="RayMarcher.h" />
     <ClInclude Include="SDFObject.h" />
-    <ClInclude Include="SceneSample.h" />
+    <ClInclude Include="PixelSample.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

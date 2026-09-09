@@ -5,7 +5,7 @@
 #include "SDFObject.h"
 #include "LightSource.h"
 
-class SceneSample
+class PixelSample
 {
 private:
 	static const std::string charGradient;
@@ -19,8 +19,8 @@ public:
 	char renderChar{};
 	std::string colorCode;
 
-	SceneSample() = default;
-	SceneSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}
+	PixelSample() = default;
+	PixelSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}
 	void buildRenderParams(const std::unique_ptr<SDFObject>& object, Vec3 p, double maxDistance, bool lit, const std::vector<LightSource*>& lights);
 };
 

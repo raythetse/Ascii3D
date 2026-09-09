@@ -1,16 +1,16 @@
 #include "PixelField.h"
 
-SceneSample& PixelField::operator()(size_t row, size_t col)
+PixelSample& PixelField::operator()(size_t row, size_t col)
 {
     return m_swap ? m_fieldB[row * m_width + col] : m_fieldA[row * m_width + col];
 }
 
-std::vector<SceneSample>::const_iterator PixelField::begin() const
+std::vector<PixelSample>::const_iterator PixelField::begin() const
 {
     return m_swap ? m_fieldB.begin() : m_fieldA.begin();
 }
 
-std::vector<SceneSample>::const_iterator PixelField::end() const
+std::vector<PixelSample>::const_iterator PixelField::end() const
 {
     return m_swap ? m_fieldB.end() : m_fieldA.end();
 }
