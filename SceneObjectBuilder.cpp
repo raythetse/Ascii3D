@@ -22,3 +22,9 @@ SOBuilder& SOBuilder::back(size_t steps)
     }
     return *this;
 }
+
+SOBuilder& SOBuilder::color(Vec3 color)
+{
+    m_objChain.back()->setColor(color);
+    return *this;
+}

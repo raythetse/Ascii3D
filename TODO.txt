@@ -1,4 +1,5 @@
 Required:
+- Add non-visual holder object
 - Refactor engine/scene design
 - bounding boxes for efficiency
 - input/output scene from/to file
@@ -13,6 +14,7 @@ Optional:
 - try matrix style renderer
 - ambient color bounce
 - transparency/reflection
+- object chain merging
 
 Ongoing:
 - design new SDFs and Operations

@@ -279,7 +279,7 @@ namespace SDFOp
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		Translate(Vec3 transposition) : m_translation(transposition) {}
+		Translate(Vec3 translation = Vec3::Up) : m_translation(translation) {}
 	};
 
 	class TranslateSine : public TransformOperation
@@ -313,6 +313,19 @@ namespace SDFOp
 			, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
 	};
 
+	class CubeRollHeight : public TransformOperation
+	{
+	private:
+		double m_cubeHeight;
+		double m_period;
+		double m_phase;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		CubeRollHeight(double cubeHeight = 1.0, double period = 1.0, double phase = 0.0)
+			: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
+	};
+
 	class Rotate : public TransformOperation
 	{
 	private:
@@ -320,19 +333,64 @@ namespace SDFOp
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		Rotate(Vec3 axis, double turns = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, turns * MF::TAU)) {}
+		Rotate(Vec3 axis = Vec3::Up, double rotations = 0.5) : m_rotMat(Mat3::fromAxisAngle(axis, rotations * MF::TAU)) {}
 	};
 
-	class RotateActive : public TransformOperation
+	class RotateContinuous : public TransformOperation
 	{
 	private:
 		Vec3 m_axis;
-		double m_turnsPerSecond;
+		double m_rotationsPerSecond;
 		double m_phase;
 	protected:
 		void transform(Vec3& p) override;
 	public:
-		RotateActive(Vec3 axis = Vec3::Up, double turnsPerSecond = 0.25, double phase = 0.0) : m_axis(axis), m_turnsPerSecond(turnsPerSecond), m_phase(phase) {}
+		RotateContinuous(Vec3 axis = Vec3::Up, double rotationsPerSecond = 0.25, double phase = 0.0) : m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
+	};
+
+	class RotateScan : public TransformOperation
+	{
+	private:
+		Vec3 m_axis;
+		double m_endAngle;
+		Vec2 m_transitTimes;
+		Vec2 m_endDelays;
+		double m_phase;
+		double m_cycleTime;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		RotateScan(Vec3 axis = Vec3::Up, double rotations = 1.0, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
+			: m_axis(axis), m_endAngle(rotations * MF::TAU)
+			, m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase)
+			, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
+	};
+
+	class RotateDelay : public TransformOperation
+	{
+	private:
+		Vec3 m_axis;
+		double m_angle;
+		double m_rotateTime;
+		double m_cycleTime;
+		double m_phase;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		RotateDelay(Vec3 axis = Vec3::Up, double rotations = 1.0, double rotateTime = 1.0, double delayTime = 1.0, double phase = 0.0)
+		: m_axis(axis), m_angle(rotations * MF::TAU), m_rotateTime(rotateTime), m_cycleTime(rotateTime + delayTime), m_phase(phase) {}
+	};
+
+	class CubeRoller : public TransformOperation
+	{
+	private:
+		std::vector<Vec3> m_axes;
+		double m_quarterTurnTime;
+		double m_phase;
+	protected:
+		void transform(Vec3& p) override;
+	public:
+		CubeRoller(std::vector<Vec3> axes, double quarterTurnTime = 1.0, double phase = 0.0) : m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
 	};
 
 	class DistortOperation : public SDFOperation

@@ -227,15 +227,60 @@ namespace SDFOp
 		p -= m_start;
 	}
 
+	void CubeRollHeight::transform(Vec3& p)
+	{
+		double angle = std::fmod(GameTimer::gameTime() + m_phase, m_period) * MF::HALFPI - MF::HALFPI;
+		Vec2 rot = Vec2{ -m_cubeHeight * 0.5, m_cubeHeight * 0.5 }.rotate(angle);
+		p.y -= (rot.y - m_cubeHeight * 0.5);
+	}
+
 	void Rotate::transform(Vec3& p)
 	{
 		p = m_rotMat * p;
 	}
 
-	void RotateActive::transform(Vec3& p)
+	void RotateContinuous::transform(Vec3& p)
 	{
-		Mat3 m = Mat3::fromAxisAngle(m_axis, GameTimer::gameTime() * m_turnsPerSecond * MF::TAU + m_phase * MF::TAU);
+		Mat3 m = Mat3::fromAxisAngle(m_axis, GameTimer::gameTime() * m_rotationsPerSecond * MF::TAU + m_phase * MF::TAU);
 		p = m * p;
+	}
+
+	void RotateScan::transform(Vec3& p)
+	{
+		double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
+		if (time <= m_transitTimes.x) {
+			time /= m_transitTimes.x;
+			p = Mat3::fromAxisAngle(m_axis, m_endAngle * time) * p;
+			return;
+		}
+		double timeFrame = m_transitTimes.x + m_endDelays.x;
+		if (time <= timeFrame) {
+			p = Mat3::fromAxisAngle(m_axis, m_endAngle) * p;
+			return;
+		}
+		timeFrame += m_transitTimes.y;
+		if (time <= timeFrame) {
+			time = (time - (m_transitTimes.x + m_endDelays.x)) / m_transitTimes.y;
+			p = Mat3::fromAxisAngle(m_axis, m_endAngle * (1.0 - time)) * p;
+			return;
+		}
+	}
+
+	void CubeRoller::transform(Vec3& p)
+	{
+		double cycleTime = m_axes.size() * m_quarterTurnTime;
+		double time = std::fmod(GameTimer::gameTime() + m_phase, cycleTime);
+		size_t index = static_cast<size_t>(time);
+		time /= m_quarterTurnTime;
+		p = Mat3::fromAxisAngle(m_axes[index], MF::HALFPI * time) * p;
+	}
+
+	void RotateDelay::transform(Vec3& p)
+	{
+		double completeCycles{ std::floor((GameTimer::gameTime() + m_phase) / m_cycleTime) };
+		double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
+		completeCycles += std::min(m_rotateTime, time) / m_rotateTime;
+		p = Mat3::fromAxisAngle(m_axis, completeCycles * m_angle) * p;
 	}
 
 	void Twist::distort(Vec3& p)

@@ -34,9 +34,6 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{814dae16-64ce-4fbc-a998-483497fb31de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Behaviour">
-      <UniqueIdentifier>{d193138f-2c80-4145-a8b8-6e11b9a3d6ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{9076c1e4-ed47-4774-910d-51f83c493048}</UniqueIdentifier>
     </Filter>
@@ -119,9 +116,6 @@
     <ClInclude Include="Mat3.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="..\HelloWorld\Stopwatch.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
@@ -148,6 +142,12 @@
     </ClInclude>
     <ClInclude Include="SceneObjectBuilder.h">
       <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stopwatch.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
