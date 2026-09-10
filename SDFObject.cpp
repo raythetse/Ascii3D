@@ -18,8 +18,14 @@ SDFObject::SDFObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     }
 }
 
-SDFObject::~SDFObject()
-{}
+SDFObject::~SDFObject() {}
+
+void SDFObject::update()
+{
+    for (auto& op : m_operations) {
+        op->update();
+    }
+}
 
 bool SDFObject::lit() const
 {

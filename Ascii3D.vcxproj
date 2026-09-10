@@ -149,6 +149,7 @@
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="Mat3.cpp" />
+    <ClCompile Include="PropertyModifier.cpp" />
     <ClCompile Include="ResurfaceOperation.cpp" />
     <ClCompile Include="SDFOperation.cpp" />
     <ClCompile Include="PerfMonitor.cpp" />
@@ -163,13 +164,14 @@
     <ClCompile Include="PixelSample.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CombationOperation.h" />
+    <ClInclude Include="CombinationOperation.h" />
     <ClInclude Include="DistortOperation.h" />
     <ClInclude Include="DomainOperation.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
+    <ClInclude Include="PropertyModifier.h" />
     <ClInclude Include="SDFOperationInc.h" />
     <ClInclude Include="ResurfaceOperation.h" />
     <ClInclude Include="SDFOperation.h" />

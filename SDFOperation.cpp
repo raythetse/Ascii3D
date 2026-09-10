@@ -1,6 +1,14 @@
 #pragma once
 #include "SDFOperation.h"
 
+void SDFOperation::update()
+{
+	for (auto& propMod : m_propMods) {
+		propMod->update();
+	}
+	innerUpdate();
+}
+
 void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut)
 {
 	switch (opType())

@@ -42,6 +42,7 @@ int main()
     PerfMonitor pMonitor{};
     auto framePM = pMonitor.add("FPS", PerfMonitor::FPS);
     auto updatePM = pMonitor.add("Update");
+    auto marchPM = pMonitor.add("March");
     auto renderPM = pMonitor.add("Render");
     Stopwatch sw{};
     bool pausePressed{};
@@ -56,8 +57,9 @@ int main()
         else {
             pausePressed = false;
         }
-        pMonitor.sample(framePM, [&gEngine, &pMonitor, &updatePM, &renderPM, &time, &sw]() {
+        pMonitor.sample(framePM, [&gEngine, &pMonitor, &updatePM, &marchPM, &renderPM, &time, &sw]() {
             pMonitor.sample(updatePM, [&gEngine]() { gEngine.update(); });
+            pMonitor.sample(marchPM, [&gEngine]() { gEngine.march(); });
             pMonitor.sample(renderPM, [&gEngine]() { gEngine.render(); });
         });
         pMonitor.printMonitors();

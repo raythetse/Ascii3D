@@ -1,9 +1,11 @@
 #include "DomainOperation.h"
 
-void* DomainOperation::getPropertyPtr(std::string_view propName)
+void DomainOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
-	if (propName == "spacing") return &m_spacing;
-	return nullptr;
+	if (propMod->propName() == "spacing") {
+		propMod->BindToProp(&m_spacing);
+		m_propMods.push_back(std::move(propMod));
+	}
 }
 
 void RepeatX::transform(Vec3& p) const
@@ -57,8 +59,10 @@ void RepeatLimited::transform(Vec3& p) const
 	p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
 }
 
-void* RepeatLimited::getPropertyPtr(std::string_view propName)
+void RepeatLimited::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
-	if (propName == "limits") return &m_limits;
-	return nullptr;
+	if (propMod->propName() == "limits") {
+		propMod->BindToProp(&m_limits);
+		m_propMods.push_back(std::move(propMod));
+	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CombationOperation.h"
+#include "CombinationOperation.h"
 #include "DistortOperation.h"
 #include "DomainOperation.h"
 #include "ResurfaceOperation.h"

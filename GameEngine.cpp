@@ -2,6 +2,7 @@
 #include <execution>
 #include <ranges>
 #include "GameTimer.h"
+#include "PropertyModifier.h"
 #include "SDFOperationInc.h"
 #include "SDFBuilder.h"
 #include "MathFunctions.h"
@@ -16,28 +17,17 @@ void GameEngine::add(SDFBuilder&& obj)
     m_objects.push_back(obj.get());
 }
 
+static int i{};
 GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double stepFactor, double tolerance)
 	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_pixelField{ width, height }, m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_renderer{ width * height }
 	, m_camera{ width * .005, height * .01 }, m_pixelRange{ std::views::iota(size_t(0), width * height) }, m_objectRange{ std::views::iota(size_t(0), width * height) }
 {
     //gyroDemo();
     //oxygenDemo();
-    //cubesDemo();
+    cubesDemo();
+    //propModDemo();
+
     
-    double* smoothing;
-    double* colorBlending;
-
-    add(SDFBuilder()
-        .pushOp<Add, Sphere>(Vec3::Left, 1.0, Color::Blue)()
-        .pushOp<AddSmooth, Sphere>(Vec3::Right, 1.0, Color::Red)()
-        .getPropertyPtr("smoothing", &smoothing)
-        .getPropertyPtr("colorBlending", &colorBlending)
-    );
-
-    *smoothing = 1.0;
-    *colorBlending = 1.0;
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.5));
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
 }
@@ -46,6 +36,13 @@ void GameEngine::update()
 {
     GameTimer::tick();
     m_camera.update();
+    for (auto& obj : m_objects) {
+        obj->update();
+    }
+}
+
+void GameEngine::march()
+{
     m_rayMarcher.march(m_pixelField, m_objects, m_lights, m_camera, m_pixelRange);
 }
 
@@ -79,11 +76,15 @@ void GameEngine::frameDemo()
                         .pushOp<Add, Box>(Vec3{ -0.5, 0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Blue)()
                             .pushOp<Add, Box>(Vec3{ 0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Violet)()
     );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
 void GameEngine::gyroDemo()
 {
 
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
 void GameEngine::oxygenDemo()
@@ -119,6 +120,8 @@ void GameEngine::oxygenDemo()
                                 .pushOp<Add, Sphere>(Vec3{ -0.2, 0.01, 0.0 }, 0.25, Color::Red)()
                                     .pushOp<Add, Sphere>(Vec3{ 0.19, -0.084, -0.02 }, 0.25, Color::Blue)()
     );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
 void GameEngine::cubesDemo()
@@ -159,4 +162,23 @@ void GameEngine::cubesDemo()
             .pushOp<CubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
             .pushOp<Add, Box>()().color(Color::Green)
     );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
+}
+
+void GameEngine::propModDemo()
+{
+    add(SDFBuilder()
+        .pushOp<Add, Sphere>(Vec3::Left, 1.0, Color::Blue)()
+        .pushOp<AddSmooth, Sphere>(Vec3::Right, 1.0, Color::Red)()
+        //.bindPropMod<PMSineOscillation>("smoothing")
+        .bindPropMod(std::move(std::make_unique<PropertyModifier<double>>("smoothing", [](double* ptr, double initValue) {
+        *ptr = std::sin(GameTimer::gameTime()) + 1.0;
+    })))
+        .bindPropMod(std::move(std::make_unique<PropertyModifier<double>>("colorBlending", [](double* ptr, double initValue) {
+        *ptr = std::sin(GameTimer::gameTime()) * 5.0;
+    })))
+    );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
