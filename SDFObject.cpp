@@ -102,9 +102,6 @@ double BoxFrame::signedDistanceInner(Vec3 p) const
         Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
 }
 
-Sphere::Sphere(Vec3 position, double radius, Color color, bool lit)
-    : SDFObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
-
 double Sphere::signedDistanceInner(Vec3 p) const
 {
     return p.distance(m_position) - m_radius;
@@ -115,4 +112,22 @@ double Torus::signedDistanceInner(Vec3 p) const
     p -= m_position;
     p = m_rotationMat * p;
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
+}
+
+double CapsuleX::signedDistanceInner(Vec3 p) const
+{
+    p.x = p.x > 0.0 ? std::max(0.0, p.x - 0.5 * m_bodyLength) : std::min(0.0, p.x + 0.5 * m_bodyLength);
+    return p.distance(m_position) - m_endRadius;
+}
+
+double CapsuleY::signedDistanceInner(Vec3 p) const
+{
+    p.y = p.y > 0.0 ? std::max(0.0, p.y - 0.5 * m_bodyLength) : std::min(0.0, p.y + 0.5 * m_bodyLength);
+    return p.distance(m_position) - m_endRadius;
+}
+
+double CapsuleZ::signedDistanceInner(Vec3 p) const
+{
+    p.z = p.z > 0.0 ? std::max(0.0, p.z - 0.5 * m_bodyLength) : std::min(0.0, p.z + 0.5 * m_bodyLength);
+    return p.distance(m_position) - m_endRadius;
 }

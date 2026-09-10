@@ -91,7 +91,8 @@ class Sphere : public SDFObject
 private:
 	double m_radius;
 public:
-	Sphere(Vec3 position = Vec3::Zero, double radius = 0.5, Color color = Color::White, bool lit = true);
+	Sphere(Vec3 position = Vec3::Zero, double radius = 0.5, Color color = Color::White, bool lit = true)
+		: SDFObject(position, Vec3::Zero, color, lit), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -102,6 +103,39 @@ private:
 public:
 	Torus(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, bool lit = true)
 		: SDFObject(position, rotation, color, lit), m_radii(radii) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class CapsuleX : public SDFObject
+{
+private:
+	double m_endRadius;
+	double m_bodyLength;
+public:
+	CapsuleX(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(position, rotation, color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class CapsuleY : public SDFObject
+{
+private:
+	double m_endRadius;
+	double m_bodyLength;
+public:
+	CapsuleY(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(position, rotation, color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class CapsuleZ : public SDFObject
+{
+private:
+	double m_endRadius;
+	double m_bodyLength;
+public:
+	CapsuleZ(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(position, rotation, color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

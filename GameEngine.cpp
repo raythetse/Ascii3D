@@ -24,9 +24,12 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 {
     //gyroDemo();
     //oxygenDemo();
-    cubesDemo();
+    //cubesDemo();
     //propModDemo();
 
+    add(SDFBuilder{}.pushOp<Add, CapsuleZ>()());
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
     
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
