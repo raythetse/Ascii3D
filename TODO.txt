@@ -2,7 +2,6 @@ Required:
 - Refactor - separate engine from scene
 - bounding boxes for efficiency
 - input/output scene from/to file
-- object motion
 - console input for field dimensions
 - disable light attenuation (per light)
 - startup options
@@ -16,6 +15,7 @@ Optional:
 - ambient color bounce
 - transparency/reflection
 - object chain merging
+- input manager
 
 Ongoing:
-- design new SDFs and Operations
+- design/implement new SDFs and Operations
