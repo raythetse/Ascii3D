@@ -17,7 +17,7 @@ public:
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Vec3 color);
     template <typename T>
-    SDFBuilder& bindToProperty(std::string_view propName, T** ptr);
+    SDFBuilder& getPropertyPtr(std::string_view propName, T** ptr);
 };
 
 template <std::derived_from<SDFOperation> T, typename... Args>
@@ -41,10 +41,10 @@ auto SDFBuilder::pushOp(ArgsT&&... argst) {
 }
 
 template <typename T>
-SDFBuilder& SDFBuilder::bindToProperty(std::string_view propName, T** ptr)
+SDFBuilder& SDFBuilder::getPropertyPtr(std::string_view propName, T** ptr)
 {
     if (m_lastOp) {
-        *ptr = reinterpret_cast<T*>(m_lastOp->bindToProperty(propName));
+        *ptr = reinterpret_cast<T*>(m_lastOp->getPropertyPtr(propName));
     }
     return *this;
 }

@@ -30,7 +30,7 @@ private:
 	void frameDemo();
 	void gyroDemo();
 	void oxygenDemo();
-	double* cubesDemo();
+	void cubesDemo();
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);
