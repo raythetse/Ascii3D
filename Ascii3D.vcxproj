@@ -141,16 +141,21 @@
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CombinationOperation.cpp" />
+    <ClCompile Include="DistortOperation.cpp" />
+    <ClCompile Include="DomainOperation.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="Mat3.cpp" />
+    <ClCompile Include="ResurfaceOperation.cpp" />
     <ClCompile Include="SDFOperation.cpp" />
     <ClCompile Include="PerfMonitor.cpp" />
     <ClCompile Include="PixelField.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SDFBuilder.cpp" />
+    <ClCompile Include="TransformOperation.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="RayMarcher.cpp" />
@@ -158,10 +163,15 @@
     <ClCompile Include="PixelSample.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CombationOperation.h" />
+    <ClInclude Include="DistortOperation.h" />
+    <ClInclude Include="DomainOperation.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
+    <ClInclude Include="SDFOperationInc.h" />
+    <ClInclude Include="ResurfaceOperation.h" />
     <ClInclude Include="SDFOperation.h" />
     <ClInclude Include="PerfMonitor.h" />
     <ClInclude Include="Camera.h" />
@@ -171,6 +181,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SDFBuilder.h" />
     <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="TransformOperation.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="RayMarcher.h" />
