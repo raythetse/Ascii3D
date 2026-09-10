@@ -1,5 +1,5 @@
 Required:
-- Refactor engine/scene design
+- Refactor - separate engine from scene
 - bounding boxes for efficiency
 - input/output scene from/to file
 - object motion

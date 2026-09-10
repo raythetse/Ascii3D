@@ -22,8 +22,22 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 {
     //gyroDemo();
     //oxygenDemo();
-    double* smoothingPtr = cubesDemo();
+    //cubesDemo();
     
+    double* smoothing;
+    double* colorBlending;
+
+    add(SDFBuilder()
+        .pushOp<Add, Sphere>(Vec3::Left, 1.0, Color::Blue)()
+        .pushOp<AddSmooth, Sphere>(Vec3::Right, 1.0, Color::Red)()
+        .getPropertyPtr("smoothing", &smoothing)
+        .getPropertyPtr("colorBlending", &colorBlending)
+    );
+
+    *smoothing = 1.0;
+    *colorBlending = 1.0;
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.5));
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
 }
@@ -65,12 +79,11 @@ void GameEngine::frameDemo()
                         .pushOp<Add, Box>(Vec3{ -0.5, 0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Blue)()
                             .pushOp<Add, Box>(Vec3{ 0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Violet)()
     );
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.5));
 }
 
-void GameEngine::gyroDemo() {
+void GameEngine::gyroDemo()
+{
 
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 1.5));
 }
 
 void GameEngine::oxygenDemo()
@@ -106,14 +119,12 @@ void GameEngine::oxygenDemo()
                                 .pushOp<Add, Sphere>(Vec3{ -0.2, 0.01, 0.0 }, 0.25, Color::Red)()
                                     .pushOp<Add, Sphere>(Vec3{ 0.19, -0.084, -0.02 }, 0.25, Color::Blue)()
     );
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
-double* GameEngine::cubesDemo()
+void GameEngine::cubesDemo()
 {
     double smoothing{ 0.1 };
     double colorBlending{ 0.95 };
-    double* smoothingPtr;
 
     add(SDFBuilder()
         .pushOp<Add, SDFObject>()()
@@ -124,7 +135,6 @@ double* GameEngine::cubesDemo()
             .pushOp<Add, Box>()().color(Color::Red)
                 .stepBack(2)
         .pushOp<AddSmooth, SDFObject>()(smoothing, colorBlending)
-            .bindToProperty("smoothing", &smoothingPtr)
             .pushOp<Translate>()
             .pushOp<CubeRollHeight>(3.0, 1.0, 0.5)
             .pushOp<TranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
@@ -149,8 +159,4 @@ double* GameEngine::cubesDemo()
             .pushOp<CubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
             .pushOp<Add, Box>()().color(Color::Green)
     );
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 4.0, -5.0 }, 1.0));
-
-    return smoothingPtr;
 }

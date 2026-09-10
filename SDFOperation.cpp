@@ -38,7 +38,7 @@ void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOu
 	*colorOut = colorIn.lerp(*colorOut, alpha);
 }
 
-void* CombinationOperation::bindToProperty(std::string_view propName)
+void* CombinationOperation::getPropertyPtr(std::string_view propName)
 {
 	if (propName == "smoothing") return &m_smoothing;
 	if (propName == "colorBlending") return &m_colorBlending;
@@ -86,6 +86,12 @@ double IntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* 
 	return std::lerp(distanceB, distanceA, h) + m_smoothing * h * (1.0 - h);
 }
 
+void* ResurfaceOperation::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "magnitude") return &m_magnitude;
+	return nullptr;
+}
+
 double RoundOff::resurface(double distance)
 {
 	return distance - m_magnitude;
@@ -131,6 +137,12 @@ void MirrorYZ::transform(Vec3& p) const
 void MirrorXYZ::transform(Vec3& p) const
 {
 	p = p.abs();
+}
+
+void* DomainOperation::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "spacing") return &m_spacing;
+	return nullptr;
 }
 
 void RepeatX::transform(Vec3& p) const
@@ -184,14 +196,35 @@ void RepeatLimited::transform(Vec3& p) const
 	p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
 }
 
+void* RepeatLimited::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "limits") return &m_limits;
+	return nullptr;
+}
+
 void Translate::transform(Vec3& p) const
 {
 	p -= m_translation;
 }
 
+void* Translate::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "translation") return &m_translation;
+	return nullptr;
+}
+
 void TranslateSine::transform(Vec3& p) const
 {
 	p -= m_axis * m_amplitude * sin(GameTimer::gameTime() / m_period * MF::TAU + m_phase * MF::TAU);
+}
+
+void* TranslateSine::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "amplitude") return &m_amplitude;
+	if (propName == "axis") return &m_axis;
+	if (propName == "period") return &m_period;
+	if (propName == "phase") return &m_phase;
+	return nullptr;
 }
 
 void TranslateLinear::transform(Vec3& p) const
@@ -216,6 +249,17 @@ void TranslateLinear::transform(Vec3& p) const
 	p -= m_start;
 }
 
+void* TranslateLinear::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "cycleTime") return &m_cycleTime;
+	if (propName == "end") return &m_end;
+	if (propName == "endDelays") return &m_endDelays;
+	if (propName == "phase") return &m_phase;
+	if (propName == "start") return &m_start;
+	if (propName == "transitTimes") return &m_transitTimes;
+	return nullptr;
+}
+
 void CubeRollHeight::transform(Vec3& p) const
 {
 	double angle = std::fmod(GameTimer::gameTime() + m_phase, m_period) * MF::HALFPI - MF::HALFPI;
@@ -223,15 +267,39 @@ void CubeRollHeight::transform(Vec3& p) const
 	p.y -= (rot.y - m_cubeHeight * 0.5);
 }
 
+void* CubeRollHeight::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "cubeHeight") return &m_cubeHeight;
+	if (propName == "period") return &m_period;
+	if (propName == "phase") return &m_phase;
+	return nullptr;
+}
+
 void Rotate::transform(Vec3& p) const
 {
 	p = m_rotMat * p;
+}
+
+void* Rotate::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "axis") return &m_axis;
+	if (propName == "rotations") return &m_rotations;
+	if (propName == "rotMat") return &m_rotMat;
+	return nullptr;
 }
 
 void RotateContinuous::transform(Vec3& p) const
 {
 	Mat3 m; Mat3::fromAxisAngle(m_axis, m, (GameTimer::gameTime() + (m_phase / m_rotationsPerSecond)) * m_rotationsPerSecond * MF::TAU);
 	p = m * p;
+}
+
+void* RotateContinuous::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "axis") return &m_axis;
+	if (propName == "phase") return &m_phase;
+	if (propName == "rotationsPerSecond") return &m_rotationsPerSecond;
+	return nullptr;
 }
 
 void RotateScan::transform(Vec3& p) const
@@ -258,6 +326,17 @@ void RotateScan::transform(Vec3& p) const
 	}
 }
 
+void* RotateScan::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "axis") return &m_axis;
+	if (propName == "cycleTime") return &m_cycleTime;
+	if (propName == "endAngle") return &m_endAngle;
+	if (propName == "endDelays") return &m_endDelays;
+	if (propName == "phase") return &m_phase;
+	if (propName == "transitTimes") return &m_transitTimes;
+	return nullptr;
+}
+
 void CubeRoller::transform(Vec3& p) const
 {
 	double cycleTime = m_axes.size() * m_quarterTurnTime;
@@ -268,6 +347,14 @@ void CubeRoller::transform(Vec3& p) const
 	p = m * p;
 }
 
+void* CubeRoller::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "axes") return &m_axes;
+	if (propName == "phase") return &m_phase;
+	if (propName == "quarterTurnTime") return &m_quarterTurnTime;
+	return nullptr;
+}
+
 void RotateDelay::transform(Vec3& p) const
 {
 	double completeCycles{ std::floor((GameTimer::gameTime() + m_phase) / m_cycleTime) };
@@ -275,6 +362,16 @@ void RotateDelay::transform(Vec3& p) const
 	completeCycles += std::min(m_rotateTime, time) / m_rotateTime;
 	Mat3 m; Mat3::fromAxisAngle(m_axis, m,completeCycles * m_angle);
 	p = m * p;
+}
+
+void* RotateDelay::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "angle") return &m_angle;
+	if (propName == "axis") return &m_axis;
+	if (propName == "cycleTime") return &m_cycleTime;
+	if (propName == "phase") return &m_phase;
+	if (propName == "rotateTime") return &m_rotateTime;
+	return nullptr;
 }
 
 void Twist::transform(Vec3& p) const
@@ -291,4 +388,10 @@ void Bend::transform(Vec3& p) const
 	Mat2  m = Mat2{ { sc.y, -sc.x, sc.x, sc.y } };
 	Vec2 xy = m * Vec2{ p.x, p.y };
 	p = Vec3(xy.x, xy.y, p.z);
+}
+
+void* DistortOperation::getPropertyPtr(std::string_view propName)
+{
+	if (propName == "magnitude") return &m_magnitude;
+	return nullptr;
 }
