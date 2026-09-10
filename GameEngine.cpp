@@ -2,7 +2,7 @@
 #include <execution>
 #include <ranges>
 #include "GameTimer.h"
-#include "SDFOperation.h"
+#include "SDFOperationInc.h"
 #include "SDFBuilder.h"
 #include "MathFunctions.h"
 
