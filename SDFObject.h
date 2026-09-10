@@ -25,6 +25,7 @@ protected:
 public:
 	SDFObject(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
 	~SDFObject();
+	void update();
 	Vec3 position() const;
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	bool lit() const;

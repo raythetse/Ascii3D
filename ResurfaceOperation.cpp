@@ -1,9 +1,11 @@
 #include "ResurfaceOperation.h"
 
-void* ResurfaceOperation::getPropertyPtr(std::string_view propName)
+void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
-	if (propName == "magnitude") return &m_magnitude;
-	return nullptr;
+	if (propMod->propName() == "magnitude") {
+		propMod->BindToProp(&m_magnitude);
+		m_propMods.push_back(std::move(propMod));
+	}
 }
 
 double RoundOff::resurface(double distance)

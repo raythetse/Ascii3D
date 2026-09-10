@@ -17,7 +17,11 @@ public:
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Vec3 color);
     template <typename T>
-    SDFBuilder& getPropertyPtr(std::string_view propName, T** ptr);
+        requires (!std::is_base_of_v<PropertyModifierBase, T>)
+    SDFBuilder& bindPropMod(std::unique_ptr<PropertyModifier<T>> propMod);
+    template <typename T, typename... Args>
+        requires (std::is_base_of_v<PropertyModifierBase, T>)
+    SDFBuilder& bindPropMod(Args&&... args);
 };
 
 template <std::derived_from<SDFOperation> T, typename... Args>
@@ -41,10 +45,20 @@ auto SDFBuilder::pushOp(ArgsT&&... argst) {
 }
 
 template <typename T>
-SDFBuilder& SDFBuilder::getPropertyPtr(std::string_view propName, T** ptr)
+    requires (!std::is_base_of_v<PropertyModifierBase, T>)
+SDFBuilder& SDFBuilder::bindPropMod(std::unique_ptr<PropertyModifier<T>> propMod)
 {
     if (m_lastOp) {
-        *ptr = reinterpret_cast<T*>(m_lastOp->getPropertyPtr(propName));
+        m_lastOp->bindPropertyModifier(std::move(propMod));
+    }
+    return *this;
+}
+
+template <typename T, typename... Args>
+    requires (std::is_base_of_v<PropertyModifierBase, T>)
+SDFBuilder& SDFBuilder::bindPropMod(Args&&... args) {
+    if (m_lastOp) {
+        m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
     return *this;
 }

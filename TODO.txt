@@ -6,6 +6,7 @@ Required:
 - disable light attenuation (per light)
 - startup options
 - comment everything
+- exceptions
 
 Optional:
 - camera track

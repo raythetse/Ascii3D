@@ -9,11 +9,13 @@ protected:
 	double m_smoothing;
 	double m_colorBlending;
 	void blendColors(double blendRate, Vec3 colorIn, Vec3* colorOut);
+	void innerUpdate() override {}
 public:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0)
 		: m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending) {}
+	void update() override;
 	SDFOperationType opType() override { return SDFOperationType::Combine; }
-	void* getPropertyPtr(std::string_view propName) override;
+	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };
 

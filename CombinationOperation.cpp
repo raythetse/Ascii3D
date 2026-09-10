@@ -1,4 +1,4 @@
-#include "CombationOperation.h"
+#include "CombinationOperation.h"
 #include <algorithm>
 
 void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
@@ -10,11 +10,25 @@ void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOu
 	*colorOut = colorIn.lerp(*colorOut, alpha);
 }
 
-void* CombinationOperation::getPropertyPtr(std::string_view propName)
+void CombinationOperation::update()
 {
-	if (propName == "smoothing") return &m_smoothing;
-	if (propName == "colorBlending") return &m_colorBlending;
-	return nullptr;
+	for (auto& propMod : m_propMods) {
+		propMod->update();
+	}
+	innerUpdate();
+	m_combineObj->update();
+}
+
+void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+	if (propMod->propName() == "smoothing") { 
+		propMod->BindToProp(&m_smoothing);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "colorBlending") {
+		propMod->BindToProp(&m_colorBlending);
+		m_propMods.push_back(std::move(propMod));
+	}
 }
 
 double Add::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

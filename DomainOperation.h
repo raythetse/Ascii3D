@@ -8,7 +8,7 @@ protected:
 public:
 	DomainOperation(Vec3 spacing = Vec3::One) : m_spacing(spacing) {};
 	SDFOperationType opType() override { return SDFOperationType::Transform; }
-	void* getPropertyPtr(std::string_view propName) override;
+	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
@@ -76,5 +76,5 @@ protected:
 	void transform(Vec3& p) const override;
 public:
 	RepeatLimited(Vec3 limits = Vec3::One, Vec3 spacing = Vec3::One) : DomainOperation(spacing), m_limits(limits) {}
-	void* getPropertyPtr(std::string_view propName) override;
+	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
