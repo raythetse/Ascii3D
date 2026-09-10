@@ -1,8 +1,6 @@
-#include "SDFBuilder.h"
-
 #pragma once
+#include "SDFBuilder.h"
 #include "SDFObject.h"
-#include "SDFOperation.h"
 
 SDFBuilder::SDFBuilder(Vec3 position, Vec3 rotation, Color color, bool lit) {
     m_baseObject = std::make_unique<SDFObject>(position, rotation, color, lit);
@@ -11,16 +9,6 @@ SDFBuilder::SDFBuilder(Vec3 position, Vec3 rotation, Color color, bool lit) {
 
 std::unique_ptr<SDFObject> SDFBuilder::get() {
     return std::move(m_baseObject);
-}
-
-SDFBuilder& SDFBuilder::pushOp(std::unique_ptr<SDFOperation> opPtr)
-{
-    //if (opPtr->opType() == SDFOperationType::Combine) {
-
-    //}
-    //m_objChain.back()
-
-    return *this;
 }
 
 SDFBuilder& SDFBuilder::stepBack(size_t steps)

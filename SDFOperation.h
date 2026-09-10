@@ -23,6 +23,7 @@ protected:
 public:
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 	virtual SDFOperationType opType() = 0;
+	virtual void* bindToProperty(std::string_view propName) { return nullptr; };
 };
 
 class CombinationOperation : public SDFOperation
@@ -36,6 +37,7 @@ public:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0)
 		: m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending) { }
 	SDFOperationType opType() override { return SDFOperationType::Combine; }
+	void* bindToProperty(std::string_view propName) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };
 

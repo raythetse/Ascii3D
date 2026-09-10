@@ -28,16 +28,16 @@ public:
 	Vec3 position() const;
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	bool lit() const;
-	void pushOperation(std::unique_ptr<SDFOperation> operation);
+	SDFOperation* pushOperation(std::unique_ptr<SDFOperation> operation);
 	template <typename T, typename... Args>
-	SDFObject* pushOperation(Args&&... args);
+	SDFOperation* pushOperation(Args&&... args);
 	void setColor(Color color);
 };
 
 template <typename T, typename... Args>
-SDFObject* SDFObject::pushOperation(Args&&... args) {
+SDFOperation* SDFObject::pushOperation(Args&&... args) {
 	m_operations.push_back(std::make_unique<T>(std::forward<Args>(args)...));
-	return this;
+	return m_operations.back().get();
 }
 
 class PlaneXZ : public SDFObject

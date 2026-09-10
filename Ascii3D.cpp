@@ -28,6 +28,12 @@ void closeConsole() {
     PostMessage(myConsole, WM_CLOSE, 0, 0);
 }
 
+class Bob {
+public:
+    double x = 12.0;
+    double z = 14.0;
+};
+
 int main()
 {
     setupConsole();

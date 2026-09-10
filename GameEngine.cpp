@@ -22,7 +22,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 {
     //gyroDemo();
     //oxygenDemo();
-    cubesDemo();
+    double* smoothingPtr = cubesDemo();
     
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
@@ -109,10 +109,12 @@ void GameEngine::oxygenDemo()
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
-void GameEngine::cubesDemo()
+double* GameEngine::cubesDemo()
 {
     double smoothing{ 0.1 };
     double colorBlending{ 0.95 };
+    double* smoothingPtr;
+
     add(SDFBuilder()
         .pushOp<Add, SDFObject>()()
             .pushOp<CubeRollHeight>(1.0, 1.0, 0.5)
@@ -122,6 +124,7 @@ void GameEngine::cubesDemo()
             .pushOp<Add, Box>()().color(Color::Red)
                 .stepBack(2)
         .pushOp<AddSmooth, SDFObject>()(smoothing, colorBlending)
+            .bindToProperty("smoothing", &smoothingPtr)
             .pushOp<Translate>()
             .pushOp<CubeRollHeight>(3.0, 1.0, 0.5)
             .pushOp<TranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
@@ -148,4 +151,6 @@ void GameEngine::cubesDemo()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 4.0, -5.0 }, 1.0));
+
+    return smoothingPtr;
 }

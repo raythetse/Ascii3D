@@ -38,6 +38,13 @@ void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOu
 	*colorOut = colorIn.lerp(*colorOut, alpha);
 }
 
+void* CombinationOperation::bindToProperty(std::string_view propName)
+{
+	if (propName == "smoothing") return &m_smoothing;
+	if (propName == "colorBlending") return &m_colorBlending;
+	return nullptr;
+}
+
 double Add::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (colorOut) *colorOut = distanceA <= distanceB ? colorIn : *colorOut;
