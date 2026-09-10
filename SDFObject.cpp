@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <limits>
 #include "Vec2.h"
-#include "Operation.h"
+#include "SDFOperation.h"
 
 SDFObject::SDFObject(Vec3 position, Vec3 rotation, Color color, bool lit)
     : m_position(position), m_color(color), m_lit(lit)
@@ -26,9 +26,11 @@ bool SDFObject::lit() const
     return m_lit;
 }
 
-void SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
+SDFOperation* SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
 {
+    auto ptr = operation.get();
     m_operations.push_back(std::move(operation));
+    return ptr;
 }
 
 void SDFObject::setColor(Color color)

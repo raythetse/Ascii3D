@@ -1,6 +1,5 @@
-#include "SDFBuilder.h"
-
 #pragma once
+#include "SDFBuilder.h"
 #include "SDFObject.h"
 
 SDFBuilder::SDFBuilder(Vec3 position, Vec3 rotation, Color color, bool lit) {
@@ -12,7 +11,7 @@ std::unique_ptr<SDFObject> SDFBuilder::get() {
     return std::move(m_baseObject);
 }
 
-SDFBuilder& SDFBuilder::back(size_t steps)
+SDFBuilder& SDFBuilder::stepBack(size_t steps)
 {
     if (!steps) steps = m_objChain.size() - 1;
     for (size_t i{}; i < steps; ++i)

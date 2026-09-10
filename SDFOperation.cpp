@@ -1,5 +1,5 @@
 #pragma once
-#include "Operation.h"
+#include "SDFOperation.h"
 
 #include <cmath>
 #include "GameTimer.h"
@@ -36,6 +36,13 @@ void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOu
 	alpha = alpha < 0.0 ? 0.0 : alpha;
 	alpha = alpha > 1.0 ? 1.0 : alpha;
 	*colorOut = colorIn.lerp(*colorOut, alpha);
+}
+
+void* CombinationOperation::bindToProperty(std::string_view propName)
+{
+	if (propName == "smoothing") return &m_smoothing;
+	if (propName == "colorBlending") return &m_colorBlending;
+	return nullptr;
 }
 
 double Add::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

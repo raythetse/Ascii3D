@@ -146,7 +146,7 @@
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="Mat3.cpp" />
-    <ClCompile Include="Operation.cpp" />
+    <ClCompile Include="SDFOperation.cpp" />
     <ClCompile Include="PerfMonitor.cpp" />
     <ClCompile Include="PixelField.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -162,9 +162,8 @@
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
-    <ClInclude Include="Operation.h" />
+    <ClInclude Include="SDFOperation.h" />
     <ClInclude Include="PerfMonitor.h" />
-    <ClInclude Include="Behaviour.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="LightSource.h" />
     <ClInclude Include="Mat3.h" />

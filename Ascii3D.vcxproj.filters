@@ -19,12 +19,6 @@
     <Filter Include="Source Files\Rendering">
       <UniqueIdentifier>{f4717c1f-5fd6-46a9-90c1-2b736940dd7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Scene">
-      <UniqueIdentifier>{29070da6-1882-4ee7-a3e2-6e3feaf739db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scene">
-      <UniqueIdentifier>{c5b52b39-cd9a-4da3-9320-2bc2625cc75d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{cb9182f1-ffa7-40f7-846b-03e016c1848b}</UniqueIdentifier>
     </Filter>
@@ -37,6 +31,12 @@
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{9076c1e4-ed47-4774-910d-51f83c493048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SDF">
+      <UniqueIdentifier>{c5b52b39-cd9a-4da3-9320-2bc2625cc75d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SDF">
+      <UniqueIdentifier>{29070da6-1882-4ee7-a3e2-6e3feaf739db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -46,13 +46,13 @@
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="SDFObject.cpp">
-      <Filter>Source Files\Scene</Filter>
+      <Filter>Source Files\SDF</Filter>
     </ClCompile>
     <ClCompile Include="PixelField.cpp">
       <Filter>Source Files\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="LightSource.cpp">
-      <Filter>Source Files\Scene</Filter>
+      <Filter>Source Files\SDF</Filter>
     </ClCompile>
     <ClCompile Include="RayMarcher.cpp">
       <Filter>Source Files\Rendering</Filter>
@@ -78,9 +78,6 @@
     <ClCompile Include="PerfMonitor.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Operation.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="GradientGenerator.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
@@ -88,7 +85,10 @@
       <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="SDFBuilder.cpp">
-      <Filter>Source Files\Scene</Filter>
+      <Filter>Source Files\SDF</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFOperation.cpp">
+      <Filter>Source Files\SDF</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,13 +102,13 @@
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="SDFObject.h">
-      <Filter>Header Files\Scene</Filter>
+      <Filter>Header Files\SDF</Filter>
     </ClInclude>
     <ClInclude Include="PixelField.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="LightSource.h">
-      <Filter>Header Files\Scene</Filter>
+      <Filter>Header Files\SDF</Filter>
     </ClInclude>
     <ClInclude Include="Vec3.h">
       <Filter>Header Files\Math</Filter>
@@ -125,29 +125,26 @@
     <ClInclude Include="GameEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Behaviour.h">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="PerfMonitor.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="MathFunctions.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Operation.h">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Mat2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SDFBuilder.h">
-      <Filter>Header Files\Scene</Filter>
+      <Filter>Header Files\SDF</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Stopwatch.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFOperation.h">
+      <Filter>Header Files\SDF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
