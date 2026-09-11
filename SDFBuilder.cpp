@@ -2,8 +2,8 @@
 #include "SDFBuilder.h"
 #include "SDFObject.h"
 
-SDFBuilder::SDFBuilder(Vec3 position, Vec3 rotation, Color color, bool lit) {
-    m_baseObject = std::make_unique<SDFObject>(position, rotation, color, lit);
+SDFBuilder::SDFBuilder(Vec3 position, Color color, bool lit) {
+    m_baseObject = std::make_unique<SDFObject>(position, color, lit);
     m_objChain.push_back(m_baseObject.get());
 }
 

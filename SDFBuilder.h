@@ -8,7 +8,7 @@ private:
     std::vector<SDFObject*> m_objChain;
     SDFOperation* m_lastOp{};
 public:
-    SDFBuilder(Vec3 position = Vec3::Zero, Vec3 rotation = Vec3::Zero, Color color = Color::White, bool lit = true);
+    SDFBuilder(Vec3 position = Vec3::Zero, Color color = Color::White, bool lit = true);
     std::unique_ptr<SDFObject> get();
 	template <std::derived_from<SDFOperation> T, typename... Args>
     SDFBuilder& pushOp(Args&&... args);
