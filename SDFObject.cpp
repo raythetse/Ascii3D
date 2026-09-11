@@ -4,20 +4,6 @@
 #include "Vec2.h"
 #include "SDFOperation.h"
 
-SDFObject::SDFObject(Vec3 position, Vec3 rotation, Color color, bool lit)
-    : m_position(position), m_color(color), m_lit(lit)
-{
-    static size_t id{};
-    m_objId = id++;
-
-    if (rotation) {
-        Mat3::fromAxisAngle(rotation.getNormal(), m_rotationMat, rotation.length() * MF::TAU);
-    }
-    else {
-        m_rotationMat = Mat3::Identity;
-    }
-}
-
 SDFObject::~SDFObject() {}
 
 void SDFObject::update()
@@ -86,7 +72,6 @@ double PlaneXY::signedDistanceInner(Vec3 p) const
 double Box::signedDistanceInner(Vec3 p) const
 {
     p -= m_position;
-    p = m_rotationMat * p;
     p = p.abs();
     p -= Vec3(m_dimensions) * 0.5;
     return p.maximum(0.0).length();
@@ -110,7 +95,6 @@ double Sphere::signedDistanceInner(Vec3 p) const
 double Torus::signedDistanceInner(Vec3 p) const
 {
     p -= m_position;
-    p = m_rotationMat * p;
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
@@ -130,4 +114,10 @@ double CapsuleZ::signedDistanceInner(Vec3 p) const
 {
     p.z = p.z > 0.0 ? std::max(0.0, p.z - 0.5 * m_bodyLength) : std::min(0.0, p.z + 0.5 * m_bodyLength);
     return p.distance(m_position) - m_endRadius;
+}
+
+double Crystal::signedDistanceInner(Vec3 p) const
+{
+    p = p.abs();
+    return (p.x + p.y + p.z - m_sideLength) * 0.57735027;
 }

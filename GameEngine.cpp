@@ -27,7 +27,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     //cubesDemo();
     //propModDemo();
 
-    add(SDFBuilder{}.pushOp<Add, CapsuleZ>()());
+    add(SDFBuilder{}.pushOp<Add, CapsuleY>(Vec3::Zero)());
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
     
@@ -57,27 +57,27 @@ void GameEngine::render()
 
 void GameEngine::frameDemo()
 {
-    add(SDFBuilder{}.pushOp<Add, Box>(Vec3::Down * 3.0, Vec3::Zero, Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
+    add(SDFBuilder{}.pushOp<Add, Box>(Vec3::Down * 3.0, Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
 
     add(SDFBuilder{}
         .pushOp<RotateContinuous>(Vec3::Up, 0.1)
         .pushOp<RotateContinuous>(Vec3::Right, 0.1)
         .pushOp<RotateContinuous>(Vec3::Forward, 0.1)
-        .pushOp<Add, BoxFrame>(Vec3::Up, Vec3::Zero, Vec3{ 1.75 }, 0.1, Color::White)().stepBack()
+        .pushOp<Add, BoxFrame>(Vec3::Up, Vec3{ 1.75 }, 0.1, Color::White)().stepBack()
             .pushOp<TranslateSine>(Vec3::Up, 2.0)
             .pushOp<RotateContinuous>(Vec3::Down, 0.1)
             .pushOp<RotateContinuous>(Vec3::Left, 0.1)
             .pushOp<RotateContinuous>(Vec3::Backward, 0.1)
-            .pushOp<Add, Box>(Vec3{ 0.5, -0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Red)()
-                .pushOp<Add, Box>(Vec3{ -0.5, -0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Orange)()
-                    .pushOp<Add, Box>(Vec3{ -0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Magenta)()
-                        .pushOp<Add, Box>(Vec3{ 0.5, 0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::MediumGray)()
+            .pushOp<Add, Box>(Vec3{ 0.5, -0.5, -0.5 }, Vec3::One, Color::Red)()
+                .pushOp<Add, Box>(Vec3{ -0.5, -0.5, 0.5 }, Vec3::One, Color::Orange)()
+                    .pushOp<Add, Box>(Vec3{ -0.5, 0.5, -0.5 }, Vec3::One, Color::Magenta)()
+                        .pushOp<Add, Box>(Vec3{ 0.5, 0.5, 0.5 }, Vec3::One, Color::MediumGray)()
                             .stepBack(3)
                 .pushOp<RoundOff>(0.1)
-                .pushOp<Add, Box>(Vec3{ -0.5, -0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Green)()
-                    .pushOp<Add, Box>(Vec3{ 0.5, -0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Yellow)()
-                        .pushOp<Add, Box>(Vec3{ -0.5, 0.5, 0.5 }, Vec3::Zero, Vec3::One, Color::Blue)()
-                            .pushOp<Add, Box>(Vec3{ 0.5, 0.5, -0.5 }, Vec3::Zero, Vec3::One, Color::Violet)()
+                .pushOp<Add, Box>(Vec3{ -0.5, -0.5, -0.5 }, Vec3::One, Color::Green)()
+                    .pushOp<Add, Box>(Vec3{ 0.5, -0.5, 0.5 }, Vec3::One, Color::Yellow)()
+                        .pushOp<Add, Box>(Vec3{ -0.5, 0.5, 0.5 }, Vec3::One, Color::Blue)()
+                            .pushOp<Add, Box>(Vec3{ 0.5, 0.5, -0.5 }, Vec3::One, Color::Violet)()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));

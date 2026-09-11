@@ -6,7 +6,7 @@ class ResurfaceOperation : public SDFOperation
 {
 protected:
 	double m_magnitude{};
-	double m_updateValue;
+	double m_updateValue{};
 	void innerUpdate() override {};
 public:
 	ResurfaceOperation(double magnitude = 0.01) : m_magnitude(magnitude) {}
