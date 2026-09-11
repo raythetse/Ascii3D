@@ -215,3 +215,38 @@ public:
 	CubeRoller(std::vector<Vec3> axes, double quarterTurnTime = 1.0, double phase = 0.0) : m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
+
+class Elongate : public TransformOperation
+{
+protected:
+	double m_length;
+	double m_offset;
+	void innerUpdate() override {};
+public:
+	Elongate(double length = 1.0, double offset = 0.0) : m_length(length), m_offset(offset) {}
+	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+};
+
+class ElongateX : public Elongate
+{
+protected:
+	void transform(Vec3& p) const override;
+public:
+	ElongateX(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+};
+
+class ElongateY : public Elongate
+{
+protected:
+	void transform(Vec3& p) const override;
+public:
+	ElongateY(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+};
+
+class ElongateZ : public Elongate
+{
+protected:
+	void transform(Vec3& p) const override;
+public:
+	ElongateZ(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+};

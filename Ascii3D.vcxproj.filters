@@ -90,9 +90,6 @@
     <ClCompile Include="SDFBuilder.cpp">
       <Filter>Source Files\SDF</Filter>
     </ClCompile>
-    <ClCompile Include="SDFOperation.cpp">
-      <Filter>Source Files\SDF</Filter>
-    </ClCompile>
     <ClCompile Include="CombinationOperation.cpp">
       <Filter>Source Files\Operations</Filter>
     </ClCompile>
@@ -113,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="GameEngine.cpp">
       <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFOperation.cpp">
+      <Filter>Source Files\Operations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,9 +158,6 @@
     <ClInclude Include="SDFBuilder.h">
       <Filter>Header Files\SDF</Filter>
     </ClInclude>
-    <ClInclude Include="SDFOperation.h">
-      <Filter>Header Files\SDF</Filter>
-    </ClInclude>
     <ClInclude Include="CombinationOperation.h">
       <Filter>Header Files\Operations</Filter>
     </ClInclude>
@@ -189,6 +186,9 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="PropertyModifier.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFOperation.h">
       <Filter>Header Files\Operations</Filter>
     </ClInclude>
   </ItemGroup>

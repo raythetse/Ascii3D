@@ -27,9 +27,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     //cubesDemo();
     //propModDemo();
     //frameDemo();
-
-    add(SDFBuilder{}.pushOp<RotateContinuous>().pushOp<Add, CrystalLong>()());
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -1.0 }, 0.35));
+    elongateDemo();
     
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();
@@ -183,4 +181,19 @@ void GameEngine::propModDemo()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
+}
+
+void GameEngine::elongateDemo()
+{
+    add(SDFBuilder{}
+        .pushOp<ElongateY>(0.5)
+        .bindPropMod<PMSineOscillation>("length", 1.0, 0.5)
+        .pushOp<ElongateZ>(1.0)
+        .bindPropMod<PMSineOscillation>("length", 1.348, 1.0)
+        .pushOp<ElongateX>(1.0)
+        .bindPropMod<PMSineOscillation>("length", 1.783, 1.0)
+        .pushOp<Add, Crystal>()()
+    );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -3.0 }, 0.25));
 }
