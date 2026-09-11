@@ -192,7 +192,9 @@ void GameEngine::elongateDemo()
         .bindPropMod<PMSineOscillation>("length", 1.348, 1.0)
         .pushOp<ElongateX>(1.0)
         .bindPropMod<PMSineOscillation>("length", 1.783, 1.0)
-        .pushOp<Add, Crystal>()()
+        .pushOp<Add, Crystal>()().color(Color::Blue)
+        .pushOp<SubtractSmooth, Box>(1.25, Color::Red)(0.5, 10.0, 0.075).stepBack()
+        .pushOp<SubtractSmooth, Box>(0.3, Color::Green)(0.1, 100.0, 0.485)
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -3.0 }, 0.25));
