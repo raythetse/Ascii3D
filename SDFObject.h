@@ -17,17 +17,15 @@ class SDFObject
 {
 public:
 protected:
-	Vec3 m_position{};
 	Color m_color;
 	bool m_lit;
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
 	virtual double signedDistanceInner(Vec3 p) const;
 public:
-	SDFObject(Vec3 position = Vec3::Zero, Color color = Color::White, bool lit = true)
-		: m_position(position), m_color(color), m_lit(lit) {}
+	SDFObject(Color color = Color::White, bool lit = true)
+		: m_color(color), m_lit(lit) {}
 	~SDFObject();
 	void update();
-	Vec3 position() const;
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	bool lit() const;
 	SDFOperation* pushOperation(std::unique_ptr<SDFOperation> operation);
@@ -44,25 +42,29 @@ SDFOperation* SDFObject::pushOperation(Args&&... args) {
 
 class PlaneXZ : public SDFObject
 {
+private:
+	double m_yPos;
 public:
 	PlaneXZ(double yPos = 0.0, Color color = Color::White, bool lit = true)
-		: SDFObject(Vec3::Up * yPos, color, lit) {}
+		: SDFObject{ color, lit }, m_yPos{ yPos } {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class PlaneYZ : public SDFObject
 {
+	double m_xPos;
 public:
 	PlaneYZ(double xPos = 0.0, Color color = Color::White, bool lit = true)
-		: SDFObject(Vec3::Right* xPos, color, lit) {}
+		: SDFObject{ color, lit }, m_xPos(xPos) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class PlaneXY : public SDFObject
 {
+	double m_zPos;
 public:
 	PlaneXY(double zPos = 0.0, Color color = Color::White, bool lit = true)
-		: SDFObject(Vec3::Forward* zPos, color, lit) {}
+		: SDFObject{ color, lit }, m_zPos(zPos) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -71,8 +73,8 @@ class Box : public SDFObject
 private:
 	Vec3 m_dimensions;
 public:
-	Box(Vec3 position = Vec3::Zero, Vec3 dimensions = Vec3::One, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_dimensions(dimensions) {}
+	Box(Vec3 dimensions = Vec3::One, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_dimensions(dimensions) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -82,8 +84,8 @@ private:
 	Vec3 m_dimensions;
 	double m_edgeThickness;
 public:
-	BoxFrame(Vec3 position = Vec3::Zero, Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
+	BoxFrame(Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -92,8 +94,8 @@ class Sphere : public SDFObject
 private:
 	double m_radius;
 public:
-	Sphere(Vec3 position = Vec3::Zero, double radius = 0.5, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_radius(radius) {}
+	Sphere(double radius = 0.5, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -102,8 +104,8 @@ class Torus : public SDFObject
 private:
 	Vec2 m_radii;
 public:
-	Torus(Vec3 position = Vec3::Zero, Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_radii(radii) {}
+	Torus(Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -113,8 +115,8 @@ private:
 	double m_endRadius;
 	double m_bodyLength;
 public:
-	CapsuleX(Vec3 position = Vec3::Zero, double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
+	CapsuleX(double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -124,8 +126,8 @@ private:
 	double m_endRadius;
 	double m_bodyLength;
 public:
-	CapsuleY(Vec3 position = Vec3::Zero, double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
+	CapsuleY(double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -135,8 +137,8 @@ private:
 	double m_endRadius;
 	double m_bodyLength;
 public:
-	CapsuleZ(Vec3 position = Vec3::Zero, double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
+	CapsuleZ(double endRadius = 0.5, double bodyLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_endRadius(endRadius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -145,8 +147,8 @@ class Crystal : public SDFObject
 private:
 	double m_sideLength;
 public:
-	Crystal(Vec3 position = Vec3::Zero, double sideLength = 1.0, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_sideLength(sideLength) {}
+	Crystal(double sideLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_sideLength(sideLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -155,8 +157,8 @@ class CylinderX : public SDFObject
 private:
 	double m_sideLength;
 public:
-	CylinderX(Vec3 position = Vec3::Zero, double sideLength = 1.0, Color color = Color::White, bool lit = true)
-		: SDFObject(position, color, lit), m_sideLength(sideLength) {}
+	CylinderX(double sideLength = 1.0, Color color = Color::White, bool lit = true)
+		: SDFObject(color, lit), m_sideLength(sideLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
