@@ -25,7 +25,7 @@ void PixelSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Ve
 	Color color{};
 	if (object) {
 		object->signedDistance(p, &color);
-		color = color.quantize(16);
+		color = color.quantize(32);
 		//totalLight *= 1.0 - (camDistance / maxDistance);
 	}
 

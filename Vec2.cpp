@@ -28,17 +28,22 @@ double Vec2::dot(const Vec2& p)
 
 Vec2 Vec2::maximum(double m)
 {
-    return Vec2(m > x ? m : x, m > y ? m : y);
+    return { m > x ? m : x, m > y ? m : y };
 }
 
 Vec2 Vec2::minimum(double m)
 {
-    return Vec2(m < x ? m : x, m < y ? m : y);
+    return { m < x ? m : x, m < y ? m : y };
 }
 
 Vec2 Vec2::cross(const Vec2& p)
 {
-    return Vec2(x * p.y - y * p.x);
+    return (x * p.y - y * p.x);
+}
+
+Vec2 Vec2::abs()
+{
+    return { std::abs(x), std::abs(y) };
 }
 
 void Vec2::normalize()
@@ -51,7 +56,7 @@ void Vec2::normalize()
 Vec2 Vec2::rotate(const double rads) const
 {
     Vec2 sc = MF::fast_sincos(rads);
-    return Vec2(x * sc.y - y * sc.x, x * sc.x + y * sc.y);
+    return { x * sc.y - y * sc.x, x * sc.x + y * sc.y };
 }
 
 Vec2 Vec2::getNormal() const
@@ -62,22 +67,22 @@ Vec2 Vec2::getNormal() const
 
 Vec2 Vec2::operator+(const Vec2& p) const
 {
-    return Vec2{ x + p.x, y + p.y };
+    return { x + p.x, y + p.y };
 }
 
 Vec2 Vec2::operator-(const Vec2& p) const
 {
-    return Vec2{ x - p.x, y - p.y};
+    return { x - p.x, y - p.y};
 }
 
 Vec2 Vec2::operator*(const Vec2& p) const
 {
-    return Vec2{ x * p.x, y * p.y};
+    return { x * p.x, y * p.y};
 }
 
 Vec2 Vec2::operator/(const Vec2& p) const noexcept
 {
-    return Vec2{ p.x == 0 ? 0.0 : x / p.x, p.y == 0 ? 0.0 : y / p.y};
+    return { p.x == 0 ? 0.0 : x / p.x, p.y == 0 ? 0.0 : y / p.y};
 }
 
 Vec2& Vec2::operator+=(const Vec2& p)
@@ -105,7 +110,7 @@ Vec2& Vec2::operator/=(const Vec2& p)
 }
 
 Vec2 Vec2::operator*(const double d) const {
-    return Vec2(x * d, y * d);
+    return { x * d, y * d };
 }
 
 bool Vec2::operator==(const Vec2& p) const {
@@ -119,5 +124,5 @@ std::ostream& operator<<(std::ostream& os, const Vec2& p)
 
 Vec2 abs(const Vec2 v)
 {
-    return Vec2(abs(v.x), abs(v.y));
+    return { abs(v.x), abs(v.y) };
 }
