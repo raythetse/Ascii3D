@@ -30,11 +30,6 @@ void SDFObject::setColor(Color color)
     m_color = color;
 }
 
-Vec3 SDFObject::position() const
-{
-    return m_position;
-}
-
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
     double distance{ signedDistanceInner(p) };
@@ -56,22 +51,21 @@ double SDFObject::signedDistanceInner(Vec3 p) const
 
 double PlaneXZ::signedDistanceInner(Vec3 p) const
 {
-    return p.y - m_position.y;
+    return p.y - m_yPos;
 }
 
 double PlaneYZ::signedDistanceInner(Vec3 p) const
 {
-    return p.x - m_position.x;
+    return p.x - m_xPos;
 }
 
 double PlaneXY::signedDistanceInner(Vec3 p) const
 {
-    return p.z - m_position.z;
+    return p.z - m_zPos;
 }
 
 double Box::signedDistanceInner(Vec3 p) const
 {
-    p -= m_position;
     p = p.abs();
     p -= Vec3(m_dimensions) * 0.5;
     return p.maximum(0.0).length();
@@ -89,31 +83,30 @@ double BoxFrame::signedDistanceInner(Vec3 p) const
 
 double Sphere::signedDistanceInner(Vec3 p) const
 {
-    return p.distance(m_position) - m_radius;
+    return p.length() - m_radius;
 }
 
 double Torus::signedDistanceInner(Vec3 p) const
 {
-    p -= m_position;
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
 double CapsuleX::signedDistanceInner(Vec3 p) const
 {
     p.x = p.x > 0.0 ? std::max(0.0, p.x - 0.5 * m_bodyLength) : std::min(0.0, p.x + 0.5 * m_bodyLength);
-    return p.distance(m_position) - m_endRadius;
+    return p.length() - m_endRadius;
 }
 
 double CapsuleY::signedDistanceInner(Vec3 p) const
 {
     p.y = p.y > 0.0 ? std::max(0.0, p.y - 0.5 * m_bodyLength) : std::min(0.0, p.y + 0.5 * m_bodyLength);
-    return p.distance(m_position) - m_endRadius;
+    return p.length() - m_endRadius;
 }
 
 double CapsuleZ::signedDistanceInner(Vec3 p) const
 {
     p.z = p.z > 0.0 ? std::max(0.0, p.z - 0.5 * m_bodyLength) : std::min(0.0, p.z + 0.5 * m_bodyLength);
-    return p.distance(m_position) - m_endRadius;
+    return p.length() - m_endRadius;
 }
 
 double Crystal::signedDistanceInner(Vec3 p) const

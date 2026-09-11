@@ -1,7 +1,12 @@
 #include "LightSource.h"
 
 LightSource::LightSource(Vec3 position, double luminance)
-	: SDFObject(position, Color::White, false), m_luminance(1000.0 * luminance) {}
+	: SDFObject(Color::White, false), m_luminance(1000.0 * luminance), m_position(position) {}
+
+Vec3 LightSource::position()
+{
+	return m_position;
+}
 
 double LightSource::luminance()
 {
