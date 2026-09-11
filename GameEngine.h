@@ -32,6 +32,7 @@ private:
 	void oxygenDemo();
 	void cubesDemo();
 	void propModDemo();
+	void elongateDemo();
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);

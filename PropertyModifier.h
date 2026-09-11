@@ -38,6 +38,6 @@ private:
 public:
 	PMSineOscillation(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
-		*ptr = std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period);
+		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };

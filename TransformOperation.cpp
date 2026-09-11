@@ -1,5 +1,6 @@
 #include "TransformOperation.h"
 #include "GameTimer.h"
+#include <algorithm>
 
 void MirrorX::transform(Vec3& p) const
 {
@@ -326,4 +327,34 @@ void CubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> prop
 		propMod->BindToProp(&m_quarterTurnTime);
 		m_propMods.push_back(std::move(propMod));
 	}
+}
+
+void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+	if (propMod->propName() == "length") {
+		propMod->BindToProp(&m_length);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "offset") {
+		propMod->BindToProp(&m_offset);
+		m_propMods.push_back(std::move(propMod));
+	}
+}
+
+void ElongateX::transform(Vec3& p) const
+{
+	double half = m_length * 0.5;
+	p.x -= std::clamp(p.x - m_offset, -half, half);
+}
+
+void ElongateY::transform(Vec3& p) const
+{
+	double half = m_length * 0.5;
+	p.y -= std::clamp(p.y - m_offset, -half, half);
+}
+
+void ElongateZ::transform(Vec3& p) const
+{
+	double half = m_length * 0.5;
+	p.z -= std::clamp(p.z - m_offset, -half, half);
 }
