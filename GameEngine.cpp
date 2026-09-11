@@ -24,12 +24,12 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 {
     //gyroDemo();
     //oxygenDemo();
-    cubesDemo();
+    //cubesDemo();
     //propModDemo();
     //frameDemo();
 
-    //add(SDFBuilder{}.pushOp<Add, CapsuleY>()().position(Vec3::Right).rotation(Vec3::Forward,0.25));
-    //m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
+    add(SDFBuilder{}.pushOp<RotateContinuous>().pushOp<Add, CrystalLong>()());
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -1.0 }, 0.35));
     
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
     GameTimer::reset();

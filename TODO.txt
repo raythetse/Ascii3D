@@ -4,6 +4,7 @@ Required:
 - input/output scene from/to file
 - console input for field dimensions
 - disable light attenuation (per light)
+- light movement
 - startup options
 - comment everything
 - exceptions

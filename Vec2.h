@@ -23,6 +23,7 @@ public:
 	Vec2 maximum(double m);
 	Vec2 minimum(double m);
 	Vec2 cross(const Vec2& p);
+	Vec2 abs();
 	void normalize();
 	Vec2 rotate(const double rads) const ;
 	Vec2 getNormal() const ;
