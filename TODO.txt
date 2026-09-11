@@ -7,6 +7,7 @@ Required:
 - startup options
 - comment everything
 - exceptions
+- consts wherever sensical
 
 Optional:
 - camera track

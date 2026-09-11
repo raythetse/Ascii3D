@@ -4,6 +4,12 @@
 #include "Vec2.h"
 #include "SDFOperation.h"
 
+SDFObject::SDFObject(Color color, Vec3 position, Vec3 rotationAxis, double rotations)
+    : m_position{ position }, m_rotationAxis{ rotationAxis }, m_rotations{ rotations }, m_color{ color }
+{
+    setRotation(rotationAxis, rotations);
+}
+
 SDFObject::~SDFObject() {}
 
 void SDFObject::update()
@@ -13,9 +19,18 @@ void SDFObject::update()
     }
 }
 
-bool SDFObject::lit() const
+void SDFObject::setPosition(Vec3 position)
 {
-    return m_lit;
+    m_position = position;
+}
+
+void SDFObject::setRotation(Vec3 axis, double rotations)
+{
+    m_rotationAxis = axis;
+    m_rotations = rotations;
+    Mat3::fromAxisAngle(m_rotationAxis, m_rotMat, m_rotations * MF::TAU);
+
+    m_hasRotation = m_rotMat != Mat3::Identity;
 }
 
 SDFOperation* SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
@@ -32,6 +47,8 @@ void SDFObject::setColor(Color color)
 
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
+    p -= m_position;
+    if (m_hasRotation) p = m_rotMat * p;
     double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
     for (auto& op : m_operations) {

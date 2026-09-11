@@ -22,6 +22,18 @@ SDFBuilder& SDFBuilder::stepBack(size_t steps)
     return *this;
 }
 
+SDFBuilder& SDFBuilder::position(Vec3 position)
+{
+    m_objChain.back()->setPosition(position);
+    return *this;
+}
+
+SDFBuilder& SDFBuilder::rotation(Vec3 axis, double rotations)
+{
+    m_objChain.back()->setRotation(axis, rotations);
+    return *this;
+}
+
 SDFBuilder& SDFBuilder::color(Vec3 color)
 {
     m_objChain.back()->setColor(color);

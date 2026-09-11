@@ -93,11 +93,10 @@ void RayMarcher::march( PixelField& field,
                     directLights.push_back(light.get());
                 }
             }
-
-            sample.buildRenderParams(hitObj, sample.samplePoint, m_maxDistance, objects[sample.objectIndex]->lit(), directLights);
+            sample.buildRenderParams(hitObj, sample.samplePoint, m_maxDistance, directLights);
         }
         else {
-            sample.buildRenderParams(nullptr, sample.samplePoint, m_maxDistance, true, directLights);
+            sample.buildRenderParams(nullptr, sample.samplePoint, m_maxDistance, directLights);
         }
     });
 }

@@ -15,7 +15,9 @@ public:
     template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
     SDFBuilder& stepBack(size_t steps = 1);
-    SDFBuilder& color(Vec3 color);
+    SDFBuilder& color(Color color);
+    SDFBuilder& position(Vec3 position);
+    SDFBuilder& rotation(Vec3 axis, double rotations);
     template <typename T>
         requires (!std::is_base_of_v<PropertyModifierBase, T>)
     SDFBuilder& bindPropMod(std::unique_ptr<PropertyModifier<T>> propMod);
