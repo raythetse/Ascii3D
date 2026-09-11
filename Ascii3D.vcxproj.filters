@@ -37,6 +37,12 @@
     <Filter Include="Header Files\SDF">
       <UniqueIdentifier>{29070da6-1882-4ee7-a3e2-6e3feaf739db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Operations">
+      <UniqueIdentifier>{fabc046f-4f7c-4e9b-9886-e83915beb5ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Operations">
+      <UniqueIdentifier>{74204d7c-d4d4-4b61-91de-f955454d99f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -72,9 +78,6 @@
     <ClCompile Include="Vec2.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="GameEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PerfMonitor.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
@@ -89,6 +92,27 @@
     </ClCompile>
     <ClCompile Include="SDFOperation.cpp">
       <Filter>Source Files\SDF</Filter>
+    </ClCompile>
+    <ClCompile Include="CombinationOperation.cpp">
+      <Filter>Source Files\Operations</Filter>
+    </ClCompile>
+    <ClCompile Include="DistortOperation.cpp">
+      <Filter>Source Files\Operations</Filter>
+    </ClCompile>
+    <ClCompile Include="DomainOperation.cpp">
+      <Filter>Source Files\Operations</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyModifier.cpp">
+      <Filter>Source Files\Operations</Filter>
+    </ClCompile>
+    <ClCompile Include="ResurfaceOperation.cpp">
+      <Filter>Source Files\Operations</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformOperation.cpp">
+      <Filter>Source Files\Operations</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine.cpp">
+      <Filter>Source Files\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,20 +155,41 @@
     <ClInclude Include="MathFunctions.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Mat2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SDFBuilder.h">
       <Filter>Header Files\SDF</Filter>
     </ClInclude>
-    <ClInclude Include="GameTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Stopwatch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SDFOperation.h">
       <Filter>Header Files\SDF</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinationOperation.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="DistortOperation.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="DomainOperation.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="ResurfaceOperation.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFOperationInc.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformOperation.h">
+      <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat2.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Stopwatch.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyModifier.h">
+      <Filter>Header Files\Operations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
