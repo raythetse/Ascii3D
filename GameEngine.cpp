@@ -24,11 +24,11 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 {
     //gyroDemo();
     //oxygenDemo();
-    //cubesDemo();
-    propModDemo();
+    cubesDemo();
+    //propModDemo();
+    //frameDemo();
 
-    //add(SDFBuilder{}.pushOp<Add, CapsuleY>()());
-
+    //add(SDFBuilder{}.pushOp<Add, CapsuleY>()().position(Vec3::Right).rotation(Vec3::Forward,0.25));
     //m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
     
     m_objectRange = std::views::iota(size_t(0), m_objects.size());
@@ -55,37 +55,40 @@ void GameEngine::render()
     m_pixelField.swap();
 }
 
-void GameEngine::frameDemo()
+void GameEngine::gyroDemo()
 {
-    add(SDFBuilder{}.pushOp<Add, Box>(Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)().pushOp<Translate>(Vec3::Down * 3.0));
-
     add(SDFBuilder{}
-        .pushOp<RotateContinuous>(Vec3::Up, 0.1)
-        .pushOp<RotateContinuous>(Vec3::Right, 0.1)
-        .pushOp<RotateContinuous>(Vec3::Forward, 0.1)
-        .pushOp<Add, BoxFrame>(Vec3{ 1.75 }, 0.1, Color::White)().pushOp<Translate>(Vec3::Up).stepBack()
-            .pushOp<TranslateSine>(Vec3::Up, 2.0)
-            .pushOp<RotateContinuous>(Vec3::Down, 0.1)
-            .pushOp<RotateContinuous>(Vec3::Left, 0.1)
-            .pushOp<RotateContinuous>(Vec3::Backward, 0.1)
-            .pushOp<Add, Box>(Vec3::One, Color::Red)().pushOp<Translate>(Vec3{ 0.5, -0.5, -0.5 })
-                .pushOp<Add, Box>(Vec3::One, Color::Orange)().pushOp<Translate>(Vec3{ -0.5, -0.5, 0.5 })
-                    .pushOp<Add, Box>(Vec3::One, Color::Magenta)().pushOp<Translate>(Vec3{ -0.5, 0.5, -0.5 })
-                        .pushOp<Add, Box>(Vec3::One, Color::MediumGray)().pushOp<Translate>(Vec3{ 0.5, 0.5, 0.5 })
-                            .stepBack(3)
-                .pushOp<RoundOff>(0.1)
-                .pushOp<Add, Box>(Vec3::One, Color::Green)().pushOp<Translate>(Vec3{ -0.5, -0.5, -0.5 })
-                    .pushOp<Add, Box>(Vec3::One, Color::Yellow)().pushOp<Translate>(Vec3{ 0.5, -0.5, 0.5 })
-                        .pushOp<Add, Box>(Vec3::One, Color::Blue)().pushOp<Translate>(Vec3{ -0.5, 0.5, 0.5 })
-                            .pushOp<Add, Box>(Vec3::One, Color::Violet)().pushOp<Translate>(Vec3{ 0.5, 0.5, -0.5 })
+        .pushOp<Add, Torus>(2.0, 0.25)()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
-void GameEngine::gyroDemo()
+void GameEngine::frameDemo()
 {
+    add(SDFBuilder{}.pushOp<Translate>(Vec3::Down * 4.0).pushOp<Add, Box>(Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
 
+    add(SDFBuilder{}
+        .pushOp<RotateContinuous>(Vec3::Up, 0.1)
+        .pushOp<RotateContinuous>(Vec3::Right, 0.1)
+        .pushOp<RotateContinuous>(Vec3::Forward, 0.1)
+        .pushOp<Add, BoxFrame>(Vec3{ 2.0 }, 0.1, Color::Gold)()
+            .pushOp<TranslateSine>(Vec3::Up, 2.0)
+            .pushOp<RotateContinuous>(Vec3::Down, 0.1)
+            .pushOp<RotateContinuous>(Vec3::Left, 0.1)
+            .pushOp<RotateContinuous>(Vec3::Backward, 0.1)
+                .pushOp<Add, SDFObject>()()
+                    .pushOp<Add, Box>(Vec3::One, Color::Red, Vec3{ 0.5, 0.5, 0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::Orange, Vec3{ 0.5, 0.5, -0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::Magenta, Vec3{ 0.5, -0.5, 0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::MediumGray, Vec3{ 0.5, -0.5, -0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::Green, Vec3{ -0.5, 0.5, 0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::Yellow, Vec3{ -0.5, 0.5, -0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::Blue, Vec3{ -0.5, -0.5, 0.5 })().stepBack()
+                    .pushOp<Add, Box>(Vec3::One, Color::Violet, Vec3{ -0.5, -0.5, -0.5 })().stepBack()
+                    .pushOp<Add, BoxFrame>(Vec3{ 1.25 }, 0.1, Color::White)()
+        
+    );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }

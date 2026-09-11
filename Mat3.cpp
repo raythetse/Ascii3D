@@ -31,6 +31,14 @@ Vec3 Mat3::operator*(const Vec3& p) const {
 
     return result;
 }
+bool Mat3::operator==(const Mat3& m) const {
+    for (size_t row{}; row < 3; ++row) {
+        for (size_t col{}; col < 3; ++col) {
+            if (m_mat[row][col] != m.m_mat[row][col]) return false;
+        }
+    }
+    return true;
+}
 
 void Mat3::fromAxisAngle(Vec3 axis, Mat3& mat, const double rads)
 {
