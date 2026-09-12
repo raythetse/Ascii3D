@@ -2,9 +2,10 @@
 #include <execution>
 #include <ranges>
 #include "GameTimer.h"
+#include "InputManager.h"
+#include "MathFunctions.h"
 #include "PropertyModifier.h"
 #include "SDFOperationInc.h"
-#include "MathFunctions.h"
 
 GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double stepFactor, double tolerance)
 	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_pixelField{ width, height }
@@ -13,7 +14,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 {
     m_scene = SDFScene(SDFScene::LoadOption::Elongate);
     m_framePM = m_perfMonitor.add("FPS", PerfMonitor::FPS);
-    m_updatePM = m_perfMonitor.add("Update");
+    m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
     m_renderPM = m_perfMonitor.add("Render");
     GameTimer::reset();
@@ -22,8 +23,8 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 void GameEngine::run()
 {
     while (true) {
-        if (handleInput()) break;
-
+        if (!handleInput()) break;
+        GameTimer::tick();
         m_perfMonitor.sample(m_framePM, [this]() {
             m_perfMonitor.sample(m_updatePM, [this]() { update(); });
             m_perfMonitor.sample(m_marchPM, [this]() { march(); });
@@ -35,20 +36,22 @@ void GameEngine::run()
 
 bool GameEngine::handleInput()
 {
-    if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) return true;
+    InputManager::update();
+    if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
 
-    if (GetAsyncKeyState('P') & 0x8000) {
+    if (InputManager::keyJustPushed('P')) {
         if (!m_pausePressed) GameTimer::togglePause();
         m_pausePressed = true;
     }
     else {
         m_pausePressed = false;
     }
+
+    return true;
 }
 
 void GameEngine::update()
 {
-    GameTimer::tick();
     m_camera.update();
     m_scene.update();
 }
