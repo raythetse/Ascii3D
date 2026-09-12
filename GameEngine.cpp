@@ -12,7 +12,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     , m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_renderer{ width * height }
 	, m_camera{ width * .005, height * .01 }
 {
-    m_scene = SDFScene(SDFScene::Oxygen);
+    m_scene = SDFScene(SDFScene::Elongate);
     m_framePM = m_perfMonitor.add("FPS", PerfMonitor::FPS);
     m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
@@ -23,12 +23,12 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 void GameEngine::run()
 {
     while (true) {
-        if (!handleInput()) break;
         GameTimer::tick();
+        if (!handleInput()) break;
         m_perfMonitor.sample(m_framePM, [this]() {
-            m_perfMonitor.sample(m_updatePM, [this]() { update(); });
-            m_perfMonitor.sample(m_marchPM, [this]() { march(); });
-            m_perfMonitor.sample(m_renderPM, [this]() { render(); });
+            update();
+            march();
+            render();
         });
         m_perfMonitor.printMonitors();
     }
@@ -37,31 +37,37 @@ void GameEngine::run()
 bool GameEngine::handleInput()
 {
     InputManager::update();
-    if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
 
+    if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
     if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
 
-    if (InputManager::keyJustPushed(VK_UP)) m_camera.setViewportSize(m_pixelField.decreaseHeight(InputManager::keyDown(VK_CONTROL) ? 5 : 1));
-    else if (InputManager::keyJustPushed(VK_DOWN)) m_camera.setViewportSize(m_pixelField.increaseHeight((InputManager::keyDown(VK_CONTROL) ? 5 : 1)));
-    else if (InputManager::keyJustPushed(VK_LEFT))  m_camera.setViewportSize(m_pixelField.decreaseWidth((InputManager::keyDown(VK_CONTROL) ? 5 : 1)));
-    else if (InputManager::keyJustPushed(VK_RIGHT)) m_camera.setViewportSize(m_pixelField.increaseWidth((InputManager::keyDown(VK_CONTROL) ? 5 : 1)));
+    if      (InputManager::keyJustPushed(VK_UP))    m_camera.setViewportSize(m_pixelField.decreaseHeight(InputManager::keyDown(VK_CONTROL) ? 5  : 1));
+    else if (InputManager::keyJustPushed(VK_DOWN))  m_camera.setViewportSize(m_pixelField.increaseHeight(InputManager::keyDown(VK_CONTROL) ? 15 : 3));
+    else if (InputManager::keyJustPushed(VK_LEFT))  m_camera.setViewportSize(m_pixelField.decreaseWidth (InputManager::keyDown(VK_CONTROL) ? 15 : 3));
+    else if (InputManager::keyJustPushed(VK_RIGHT)) m_camera.setViewportSize(m_pixelField.increaseWidth (InputManager::keyDown(VK_CONTROL) ? 15 : 3));
 
     return true;
 }
 
 void GameEngine::update()
 {
-    m_camera.update();
-    m_scene.update();
+    m_perfMonitor.sample(m_updatePM, [this]() {
+        m_camera.update();
+        m_scene.update();
+    });
 }
 
 void GameEngine::march()
 {
-    m_rayMarcher.march(m_scene, m_pixelField, m_camera);
+    m_perfMonitor.sample(m_marchPM, [this]() {
+        m_rayMarcher.march(m_scene, m_pixelField, m_camera);
+    });
 }
 
 void GameEngine::render()
 {
-    m_renderer.render(m_pixelField);
-    m_pixelField.swap();
+    m_perfMonitor.sample(m_renderPM, [this]() {
+        m_renderer.render(m_pixelField);
+        m_pixelField.swap();
+    });
 }

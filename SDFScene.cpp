@@ -166,16 +166,19 @@ void SDFScene::propModDemo()
 void SDFScene::elongateDemo()
 {
     add(SDFBuilder{}
+        .pushOp<Rotate>(Vec3::Up, 0.125)
         .pushOp<ElongateY>(0.5)
         .bindPropMod<PMSineOscillation>("length", 1.0, 0.5)
         .pushOp<ElongateZ>(1.0)
         .bindPropMod<PMSineOscillation>("length", 1.348, 1.0)
         .pushOp<ElongateX>(1.0)
         .bindPropMod<PMSineOscillation>("length", 1.783, 1.0)
-        .pushOp<Add, Crystal>()().color(Color::Blue)
-            .pushOp<SubtractSmooth, Box>(1.25, Color::Red)(0.5, 10.0, 0.075)
-            .stepBack()
-        .pushOp<SubtractSmooth, Box>(0.3, Color::Green)(0.1, 100.0, 0.485)
+        .pushOp<Add, Crystal>(1.25)().color(Color::Blue)
+            .pushOp<SubtractSmooth, Box>(1.5, Color::Red)(0.5, 25.0, 0.25)
+                .stepBack()
+            .pushOp<SubtractSmooth, Box>(1.0, Color::Green)(0.1, 100.0, 0.485)
+                .stepBack()
+            .pushOp<Add, Crystal>(0.1, Color::Yellow)()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -3.0 }, 0.25));

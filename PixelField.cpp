@@ -73,14 +73,21 @@ Vec2 PixelField::increaseHeight(size_t increase)
 
 Vec2 PixelField::decreaseWidth(size_t decrease)
 {
-    m_width = 5 > m_width - decrease ? 5 : m_width - decrease;
+    m_width -= min(decrease, m_width - m_minWidth);
     rebuildBuffers();
     return { static_cast<double>(m_width), static_cast<double>(m_height) };
 }
 
 Vec2 PixelField::decreaseHeight(size_t decrease)
 {
-    m_height = 5 > m_height - decrease ? 5 : m_height - decrease;
+    m_height -= min(decrease, m_height - m_minHeight);
     rebuildBuffers();
     return { static_cast<double>(m_width), static_cast<double>(m_height) };
+}
+
+void PixelField::setSize(size_t width, size_t height)
+{
+    m_width = width;
+    m_height = height;
+    rebuildBuffers();
 }

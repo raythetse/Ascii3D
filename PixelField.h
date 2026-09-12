@@ -7,6 +7,8 @@
 class PixelField
 {
 private:
+	const size_t m_minWidth{ 15 };
+	const size_t m_minHeight{ 5 };
 	size_t m_width;
 	size_t m_height;
 	std::ranges::iota_view<size_t, size_t> m_pixelRange;
@@ -35,5 +37,6 @@ public:
 	Vec2 increaseHeight(size_t increase);
 	Vec2 decreaseWidth(size_t decrease);
 	Vec2 decreaseHeight(size_t decrease);
+	void setSize(size_t width, size_t height);
 };
 

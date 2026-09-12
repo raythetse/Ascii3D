@@ -11,6 +11,4 @@ namespace MF {
     inline Vec2 fast_sincos(double angle) {
         return { std::sin(angle), std::cos(angle) };
     }
-
-    inline double clamp(double min, double max, double val) { return val < min ? min : val > max ? max : val; }
 }

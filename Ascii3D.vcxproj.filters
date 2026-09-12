@@ -120,6 +120,12 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Soptwatch.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -151,9 +157,6 @@
     </ClInclude>
     <ClInclude Include="Vec2.h">
       <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="GameEngine.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PerfMonitor.h">
       <Filter>Header Files\Utility</Filter>
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngine.h">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

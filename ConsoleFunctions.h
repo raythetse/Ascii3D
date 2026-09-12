@@ -19,7 +19,7 @@ namespace ConsoleFunctions
         SetFocus(hwnd);
     }
 
-    inline void desyncSDTIO()
+    inline void desyncSTDIO()
     {
         std::ios_base::sync_with_stdio(false);
         std::cin.tie(nullptr);
