@@ -69,27 +69,33 @@ void InputManager::processKeyPresses()
 
 void InputManager::processMouseMovement()
 {
-	static bool firstRun{ true };
+	static bool s_skipFrame{ true };
 
 	
-	if (firstRun) {
-		firstRun = false;
-	}
-	else {
-		POINT cursorPos;
-		if (GetCursorPos(&cursorPos)) {
-			RECT rect;
-			GetClientRect(m_console, &rect);
+	
+	if (GetForegroundWindow() == m_console) {
+		if (s_skipFrame) {
+			s_skipFrame = false;
+		}
+		else {
+			POINT cursorPos;
+			if (GetCursorPos(&cursorPos)) {
+				RECT rect;
+				GetClientRect(m_console, &rect);
 
-			if (ScreenToClient(m_console, &cursorPos)) {
-				double x = (SHORT)cursorPos.x;
-				double y = (SHORT)cursorPos.y;
+				if (ScreenToClient(m_console, &cursorPos)) {
+					double x = (SHORT)cursorPos.x;
+					double y = (SHORT)cursorPos.y;
 
-				m_mouseMotion = { x - m_screenCentre.x, y - m_screenCentre.y };
+					m_mouseMotion = { x - m_screenCentre.x, y - m_screenCentre.y };
+				}
 			}
 		}
+		SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 	}
-	SetCursorPos(m_screenCentre.x, m_screenCentre.y);
+	else {
+		s_skipFrame = true;
+	}
 }
 
 void InputManager::update()
