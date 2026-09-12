@@ -45,19 +45,16 @@ void RayMarcher::SampleScene(Vec3 p, const std::vector<std::unique_ptr<SDFObject
     }
 }
 
-void RayMarcher::march( PixelField& field,
-                        const std::vector<std::unique_ptr<SDFObject>>& objects,
-                        const std::vector<std::unique_ptr<LightSource>>& lights,
-                        const Camera& camera,
-                        std::ranges::iota_view<size_t, size_t>& range)
+void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
 {
-    const size_t width = field.width();
-    const size_t height = field.height();
+    auto& objects = scene.objects();
+    auto& lights = scene.lights();
 
     // parallel execution policy parallelizes the iterations automatically
-    std::for_each(std::execution::par, range.begin(), range.end(),
-        [this, &field, &objects, &camera, &lights, width, height](size_t index)
+    std::for_each(std::execution::par, field.rangeBegin(), field.rangeEnd(), [this, &field, &objects, &lights, &camera](size_t index)
     {
+        size_t width = field.width();
+        size_t height = field.height();
         size_t row = index / width;
         size_t col = index % width;
 

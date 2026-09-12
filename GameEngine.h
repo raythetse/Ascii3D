@@ -1,11 +1,12 @@
 #pragma once
 #include <utility>
 #include "PixelField.h"
+#include "PerfMonitor.h"
 #include "RayMarcher.h"
 #include "Renderer.h"
 #include "SDFObject.h"
-#include "SDFBuilder.h"
 #include "Stopwatch.h"
+#include "SDFScene.h"
 
 class GameEngine
 {
@@ -16,26 +17,18 @@ private:
 	RayMarcher m_rayMarcher;
 	Renderer m_renderer;
 	Camera m_camera;
-	std::vector<std::unique_ptr<SDFObject>> m_objects{};
-	std::vector<std::unique_ptr<LightSource>> m_lights{};
-	std::ranges::iota_view<size_t, size_t> m_pixelRange;
-	std::ranges::iota_view<size_t, size_t> m_objectRange;
-	Stopwatch m_gameTimer{};
-	double m_deltaTime{};
-	double m_time{};
-	void add(SDFBuilder& obj);
-	void add(SDFBuilder&& obj);
-
-	// Demo scenes
-	void frameDemo();
-	void gyroDemo();
-	void oxygenDemo();
-	void cubesDemo();
-	void propModDemo();
-	void elongateDemo();
+	SDFScene m_scene;
+	bool m_pausePressed{};
+	PerfMonitor m_perfMonitor{};
+	size_t m_framePM{};
+	size_t m_updatePM{};
+	size_t m_marchPM{};
+	size_t m_renderPM{};
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);
+	void run();
+	bool handleInput();
 	void update();
 	void march();
 	void render();

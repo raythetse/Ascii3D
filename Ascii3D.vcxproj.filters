@@ -114,6 +114,9 @@
     <ClCompile Include="SDFOperation.cpp">
       <Filter>Source Files\Operations</Filter>
     </ClCompile>
+    <ClCompile Include="SDFScene.cpp">
+      <Filter>Source Files\SDF</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -190,6 +193,12 @@
     </ClInclude>
     <ClInclude Include="SDFOperation.h">
       <Filter>Header Files\Operations</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFScene.h">
+      <Filter>Header Files\SDF</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleFunctions.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
