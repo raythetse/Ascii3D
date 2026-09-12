@@ -1,24 +1,20 @@
 Required:
-- Refactor - separate engine from scene
 - bounding boxes for efficiency
 - input/output scene from/to file
 - console input for field dimensions
-- disable light attenuation (per light)
+- toggle light attenuation
 - light movement
 - startup options
 - comment everything
 - exceptions
 - consts wherever sensical
 - Fix pixelsample accessibility
-- input manager
 - set window name
 
 Optional:
 - camera track
-- dynamic pixel field resizing
 - console input for various other params
 - try matrix style renderer
-- ambient color bounce
 - transparency/reflection
 - object chain merging
 

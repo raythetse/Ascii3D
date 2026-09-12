@@ -7,7 +7,7 @@
 
 void Camera::update()
 {
-    if (InputManager::keyDown(VK_BACK)) reset();
+    if (InputManager::keyJustPushed(VK_BACK)) reset();
 
     Vec2 diff = InputManager::mouseMotion();;
 
@@ -62,10 +62,15 @@ void Camera::reset()
 Vec3 Camera::getViewportRay(const double x, const double y) const
 {
     Vec3 screenPoint = m_position + m_forward;
-    screenPoint -= m_right * 0.5 * m_viewportWidth;
-    screenPoint += m_right * m_viewportWidth * x;
-    screenPoint += m_up * 0.5 * m_viewportHeight;
-    screenPoint -= m_up * m_viewportHeight * y;
+    screenPoint -= m_right * 0.5 * m_viewportSize.x;
+    screenPoint += m_right * m_viewportSize.x * x;
+    screenPoint += m_up * 0.5 * m_viewportSize.y;
+    screenPoint -= m_up * m_viewportSize.y * y;
 
     return (screenPoint - m_position).getNormal();
+}
+
+void Camera::setViewportSize(Vec2 size)
+{
+    m_viewportSize = size* Vec2{ 0.005, 0.01 };
 }

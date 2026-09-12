@@ -156,7 +156,7 @@ void SDFScene::propModDemo()
         .pushOp<Add, Sphere>(1.0, Color::Blue)()
             .pushOp<Translate>(Vec3::Left)
             .pushOp<AddSmooth, Sphere>(1.0, Color::Red)()
-                .bindPropMod<PMSineOscillation>("colorBlending")
+                .bindPropMod<PMSineOscillation>("colorBlending", 1.0, 2.0)
                 .pushOp<Translate>(Vec3::Right)
     );
 

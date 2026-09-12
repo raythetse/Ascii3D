@@ -12,7 +12,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     , m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_renderer{ width * height }
 	, m_camera{ width * .005, height * .01 }
 {
-    m_scene = SDFScene(SDFScene::LoadOption::Elongate);
+    m_scene = SDFScene(SDFScene::Oxygen);
     m_framePM = m_perfMonitor.add("FPS", PerfMonitor::FPS);
     m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
@@ -39,13 +39,12 @@ bool GameEngine::handleInput()
     InputManager::update();
     if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
 
-    if (InputManager::keyJustPushed('P')) {
-        if (!m_pausePressed) GameTimer::togglePause();
-        m_pausePressed = true;
-    }
-    else {
-        m_pausePressed = false;
-    }
+    if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
+
+    if (InputManager::keyJustPushed(VK_UP)) m_camera.setViewportSize(m_pixelField.decreaseHeight(InputManager::keyDown(VK_CONTROL) ? 5 : 1));
+    else if (InputManager::keyJustPushed(VK_DOWN)) m_camera.setViewportSize(m_pixelField.increaseHeight((InputManager::keyDown(VK_CONTROL) ? 5 : 1)));
+    else if (InputManager::keyJustPushed(VK_LEFT))  m_camera.setViewportSize(m_pixelField.decreaseWidth((InputManager::keyDown(VK_CONTROL) ? 5 : 1)));
+    else if (InputManager::keyJustPushed(VK_RIGHT)) m_camera.setViewportSize(m_pixelField.increaseWidth((InputManager::keyDown(VK_CONTROL) ? 5 : 1)));
 
     return true;
 }

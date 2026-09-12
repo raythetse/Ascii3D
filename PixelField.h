@@ -13,6 +13,7 @@ private:
 	std::vector<PixelSample> m_fieldA;
 	std::vector<PixelSample> m_fieldB;
 	bool m_swap{};
+	void rebuildBuffers();
 public:
 	PixelField(const size_t width, const size_t height)
 		: m_width(width), m_height(height)
@@ -30,5 +31,9 @@ public:
 	std::ranges::iterator_t<std::ranges::iota_view<size_t, size_t>> rangeBegin();
 	std::ranges::iterator_t<std::ranges::iota_view<size_t, size_t>> rangeEnd();
 	void swap();
+	Vec2 increaseWidth(size_t increase);
+	Vec2 increaseHeight(size_t increase);
+	Vec2 decreaseWidth(size_t decrease);
+	Vec2 decreaseHeight(size_t decrease);
 };
 
