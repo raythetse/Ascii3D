@@ -17,7 +17,7 @@ public:
 	Vec3 normal{};
 	Color renderColor{};
 	char renderChar{};
-	std::string colorCode;
+	std::string colorCode{};
 
 	PixelSample() = default;
 	PixelSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}

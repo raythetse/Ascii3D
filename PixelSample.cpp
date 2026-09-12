@@ -12,7 +12,7 @@ void PixelSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Ve
 		Vec3 lightDir = (l->position() - samplePoint).getNormal();
 		double lightDist = lightPos.distance(samplePoint);
 		double light = l->luminance() / (4.0 * 3.14159265359 * lightDist * lightDist);
-		//light = light > 1.0 ? 1.0 : light;
+		light = light > 1.0 ? 1.0 : light;
 
 		double dot = lightDir.dot(normal);
 		dot = dot < 0.0 ? 0.0 : dot;
@@ -33,8 +33,8 @@ void PixelSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Ve
 	renderChar = camDistance >= maxDistance ? ' ' : charGradient[index];
 	renderColor = camDistance >= maxDistance ? 0 : color * 255;
 
-	auto r = std::to_string(static_cast<int>(renderColor.x));
-	auto g = std::to_string(static_cast<int>(renderColor.y));
-	auto b = std::to_string(static_cast<int>(renderColor.z));
-	colorCode = "\033[38;2;" + r + ";" + g + ";" + b + "m";
+	colorCode = std::format("\033[38;2;{};{};{}m",
+		static_cast<int>(renderColor.x),
+		static_cast<int>(renderColor.y),
+		static_cast<int>(renderColor.z));
 }

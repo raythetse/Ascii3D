@@ -5,6 +5,7 @@
 #include "Vec3.h"
 #include "SDFObject.h"
 #include "Camera.h"
+#include "SDFScene.h"
 
 class RayMarcher
 {
@@ -24,10 +25,6 @@ public:
 		: m_maxDistance(maxDistance)
 		, m_stepFactor(stepFactor)
 		, m_tolerance(tolerance) {}
-	void march(	PixelField& field,
-				const std::vector<std::unique_ptr<SDFObject>>& objects,
-				const std::vector<std::unique_ptr<LightSource>>& lights,
-				const Camera& camera,
-				std::ranges::iota_view<size_t, size_t>& range);
+	void march(SDFScene& scene, PixelField& field, const Camera& camera);
 };
 
