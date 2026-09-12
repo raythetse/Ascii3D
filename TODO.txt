@@ -11,6 +11,7 @@ Required:
 - consts wherever sensical
 - Fix pixelsample accessibility
 - input manager
+- set window name
 
 Optional:
 - camera track
