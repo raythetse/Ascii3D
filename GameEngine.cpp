@@ -1,6 +1,8 @@
 #include "GameEngine.h"
 #include <execution>
 #include <ranges>
+
+#include "ConsoleFunctions.h"
 #include "GameTimer.h"
 #include "InputManager.h"
 #include "MathFunctions.h"
@@ -42,7 +44,7 @@ bool GameEngine::handleInput()
     if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
 
     if      (InputManager::keyJustPushed(VK_UP))    m_camera.setViewportSize(m_pixelField.decreaseHeight(InputManager::keyDown(VK_CONTROL) ? 5  : 1));
-    else if (InputManager::keyJustPushed(VK_DOWN))  m_camera.setViewportSize(m_pixelField.increaseHeight(InputManager::keyDown(VK_CONTROL) ? 15 : 3));
+    else if (InputManager::keyJustPushed(VK_DOWN))  m_camera.setViewportSize(m_pixelField.increaseHeight(InputManager::keyDown(VK_CONTROL) ? 5  : 1));
     else if (InputManager::keyJustPushed(VK_LEFT))  m_camera.setViewportSize(m_pixelField.decreaseWidth (InputManager::keyDown(VK_CONTROL) ? 15 : 3));
     else if (InputManager::keyJustPushed(VK_RIGHT)) m_camera.setViewportSize(m_pixelField.increaseWidth (InputManager::keyDown(VK_CONTROL) ? 15 : 3));
 

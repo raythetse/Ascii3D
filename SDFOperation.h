@@ -16,14 +16,15 @@ enum SDFOperationType {
 class SDFOperation
 {
 protected:
+	SDFOperationType m_opType;
 	std::vector<std::unique_ptr<PropertyModifierBase>> m_propMods{};
+	SDFOperation(SDFOperationType opType) : m_opType(opType) {}
 	virtual void innerUpdate() = 0;
-	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return {}; }
+	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return { distanceA }; }
 	virtual double resurface(double distance) { return distance; };
 	virtual void transform(Vec3& p) const {};
 public:
 	virtual void update();
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
-	virtual SDFOperationType opType() = 0;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) = 0;
 };

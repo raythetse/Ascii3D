@@ -6,8 +6,7 @@ class TransformOperation : public SDFOperation
 protected:
 	void innerUpdate() override {};
 public:
-	TransformOperation() {};
-	SDFOperationType opType() override { return SDFOperationType::Transform; }
+	TransformOperation() : SDFOperation(SDFOperationType::Transform) {};
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
@@ -221,7 +220,9 @@ class Elongate : public TransformOperation
 protected:
 	double m_length;
 	double m_offset;
-	void innerUpdate() override {};
+	double m_updateVal{};
+	double m_updateValNeg{};
+	void innerUpdate() override;
 public:
 	Elongate(double length = 1.0, double offset = 0.0) : m_length(length), m_offset(offset) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;

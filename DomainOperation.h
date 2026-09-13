@@ -7,7 +7,6 @@ protected:
 	Vec3 m_spacing;
 public:
 	DomainOperation(Vec3 spacing = Vec3::One) : m_spacing(spacing) {};
-	SDFOperationType opType() override { return SDFOperationType::Transform; }
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };

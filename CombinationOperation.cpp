@@ -37,8 +37,11 @@ void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifier
 
 double Add::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
-	if (colorOut) *colorOut = distanceA <= distanceB ? colorIn : *colorOut;
-	return distanceA < distanceB ? distanceA : distanceB;
+	if (distanceA <= distanceB) {
+		if (colorOut) *colorOut = colorIn;
+		return distanceA;
+	}
+	return distanceB;
 }
 
 double Subtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -49,8 +52,11 @@ double Subtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOu
 
 double Intersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
-	if (colorOut) *colorOut = distanceA <= distanceB ? colorIn : *colorOut;
-	return distanceA > distanceB ? distanceA : distanceB;
+	if (distanceA <= distanceB) {
+		if (colorOut) *colorOut = colorIn;
+		return distanceB;
+	}
+	return distanceA;
 }
 
 double AddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

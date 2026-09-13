@@ -13,9 +13,8 @@ protected:
 	void innerUpdate() override {}
 public:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
-		: m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending), m_colorShifting(colorShifting) {}
+		: SDFOperation(SDFOperationType::Combine), m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending), m_colorShifting(colorShifting) {}
 	void update() override;
-	SDFOperationType opType() override { return SDFOperationType::Combine; }
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };

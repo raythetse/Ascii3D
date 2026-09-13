@@ -19,6 +19,7 @@ InputManager::InputManager()
 		m_screenCentre.y = static_cast<long>(0.5 * (rect.bottom - rect.top));
 	}
 	SetCursorPos(m_screenCentre.x, m_screenCentre.y);
+	m_input = GetStdHandle(STD_INPUT_HANDLE);
 }
 
 void InputManager::processKeyPresses()
@@ -28,13 +29,12 @@ void InputManager::processKeyPresses()
 		pair.second.justReleased = false;
 	}
 
-	HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
 	DWORD numEvents = 0;
 	INPUT_RECORD inputBuffer[32];
-	GetNumberOfConsoleInputEvents(hInput, &numEvents);
+	GetNumberOfConsoleInputEvents(m_input, &numEvents);
 
 	if (numEvents > 0) {
-		ReadConsoleInput(hInput, inputBuffer, 32, &numEvents);
+		ReadConsoleInput(m_input, inputBuffer, 32, &numEvents);
 
 		for (DWORD i = 0; i < numEvents; ++i) {
 			if (inputBuffer[i].EventType == KEY_EVENT) {
@@ -71,8 +71,6 @@ void InputManager::processMouseMovement()
 {
 	static bool s_skipFrame{ true };
 
-	
-	
 	if (GetForegroundWindow() == m_console) {
 		if (s_skipFrame) {
 			s_skipFrame = false;

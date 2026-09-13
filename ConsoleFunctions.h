@@ -1,7 +1,8 @@
 #pragma once
-#include <windows.h>
-#include <iostream>
+
 #include <iomanip>
+#include <iostream>
+#include <windows.h>
 
 namespace ConsoleFunctions
 {
@@ -35,5 +36,25 @@ namespace ConsoleFunctions
     inline void clearConsole()
     {
         std::cout << "\033[2J\033[1;1H";
+    }
+
+    inline void setupDedicatedViewport() {
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        DWORD dwMode = 0;
+        GetConsoleMode(hOut, &dwMode);
+        SetConsoleMode(hOut, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+
+        // \x1b[?1049h -> Switch to Alternate Screen Buffer
+        // \x1b[?25l   -> Hide text cursor
+        // \x1b[?1003h -> Enable Any-Event Mouse Tracking (Suppresses the hardware arrow cursor)
+        // \x1b[?1006h -> Enable SGR Extended Mouse Reporting coordinates
+        std::cout << "\x1b[?1049h\x1b[?25l\x1b[?1003h\x1b[?1006h" << std::flush;
+    }
+
+    inline void restoreTerminal() {
+        // Clean up when your game/renderer closes:
+        // \x1b[?25h   -> Show the text cursor again
+        // \x1b[?1049l -> Switch back to Main Screen Buffer (restores user's prompt history)
+        std::cout << "\x1b[?25h\x1b[?1049l" << std::flush;
     }
 }

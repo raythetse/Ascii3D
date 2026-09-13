@@ -9,8 +9,7 @@ protected:
 	double m_updateValue{};
 	void innerUpdate() override {};
 public:
-	ResurfaceOperation(double magnitude = 0.01) : m_magnitude(magnitude) {}
-	SDFOperationType opType() override { return SDFOperationType::Resurface; }
+	ResurfaceOperation(double magnitude = 0.01) : SDFOperation(SDFOperationType::Resurface), m_magnitude(magnitude) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };

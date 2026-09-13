@@ -17,6 +17,7 @@ private:
 	std::unordered_map<unsigned short, KeyState> m_keyMap{};
 	Vec2 m_mouseMotion{};
 	HWND m_console;
+	HANDLE m_input;
 	POINT m_screenCentre;
 
 	InputManager();

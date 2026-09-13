@@ -11,7 +11,7 @@ void SDFOperation::update()
 
 void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut)
 {
-	switch (opType())
+	switch (m_opType)
 	{
 	case SDFOperationType::Combine: {
 		distanceA = combine(p, distanceA, colorIn, colorOut);
