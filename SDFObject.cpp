@@ -66,29 +66,29 @@ double SDFObject::signedDistanceInner(Vec3 p) const
     return std::numeric_limits<double>::max();
 }
 
-double PlaneXZ::signedDistanceInner(Vec3 p) const
+double SDFPlaneXZ::signedDistanceInner(Vec3 p) const
 {
     return p.y - m_yPos;
 }
 
-double PlaneYZ::signedDistanceInner(Vec3 p) const
+double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
 {
     return p.x - m_xPos;
 }
 
-double PlaneXY::signedDistanceInner(Vec3 p) const
+double SDFPlaneXY::signedDistanceInner(Vec3 p) const
 {
     return p.z - m_zPos;
 }
 
-double Box::signedDistanceInner(Vec3 p) const
+double SDFBox::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
     p -= Vec3(m_dimensions) * 0.5;
     return p.maximum(0.0).length();
 }
 
-double BoxFrame::signedDistanceInner(Vec3 p) const
+double SDFBoxFrame::signedDistanceInner(Vec3 p) const
 {
     p = p.abs() - m_dimensions;
     Vec3 q = (p + m_edgeThickness).abs() - m_edgeThickness;
@@ -98,75 +98,68 @@ double BoxFrame::signedDistanceInner(Vec3 p) const
         Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
 }
 
-double Sphere::signedDistanceInner(Vec3 p) const
+double SDFSphere::signedDistanceInner(Vec3 p) const
 {
     return p.length() - m_radius;
 }
 
-double Torus::signedDistanceInner(Vec3 p) const
+double SDFTorus::signedDistanceInner(Vec3 p) const
 {
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
-double CapsuleX::signedDistanceInner(Vec3 p) const
+double SDFCapsuleX::signedDistanceInner(Vec3 p) const
 {
     p.x = p.x > 0.0 ? std::max(0.0, p.x - 0.5 * m_bodyLength) : std::min(0.0, p.x + 0.5 * m_bodyLength);
     return p.length() - m_radius;
 }
 
-double CapsuleY::signedDistanceInner(Vec3 p) const
+double SDFCapsuleY::signedDistanceInner(Vec3 p) const
 {
     p.y = p.y > 0.0 ? std::max(0.0, p.y - 0.5 * m_bodyLength) : std::min(0.0, p.y + 0.5 * m_bodyLength);
     return p.length() - m_radius;
 }
 
-double CapsuleZ::signedDistanceInner(Vec3 p) const
+double SDFCapsuleZ::signedDistanceInner(Vec3 p) const
 {
     p.z = p.z > 0.0 ? std::max(0.0, p.z - 0.5 * m_bodyLength) : std::min(0.0, p.z + 0.5 * m_bodyLength);
     return p.length() - m_radius;
 }
 
-double Crystal::signedDistanceInner(Vec3 p) const
+double SDFCrystal::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
     return (p.x + p.y + p.z - m_edgeLength) * 0.57735027;
 }
 
-double CrystalLong::signedDistanceInner(Vec3 p) const
-{
-    p = p.abs();
-    p.y = std::max(0.0, p.y - m_sideLength * 0.5);
-    return (p.x + p.y + p.z - m_edgeLength) * 0.57735027;
-}
-
-double CylinderX::signedDistanceInner(Vec3 p) const
+double SDFCylinderX::signedDistanceInner(Vec3 p) const
 {
     Vec2 yz{ p.y, p.z };
     Vec2 d = Vec2{ yz.length(), p.x }.abs() - Vec2(m_radius, m_sideLength);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
-double CylinderY::signedDistanceInner(Vec3 p) const
+double SDFCylinderY::signedDistanceInner(Vec3 p) const
 {
     Vec2 xz{ p.x, p.z };
     Vec2 d = Vec2{ xz.length(), p.y }.abs() - Vec2(m_radius, m_sideLength);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
-double CylinderZ::signedDistanceInner(Vec3 p) const
+double SDFCylinderZ::signedDistanceInner(Vec3 p) const
 {
     Vec2 xy{ p.x, p.y };
     Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
-double ChainLink::signedDistanceInner(Vec3 p) const
+double SDFChainLink::signedDistanceInner(Vec3 p) const
 {
     p.x = p.x > 0.0 ? std::max(0.0, p.x - m_sideLength * 0.5) : std::min(0.0, p.x + m_sideLength * 0.5);
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
-double Tube::signedDistanceInner(Vec3 p) const
+double SDFTube::signedDistanceInner(Vec3 p) const
 {
     p.y = p.y > 0.0 ? std::max(0.0, p.y - m_height * 0.5) : std::min(0.0, p.y + m_height * 0.5);
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;

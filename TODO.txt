@@ -1,7 +1,6 @@
 Required:
 - bounding boxes for efficiency
 - input/output scene from/to file
-- console input for field dimensions
 - toggle light attenuation
 - light movement
 - startup options
@@ -9,14 +8,12 @@ Required:
 - exceptions
 - consts wherever sensical
 - Fix pixelsample accessibility
-- set window name
 
 Optional:
 - camera track
-- console input for various other params
-- try matrix style renderer
+- input for other params (draw dist, color depth, surf tolarance, etc)
 - transparency/reflection
-- object chain merging
+- object chain copying/merging
 
 Ongoing:
-- design/implement new SDFs and Operations
+- design/implement new SDFs, Operations, and Modifiers

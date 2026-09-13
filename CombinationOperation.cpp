@@ -35,7 +35,7 @@ void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifier
 	}
 }
 
-double Add::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+double OPAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
 		if (colorOut) *colorOut = colorIn;
@@ -44,13 +44,13 @@ double Add::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	return distanceB;
 }
 
-double Subtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+double OPSubtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = -m_combineObj->signedDistance(p, colorOut);
 	if (colorOut) *colorOut = colorIn;
 	return distanceA > distanceB ? distanceA : distanceB;
 }
 
-double Intersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+double OPIntersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
 		if (colorOut) *colorOut = colorIn;
@@ -59,14 +59,14 @@ double Intersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorO
 	return distanceA;
 }
 
-double AddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+double OPAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 + 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);
 	if (colorOut) blendColors(std::clamp(1.0 - h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);
 	return std::lerp(distanceB, distanceA, h) - m_smoothing * h * (1.0 - h);
 }
 
-double SubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+double OPSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = m_smoothing - abs(-distanceB - distanceA);
 	h = h < 0.0 ? 0.0 : h;
@@ -74,7 +74,7 @@ double SubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* c
 	return (distanceA > -distanceB ? distanceA : -distanceB) + h * h * 0.25 / m_smoothing;
 }
 
-double IntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+double OPIntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 - 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);
 	if (colorOut) blendColors(std::clamp(h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);

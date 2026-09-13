@@ -10,74 +10,74 @@ public:
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
-class MirrorX : public TransformOperation
+class OPMirrorX : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorX() {};
+	OPMirrorX() {};
 };
 
-class MirrorY : public TransformOperation
+class OPMirrorY : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorY() {};
+	OPMirrorY() {};
 };
 
-class MirrorZ : public TransformOperation
+class OPMirrorZ : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorZ() {};
+	OPMirrorZ() {};
 };
 
-class MirrorXY : public TransformOperation
+class OPMirrorXY : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorXY() {};
+	OPMirrorXY() {};
 };
 
-class MirrorXZ : public TransformOperation
+class OPMirrorXZ : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorXZ() {};
+	OPMirrorXZ() {};
 };
 
-class MirrorYZ : public TransformOperation
+class OPMirrorYZ : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorYZ() {};
+	OPMirrorYZ() {};
 };
 
-class MirrorXYZ : public TransformOperation
+class OPMirrorXYZ : public TransformOperation
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	MirrorXYZ() {};
+	OPMirrorXYZ() {};
 };
 
-class Translate : public TransformOperation
+class OPTranslate : public TransformOperation
 {
 private:
 	Vec3 m_translation;
 protected:
 	void transform(Vec3& p) const override;
 public:
-	Translate(Vec3 translation = Vec3::Up) : m_translation(translation) {}
+	OPTranslate(Vec3 translation = Vec3::Up) : m_translation(translation) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class TranslateSine : public TransformOperation
+class OPTranslateSine : public TransformOperation
 {
 private:
 	Vec3 m_axis;
@@ -89,11 +89,11 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	TranslateSine(Vec3 axis = Vec3::Up, double amplitude = 1.0, double period = 4.0, double phase = 0.0) : m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
+	OPTranslateSine(Vec3 axis = Vec3::Up, double amplitude = 1.0, double period = 4.0, double phase = 0.0) : m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class TranslateLinear : public TransformOperation
+class OPTranslateLinear : public TransformOperation
 {
 private:
 	Vec3 m_start;
@@ -107,14 +107,14 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	TranslateLinear(Vec3 vector = Vec3::Up, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
+	OPTranslateLinear(Vec3 vector = Vec3::Up, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
 		: m_start(vector * -0.5), m_end(vector * 0.5), m_transitTimes(transitTimes)
 		, m_endDelays(endDelays), m_phase(phase + transitTimes.x * 0.5)
 		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class CubeRollHeight : public TransformOperation
+class OPCubeRollHeight : public TransformOperation
 {
 private:
 	double m_cubeHeight;
@@ -125,12 +125,12 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	CubeRollHeight(double cubeHeight = 1.0, double period = 1.0, double phase = 0.0)
+	OPCubeRollHeight(double cubeHeight = 1.0, double period = 1.0, double phase = 0.0)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class Rotate : public TransformOperation
+class OPRotate : public TransformOperation
 {
 private:
 	Vec3 m_axis;
@@ -139,14 +139,14 @@ private:
 protected:
 	void transform(Vec3& p) const override;
 public:
-	Rotate(Vec3 axis = Vec3::Up, double rotations = 0.5)
+	OPRotate(Vec3 axis = Vec3::Up, double rotations = 0.5)
 		: m_axis(axis), m_rotations(rotations) {
 		Mat3::fromAxisAngle(axis, m_rotMat, rotations * MF::TAU);
 	}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class RotateContinuous : public TransformOperation
+class OPRotateContinuous : public TransformOperation
 {
 private:
 	Vec3 m_axis;
@@ -157,11 +157,11 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	RotateContinuous(Vec3 axis = Vec3::Up, double rotationsPerSecond = 0.25, double phase = 0.0) : m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
+	OPRotateContinuous(Vec3 axis = Vec3::Up, double rotationsPerSecond = 0.25, double phase = 0.0) : m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class RotateScan : public TransformOperation
+class OPRotateScan : public TransformOperation
 {
 private:
 	Vec3 m_axis;
@@ -175,14 +175,14 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	RotateScan(Vec3 axis = Vec3::Up, double rotations = 1.0, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
+	OPRotateScan(Vec3 axis = Vec3::Up, double rotations = 1.0, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
 		: m_axis(axis), m_endAngle(rotations* MF::TAU)
 		, m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase)
 		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class RotateDelay : public TransformOperation
+class OPRotateDelay : public TransformOperation
 {
 private:
 	Vec3 m_axis;
@@ -195,12 +195,12 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	RotateDelay(Vec3 axis = Vec3::Up, double rotations = 1.0, double rotateTime = 1.0, double delayTime = 1.0, double phase = 0.0)
+	OPRotateDelay(Vec3 axis = Vec3::Up, double rotations = 1.0, double rotateTime = 1.0, double delayTime = 1.0, double phase = 0.0)
 		: m_axis(axis), m_angle(rotations* MF::TAU), m_rotateTime(rotateTime), m_cycleTime(rotateTime + delayTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class CubeRoller : public TransformOperation
+class OPCubeRoller : public TransformOperation
 {
 private:
 	std::vector<Vec3> m_axes;
@@ -211,7 +211,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
-	CubeRoller(std::vector<Vec3> axes, double quarterTurnTime = 1.0, double phase = 0.0) : m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
+	OPCubeRoller(std::vector<Vec3> axes, double quarterTurnTime = 1.0, double phase = 0.0) : m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -228,26 +228,26 @@ public:
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class ElongateX : public Elongate
+class OPElongateX : public Elongate
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	ElongateX(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+	OPElongateX(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
 };
 
-class ElongateY : public Elongate
+class OPElongateY : public Elongate
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	ElongateY(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+	OPElongateY(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
 };
 
-class ElongateZ : public Elongate
+class OPElongateZ : public Elongate
 {
 protected:
 	void transform(Vec3& p) const override;
 public:
-	ElongateZ(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+	OPElongateZ(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
 };

@@ -49,9 +49,9 @@ void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
 {
     auto& objects = scene.objects();
     auto& lights = scene.lights();
-
+    auto& range = field.range();
     // parallel execution policy parallelizes the iterations automatically
-    std::for_each(std::execution::par, field.rangeBegin(), field.rangeEnd(), [this, &field, &objects, &lights, &camera](size_t index)
+    std::for_each(std::execution::par, range.begin(), range.end(), [this, &field, &objects, &lights, &camera](size_t index)
     {
         size_t width = field.width();
         size_t height = field.height();

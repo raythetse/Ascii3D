@@ -2,50 +2,50 @@
 #include "GameTimer.h"
 #include <algorithm>
 
-void MirrorX::transform(Vec3& p) const
+void OPMirrorX::transform(Vec3& p) const
 {
 	p.x = abs(p.x);
 }
 
-void MirrorY::transform(Vec3& p) const
+void OPMirrorY::transform(Vec3& p) const
 {
 	p.y = abs(p.x);
 }
 
-void MirrorZ::transform(Vec3& p) const
+void OPMirrorZ::transform(Vec3& p) const
 {
 	p.z = abs(p.z);
 }
 
-void MirrorXY::transform(Vec3& p) const
+void OPMirrorXY::transform(Vec3& p) const
 {
 	p.x = abs(p.x);
 	p.y = abs(p.y);
 }
 
-void MirrorXZ::transform(Vec3& p) const
+void OPMirrorXZ::transform(Vec3& p) const
 {
 	p.x = abs(p.x);
 	p.z = abs(p.z);
 }
 
-void MirrorYZ::transform(Vec3& p) const
+void OPMirrorYZ::transform(Vec3& p) const
 {
 	p.y = abs(p.y);
 	p.z = abs(p.z);
 }
 
-void MirrorXYZ::transform(Vec3& p) const
+void OPMirrorXYZ::transform(Vec3& p) const
 {
 	p = p.abs();
 }
 
-void Translate::transform(Vec3& p) const
+void OPTranslate::transform(Vec3& p) const
 {
 	p -= m_translation;
 }
 
-void Translate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "translation") {
 		propMod->BindToProp(&m_translation);
@@ -53,16 +53,16 @@ void Translate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propM
 	}
 }
 
-void TranslateSine::innerUpdate() {
+void OPTranslateSine::innerUpdate() {
 	m_updateVal = m_axis * m_amplitude * sin(GameTimer::gameTime() / m_period * MF::TAU + m_phase * MF::TAU);
 }
 
-void TranslateSine::transform(Vec3& p) const
+void OPTranslateSine::transform(Vec3& p) const
 {
 	p -= m_updateVal;
 }
 
-void TranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "amplitude") {
 		propMod->BindToProp(&m_amplitude);
@@ -82,7 +82,7 @@ void TranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> p
 	}
 }
 
-void TranslateLinear::innerUpdate() {
+void OPTranslateLinear::innerUpdate() {
 	double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
 	if (time <= m_transitTimes.x) {
 		time /= m_transitTimes.x;
@@ -103,12 +103,12 @@ void TranslateLinear::innerUpdate() {
 	m_updateVal = m_start;
 }
 
-void TranslateLinear::transform(Vec3& p) const
+void OPTranslateLinear::transform(Vec3& p) const
 {
 	p -= m_updateVal;
 }
 
-void TranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "cycleTime") {
 		propMod->BindToProp(&m_cycleTime);
@@ -136,18 +136,18 @@ void TranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase>
 	}
 }
 
-void CubeRollHeight::innerUpdate() {
+void OPCubeRollHeight::innerUpdate() {
 	double angle = std::fmod(GameTimer::gameTime() + m_phase, m_period) * MF::HALFPI - MF::HALFPI;
 	Vec2 rot = Vec2{ -m_cubeHeight * 0.5, m_cubeHeight * 0.5 }.rotate(angle);
 	m_updateVal = (rot.y - m_cubeHeight * 0.5);
 }
 
-void CubeRollHeight::transform(Vec3& p) const
+void OPCubeRollHeight::transform(Vec3& p) const
 {
 	p.y -= m_updateVal;
 }
 
-void CubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "cubeHeight") {
 		propMod->BindToProp(&m_cubeHeight);
@@ -163,12 +163,12 @@ void CubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> 
 	}
 }
 
-void Rotate::transform(Vec3& p) const
+void OPRotate::transform(Vec3& p) const
 {
 	p = m_rotMat * p;
 }
 
-void Rotate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -183,16 +183,16 @@ void Rotate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 		m_propMods.push_back(std::move(propMod));
 	}
 }
-void RotateContinuous::innerUpdate() {
+void OPRotateContinuous::innerUpdate() {
 	Mat3::fromAxisAngle(m_axis, m_updateVal, (GameTimer::gameTime() + (m_phase / m_rotationsPerSecond)) * m_rotationsPerSecond * MF::TAU);
 }
 
-void RotateContinuous::transform(Vec3& p) const
+void OPRotateContinuous::transform(Vec3& p) const
 {
 	p = m_updateVal * p;
 }
 
-void RotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -208,7 +208,7 @@ void RotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBase
 	}
 }
 
-void RotateScan::innerUpdate() {
+void OPRotateScan::innerUpdate() {
 	double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
 	if (time <= m_transitTimes.x) {
 		time /= m_transitTimes.x;
@@ -229,12 +229,12 @@ void RotateScan::innerUpdate() {
 	m_updateVal = Mat3::Identity;
 }
 
-void RotateScan::transform(Vec3& p) const
+void OPRotateScan::transform(Vec3& p) const
 {
 	p = m_updateVal * p;
 }
 
-void RotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -262,19 +262,19 @@ void RotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> prop
 	}
 }
 
-void RotateDelay::innerUpdate() {
+void OPRotateDelay::innerUpdate() {
 	double completeCycles{ std::floor((GameTimer::gameTime() + m_phase) / m_cycleTime) };
 	double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
 	completeCycles += std::min(m_rotateTime, time) / m_rotateTime;
 	Mat3::fromAxisAngle(m_axis, m_updateVal, completeCycles * m_angle);
 }
 
-void RotateDelay::transform(Vec3& p) const
+void OPRotateDelay::transform(Vec3& p) const
 {
 	p = m_updateVal * p;
 }
 
-void RotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "angle") {
 		propMod->BindToProp(&m_angle);
@@ -298,7 +298,7 @@ void RotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> pro
 	}
 }
 
-void CubeRoller::innerUpdate() {
+void OPCubeRoller::innerUpdate() {
 	double cycleTime = m_axes.size() * m_quarterTurnTime;
 	double time = std::fmod(GameTimer::gameTime() + m_phase, cycleTime);
 	size_t index = static_cast<size_t>(time);
@@ -306,12 +306,12 @@ void CubeRoller::innerUpdate() {
 	Mat3::fromAxisAngle(m_axes[index], m_updateVal, MF::HALFPI * time);
 }
 
-void CubeRoller::transform(Vec3& p) const
+void OPCubeRoller::transform(Vec3& p) const
 {
 	p = m_updateVal * p;
 }
 
-void CubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPCubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axes") {
 		propMod->BindToProp(&m_axes);
@@ -344,17 +344,17 @@ void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMo
 	}
 }
 
-void ElongateX::transform(Vec3& p) const
+void OPElongateX::transform(Vec3& p) const
 {
 	p.x -= std::clamp(p.x - m_offset, m_halfLenNeg, m_halfLen);
 }
 
-void ElongateY::transform(Vec3& p) const
+void OPElongateY::transform(Vec3& p) const
 {
 	p.y -= std::clamp(p.y - m_offset, m_halfLenNeg, m_halfLen);
 }
 
-void ElongateZ::transform(Vec3& p) const
+void OPElongateZ::transform(Vec3& p) const
 {
 	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
 }

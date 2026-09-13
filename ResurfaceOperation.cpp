@@ -8,11 +8,11 @@ void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBa
 	}
 }
 
-double RoundOff::resurface(double distance)
+double OPRoundOff::resurface(double distance)
 {
 	return distance - m_magnitude;
 }
 
-double Onion::resurface(double distance) {
+double OPOnion::resurface(double distance) {
 	return abs(distance) - m_magnitude;
 }

@@ -14,16 +14,6 @@ PixelSample& PixelField::operator()(size_t row, size_t col)
     return m_swap ? m_fieldB[row * m_width + col] : m_fieldA[row * m_width + col];
 }
 
-std::vector<PixelSample>::const_iterator PixelField::fieldBegin() const
-{
-    return m_swap ? m_fieldB.begin() : m_fieldA.begin();
-}
-
-std::vector<PixelSample>::const_iterator PixelField::fieldEnd() const
-{
-    return m_swap ? m_fieldB.end() : m_fieldA.end();
-}
-
 bool PixelField::changedChar(std::size_t row, size_t col) const
 {
     std::size_t index = row * m_width + col;
@@ -42,14 +32,9 @@ bool PixelField::changed(std::size_t row, size_t col) const
     return changedColor(row, col) || changedChar(row, col);
 }
 
-std::ranges::iterator_t<std::ranges::iota_view<size_t, size_t>> PixelField::rangeBegin()
+const std::ranges::iota_view<size_t, size_t> PixelField::range()
 {
-    return m_pixelRange.begin();
-}
-
-std::ranges::iterator_t<std::ranges::iota_view<size_t, size_t>> PixelField::rangeEnd()
-{
-    return m_pixelRange.end();
+    return m_pixelRange;
 }
 
 void PixelField::swap()

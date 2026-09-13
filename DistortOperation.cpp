@@ -1,7 +1,7 @@
 #include "DistortOperation.h"
 #include "Mat2.h"
 
-void Twist::transform(Vec3& p) const
+void OPTwist::transform(Vec3& p) const
 {
 	Vec2 sc = MF::fast_sincos(m_magnitude * p.y);
 	Mat2  m = Mat2{ { sc.y, -sc.x, sc.x, sc.y} };
@@ -9,7 +9,7 @@ void Twist::transform(Vec3& p) const
 	p = Vec3(xz.x, xz.y, p.y);
 }
 
-void Bend::transform(Vec3& p) const
+void OPBend::transform(Vec3& p) const
 {
 	Vec2 sc = MF::fast_sincos(m_magnitude * p.x);
 	Mat2  m = Mat2{ { sc.y, -sc.x, sc.x, sc.y } };

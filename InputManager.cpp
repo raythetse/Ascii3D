@@ -19,7 +19,49 @@ InputManager::InputManager()
 	m_output = GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
-void InputManager::processKeyPresses()
+void InputManager::processKeyEvents(INPUT_RECORD inputRecord)
+{
+	KEY_EVENT_RECORD ker = inputRecord.Event.KeyEvent;
+
+	if (ker.bKeyDown) {
+		if (m_keyMap.contains(ker.wVirtualKeyCode)) {
+			InputManager::KeyState& ks = m_keyMap.at(ker.wVirtualKeyCode);
+			ks.justPushed = !ks.isDown;
+			ks.justReleased = false;
+			ks.isDown = true;
+		}
+		else {
+			m_keyMap.insert({ ker.wVirtualKeyCode, { true, false, true } });
+		}
+	}
+	else {
+		if (m_keyMap.contains(ker.wVirtualKeyCode)) {
+			InputManager::KeyState& ks = m_keyMap.at(ker.wVirtualKeyCode);
+			ks.justPushed = false;
+			ks.justReleased = ks.isDown;
+			ks.isDown = false;
+		}
+		else {
+			m_keyMap.insert({ ker.wVirtualKeyCode, { false, true, false } });
+		}
+	}
+}
+
+void InputManager::processMouseEvents(INPUT_RECORD inputRecord)
+{
+	MOUSE_EVENT_RECORD mer = inputRecord.Event.MouseEvent;
+	m_holdMouse = m_holdMouse || (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED && !mer.dwEventFlags);
+}
+
+void InputManager::processWindowResizeEvents(INPUT_RECORD inputRecord)
+{
+	COORD newSize = inputRecord.Event.WindowBufferSizeEvent.dwSize;
+	for (auto& func : m_resizeCallbacks) {
+		func(newSize.X, newSize.Y - 1);
+	}
+}
+
+void InputManager::processInputEvents()
 {
 	for (auto& pair : m_keyMap) {
 		pair.second.justPushed = false;
@@ -34,41 +76,19 @@ void InputManager::processKeyPresses()
 		ReadConsoleInput(m_input, inputBuffer, 32, &numEvents);
 
 		for (DWORD i = 0; i < numEvents; ++i) {
-			if (inputBuffer[i].EventType == KEY_EVENT) {
-				KEY_EVENT_RECORD ker = inputBuffer[i].Event.KeyEvent;
-
-				if (ker.bKeyDown) {
-					if (m_keyMap.contains(ker.wVirtualKeyCode)) {
-						InputManager::KeyState& ks = m_keyMap.at(ker.wVirtualKeyCode);
-						ks.justPushed = !ks.isDown;
-						ks.justReleased = false;
-						ks.isDown = true;
-					}
-					else {
-						m_keyMap.insert({ ker.wVirtualKeyCode, { true, false, true } });
-					}
-				}
-				else {
-					if (m_keyMap.contains(ker.wVirtualKeyCode)) {
-						InputManager::KeyState& ks = m_keyMap.at(ker.wVirtualKeyCode);
-						ks.justPushed = false;
-						ks.justReleased = ks.isDown;
-						ks.isDown = false;
-					}
-					else {
-						m_keyMap.insert({ ker.wVirtualKeyCode, { false, true, false } });
-					}
-				}
-			}
-			else if (inputBuffer[i].EventType == MOUSE_EVENT) {
-				MOUSE_EVENT_RECORD mer = inputBuffer[i].Event.MouseEvent;
-				m_holdMouse = m_holdMouse || (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED && mer.dwEventFlags == 0);
-			}
-			else if (inputBuffer[i].EventType == WINDOW_BUFFER_SIZE_EVENT) {
-				COORD newSize = inputBuffer[i].Event.WindowBufferSizeEvent.dwSize;
-				for (auto& func : m_resizeCallbacks) {
-					func(newSize.X, newSize.Y - 1);
-				}
+			switch (inputBuffer[i].EventType)
+			{
+			case KEY_EVENT:
+				processKeyEvents(inputBuffer[i]);
+				break;
+			case MOUSE_EVENT:
+				processMouseEvents(inputBuffer[i]);
+				break;
+			case WINDOW_BUFFER_SIZE_EVENT:
+				processWindowResizeEvents(inputBuffer[i]);
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -83,15 +103,11 @@ void InputManager::processMouseMovement()
 		else {
 			POINT cursorPos;
 			GetCursorPos(&cursorPos);
-			//ScreenToClient(m_console, &cursorPos);
 			m_mouseMotion = {
 				static_cast<double>(cursorPos.x - m_screenCentre.x),
 				static_cast<double>(cursorPos.y - m_screenCentre.y)
 			};
 		}
-		//POINT conCentre{ m_screenCentre.x, m_screenCentre.y };
-		//ClientToScreen(m_console, &conCentre);
-		//SetCursorPos(conCentre.x, conCentre.y);
 		SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 	}
 	else {
@@ -119,7 +135,7 @@ void InputManager::update()
 {
 	instance().checkActive();
 	instance().processMouseMovement();
-	instance().processKeyPresses();
+	instance().processInputEvents();
 }
 
 bool InputManager::keyJustPushed(unsigned short key)

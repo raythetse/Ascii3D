@@ -7,7 +7,7 @@ int main()
     ConsoleFunctions::setupDedicatedViewport();
     ConsoleFunctions::desyncSTDIO();
     ConsoleFunctions::setPrecision(3);
-    ConsoleFunctions::goFullscreen();
+    //ConsoleFunctions::goFullscreen();
     GameEngine{ 15, 5, 25.0, 1.0, 0.01 }.run();
     ConsoleFunctions::restoreTerminal();
     return 0;

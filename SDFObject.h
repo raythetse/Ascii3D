@@ -44,180 +44,169 @@ SDFOperation* SDFObject::pushOperation(Args&&... args) {
 	return m_operations.back().get();
 }
 
-class PlaneXZ : public SDFObject
+class SDFPlaneXZ : public SDFObject
 {
 private:
 	double m_yPos;
 public:
-	PlaneXZ(double yPos = 0.0, Color color = Color::White)
+	SDFPlaneXZ(double yPos = 0.0, Color color = Color::White)
 		: SDFObject{ color }, m_yPos{ yPos } {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class PlaneYZ : public SDFObject
+class SDFPlaneYZ : public SDFObject
 {
 	double m_xPos;
 public:
-	PlaneYZ(double xPos = 0.0, Color color = Color::White)
+	SDFPlaneYZ(double xPos = 0.0, Color color = Color::White)
 		: SDFObject{ color }, m_xPos(xPos) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class PlaneXY : public SDFObject
+class SDFPlaneXY : public SDFObject
 {
 	double m_zPos;
 public:
-	PlaneXY(double zPos = 0.0, Color color = Color::White)
+	SDFPlaneXY(double zPos = 0.0, Color color = Color::White)
 		: SDFObject{ color }, m_zPos(zPos) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Box : public SDFObject
+class SDFBox : public SDFObject
 {
 private:
 	Vec3 m_dimensions;
 public:
-	Box(Vec3 dimensions = Vec3::One, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFBox(Vec3 dimensions = Vec3::One, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class BoxFrame : public SDFObject
+class SDFBoxFrame : public SDFObject
 {
 private:
 	Vec3 m_dimensions;
 	double m_edgeThickness;
 public:
-	BoxFrame(Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFBoxFrame(Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Sphere : public SDFObject
+class SDFSphere : public SDFObject
 {
 private:
 	double m_radius;
 public:
-	Sphere(double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFSphere(double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Torus : public SDFObject
+class SDFTorus : public SDFObject
 {
 private:
 	Vec2 m_radii;
 public:
-	Torus(Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFTorus(Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class CapsuleX : public SDFObject
+class SDFCapsuleX : public SDFObject
 {
 private:
 	double m_radius;
 	double m_bodyLength;
 public:
-	CapsuleX(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCapsuleX(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class CapsuleY : public SDFObject
+class SDFCapsuleY : public SDFObject
 {
 private:
 	double m_radius;
 	double m_bodyLength;
 public:
-	CapsuleY(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCapsuleY(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class CapsuleZ : public SDFObject
+class SDFCapsuleZ : public SDFObject
 {
 private:
 	double m_radius;
 	double m_bodyLength;
 public:
-	CapsuleZ(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCapsuleZ(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Crystal : public SDFObject
+class SDFCrystal : public SDFObject
 {
 private:
 	double m_edgeLength;
 public:
-	Crystal(double edgeLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCrystal(double edgeLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_edgeLength(edgeLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class CrystalLong : public SDFObject
-{
-private:
-	double m_edgeLength;
-	double m_sideLength;
-public:
-	CrystalLong(double edgeLength = 1.0, double sideLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
-		: SDFObject(color, position, rotationAxis, rotations), m_edgeLength(edgeLength), m_sideLength(sideLength) {}
-	double signedDistanceInner(Vec3 p) const override;
-};
-
-class CylinderX : public SDFObject
+class SDFCylinderX : public SDFObject
 {
 private:
 	double m_sideLength;
 	double m_radius;
 public:
-	CylinderX(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCylinderX(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class CylinderY : public SDFObject
+class SDFCylinderY : public SDFObject
 {
 private:
 	double m_sideLength;
 	double m_radius;
 public:
-	CylinderY(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCylinderY(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class CylinderZ : public SDFObject
+class SDFCylinderZ : public SDFObject
 {
 private:
 	double m_sideLength;
 	double m_radius;
 public:
-	CylinderZ(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCylinderZ(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class ChainLink : public SDFObject
+class SDFChainLink : public SDFObject
 {
 private:
 	double m_sideLength;
 	Vec2 m_radii;
 public:
-	ChainLink(double sideLength = 1.0, Vec2 radii = {1.0, 0.25}, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFChainLink(double sideLength = 1.0, Vec2 radii = {1.0, 0.25}, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class Tube : public SDFObject
+class SDFTube : public SDFObject
 {
 private:
 	double m_height;
 	Vec2 m_radii;
 public:
-	Tube(double height = 1.0, Vec2 radii = { 1.0, 0.25 }, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFTube(double height = 1.0, Vec2 radii = { 1.0, 0.25 }, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
 		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };

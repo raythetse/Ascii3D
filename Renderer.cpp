@@ -1,11 +1,6 @@
 #include <iostream>
 #include "Renderer.h"
 
-Renderer::Renderer(size_t numPixels)
-{
-	m_frameBuffer.reserve(numPixels * 40);
-}
-
 void Renderer::render(PixelField& field)
 {
 	m_frameBuffer.clear();
@@ -18,20 +13,13 @@ void Renderer::render(PixelField& field)
 
 	for (int row{}; row < field.height(); ++row) {
 		for (int col{}; col < field.width(); ++col) {
-			if (firstRun) {
+			Vec3 color = field(row, col).renderColor;
+			bool updateColor = (field.changedColor(row, col) || color != pColor);
+			if (updateColor) {
 				m_frameBuffer += field(row, col).colorCode;
-				m_frameBuffer += field(row, col).renderChar;
-				firstRun = false;
 			}
-			else {
-				Vec3 color = field(row, col).renderColor;
-				bool updateColor = (field.changedColor(row, col) || color != pColor);
-				if (updateColor) {
-					m_frameBuffer += field(row, col).colorCode;
-				}
-				m_frameBuffer += field(row, col).renderChar;
-				pColor = color;
-			}
+			m_frameBuffer += field(row, col).renderChar;
+			pColor = color;
 		}
 		m_frameBuffer += '\n';
 	}

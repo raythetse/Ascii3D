@@ -11,8 +11,7 @@
 
 GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double stepFactor, double tolerance)
 	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_pixelField{ width, height }
-    , m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_renderer{ width * height }
-	, m_camera{ width * .005, height * .01 }
+    , m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_camera{ width * .005, height * .01 }
 {
     m_scene = SDFScene(SDFScene::Elongate);
     m_framePM = m_perfMonitor.add("FPS", PerfMonitor::FPS);

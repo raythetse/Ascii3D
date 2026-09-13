@@ -30,7 +30,10 @@ private:
 	InputManager();
 	~InputManager() {}
 
-	void processKeyPresses();
+	void processKeyEvents(INPUT_RECORD inputRecord);
+	void processMouseEvents(INPUT_RECORD inputRecord);
+	void processWindowResizeEvents(INPUT_RECORD inputRecord);
+	void processInputEvents();
 	void processMouseMovement();
 	void acquireCentre();
 	void checkActive();

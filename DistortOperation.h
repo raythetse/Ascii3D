@@ -12,20 +12,20 @@ public:
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
-class Twist : public DistortOperation
+class OPTwist : public DistortOperation
 {
 protected:
 	void innerUpdate() override {};
 	void transform(Vec3& p) const override;
 public:
-	Twist(double turns = 1.0) : DistortOperation(turns) {}
+	OPTwist(double turns = 1.0) : DistortOperation(turns) {}
 };
 
-class Bend : public DistortOperation
+class OPBend : public DistortOperation
 {
 protected:
 	void innerUpdate() override {};
 	void transform(Vec3& p) const override;
 public:
-	Bend(double turns = 1.0) : DistortOperation(turns) {}
+	OPBend(double turns = 1.0) : DistortOperation(turns) {}
 };

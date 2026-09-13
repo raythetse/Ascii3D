@@ -19,53 +19,53 @@ public:
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };
 
-class Add : public CombinationOperation
+class OPAdd : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 public:
-	Add(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
+	OPAdd(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 };
 
-class Subtract : public CombinationOperation
+class OPSubtract : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 public:
-	Subtract(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
+	OPSubtract(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 };
 
-class Intersect : public CombinationOperation
+class OPIntersect : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 public:
-	Intersect(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
+	OPIntersect(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 };
 
-class AddSmooth : public CombinationOperation
+class OPAddSmooth : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 public:
-	AddSmooth(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	OPAddSmooth(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
 		: CombinationOperation(std::move(combineObj), smoothing, colorBlending, colorShifting) {}
 };
 
-class SubtractSmooth : public CombinationOperation
+class OPSubtractSmooth : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 public:
-	SubtractSmooth(std::unique_ptr<SDFObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	OPSubtractSmooth(std::unique_ptr<SDFObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
 		: CombinationOperation(std::move(objectPtr), smoothing, colorBlending, colorShifting) {}
 };
 
-class IntersectSmooth : public CombinationOperation
+class OPIntersectSmooth : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 public:
-	IntersectSmooth(std::unique_ptr<SDFObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	OPIntersectSmooth(std::unique_ptr<SDFObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
 		: CombinationOperation(std::move(objectPtr), smoothing, colorBlending, colorShifting) {}
 };

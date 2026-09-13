@@ -29,14 +29,14 @@ public:
 	void update() override { m_updateFunction(m_ptr, m_initVal); }
 };
 
-class PMSineOscillation : public PropertyModifier<double>
+class PMOscillateSine : public PropertyModifier<double>
 {
 private:
 	double m_period{};
 	double m_amplitude{};
 	double m_phase{};
 public:
-	PMSineOscillation(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
+	PMOscillateSine(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
 		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}

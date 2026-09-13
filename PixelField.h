@@ -25,13 +25,10 @@ public:
 	PixelSample& operator()(std::size_t row, std::size_t col);
 	size_t width() const { return m_width; }
 	size_t height() const { return m_height; }
-	std::vector<PixelSample>::const_iterator fieldBegin() const;
-	std::vector<PixelSample>::const_iterator fieldEnd() const;
 	bool changedChar(std::size_t row, size_t col) const;
 	bool changedColor(std::size_t row, size_t col) const;
 	bool changed(std::size_t row, size_t col) const;
-	std::ranges::iterator_t<std::ranges::iota_view<size_t, size_t>> rangeBegin();
-	std::ranges::iterator_t<std::ranges::iota_view<size_t, size_t>> rangeEnd();
+	const std::ranges::iota_view<size_t, size_t> range();
 	void swap();
 	Vec2 increaseWidth(size_t increase);
 	Vec2 increaseHeight(size_t increase);

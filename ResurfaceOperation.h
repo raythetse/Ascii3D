@@ -14,18 +14,18 @@ public:
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
-class RoundOff : public ResurfaceOperation
+class OPRoundOff : public ResurfaceOperation
 {
 protected:
 	double resurface(double distance) override;
 public:
-	RoundOff(double magnitude = 0.1) : ResurfaceOperation(magnitude) {}
+	OPRoundOff(double magnitude = 0.1) : ResurfaceOperation(magnitude) {}
 };
 
-class Onion : public ResurfaceOperation
+class OPOnion : public ResurfaceOperation
 {
 protected:
 	double resurface(double distance) override;
 public:
-	Onion(double magnitude = 0.01) : ResurfaceOperation(magnitude) {}
+	OPOnion(double magnitude = 0.01) : ResurfaceOperation(magnitude) {}
 };

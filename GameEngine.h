@@ -15,7 +15,7 @@ private:
 	double m_sceneDepth;
 	PixelField m_pixelField;
 	RayMarcher m_rayMarcher;
-	Renderer m_renderer;
+	Renderer m_renderer{};
 	Camera m_camera;
 	SDFScene m_scene;
 	bool m_pausePressed{};
