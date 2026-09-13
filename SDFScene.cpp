@@ -110,7 +110,7 @@ void SDFScene::oxygenDemo()
 
 void SDFScene::cubesDemo()
 {
-    double smoothing{ 0.1 };
+    double smoothing{ 0.2 };
     double colorBlending{ 0.95 };
 
     add(SDFBuilder()
@@ -147,7 +147,7 @@ void SDFScene::cubesDemo()
             .pushOp<OPAdd, SDFBox>()().color(Color::Green)
     );
 
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -2.0 }, 0.5));
 }
 
 void SDFScene::propModDemo()

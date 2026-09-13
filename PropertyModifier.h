@@ -65,6 +65,35 @@ private:
 public:
 	PMOscillateLinear(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
-		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
+		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
+		progress -= 0.5;
+		progress *= 2.0;
+		progress = 1.0 - abs(progress);
+
+		*ptr = m_initVal + progress * m_amplitude;
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};
+
+class PMOscillateLinearV3 : public PropertyModifier<Vec3>
+{
+private:
+	Vec3 m_period{};
+	Vec3 m_amplitude{};
+	Vec3 m_phase{};
+public:
+	PMOscillateLinearV3(std::string_view propName, Vec3 period = 1.0, Vec3 amplitude = 1.0, Vec3 phase = 0.0)
+		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
+		double gameTime = GameTimer::gameTime();
+		Vec3 progress { 
+			fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
+			fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y,
+			fmod(0.25 * m_period.z + (gameTime + (m_phase.z * m_period.z)), m_period.z) / m_period.z
+		};
+		progress -= 0.5;
+		progress *= 2.0;
+		progress = progress.abs();
+		progress = Vec3::One - progress;
+
+		*ptr = m_initVal + progress * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };

@@ -137,12 +137,11 @@ private:
 	double m_rotations;
 	Mat3 m_rotMat;
 protected:
+	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 public:
 	OPRotate(Vec3 axis = Vec3::Up, double rotations = 0.5)
-		: m_axis(axis), m_rotations(rotations) {
-		Mat3::fromAxisAngle(axis, m_rotMat, rotations * MF::TAU);
-	}
+		: m_axis(axis), m_rotations(rotations) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 

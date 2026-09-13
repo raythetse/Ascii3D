@@ -42,34 +42,6 @@ void PixelField::swap()
     m_swap = !m_swap;
 }
 
-Vec2 PixelField::increaseWidth(size_t increase)
-{
-    m_width += increase;
-    rebuildBuffers();
-    return { static_cast<double>(m_width), static_cast<double>(m_height) };
-}
-
-Vec2 PixelField::increaseHeight(size_t increase)
-{
-    m_height += increase;
-    rebuildBuffers();
-    return { static_cast<double>(m_width), static_cast<double>(m_height) };
-}
-
-Vec2 PixelField::decreaseWidth(size_t decrease)
-{
-    m_width -= min(decrease, m_width - m_minWidth);
-    rebuildBuffers();
-    return { static_cast<double>(m_width), static_cast<double>(m_height) };
-}
-
-Vec2 PixelField::decreaseHeight(size_t decrease)
-{
-    m_height -= min(decrease, m_height - m_minHeight);
-    rebuildBuffers();
-    return { static_cast<double>(m_width), static_cast<double>(m_height) };
-}
-
 void PixelField::setSize(size_t width, size_t height)
 {
     if (m_width != width || m_height != height) {

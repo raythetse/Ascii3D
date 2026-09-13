@@ -163,6 +163,11 @@ void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase
 	}
 }
 
+void OPRotate::innerUpdate()
+{
+	Mat3::fromAxisAngle(m_axis, m_rotMat, m_rotations * MF::TAU);
+}
+
 void OPRotate::transform(Vec3& p) const
 {
 	p = m_rotMat * p;

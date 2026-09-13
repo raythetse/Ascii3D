@@ -30,10 +30,6 @@ public:
 	bool changed(std::size_t row, size_t col) const;
 	const std::ranges::iota_view<size_t, size_t> range();
 	void swap();
-	Vec2 increaseWidth(size_t increase);
-	Vec2 increaseHeight(size_t increase);
-	Vec2 decreaseWidth(size_t decrease);
-	Vec2 decreaseHeight(size_t decrease);
 	void setSize(size_t width, size_t height);
 };
 
