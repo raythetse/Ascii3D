@@ -328,8 +328,8 @@ void CubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> prop
 }
 
 void Elongate::innerUpdate() {
-	m_updateVal = m_length * -0.5;
-	m_updateValNeg = -m_updateVal;
+	m_halfLen = m_length * 0.5;
+	m_halfLenNeg = -m_halfLen;
 }
 
 void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -346,15 +346,15 @@ void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMo
 
 void ElongateX::transform(Vec3& p) const
 {
-	p.x -= std::clamp(p.x - m_offset, -m_updateValNeg, m_updateVal);
+	p.x -= std::clamp(p.x - m_offset, m_halfLenNeg, m_halfLen);
 }
 
 void ElongateY::transform(Vec3& p) const
 {
-	p.y -= std::clamp(p.y - m_offset, -m_updateValNeg, m_updateVal);
+	p.y -= std::clamp(p.y - m_offset, m_halfLenNeg, m_halfLen);
 }
 
 void ElongateZ::transform(Vec3& p) const
 {
-	p.z -= std::clamp(p.z - m_offset, -m_updateValNeg, m_updateVal);
+	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
 }

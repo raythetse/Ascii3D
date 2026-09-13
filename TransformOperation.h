@@ -220,8 +220,8 @@ class Elongate : public TransformOperation
 protected:
 	double m_length;
 	double m_offset;
-	double m_updateVal{};
-	double m_updateValNeg{};
+	double m_halfLen{};
+	double m_halfLenNeg{};
 	void innerUpdate() override;
 public:
 	Elongate(double length = 1.0, double offset = 0.0) : m_length(length), m_offset(offset) {}
