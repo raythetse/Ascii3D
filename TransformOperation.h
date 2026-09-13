@@ -251,3 +251,17 @@ protected:
 public:
 	OPElongateZ(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
 };
+
+class OPElongateXYZ : public TransformOperation
+{
+	Vec3 m_lengths;
+	Vec3 m_offsets;
+	Vec3 m_halfLens{};
+	Vec3 m_halfLenNegs{};
+protected:
+	void innerUpdate() override;
+	void transform(Vec3& p) const override;
+public:
+	OPElongateXYZ(Vec3 lengths = Vec3::One, Vec3 offsets = Vec3::Zero) : m_lengths(lengths), m_offsets(offsets) {}
+	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+};

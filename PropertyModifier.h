@@ -2,6 +2,7 @@
 #include <functional>
 #include <string>
 #include "GameTimer.h"
+#include "Vec3.h"
 
 class PropertyModifierBase
 {
@@ -37,6 +38,32 @@ private:
 	double m_phase{};
 public:
 	PMOscillateSine(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
+		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
+		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};
+
+class PMOscillateSineV3 : public PropertyModifier<Vec3>
+{
+private:
+	Vec3 m_period{};
+	Vec3 m_amplitude{};
+	Vec3 m_phase{};
+public:
+	PMOscillateSineV3(std::string_view propName, Vec3 period = 1.0, Vec3 amplitude = 1.0, Vec3 phase = 0.0)
+		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
+		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) / m_period).sin() * m_amplitude;
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};
+
+class PMOscillateLinear : public PropertyModifier<double>
+{
+private:
+	double m_period{};
+	double m_amplitude{};
+	double m_phase{};
+public:
+	PMOscillateLinear(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
 		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}

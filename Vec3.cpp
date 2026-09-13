@@ -1,5 +1,6 @@
 #include <cmath>
 #include <algorithm>
+#include "MathFunctions.h"
 #include "Vec3.h"
 
 const Vec3 Vec3::Up{ 0.0, 1.0, 0.0 };
@@ -89,6 +90,24 @@ Vec3 Vec3::lerp(Vec3 v, double weight) const
     return { std::lerp(x, v.x, weight), std::lerp(y, v.y, weight), std::lerp(z, v.z, weight) };
 }
 
+Vec3 Vec3::sin() const
+{
+    return { std::sin(x), std::sin(y), std::sin(z) };
+}
+
+Vec3 Vec3::cos() const
+{
+    return { std::cos(x), std::cos(y), std::cos(z) };
+}
+
+std::pair<Vec3, Vec3> Vec3::sincos() const
+{
+    Vec2 scX = MF::fast_sincos(x);
+    Vec2 scY = MF::fast_sincos(y);
+    Vec2 scZ = MF::fast_sincos(z);
+    return { { scX.x, scY.x, scZ.x }, { scX.y, scY.y, scZ.y } };
+}
+
 void Vec3::normalize()
 {
     const double m = length();
@@ -98,22 +117,22 @@ void Vec3::normalize()
 
 Vec3 Vec3::rotateXAxis(const double rads) const
 {
-    double c = cos(rads);
-    double s = sin(rads);
+    double c = std::cos(rads);
+    double s = std::sin(rads);
     return { x, y * c - z * s, y * s + z * c };
 }
 
 Vec3 Vec3::rotateYAxis(const double rads) const
 {
-    double c = cos(rads);
-    double s = sin(rads);
+    double c = std::cos(rads);
+    double s = std::sin(rads);
     return { x * c + z * s, y, -x * s + z * c };
 }
 
 Vec3 Vec3::rotateZAxis(const double rads) const
 {
-    double c = cos(rads);
-    double s = sin(rads);
+    double c = std::cos(rads);
+    double s = std::sin(rads);
     return { x * c - y * s, x * s + y * c, z };
 }
 

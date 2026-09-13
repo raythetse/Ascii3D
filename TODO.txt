@@ -8,6 +8,7 @@ Required:
 - exceptions
 - consts wherever sensical
 - Fix pixelsample accessibility
+- computer shaders for fast marching
 
 Optional:
 - camera track

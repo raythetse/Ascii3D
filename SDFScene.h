@@ -27,6 +27,7 @@ private:
 	void cubesDemo();
 	void propModDemo();
 	void elongateDemo();
+	void propModTests();
 public:
 	SDFScene() = default;
 	SDFScene(LoadOption loadOption);

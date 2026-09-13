@@ -358,3 +358,26 @@ void OPElongateZ::transform(Vec3& p) const
 {
 	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
 }
+
+void OPElongateXYZ::innerUpdate()
+{
+	m_halfLens = m_lengths * 0.5;
+	m_halfLenNegs = -m_halfLens;
+}
+
+void OPElongateXYZ::transform(Vec3& p) const
+{
+	p -= (p - m_offsets).clamp(m_halfLenNegs, m_halfLens);
+}
+
+void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+	if (propMod->propName() == "lengths") {
+		propMod->BindToProp(&m_lengths);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "offsets") {
+		propMod->BindToProp(&m_offsets);
+		m_propMods.push_back(std::move(propMod));
+	}
+}

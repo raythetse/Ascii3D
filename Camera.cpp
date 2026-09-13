@@ -72,5 +72,12 @@ Vec3 Camera::getViewportRay(const double x, const double y) const
 
 void Camera::setViewportSize(Vec2 size)
 {
-    m_viewportSize = size* Vec2{ 0.005, 0.01 };
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_FONT_INFO nFont;
+    GetCurrentConsoleFont(hConsole, false, &nFont);
+    COORD fontSize = GetConsoleFontSize(hConsole, nFont.nFont);
+    double fontRatio = fontSize.X ? fontSize.X / fontSize.Y : 0.5;
+    double sizeRatio = size.y / size.x;
+    
+    m_viewportSize = Vec2{ fontRatio * size.x / size.y, 1.0 }.getNormal();
 }

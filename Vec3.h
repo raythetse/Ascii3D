@@ -59,6 +59,9 @@ public:
 	Vec3 saturate() const;
 	Vec3 cross(const Vec3& p);
 	Vec3 lerp(Vec3 v, double weight) const;
+	Vec3 sin() const;
+	Vec3 cos() const;
+	std::pair<Vec3, Vec3> sincos() const;
 	void normalize();
 	Vec3 rotateXAxis(const double rads) const ;
 	Vec3 rotateYAxis(const double rads) const ;

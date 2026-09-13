@@ -31,6 +31,7 @@ SDFScene::SDFScene(LoadOption loadOption)
         propModDemo();
         break;
     default:
+        propModTests();
         break;
     }
 }
@@ -65,7 +66,6 @@ void SDFScene::frameDemo()
                     .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Blue, Vec3{ -0.5, -0.5, 0.5 })().stepBack()
                     .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Violet, Vec3{ -0.5, -0.5, -0.5 })().stepBack()
                     .pushOp<OPAdd, SDFBoxFrame>(Vec3{ 1.25 }, 0.1, Color::White)()
-        
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
@@ -168,18 +168,25 @@ void SDFScene::elongateDemo()
     add(SDFBuilder{}
         .pushOp<OPTranslateSine>(Vec3::Up, 0.1, 2.0)
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.125)
-        .pushOp<OPElongateY>(0.5)
-        .bindPropMod<PMOscillateSine>("length", 1.0, 0.5)
-        .pushOp<OPElongateZ>(1.0)
-        .bindPropMod<PMOscillateSine>("length", 1.348, 1.0)
-        .pushOp<OPElongateX>(1.0)
-        .bindPropMod<PMOscillateSine>("length", 1.783, 1.0)
+        .pushOp<OPElongateXYZ>(Vec3{ 0.5, 1.0, 0.75 })
+        .bindPropMod<PMOscillateSineV3>("lengths", Vec3{ 1.0, 0.849, 0.731 }, Vec3{ 0.5, 0.5, 0.5 })
         .pushOp<OPAdd, SDFCrystal>(1.25)().color(Color::Blue)
             .pushOp<OPSubtractSmooth, SDFBox>(1.5, Color::Red)(0.5, 25.0, 0.25)
                 .stepBack()
             .pushOp<OPSubtractSmooth, SDFBox>(1.0, Color::Green)(0.1, 100.0, 0.485)
                 .stepBack()
             .pushOp<OPAdd, SDFCrystal>(0.1, Color::Yellow)()
+    );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 3.0, -3.0 }, 0.25));
+}
+
+void SDFScene::propModTests()
+{
+    add(SDFBuilder{}
+        .pushOp<OPElongateXYZ>()
+        .bindPropMod<PMOscillateSineV3>("lengths", Vec3{1.54,2.14,3.12}, Vec3{0.64, 0.75, 0.48})
+        .pushOp<OPAdd, SDFCrystal>()()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 3.0, -3.0 }, 0.25));
