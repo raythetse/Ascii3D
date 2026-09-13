@@ -25,6 +25,8 @@ private:
 	size_t m_marchPM{};
 	size_t m_renderPM{};
 
+	void resizeCallback(size_t width, size_t height);
+
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);
 	void run();

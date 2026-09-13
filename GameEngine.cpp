@@ -19,6 +19,11 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
     m_renderPM = m_perfMonitor.add("Render");
+    InputManager::registerResizeCallback([this](size_t width, size_t height) {
+        m_pixelField.setSize(width, height);
+        m_camera.setViewportSize({ static_cast<double>(width), static_cast<double>(height) });
+        m_camera.reset();
+    });
     GameTimer::reset();
 }
 

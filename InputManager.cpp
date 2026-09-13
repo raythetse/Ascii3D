@@ -13,13 +13,10 @@ InputManager::InputManager()
 	HWND realWindow = GetAncestor(m_console, GA_ROOTOWNER);
 	m_console = (realWindow != NULL) ? realWindow : m_console;
 
-	RECT rect;
-	if (GetClientRect(m_console, &rect)) {
-		m_screenCentre.x = static_cast<long>(0.5 * (rect.right - rect.left));
-		m_screenCentre.y = static_cast<long>(0.5 * (rect.bottom - rect.top));
-	}
+	acquireCentre();
 	SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 	m_input = GetStdHandle(STD_INPUT_HANDLE);
+	m_output = GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
 void InputManager::processKeyPresses()
@@ -63,40 +60,64 @@ void InputManager::processKeyPresses()
 					}
 				}
 			}
+			else if (inputBuffer[i].EventType == MOUSE_EVENT) {
+				MOUSE_EVENT_RECORD mer = inputBuffer[i].Event.MouseEvent;
+				m_holdMouse = m_holdMouse || (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED && mer.dwEventFlags == 0);
+			}
+			else if (inputBuffer[i].EventType == WINDOW_BUFFER_SIZE_EVENT) {
+				COORD newSize = inputBuffer[i].Event.WindowBufferSizeEvent.dwSize;
+				for (auto& func : m_resizeCallbacks) {
+					func(newSize.X, newSize.Y - 1);
+				}
+			}
 		}
 	}
 }
 
 void InputManager::processMouseMovement()
 {
-	static bool s_skipFrame{ true };
-	if (GetForegroundWindow() == m_console) {
-		if (s_skipFrame) {
-			s_skipFrame = false;
+	if (m_holdMouse) {
+		if (m_skipFrame) {
+			m_skipFrame = false;
 		}
 		else {
 			POINT cursorPos;
-			if (GetCursorPos(&cursorPos)) {
-				RECT rect;
-				GetClientRect(m_console, &rect);
-
-				if (ScreenToClient(m_console, &cursorPos)) {
-					double x = (SHORT)cursorPos.x;
-					double y = (SHORT)cursorPos.y;
-
-					m_mouseMotion = { x - m_screenCentre.x, y - m_screenCentre.y };
-				}
-			}
+			GetCursorPos(&cursorPos);
+			//ScreenToClient(m_console, &cursorPos);
+			m_mouseMotion = {
+				static_cast<double>(cursorPos.x - m_screenCentre.x),
+				static_cast<double>(cursorPos.y - m_screenCentre.y)
+			};
 		}
+		//POINT conCentre{ m_screenCentre.x, m_screenCentre.y };
+		//ClientToScreen(m_console, &conCentre);
+		//SetCursorPos(conCentre.x, conCentre.y);
 		SetCursorPos(m_screenCentre.x, m_screenCentre.y);
 	}
 	else {
-		s_skipFrame = true;
+		m_skipFrame = true;
 	}
+}
+
+void InputManager::acquireCentre()
+{
+	RECT rect;
+	if (GetClientRect(m_console, &rect)) {
+		m_screenCentre.x = static_cast<long>(0.5 * (rect.right - rect.left));
+		m_screenCentre.y = static_cast<long>(0.5 * (rect.bottom - rect.top));
+	}
+	m_skipFrame = true;
+}
+
+void InputManager::checkActive()
+{
+	m_isActiveWindow = GetForegroundWindow() == m_console;
+	if (!m_isActiveWindow) m_holdMouse = false;
 }
 
 void InputManager::update()
 {
+	instance().checkActive();
 	instance().processMouseMovement();
 	instance().processKeyPresses();
 }
@@ -131,4 +152,9 @@ bool InputManager::keyDown(unsigned short key)
 Vec2 InputManager::mouseMotion()
 {
 	return instance().m_mouseMotion;
+}
+
+void InputManager::registerResizeCallback(std::function<void(size_t, size_t)> callbackFunc)
+{
+	instance().m_resizeCallbacks.push_back(callbackFunc);
 }

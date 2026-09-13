@@ -87,7 +87,9 @@ Vec2 PixelField::decreaseHeight(size_t decrease)
 
 void PixelField::setSize(size_t width, size_t height)
 {
-    m_width = width;
-    m_height = height;
-    rebuildBuffers();
+    if (m_width != width || m_height != height) {
+        m_width = width;
+        m_height = height;
+        rebuildBuffers();
+    }
 }

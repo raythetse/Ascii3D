@@ -1,5 +1,7 @@
 #pragma once
+#include <functional>
 #include <unordered_map>
+#include <vector>
 #include <Windows.h>
 #include "Vec2.h"
 
@@ -15,16 +17,23 @@ public:
 private:
 	static InputManager& instance();
 	std::unordered_map<unsigned short, KeyState> m_keyMap{};
+	std::vector<std::function<void(size_t, size_t)>> m_resizeCallbacks;
 	Vec2 m_mouseMotion{};
 	HWND m_console;
 	HANDLE m_input;
+	HANDLE m_output;
 	POINT m_screenCentre;
+	bool m_skipFrame{ true };
+	bool m_holdMouse{ true };
+	bool m_isActiveWindow{ true };
 
 	InputManager();
 	~InputManager() {}
 
 	void processKeyPresses();
 	void processMouseMovement();
+	void acquireCentre();
+	void checkActive();
 
 public:
 	InputManager(const InputManager&) = delete;
@@ -37,4 +46,5 @@ public:
 	static bool keyJustReleased(unsigned short key);
 	static bool keyDown(unsigned short key);
 	static Vec2 mouseMotion();
+	static void registerResizeCallback(std::function<void(size_t, size_t)> callbackFunc);
 };
