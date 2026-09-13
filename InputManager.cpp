@@ -70,7 +70,6 @@ void InputManager::processKeyPresses()
 void InputManager::processMouseMovement()
 {
 	static bool s_skipFrame{ true };
-
 	if (GetForegroundWindow() == m_console) {
 		if (s_skipFrame) {
 			s_skipFrame = false;
@@ -98,8 +97,8 @@ void InputManager::processMouseMovement()
 
 void InputManager::update()
 {
-	instance().processKeyPresses();
 	instance().processMouseMovement();
+	instance().processKeyPresses();
 }
 
 bool InputManager::keyJustPushed(unsigned short key)
