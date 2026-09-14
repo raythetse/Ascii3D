@@ -3,6 +3,7 @@
 #include <ranges>
 
 #include "ConsoleFunctions.h"
+#include "FileHandler.h"
 #include "GameTimer.h"
 #include "InputManager.h"
 #include "MathFunctions.h"
@@ -44,6 +45,11 @@ bool GameEngine::handleInput()
     InputManager::update();
     if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
     if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
+    if (InputManager::keyJustPushed('M')) {
+        std::vector<std::string> strVec{};
+        m_scene.serialize(strVec);
+        FileHandler::saveSDFScene(strVec, "MyFile.txt");
+    }
 
     return true;
 }

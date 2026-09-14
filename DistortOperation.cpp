@@ -1,4 +1,5 @@
 #include "DistortOperation.h"
+#include <sstream>
 #include "Mat2.h"
 
 void OPTwist::transform(Vec3& p) const
@@ -23,4 +24,13 @@ void DistortOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase
 		propMod->BindToProp(&m_magnitude);
 		m_propMods.push_back(std::move(propMod));
 	}
+}
+
+void DistortOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
+	ss << ",m_magnitude," << m_magnitude;
+	strVec.push_back(ss.str());
 }

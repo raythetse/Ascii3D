@@ -8,11 +8,15 @@ class PropertyModifierBase
 {
 private:
 	std::string m_propName;
+protected:
+	virtual std::string getClassName() const = 0;
+	virtual void serializeInner(std::stringstream& ss) const = 0;
 public:
 	PropertyModifierBase(std::string_view propName) : m_propName(propName) {}
 	std::string_view propName() { return m_propName; }
 	virtual void BindToProp(void* ref) = 0;
 	virtual void update() = 0;
+	void serialize(std::vector<std::string> strVec, size_t level);
 };
 
 template <typename T>
@@ -36,6 +40,9 @@ private:
 	double m_period{};
 	double m_amplitude{};
 	double m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateSine"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	PMOscillateSine(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
@@ -49,6 +56,9 @@ private:
 	Vec3 m_period{};
 	Vec3 m_amplitude{};
 	Vec3 m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateSineV3"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	PMOscillateSineV3(std::string_view propName, Vec3 period = 1.0, Vec3 amplitude = 1.0, Vec3 phase = 0.0)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
@@ -62,6 +72,9 @@ private:
 	double m_period{};
 	double m_amplitude{};
 	double m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateLinear"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	PMOscillateLinear(std::string_view propName, double period = 1.0, double amplitude = 1.0, double phase = 0.0)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
@@ -80,6 +93,9 @@ private:
 	Vec3 m_period{};
 	Vec3 m_amplitude{};
 	Vec3 m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateLinearV3"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	PMOscillateLinearV3(std::string_view propName, Vec3 period = 1.0, Vec3 amplitude = 1.0, Vec3 phase = 0.0)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {

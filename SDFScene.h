@@ -35,5 +35,6 @@ public:
 	void update();
 	std::vector<std::unique_ptr<SDFObject>>& objects() { return m_objects; }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
+	bool serialize(std::vector<std::string>& strVec) const;
 };
 

@@ -27,4 +27,5 @@ public:
 	virtual void update();
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) = 0;
+	virtual void serialize(std::vector<std::string>& strVec, size_t level) const = 0;
 };

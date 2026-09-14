@@ -177,6 +177,7 @@
     <ClInclude Include="ConsoleFunctions.h" />
     <ClInclude Include="DistortOperation.h" />
     <ClInclude Include="DomainOperation.h" />
+    <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="InputManager.h" />

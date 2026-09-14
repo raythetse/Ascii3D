@@ -1,5 +1,15 @@
 #include "DomainOperation.h"
 
+void DomainOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
+	ss << ",m_spacing," << m_spacing;
+
+	strVec.push_back(ss.str());
+}
+
 void DomainOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "spacing") {
@@ -57,6 +67,17 @@ void OPRepeatLimited::transform(Vec3& p) const
 {
 	if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 	p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
+}
+
+void OPRepeatLimited::serialize(std::vector<std::string>& strVec, size_t level) const
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
+	ss << ",m_spacing," << m_spacing;
+	ss << ",m_limits," << m_limits.x << ',' << m_limits.y << ',' << m_limits.z;
+
+	strVec.push_back(ss.str());
 }
 
 void OPRepeatLimited::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)

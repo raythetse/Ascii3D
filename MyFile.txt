@@ -1,0 +1,47 @@
+SDFObject,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,1,1
+	OPAdd,m_smoothing,0.5,m_colorBlending,1,m_colorShifting,0
+	SDFObject,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,1,1
+		OPCubeRollHeight,m_cubeHeight,1,m_period,1,m_phase,0.5
+		OPTranslateLinear,m_vector,10,0,m_transitTimes,1,1,m_endDelays,1,1,m_phase,0.5
+		OPTranslateLinear,m_vector,00,1,m_transitTimes,1,1,m_endDelays,1,1,m_phase,1.5
+		OPCubeRoller,m_axes,4,0,0,1,1,0,0,0,0,-1,-1,0,0,m_quarterTurnTime,1,m_phase,0.5
+		OPAdd,m_smoothing,0.5,m_colorBlending,1,m_colorShifting,0
+		SDFBox,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,0,0
+			stepBack
+		stepBack
+	OPAddSmooth,m_smoothing,0.2,m_colorBlending,0.95,m_colorShifting,0
+	SDFObject,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,1,1
+		OPTranslate,m_translation,Point3D[0, 1, 0]
+		OPCubeRollHeight,m_cubeHeight,3,m_period,1,m_phase,0.5
+		OPTranslateLinear,m_vector,10,0,m_transitTimes,1,1,m_endDelays,1,1,m_phase,0.5
+		OPTranslateLinear,m_vector,00,1,m_transitTimes,1,1,m_endDelays,1,1,m_phase,1.5
+		OPCubeRoller,m_axes,4,0,0,-1,-1,0,0,0,0,1,1,0,0,m_quarterTurnTime,1,m_phase,0.5
+		OPAdd,m_smoothing,0.5,m_colorBlending,1,m_colorShifting,0
+		SDFBox,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,1,0
+			stepBack
+		stepBack
+	OPAddSmooth,m_smoothing,0.2,m_colorBlending,0.95,m_colorShifting,0
+	SDFObject,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,1,1
+		OPRotate,m_axis,0,1,0,m_rotations,0.5
+		OPCubeRollHeight,m_cubeHeight,1,m_period,1,m_phase,0.5
+		OPTranslateLinear,m_vector,10,0,m_transitTimes,1,1,m_endDelays,1,1,m_phase,0.5
+		OPTranslateLinear,m_vector,00,1,m_transitTimes,1,1,m_endDelays,1,1,m_phase,1.5
+		OPCubeRoller,m_axes,4,0,0,1,1,0,0,0,0,-1,-1,0,0,m_quarterTurnTime,1,m_phase,0.5
+		OPAdd,m_smoothing,0.5,m_colorBlending,1,m_colorShifting,0
+		SDFBox,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,0,0,1
+			stepBack
+		stepBack
+	OPAddSmooth,m_smoothing,0.2,m_colorBlending,0.95,m_colorShifting,0
+	SDFObject,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,1,1,1
+		OPTranslate,m_translation,Point3D[0, 1, 0]
+		OPRotate,m_axis,0,1,0,m_rotations,0.5
+		OPCubeRollHeight,m_cubeHeight,3,m_period,1,m_phase,0.5
+		OPTranslateLinear,m_vector,10,0,m_transitTimes,1,1,m_endDelays,1,1,m_phase,0.5
+		OPTranslateLinear,m_vector,00,1,m_transitTimes,1,1,m_endDelays,1,1,m_phase,1.5
+		OPCubeRoller,m_axes,4,0,0,-1,-1,0,0,0,0,1,1,0,0,m_quarterTurnTime,1,m_phase,0.5
+		OPAdd,m_smoothing,0.5,m_colorBlending,1,m_colorShifting,0
+		SDFBox,m_position,0,0,0,m_rotationAxis,0,1,0,m_rotations,0,m_color,0,1,0
+			stepBack
+		stepBack
+	stepBack
+end

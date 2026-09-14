@@ -1,5 +1,6 @@
 #include "CombinationOperation.h"
 #include <algorithm>
+#include <sstream>
 
 void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
 {
@@ -33,6 +34,19 @@ void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifier
 		propMod->BindToProp(&m_colorShifting);
 		m_propMods.push_back(std::move(propMod));
 	}
+}
+
+void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
+	ss << ",m_smoothing," << m_smoothing;
+	ss << ",m_colorBlending," << m_colorBlending;
+	ss << ",m_colorShifting," << m_colorShifting;
+	strVec.push_back(ss.str());
+
+	m_combineObj->serialize(strVec, level);
 }
 
 double OPAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

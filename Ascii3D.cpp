@@ -1,5 +1,7 @@
 #include "ConsoleFunctions.h"
 #include "GameEngine.h"
+#include <fstream>
+#include <iostream>
 
 int main()
 {

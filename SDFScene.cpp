@@ -43,6 +43,15 @@ void SDFScene::update()
     }
 }
 
+bool SDFScene::serialize(std::vector<std::string>& strVec) const
+{
+    for (auto& obj : m_objects) {
+        obj->serialize(strVec, 0);
+    }
+    strVec.push_back("end");
+    return false;
+}
+
 void SDFScene::frameDemo()
 {
     add(SDFBuilder{}.pushOp<OPTranslate>(Vec3::Down * 4.0).pushOp<OPAdd, SDFBox>(Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
