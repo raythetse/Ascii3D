@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <string>
+#include "SDFDefaults.h"
 #include "GameTimer.h"
 #include "Vec3.h"
 
