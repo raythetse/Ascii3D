@@ -2,9 +2,10 @@
 #include <memory>
 #include <ranges>
 #include <vector>
-#include "SDFBuilder.h"
 #include "SDFObject.h"
 #include "LightSource.h"
+
+class SDFBuilder;
 
 class SDFScene
 {

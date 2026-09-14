@@ -9,6 +9,7 @@ Required:
 - consts wherever sensical
 - Fix pixelsample accessibility
 - computer shaders for fast marching
+- fix constructor accessibilities on abstracts
 
 Optional:
 - camera track

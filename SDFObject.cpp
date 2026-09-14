@@ -50,10 +50,10 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     std::stringstream ss{};
     ss << std::string(level, '\t');
     ss << getClassName();
-    ss << ",m_position," << m_position.x << ',' << m_position.y << ',' << m_position.z;
-    ss << ",m_rotationAxis," << m_rotationAxis.x << ',' << m_rotationAxis.y << ',' << m_rotationAxis.z;
-    ss << ",m_rotations," << m_rotations;
-    ss << ",m_color," << m_color.x << ',' << m_color.y << ',' << m_color.z;
+    ss << " m_position " << m_position.x << ' ' << m_position.y << ' ' << m_position.z;
+    ss << " m_rotationAxis " << m_rotationAxis.x << ' ' << m_rotationAxis.y << ' ' << m_rotationAxis.z;
+    ss << " m_rotations " << m_rotations;
+    ss << " m_color " << m_color.x << ' ' << m_color.y << ' ' << m_color.z;
     serializeInner(ss);
     strVec.push_back(ss.str());
     ++level;

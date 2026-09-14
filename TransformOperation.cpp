@@ -57,7 +57,7 @@ void OPTranslate::transform(Vec3& p) const
 
 void OPTranslate::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_translation," << m_translation;
+	ss << " m_translation " << m_translation;
 }
 
 void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -79,10 +79,10 @@ void OPTranslateSine::transform(Vec3& p) const
 
 void OPTranslateSine::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_axis," << m_axis.x << ',' << m_axis.y << ',' << m_axis.z;
-	ss << ",m_amplitude," << m_amplitude;
-	ss << ",m_period," << m_period;
-	ss << ",m_phase," << m_phase;
+	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " m_amplitude " << m_amplitude;
+	ss << " m_period " << m_period;
+	ss << " m_phase " << m_phase;
 }
 
 void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -133,10 +133,10 @@ void OPTranslateLinear::transform(Vec3& p) const
 
 void OPTranslateLinear::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_vector," << m_vector.x << m_vector.y << ',' << m_vector.z;
-	ss << ",m_transitTimes," << m_transitTimes.x << ',' << m_transitTimes.y;
-	ss << ",m_endDelays," << m_endDelays.x << ',' << m_endDelays.y;
-	ss << ",m_phase," << m_phase;
+	ss << " m_vector " << m_vector.x << m_vector.y << ' ' << m_vector.z;
+	ss << " m_transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
+	ss << " m_endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
+	ss << " m_phase " << m_phase;
 }
 
 void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -180,9 +180,9 @@ void OPCubeRollHeight::transform(Vec3& p) const
 
 void OPCubeRollHeight::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_cubeHeight," << m_cubeHeight;
-	ss << ",m_period," << m_period;
-	ss << ",m_phase," << m_phase;
+	ss << " m_cubeHeight " << m_cubeHeight;
+	ss << " m_period " << m_period;
+	ss << " m_phase " << m_phase;
 }
 
 void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -213,8 +213,8 @@ void OPRotate::transform(Vec3& p) const
 
 void OPRotate::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_axis," << m_axis.x << ',' << m_axis.y << ',' << m_axis.z;
-	ss << ",m_rotations," << m_rotations;
+	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " m_rotations " << m_rotations;
 }
 
 void OPRotate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -243,9 +243,9 @@ void OPRotateContinuous::transform(Vec3& p) const
 
 void OPRotateContinuous::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_axis," << m_axis.x << ',' << m_axis.y << ',' << m_axis.z;
-	ss << ",m_rotationsPerSecond," << m_rotationsPerSecond;
-	ss << ",m_phase," << m_phase;
+	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " m_rotationsPerSecond " << m_rotationsPerSecond;
+	ss << " m_phase " << m_phase;
 }
 
 void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -292,11 +292,11 @@ void OPRotateScan::transform(Vec3& p) const
 
 void OPRotateScan::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_axis," << m_axis.x << ',' << m_axis.y << ',' << m_axis.z;
-	ss << ",m_rotations," << m_rotations;
-	ss << ",m_transitTimes," << m_transitTimes.x << ',' << m_transitTimes.y;
-	ss << ",m_endDelays," << m_endDelays.x << ',' << m_endDelays.y;
-	ss << ",m_phase," << m_phase;
+	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " m_rotations " << m_rotations;
+	ss << " m_transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
+	ss << " m_endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
+	ss << " m_phase " << m_phase;
 }
 
 void OPRotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -341,11 +341,11 @@ void OPRotateDelay::transform(Vec3& p) const
 
 void OPRotateDelay::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_axis," << m_axis.x << ',' << m_axis.y << ',' << m_axis.z;
-	ss << ",m_rotations," << m_rotations;
-	ss << ",m_rotateTime," << m_rotateTime;
-	ss << ",m_delayTime," << m_delayTime;
-	ss << ",m_phase," << m_phase;
+	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " m_rotations " << m_rotations;
+	ss << " m_rotateTime " << m_rotateTime;
+	ss << " m_delayTime " << m_delayTime;
+	ss << " m_phase " << m_phase;
 }
 
 void OPRotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -387,12 +387,12 @@ void OPCubeRoller::transform(Vec3& p) const
 
 void OPCubeRoller::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_axes," << m_axes.size();
+	ss << " m_axes " << m_axes.size();
 	for (size_t i{}; i < m_axes.size(); ++i) {
-		ss << ',' << m_axes[i].x << ',' << m_axes[i].y << ',' << m_axes[i].z;
+		ss << ' ' << m_axes[i].x << ' ' << m_axes[i].y << ' ' << m_axes[i].z;
 	}
-	ss << ",m_quarterTurnTime," << m_quarterTurnTime;
-	ss << ",m_phase," << m_phase;
+	ss << " m_quarterTurnTime " << m_quarterTurnTime;
+	ss << " m_phase " << m_phase;
 }
 
 void OPCubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -418,8 +418,8 @@ void Elongate::innerUpdate() {
 
 void Elongate::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_length," << m_length;
-	ss << ",m_offset," << m_offset;
+	ss << " m_length " << m_length;
+	ss << " m_offset " << m_offset;
 }
 
 void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -462,8 +462,8 @@ void OPElongateXYZ::transform(Vec3& p) const
 
 void OPElongateXYZ::serializeInner(std::stringstream& ss) const
 {
-	ss << ",m_lengths," << m_lengths.x << ',' << m_lengths.y << ',' << m_lengths.z;
-	ss << ",m_offsets," << m_offsets.x << ',' << m_offsets.y << ',' << m_offsets.z;
+	ss << " m_lengths " << m_lengths.x << ' ' << m_lengths.y << ' ' << m_lengths.z;
+	ss << " m_offsets " << m_offsets.x << ' ' << m_offsets.y << ' ' << m_offsets.z;
 }
 
 void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)

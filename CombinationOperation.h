@@ -1,6 +1,7 @@
 #pragma once
 #include "SDFOperation.h"
 #include "SDFObject.h"
+#include "SDFDefaults.h"
 
 class CombinationOperation : public SDFOperation
 {
@@ -13,67 +14,80 @@ protected:
 	void innerUpdate() override {}
 	virtual std::string getClassName() const = 0;
 public:
-	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	CombinationOperation(std::unique_ptr<SDFObject> combineObj,
+		double smoothing = Defaults::COMBSmooth,
+		double colorBlending = Defaults::COMBColBlend,
+		double colorShifting = Defaults::COMBColShift)
 		: SDFOperation(SDFOperationType::Combine), m_combineObj(std::move(combineObj)), m_smoothing(smoothing), m_colorBlending(colorBlending), m_colorShifting(colorShifting) {}
+	void setCombineObject(std::unique_ptr<SDFObject> combineObj);
 	void update() override;
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	void serialize(std::vector<std::string>& strVec, size_t level) const override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };
 
-class OPAdd : public CombinationOperation
+class COMBAdd : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
-	std::string getClassName() const override { return "OPAdd"; }
+	std::string getClassName() const override { return "COMBAdd"; }
 public:
-	OPAdd(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
+	COMBAdd(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 };
 
-class OPSubtract : public CombinationOperation
+class COMBSubtract : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
-	std::string getClassName() const override { return "OPSubtract"; }
+	std::string getClassName() const override { return "COMBSubtract"; }
 public:
-	OPSubtract(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
+	COMBSubtract(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 };
 
-class OPIntersect : public CombinationOperation
+class COMBIntersect : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
-	std::string getClassName() const override { return "OPIntersect"; }
+	std::string getClassName() const override { return "COMBIntersect"; }
 public:
-	OPIntersect(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
+	COMBIntersect(std::unique_ptr<SDFObject> combineObj) : CombinationOperation(std::move(combineObj)) {}
 };
 
-class OPAddSmooth : public CombinationOperation
+class COMBAddSmooth : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
-	std::string getClassName() const override { return "OPAddSmooth"; }
+	std::string getClassName() const override { return "COMBAddSmooth"; }
 public:
-	OPAddSmooth(std::unique_ptr<SDFObject> combineObj, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	COMBAddSmooth(std::unique_ptr<SDFObject> combineObj,
+		double smoothing = Defaults::COMBSmooth,
+		double colorBlending = Defaults::COMBColBlend,
+		double colorShifting = Defaults::COMBColShift)
 		: CombinationOperation(std::move(combineObj), smoothing, colorBlending, colorShifting) {}
 };
 
-class OPSubtractSmooth : public CombinationOperation
+class COMBSubtractSmooth : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
-	std::string getClassName() const override { return "OPSubtractSmooth"; }
+	std::string getClassName() const override { return "COMBSubtractSmooth"; }
 public:
-	OPSubtractSmooth(std::unique_ptr<SDFObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	COMBSubtractSmooth(std::unique_ptr<SDFObject> objectPtr,
+		double smoothing = Defaults::COMBSmooth,
+		double colorBlending = Defaults::COMBColBlend,
+		double colorShifting = Defaults::COMBColShift)
 		: CombinationOperation(std::move(objectPtr), smoothing, colorBlending, colorShifting) {}
 };
 
-class OPIntersectSmooth : public CombinationOperation
+class COMBIntersectSmooth : public CombinationOperation
 {
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
-	std::string getClassName() const override { return "OPIntersectSmooth"; }
+	std::string getClassName() const override { return "COMBIntersectSmooth"; }
 public:
-	OPIntersectSmooth(std::unique_ptr<SDFObject> objectPtr, double smoothing = 0.5, double colorBlending = 1.0, double colorShifting = 0.0)
+	COMBIntersectSmooth(std::unique_ptr<SDFObject> objectPtr,
+		double smoothing = Defaults::COMBSmooth,
+		double colorBlending = Defaults::COMBColBlend,
+		double colorShifting = Defaults::COMBColShift)
 		: CombinationOperation(std::move(objectPtr), smoothing, colorBlending, colorShifting) {}
 };

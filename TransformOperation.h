@@ -1,4 +1,5 @@
 #pragma once
+#include "SDFDefaults.h"
 #include "SDFOperation.h"
 
 class TransformOperation : public SDFOperation
@@ -85,7 +86,7 @@ protected:
 	std::string getClassName() const { return "OPTranslate"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPTranslate(Vec3 translation = Vec3::Up) : m_translation(translation) {}
+	OPTranslate(Vec3 translation = Defaults::TRANSVector) : m_translation(translation) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -103,7 +104,8 @@ protected:
 	std::string getClassName() const { return "OPTranslateSine"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPTranslateSine(Vec3 axis = Vec3::Up, double amplitude = 1.0, double period = 4.0, double phase = 0.0) : m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
+	OPTranslateSine(Vec3 axis = Defaults::TRANSVector, double amplitude = Defaults::TRANSAmplitude, double period = Defaults::TRANSPeriod, double phase = Defaults::TRANSPhase)
+		: m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -124,7 +126,7 @@ protected:
 	std::string getClassName() const { return "OPTranslateLinear"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPTranslateLinear(Vec3 vector = Vec3::Up, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
+	OPTranslateLinear(Vec3 vector = Defaults::TRANSVector, Vec2 transitTimes = Defaults::TRANSTransTimes, Vec2 endDelays = Defaults::TRANSEndDelays, double phase = Defaults::TRANSPhase)
 		: m_vector(vector), m_start(vector * -0.5), m_end(vector * 0.5), m_transitTimes(transitTimes)
 		, m_endDelays(endDelays), m_phase(phase + transitTimes.x * 0.5)
 		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
@@ -144,7 +146,7 @@ protected:
 	std::string getClassName() const { return "OPCubeRollHeight"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPCubeRollHeight(double cubeHeight = 1.0, double period = 1.0, double phase = 0.0)
+	OPCubeRollHeight(double cubeHeight = Defaults::TRANSCubeHeight, double period = Defaults::TRANSPeriod, double phase = Defaults::TRANSPhase)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -161,7 +163,7 @@ protected:
 	std::string getClassName() const { return "OPRotate"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPRotate(Vec3 axis = Vec3::Up, double rotations = 0.5)
+	OPRotate(Vec3 axis = Defaults::TRANSVector, double rotations = Defaults::TRANSRotations)
 		: m_axis(axis), m_rotations(rotations) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -179,7 +181,8 @@ protected:
 	std::string getClassName() const { return "OPRotateContinuous"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPRotateContinuous(Vec3 axis = Vec3::Up, double rotationsPerSecond = 0.25, double phase = 0.0) : m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
+	OPRotateContinuous(Vec3 axis = Defaults::TRANSVector, double rotationsPerSecond = Defaults::TRANSRotsPerSec, double phase = Defaults::TRANSPhase)
+		: m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -200,7 +203,7 @@ protected:
 	std::string getClassName() const { return "OPRotateScan"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPRotateScan(Vec3 axis = Vec3::Up, double rotations = 1.0, Vec2 transitTimes = 1.0, Vec2 endDelays = 0.0, double phase = 0.0)
+	OPRotateScan(Vec3 axis = Defaults::TRANSVector, double rotations = Defaults::TRANSRotations, Vec2 transitTimes = Defaults::TRANSTransTimes, Vec2 endDelays = Defaults::TRANSEndDelays, double phase = Defaults::TRANSPhase)
 		: m_axis(axis), m_rotations(rotations), m_endAngle(rotations* MF::TAU)
 		, m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase)
 		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
@@ -224,8 +227,8 @@ protected:
 	std::string getClassName() const { return "OPRotateDelay"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPRotateDelay(Vec3 axis = Vec3::Up, double rotations = 1.0, double rotateTime = 1.0, double delayTime = 1.0, double phase = 0.0)
-		: m_axis(axis), m_rotations(rotations), m_angle(rotations* MF::TAU), m_rotateTime(rotateTime), m_delayTime(delayTime), m_cycleTime(rotateTime + delayTime), m_phase(phase) {}
+	OPRotateDelay(Vec3 axis = Defaults::TRANSVector, double rotations = Defaults::TRANSRotations, double rotateTime = Defaults::TRANSRotateTime, double delayTime = Defaults::TRANSDelayTime, double phase = Defaults::TRANSPhase)
+		: m_axis(axis), m_rotations(rotations), m_angle(rotations * MF::TAU), m_rotateTime(rotateTime), m_delayTime(delayTime), m_cycleTime(rotateTime + delayTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -242,7 +245,8 @@ protected:
 	std::string getClassName() const { return "OPCubeRoller"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPCubeRoller(std::vector<Vec3> axes, double quarterTurnTime = 1.0, double phase = 0.0) : m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
+	OPCubeRoller(std::vector<Vec3> axes = Defaults::TRANSCubeRotAxes, double quarterTurnTime = Defaults::TRANSQuarterTurnTime, double phase = Defaults::TRANSPhase)
+		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -257,7 +261,8 @@ protected:
 	std::string getClassName() const { return "Elongate"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	Elongate(double length = 1.0, double offset = 0.0) : m_length(length), m_offset(offset) {}
+	Elongate(double length = Defaults::TRANSElongateLength, double offset = Defaults::TRANSElongateOffset)
+		: m_length(length), m_offset(offset) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -267,7 +272,8 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateX"; }
 public:
-	OPElongateX(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+	OPElongateX(double length = Defaults::TRANSElongateLength, double offset = Defaults::TRANSElongateOffset)
+		: Elongate(length, offset) {}
 };
 
 class OPElongateY : public Elongate
@@ -276,7 +282,8 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateY"; }
 public:
-	OPElongateY(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+	OPElongateY(double length = Defaults::TRANSElongateLength, double offset = Defaults::TRANSElongateOffset)
+		: Elongate(length, offset) {}
 };
 
 class OPElongateZ : public Elongate
@@ -285,7 +292,8 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateZ"; }
 public:
-	OPElongateZ(double length = 1.0, double offset = 0.0) : Elongate(length, offset) {}
+	OPElongateZ(double length = Defaults::TRANSElongateLength, double offset = Defaults::TRANSElongateOffset)
+		: Elongate(length, offset) {}
 };
 
 class OPElongateXYZ : public TransformOperation
@@ -300,6 +308,7 @@ protected:
 	std::string getClassName() const { return "OPElongateXYZ"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	OPElongateXYZ(Vec3 lengths = Vec3::One, Vec3 offsets = Vec3::Zero) : m_lengths(lengths), m_offsets(offsets) {}
+	OPElongateXYZ(Vec3 lengths = Vec3::One, Vec3 offsets = Vec3::Zero)
+		: m_lengths(lengths), m_offsets(offsets) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };

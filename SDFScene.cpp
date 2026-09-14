@@ -1,5 +1,6 @@
 #include "SDFScene.h"
 #include "SDFOperationInc.h"
+#include "SDFBuilder.h"
 
 void SDFScene::add(SDFBuilder& obj)
 {
@@ -54,27 +55,27 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 
 void SDFScene::frameDemo()
 {
-    add(SDFBuilder{}.pushOp<OPTranslate>(Vec3::Down * 4.0).pushOp<OPAdd, SDFBox>(Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
+    add(SDFBuilder{}.pushOp<OPTranslate>(Vec3::Down * 4.0).pushOp<COMBAdd, SDFBox>(Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
 
     add(SDFBuilder{}
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.1)
         .pushOp<OPRotateContinuous>(Vec3::Right, 0.1)
         .pushOp<OPRotateContinuous>(Vec3::Forward, 0.1)
-        .pushOp<OPAdd, SDFBoxFrame>(Vec3{ 2.0 }, 0.1, Color::Gold)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 2.0 }, 0.1, Color::Gold)()
             .pushOp<OPTranslateSine>(Vec3::Up, 2.0)
             .pushOp<OPRotateContinuous>(Vec3::Down, 0.1)
             .pushOp<OPRotateContinuous>(Vec3::Left, 0.1)
             .pushOp<OPRotateContinuous>(Vec3::Backward, 0.1)
-                .pushOp<OPAdd, SDFObject>()()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Red, Vec3{ 0.5, 0.5, 0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Orange, Vec3{ 0.5, 0.5, -0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Magenta, Vec3{ 0.5, -0.5, 0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::MediumGray, Vec3{ 0.5, -0.5, -0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Green, Vec3{ -0.5, 0.5, 0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Yellow, Vec3{ -0.5, 0.5, -0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Blue, Vec3{ -0.5, -0.5, 0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBox>(Vec3::One, Color::Violet, Vec3{ -0.5, -0.5, -0.5 })().stepBack()
-                    .pushOp<OPAdd, SDFBoxFrame>(Vec3{ 1.25 }, 0.1, Color::White)()
+                .pushOp<COMBAdd, SDFObject>()()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Red, Vec3{ 0.5, 0.5, 0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Orange, Vec3{ 0.5, 0.5, -0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Magenta, Vec3{ 0.5, -0.5, 0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::MediumGray, Vec3{ 0.5, -0.5, -0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Green, Vec3{ -0.5, 0.5, 0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Yellow, Vec3{ -0.5, 0.5, -0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Blue, Vec3{ -0.5, -0.5, 0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Violet, Vec3{ -0.5, -0.5, -0.5 })().stepBack()
+                    .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 1.25 }, 0.1, Color::White)()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
@@ -93,25 +94,25 @@ void SDFScene::oxygenDemo()
         dist = 1.5 + dist;
         double rotPerSec = i % 2 ? 0.5 : -0.5 ;
         builder
-            .pushOp<OPAdd, SDFObject>()()
+            .pushOp<COMBAdd, SDFObject>()()
                 .pushOp<OPRotateContinuous>(Vec3::One, 0.01, phase)
                 .pushOp<OPRotateContinuous>(Vec3::Up, rotPerSec, phase)
                 .pushOp<OPTranslate>(Vec3::Right * dist)
-                .pushOp<OPAdd, SDFSphere>(0.1, Color::Yellow)()
+                .pushOp<COMBAdd, SDFSphere>(0.1, Color::Yellow)()
                     .stepBack(2);
     }
 
     add(std::move(builder));
     add(SDFBuilder{}
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.25)
-        .pushOp<OPAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ 0.224, 0.2468, -0.18 })
-            .pushOp<OPAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ -0.1287, -0.14864, .167 })
-                .pushOp<OPAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ 0.187, -0.0458, 0.2 })
-                    .pushOp<OPAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ -0.054, -0.217, -0.17 })
-                        .pushOp<OPAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -.1, -.2256, .076 })
-                            .pushOp<OPAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.0, 0.26, 0.0 })
-                                .pushOp<OPAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -0.2, 0.01, 0.0 })
-                                    .pushOp<OPAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.19, -0.084, -0.02 })
+        .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ 0.224, 0.2468, -0.18 })
+            .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ -0.1287, -0.14864, .167 })
+                .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ 0.187, -0.0458, 0.2 })
+                    .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ -0.054, -0.217, -0.17 })
+                        .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -.1, -.2256, .076 })
+                            .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.0, 0.26, 0.0 })
+                                .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -0.2, 0.01, 0.0 })
+                                    .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.19, -0.084, -0.02 })
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
@@ -123,37 +124,37 @@ void SDFScene::cubesDemo()
     double colorBlending{ 0.95 };
 
     add(SDFBuilder()
-        .pushOp<OPAdd, SDFObject>()()
+        .pushOp<COMBAdd, SDFObject>()()
             .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
             .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
             .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
-            .pushOp<OPAdd, SDFBox>()().color(Color::Red)
+            .pushOp<COMBAdd, SDFBox>()().color(Color::Red)
                 .stepBack(2)
-        .pushOp<OPAddSmooth, SDFObject>()(smoothing, colorBlending)
+        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
             .pushOp<OPTranslate>()
             .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
             .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
             .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
-            .pushOp<OPAdd, SDFBox>()().color(Color::Yellow)
+            .pushOp<COMBAdd, SDFBox>()().color(Color::Yellow)
                 .stepBack(2)
-        .pushOp<OPAddSmooth, SDFObject>()(smoothing, colorBlending)
+        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
             .pushOp<OPRotate>()
             .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
             .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
             .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
-            .pushOp<OPAdd, SDFBox>()().color(Color::Blue)
+            .pushOp<COMBAdd, SDFBox>()().color(Color::Blue)
                 .stepBack(2)
-        .pushOp<OPAddSmooth, SDFObject>()(smoothing, colorBlending)
+        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
             .pushOp<OPTranslate>()
             .pushOp<OPRotate>()
             .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
             .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
             .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
-            .pushOp<OPAdd, SDFBox>()().color(Color::Green)
+            .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -2.0 }, 0.5));
@@ -162,9 +163,9 @@ void SDFScene::cubesDemo()
 void SDFScene::propModDemo()
 {
     add(SDFBuilder()
-        .pushOp<OPAdd, SDFSphere>(1.0, Color::Blue)()
+        .pushOp<COMBAdd, SDFSphere>(1.0, Color::Blue)()
             .pushOp<OPTranslate>(Vec3::Left)
-            .pushOp<OPAddSmooth, SDFSphere>(1.0, Color::Red)()
+            .pushOp<COMBAddSmooth, SDFSphere>(1.0, Color::Red)()
                 .bindPropMod<PMOscillateSine>("colorBlending", 1.0, 2.0)
                 .pushOp<OPTranslate>(Vec3::Right)
     );
@@ -179,12 +180,12 @@ void SDFScene::elongateDemo()
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.125)
         .pushOp<OPElongateXYZ>(Vec3{ 0.5, 1.0, 0.75 })
         .bindPropMod<PMOscillateSineV3>("lengths", Vec3{ 1.0, 0.849, 0.731 }, Vec3{ 0.5, 0.5, 0.5 })
-        .pushOp<OPAdd, SDFCrystal>(1.25)().color(Color::Blue)
-            .pushOp<OPSubtractSmooth, SDFBox>(1.5, Color::Red)(0.5, 25.0, 0.25)
+        .pushOp<COMBAdd, SDFCrystal>(1.25)().color(Color::Blue)
+            .pushOp<COMBSubtractSmooth, SDFBox>(1.5, Color::Red)(0.5, 25.0, 0.25)
                 .stepBack()
-            .pushOp<OPSubtractSmooth, SDFBox>(1.0, Color::Green)(0.1, 100.0, 0.485)
+            .pushOp<COMBSubtractSmooth, SDFBox>(1.0, Color::Green)(0.1, 100.0, 0.485)
                 .stepBack()
-            .pushOp<OPAdd, SDFCrystal>(0.1, Color::Yellow)()
+            .pushOp<COMBAdd, SDFCrystal>(0.1, Color::Yellow)()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 3.0, -3.0 }, 0.25));
@@ -195,7 +196,7 @@ void SDFScene::propModTests()
     add(SDFBuilder{}
         .pushOp<OPElongateXYZ>()
         .bindPropMod<PMOscillateSineV3>("lengths", Vec3{1.54,2.14,3.12}, Vec3{0.64, 0.75, 0.48})
-        .pushOp<OPAdd, SDFCrystal>()()
+        .pushOp<COMBAdd, SDFCrystal>()()
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 3.0, -3.0 }, 0.25));

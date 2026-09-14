@@ -31,6 +31,6 @@ void DistortOperation::serialize(std::vector<std::string>& strVec, size_t level)
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << ",m_magnitude," << m_magnitude;
+	ss << " m_magnitude " << m_magnitude;
 	strVec.push_back(ss.str());
 }

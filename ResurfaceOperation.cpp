@@ -14,8 +14,8 @@ void ResurfaceOperation::serialize(std::vector<std::string>& strVec, size_t leve
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << ",m_magnitude," << m_magnitude;
-	ss << ",m_updateValue," << m_updateValue;
+	ss << " m_magnitude " << m_magnitude;
+	ss << " m_updateValue " << m_updateValue;
 
 	strVec.push_back(ss.str());
 }

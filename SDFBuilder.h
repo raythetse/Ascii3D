@@ -1,8 +1,15 @@
 #pragma once
+#include <functional>
+#include <sstream>
+#include <unordered_map>
 #include "SDFObject.h"
 #include "SDFOperation.h"
 
+class SDFScene;
+
 class SDFBuilder {
+    static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_operationsMap;
+    static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_objectsMap;
 private:
     std::unique_ptr<SDFObject> m_baseObject;
     std::vector<SDFObject*> m_objChain;
@@ -24,6 +31,7 @@ public:
     template <typename T, typename... Args>
         requires (std::is_base_of_v<PropertyModifierBase, T>)
     SDFBuilder& bindPropMod(Args&&... args);
+    void loadSerialized(std::vector<std::string>& strVec);
 };
 
 template <std::derived_from<SDFOperation> T, typename... Args>

@@ -5,7 +5,7 @@ void DomainOperation::serialize(std::vector<std::string>& strVec, size_t level) 
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << ",m_spacing," << m_spacing;
+	ss << " m_spacing " << m_spacing;
 
 	strVec.push_back(ss.str());
 }
@@ -74,8 +74,8 @@ void OPRepeatLimited::serialize(std::vector<std::string>& strVec, size_t level) 
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << ",m_spacing," << m_spacing;
-	ss << ",m_limits," << m_limits.x << ',' << m_limits.y << ',' << m_limits.z;
+	ss << " m_spacing " << m_spacing;
+	ss << " m_limits " << m_limits.x << ' ' << m_limits.y << ' ' << m_limits.z;
 
 	strVec.push_back(ss.str());
 }

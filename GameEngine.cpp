@@ -9,12 +9,13 @@
 #include "MathFunctions.h"
 #include "PropertyModifier.h"
 #include "SDFOperationInc.h"
+#include "SDFBuilder.h"
 
 GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double stepFactor, double tolerance)
 	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_pixelField{ width, height }
     , m_rayMarcher{ sceneDepth, stepFactor, tolerance }, m_camera{ width * .005, height * .01 }
 {
-    m_scene = SDFScene(SDFScene::Cubes);
+    m_scene = SDFScene(SDFScene::Oxygen);
     m_framePM = m_perfMonitor.add("FPS", PerfMonitor::FPS);
     m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
@@ -28,6 +29,12 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 
 void GameEngine::run()
 {
+    //std::vector<std::string> strVec;
+    //FileHandler::readSDFScene(strVec, "MyFile.txt");
+
+    //SDFBuilder builder{};
+    //builder.loadSerialized(strVec);
+
     while (true) {
         GameTimer::tick();
         if (!handleInput()) break;

@@ -14,6 +14,14 @@ namespace FileHandler
 		}
 		ofs.close();
 	}
-	std::unique_ptr<std::vector<std::string>> readSDFScene(std::string fileName);
+
+	void readSDFScene(std::vector<std::string>& strVec, std::string fileName) 
+	{
+		std::ifstream ifs{ fileName };
+		std::string line{};
+		while (std::getline(ifs, line)) {
+			strVec.push_back(line);
+		}
+	}
 };
 
