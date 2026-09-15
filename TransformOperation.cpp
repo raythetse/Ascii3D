@@ -106,7 +106,7 @@ void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase>
 }
 
 void OPTranslateLinear::innerUpdate() {
-	double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
+	double time{ std::fmod(GameTimer::gameTime() + m_phase + m_transitTimes.x * 0.5, m_cycleTime) };
 	if (time <= m_transitTimes.x) {
 		time /= m_transitTimes.x;
 		m_updateVal = m_start.lerp(m_end, time);
@@ -133,7 +133,7 @@ void OPTranslateLinear::transform(Vec3& p) const
 
 void OPTranslateLinear::serializeInner(std::stringstream& ss) const
 {
-	ss << " m_vector " << m_vector.x << m_vector.y << ' ' << m_vector.z;
+	ss << " m_vector " << m_vector.x << ' ' << m_vector.y << ' ' << m_vector.z;
 	ss << " m_transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
 	ss << " m_endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
 	ss << " m_phase " << m_phase;

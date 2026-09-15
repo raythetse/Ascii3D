@@ -129,7 +129,7 @@ protected:
 public:
 	OPTranslateLinear(Vec3 vector = DEF::TRANSVector, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
 		: m_vector(vector), m_start(vector * -0.5), m_end(vector * 0.5), m_transitTimes(transitTimes)
-		, m_endDelays(endDelays), m_phase(phase + transitTimes.x * 0.5)
+		, m_endDelays(endDelays), m_phase(phase)
 		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
