@@ -10,6 +10,7 @@ Required:
 - Fix pixelsample accessibility
 - computer shaders for fast marching
 - fix constructor accessibilities on abstracts
+- error handling on file loading
 
 Optional:
 - camera track

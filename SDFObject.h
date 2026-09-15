@@ -3,6 +3,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include "SDFDefaults.h"
 #include "Mat3.h"
 #include "Vec2.h"
 #include "Vec3.h"
@@ -29,7 +30,7 @@ protected:
 	virtual void serializeInner(std::stringstream& ss) const {};
 	virtual std::string getClassName() const { return "SDFObject"; }
 public:
-	SDFObject(Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0);
+	SDFObject(Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations);
 	~SDFObject();
 	void update();
 	void setPosition(Vec3 position);
@@ -55,7 +56,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneXZ"; }
 public:
-	SDFPlaneXZ(double yPos = 0.0, Color color = Color::White)
+	SDFPlaneXZ(double yPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_yPos{ yPos } {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -67,7 +68,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneYZ"; }
 public:
-	SDFPlaneYZ(double xPos = 0.0, Color color = Color::White)
+	SDFPlaneYZ(double xPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_xPos(xPos) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -79,7 +80,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneXY"; }
 public:
-	SDFPlaneXY(double zPos = 0.0, Color color = Color::White)
+	SDFPlaneXY(double zPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_zPos(zPos) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -91,7 +92,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBox"; }
 public:
-	SDFBox(Vec3 dimensions = Vec3::One, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFBox(Vec3 dimensions = DEF::OBJBoxDimensions, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -104,7 +105,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBoxFrame"; }
 public:
-	SDFBoxFrame(Vec3 dimensions = Vec3::One, double edgeThickness = 0.1, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFBoxFrame(Vec3 dimensions = DEF::OBJBoxDimensions, double edgeThickness = DEF::OBJFrameThickness, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -116,7 +117,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFSphere"; }
 public:
-	SDFSphere(double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFSphere(double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -128,7 +129,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTorus"; }
 public:
-	SDFTorus(Vec2 radii = Vec2{ 1.0, 0.25 }, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFTorus(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -141,7 +142,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleX"; }
 public:
-	SDFCapsuleX(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCapsuleX(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -154,7 +155,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleY"; }
 public:
-	SDFCapsuleY(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCapsuleY(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -167,7 +168,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleZ"; }
 public:
-	SDFCapsuleZ(double radius = 0.5, double bodyLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCapsuleZ(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -179,7 +180,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCrystal"; }
 public:
-	SDFCrystal(double edgeLength = 1.0, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCrystal(double edgeLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_edgeLength(edgeLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -192,7 +193,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinderX"; }
 public:
-	SDFCylinderX(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCylinderX(double sideLength = DEF::OBJLength, double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -205,7 +206,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinderY"; }
 public:
-	SDFCylinderY(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCylinderY(double sideLength = DEF::OBJLength, double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -218,7 +219,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinderZ"; }
 public:
-	SDFCylinderZ(double sideLength = 1.0, double radius = 0.5, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFCylinderZ(double sideLength = DEF::OBJLength, double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -231,7 +232,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFChainLink"; }
 public:
-	SDFChainLink(double sideLength = 1.0, Vec2 radii = {1.0, 0.25}, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFChainLink(double sideLength = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -244,7 +245,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTube"; }
 public:
-	SDFTube(double height = 1.0, Vec2 radii = { 1.0, 0.25 }, Color color = Color::White, Vec3 position = {}, Vec3 rotationAxis = Vec3::Up, double rotations = 0.0)
+	SDFTube(double height = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };

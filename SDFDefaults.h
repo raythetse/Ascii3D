@@ -3,24 +3,31 @@
 #include "Vec2.h"
 #include "Vec3.h"
 
-namespace Defaults
+namespace DEF
 {
+	// SDFObject defaults
+	inline static Color		OBJColor{ 1.0 };
+	inline static Vec3		ObjPosition{ 0.0 };	
+	inline static Vec3		OBJRotAxis{ 0.0, 1.0, 0.0 };
+	inline static double	OBJRotations{ 0.0 };
+	inline static double	OBJPlanePos{ 0.0 };
+	inline static Vec3		OBJBoxDimensions{ 1.0 };
+	inline static double	OBJFrameThickness{ 0.1 };
+	inline static double	OBJRadius{ 0.5 };
+	inline static Vec2		OBJRadii{ 1.0, 0.25 };
+	inline static double	OBJLength{ 1.0 };
+
 	// Combo defaults
 	inline static double	COMBSmooth{ 0.5 };
 	inline static double	COMBColBlend{ 1.0 };
 	inline static double	COMBColShift{ 0.0 };
 
-	// Prop Mod defaults
-	inline static double	PMPeriod{ 1.0 };
-	inline static double	PMAmplitude{ 1.0 };
-	inline static double	PMPhase{ 0.0 };
-
 	// Distortion defaults
 	inline static double	DISTMagnitude{ 1.0 };
 
 	// Domain defaults
-	inline static double	DOMSpacing{ 1.0 };
-	inline static double	DOMLimits{ 1.0 };
+	inline static Vec3		DOMSpacing{ 1.0 };
+	inline static Vec3		DOMLimits{ 1.0 };
 
 	// Resurface defaults
 	inline static double	RESURFRoundMagnitude{ 0.01 };
@@ -42,5 +49,10 @@ namespace Defaults
 	inline static double	TRANSElongateLength{ 1.0 };
 	inline static double	TRANSElongateOffset{ 0.0 };
 	inline static std::vector<Vec3>	TRANSCubeRotAxes{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left };
+
+	// Prop Mod defaults
+	inline static double	PMPeriod{ 1.0 };
+	inline static double	PMAmplitude{ 1.0 };
+	inline static double	PMPhase{ 0.0 };
 };
 

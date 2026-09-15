@@ -22,7 +22,7 @@ protected:
 	double resurface(double distance) override;
 	std::string getClassName() const { return "OPRoundOff"; }
 public:
-	OPRoundOff(double magnitude = Defaults::RESURFRoundMagnitude) : ResurfaceOperation(magnitude) {}
+	OPRoundOff(double magnitude = DEF::RESURFRoundMagnitude) : ResurfaceOperation(magnitude) {}
 };
 
 class OPOnion : public ResurfaceOperation
@@ -31,5 +31,5 @@ protected:
 	double resurface(double distance) override;
 	std::string getClassName() const { return "OPOnion"; }
 public:
-	OPOnion(double magnitude = Defaults::RESURFOnionMagnitude) : ResurfaceOperation(magnitude) {}
+	OPOnion(double magnitude = DEF::RESURFOnionMagnitude) : ResurfaceOperation(magnitude) {}
 };

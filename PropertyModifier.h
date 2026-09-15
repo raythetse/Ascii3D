@@ -45,7 +45,7 @@ protected:
 	std::string getClassName() const override { return "PMOscillateSine"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	PMOscillateSine(std::string_view propName, double period = Defaults::PMPeriod, double amplitude = Defaults::PMAmplitude, double phase = Defaults::PMPhase)
+	PMOscillateSine(std::string_view propName, double period = DEF::PMPeriod, double amplitude = DEF::PMAmplitude, double phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
 		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
@@ -61,7 +61,7 @@ protected:
 	std::string getClassName() const override { return "PMOscillateSineV3"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	PMOscillateSineV3(std::string_view propName, Vec3 period = Defaults::PMPeriod, Vec3 amplitude = Defaults::PMAmplitude, Vec3 phase = Defaults::PMPhase)
+	PMOscillateSineV3(std::string_view propName, Vec3 period = DEF::PMPeriod, Vec3 amplitude = DEF::PMAmplitude, Vec3 phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) / m_period).sin() * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
@@ -77,7 +77,7 @@ protected:
 	std::string getClassName() const override { return "PMOscillateLinear"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	PMOscillateLinear(std::string_view propName, double period = Defaults::PMPeriod, double amplitude = Defaults::PMAmplitude, double phase = Defaults::PMPhase)
+	PMOscillateLinear(std::string_view propName, double period = DEF::PMPeriod, double amplitude = DEF::PMAmplitude, double phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
 		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
 		progress -= 0.5;
@@ -98,7 +98,7 @@ protected:
 	std::string getClassName() const override { return "PMOscillateLinearV3"; }
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	PMOscillateLinearV3(std::string_view propName, Vec3 period = Defaults::PMPeriod, Vec3 amplitude = Defaults::PMAmplitude, Vec3 phase = Defaults::PMPhase)
+	PMOscillateLinearV3(std::string_view propName, Vec3 period = DEF::PMPeriod, Vec3 amplitude = DEF::PMAmplitude, Vec3 phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		double gameTime = GameTimer::gameTime();
 		Vec3 progress { 

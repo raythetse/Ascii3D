@@ -4,16 +4,20 @@
 #include <unordered_map>
 #include "SDFObject.h"
 #include "SDFOperation.h"
+#include "SDFOperationInc.h"
 
 class SDFScene;
 
 class SDFBuilder {
-    static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_operationsMap;
-    static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_objectsMap;
+    static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_opMap;
+    static void discardWords(std::stringstream& ss, size_t numToDiscard);
 private:
     std::unique_ptr<SDFObject> m_baseObject;
     std::vector<SDFObject*> m_objChain;
     SDFOperation* m_lastOp{};
+    template<typename T, typename... Args>
+        requires (std::is_base_of_v<SDFObject, T> || std::same_as<SDFObject, T>)
+    SDFBuilder& pushSDFObj(Args&&... args);
 public:
     SDFBuilder();
     std::unique_ptr<SDFObject> get();
@@ -33,6 +37,16 @@ public:
     SDFBuilder& bindPropMod(Args&&... args);
     void loadSerialized(std::vector<std::string>& strVec);
 };
+
+template<typename T, typename ...Args>
+    requires (std::is_base_of_v<SDFObject, T> || std::same_as<SDFObject, T>)
+SDFBuilder& SDFBuilder::pushSDFObj(Args && ...args)
+{
+    auto obj = std::make_unique<T>(std::forward<Args>(args)...);
+    m_objChain.push_back(obj.get());
+    dynamic_cast<CombinationOperation*>(m_lastOp)->setCombineObject(std::move(obj));
+    return *this;
+}
 
 template <std::derived_from<SDFOperation> T, typename... Args>
 SDFBuilder& SDFBuilder::pushOp(Args&&... args) {

@@ -21,8 +21,6 @@ public:
 private:
 	std::vector<std::unique_ptr<SDFObject>> m_objects{};
 	std::vector<std::unique_ptr<LightSource>> m_lights{};
-	void add(SDFBuilder& obj);
-	void add(SDFBuilder&& obj);
 	void frameDemo();
 	void oxygenDemo();
 	void cubesDemo();
@@ -37,5 +35,7 @@ public:
 	std::vector<std::unique_ptr<SDFObject>>& objects() { return m_objects; }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
 	bool serialize(std::vector<std::string>& strVec) const;
+	void add(SDFBuilder& obj);
+	void add(SDFBuilder&& obj);
 };
 
