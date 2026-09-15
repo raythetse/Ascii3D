@@ -84,9 +84,19 @@ double SDFObject::signedDistanceInner(Vec3 p) const
     return std::numeric_limits<double>::max();
 }
 
+void SDFPlaneXZ::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_yPos " << m_yPos;
+}
+
 double SDFPlaneXZ::signedDistanceInner(Vec3 p) const
 {
     return p.y - m_yPos;
+}
+
+void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_xPos " << m_xPos;
 }
 
 double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
@@ -94,9 +104,19 @@ double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
     return p.x - m_xPos;
 }
 
+void SDFPlaneXY::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_zPos " << m_zPos;
+}
+
 double SDFPlaneXY::signedDistanceInner(Vec3 p) const
 {
     return p.z - m_zPos;
+}
+
+void SDFBox::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
 }
 
 double SDFBox::signedDistanceInner(Vec3 p) const
@@ -104,6 +124,12 @@ double SDFBox::signedDistanceInner(Vec3 p) const
     p = p.abs();
     p -= Vec3(m_dimensions) * 0.5;
     return p.maximum(0.0).length();
+}
+
+void SDFBoxFrame::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
+    ss << " m_edgeThickness " << m_edgeThickness;
 }
 
 double SDFBoxFrame::signedDistanceInner(Vec3 p) const
@@ -116,14 +142,30 @@ double SDFBoxFrame::signedDistanceInner(Vec3 p) const
         Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
 }
 
+void SDFSphere::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+}
+
 double SDFSphere::signedDistanceInner(Vec3 p) const
 {
     return p.length() - m_radius;
 }
 
+void SDFTorus::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
+}
+
 double SDFTorus::signedDistanceInner(Vec3 p) const
 {
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
+}
+
+void SDFCapsuleX::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_bodyLength " << m_bodyLength;
 }
 
 double SDFCapsuleX::signedDistanceInner(Vec3 p) const
@@ -132,10 +174,22 @@ double SDFCapsuleX::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
+void SDFCapsuleY::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_bodyLength " << m_bodyLength;
+}
+
 double SDFCapsuleY::signedDistanceInner(Vec3 p) const
 {
     p.y = p.y > 0.0 ? std::max(0.0, p.y - 0.5 * m_bodyLength) : std::min(0.0, p.y + 0.5 * m_bodyLength);
     return p.length() - m_radius;
+}
+
+void SDFCapsuleZ::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_bodyLength " << m_bodyLength;
 }
 
 double SDFCapsuleZ::signedDistanceInner(Vec3 p) const
@@ -144,10 +198,21 @@ double SDFCapsuleZ::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
+void SDFCrystal::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_edgeLength " << m_edgeLength;
+}
+
 double SDFCrystal::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
     return (p.x + p.y + p.z - m_edgeLength) * 0.57735027;
+}
+
+void SDFCylinderX::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_sideLength " << m_sideLength;
+    ss << " m_radius " << m_radius;
 }
 
 double SDFCylinderX::signedDistanceInner(Vec3 p) const
@@ -157,11 +222,23 @@ double SDFCylinderX::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
+void SDFCylinderY::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_sideLength " << m_sideLength;
+    ss << " m_radius " << m_radius;
+}
+
 double SDFCylinderY::signedDistanceInner(Vec3 p) const
 {
     Vec2 xz{ p.x, p.z };
     Vec2 d = Vec2{ xz.length(), p.y }.abs() - Vec2(m_radius, m_sideLength);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
+}
+
+void SDFCylinderZ::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_sideLength " << m_sideLength;
+    ss << " m_radius " << m_radius;
 }
 
 double SDFCylinderZ::signedDistanceInner(Vec3 p) const
@@ -171,10 +248,22 @@ double SDFCylinderZ::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
+void SDFChainLink::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_sideLength " << m_sideLength;
+    ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
+}
+
 double SDFChainLink::signedDistanceInner(Vec3 p) const
 {
     p.x = p.x > 0.0 ? std::max(0.0, p.x - m_sideLength * 0.5) : std::min(0.0, p.x + m_sideLength * 0.5);
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
+}
+
+void SDFTube::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_height " << m_height;
+    ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
 }
 
 double SDFTube::signedDistanceInner(Vec3 p) const

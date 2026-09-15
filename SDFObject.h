@@ -55,6 +55,7 @@ private:
 	double m_yPos;
 protected:
 	std::string getClassName() const override { return "SDFPlaneXZ"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFPlaneXZ(double yPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_yPos{ yPos } {}
@@ -67,6 +68,7 @@ private:
 	double m_xPos;
 protected:
 	std::string getClassName() const override { return "SDFPlaneYZ"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFPlaneYZ(double xPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_xPos(xPos) {}
@@ -79,6 +81,7 @@ private:
 	double m_zPos;
 protected:
 	std::string getClassName() const override { return "SDFPlaneXY"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFPlaneXY(double zPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_zPos(zPos) {}
@@ -91,6 +94,7 @@ private:
 	Vec3 m_dimensions;
 protected:
 	std::string getClassName() const override { return "SDFBox"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFBox(Vec3 dimensions = DEF::OBJBoxDimensions, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions) {}
@@ -104,6 +108,7 @@ private:
 	double m_edgeThickness;
 protected:
 	std::string getClassName() const override { return "SDFBoxFrame"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFBoxFrame(Vec3 dimensions = DEF::OBJBoxDimensions, double edgeThickness = DEF::OBJFrameThickness, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
@@ -116,6 +121,7 @@ private:
 	double m_radius;
 protected:
 	std::string getClassName() const override { return "SDFSphere"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFSphere(double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius) {}
@@ -128,6 +134,7 @@ private:
 	Vec2 m_radii;
 protected:
 	std::string getClassName() const override { return "SDFTorus"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFTorus(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radii(radii) {}
@@ -141,6 +148,7 @@ private:
 	double m_bodyLength;
 protected:
 	std::string getClassName() const override { return "SDFCapsuleX"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCapsuleX(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -154,6 +162,7 @@ private:
 	double m_bodyLength;
 protected:
 	std::string getClassName() const override { return "SDFCapsuleY"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCapsuleY(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -167,6 +176,7 @@ private:
 	double m_bodyLength;
 protected:
 	std::string getClassName() const override { return "SDFCapsuleZ"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCapsuleZ(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -179,6 +189,7 @@ private:
 	double m_edgeLength;
 protected:
 	std::string getClassName() const override { return "SDFCrystal"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCrystal(double edgeLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_edgeLength(edgeLength) {}
@@ -192,6 +203,7 @@ private:
 	double m_radius;
 protected:
 	std::string getClassName() const override { return "SDFCylinderX"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCylinderX(double sideLength = DEF::OBJLength, double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
@@ -205,6 +217,7 @@ private:
 	double m_radius;
 protected:
 	std::string getClassName() const override { return "SDFCylinderY"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCylinderY(double sideLength = DEF::OBJLength, double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
@@ -218,6 +231,7 @@ private:
 	double m_radius;
 protected:
 	std::string getClassName() const override { return "SDFCylinderZ"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFCylinderZ(double sideLength = DEF::OBJLength, double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
@@ -231,6 +245,7 @@ private:
 	Vec2 m_radii;
 protected:
 	std::string getClassName() const override { return "SDFChainLink"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFChainLink(double sideLength = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radii(radii) {}
@@ -244,6 +259,7 @@ private:
 	Vec2 m_radii;
 protected:
 	std::string getClassName() const override { return "SDFTube"; }
+	void serializeInner(std::stringstream& ss) const override;
 public:
 	SDFTube(double height = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_radii(radii) {}

@@ -28,6 +28,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 
 void GameEngine::run()
 {
+    //m_scene = SDFScene(SDFScene::LoadOption::Oxygen);
     std::vector<std::string> strVec;
     FileHandler::readSDFScene(strVec, "MyFile.txt");
 
