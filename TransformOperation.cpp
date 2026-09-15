@@ -57,7 +57,7 @@ void OPTranslate::transform(Vec3& p) const
 
 void OPTranslate::serializeInner(std::stringstream& ss) const
 {
-	ss << " m_translation " << m_translation;
+	ss << " m_translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
 }
 
 void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
