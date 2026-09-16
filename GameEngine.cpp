@@ -28,15 +28,14 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 
 void GameEngine::run()
 {
-    //m_scene = SDFScene(SDFScene::LoadOption::Cubes);
+    //m_scene = SDFScene(SDFScene::LoadOption::Test);
     std::vector<std::string> strVec;
     FileHandler::readSDFScene(strVec, "MyFile.txt");
 
     SDFBuilder builder{};
     builder.loadSerialized(strVec);
 
-    m_scene = SDFScene();
-    m_scene.add(builder);
+    m_scene = SDFScene(builder);
 
     while (true) {
         GameTimer::tick();

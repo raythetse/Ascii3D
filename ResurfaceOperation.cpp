@@ -9,7 +9,7 @@ void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBa
 	}
 }
 
-void ResurfaceOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
 	ss << std::string(level, '\t');

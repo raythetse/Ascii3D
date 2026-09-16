@@ -13,6 +13,7 @@ protected:
 	void blendColors(double blendRate, Vec3 colorIn, Vec3* colorOut);
 	void innerUpdate() override {}
 	virtual std::string getClassName() const = 0;
+	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj,
 		double smoothing = DEF::COMBSmooth,

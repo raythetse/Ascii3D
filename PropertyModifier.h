@@ -17,7 +17,8 @@ public:
 	std::string_view propName() { return m_propName; }
 	virtual void BindToProp(void* ref) = 0;
 	virtual void update() = 0;
-	void serialize(std::vector<std::string> strVec, size_t level);
+	virtual void resetProperty() const = 0;
+	void serialize(std::vector<std::string>& strVec, size_t level);
 };
 
 template <typename T>
@@ -33,7 +34,14 @@ public:
 		: PropertyModifierBase(propName), m_updateFunction(updateFunction) {}
 	void BindToProp(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
 	void update() override { m_updateFunction(m_ptr, m_initVal); }
+	void resetProperty() const override;
 };
+
+template<typename T>
+inline void PropertyModifier<T>::resetProperty() const
+{
+	*m_ptr = m_initVal;
+}
 
 class PMOscillateSine : public PropertyModifier<double>
 {

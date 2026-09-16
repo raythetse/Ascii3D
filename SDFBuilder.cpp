@@ -3,14 +3,6 @@
 #include "SDFObject.h"
 #include "SDFScene.h"
 
-void SDFBuilder::discardWords(std::stringstream& ss, size_t numToDiscard)
-{
-    std::string discard;
-    for (size_t i{}; i < numToDiscard; ++i) {
-        ss >> discard;
-    }
-}
-
 SDFBuilder::SDFBuilder() {
     m_baseObject = std::make_unique<SDFObject>();
     m_objChain.push_back(m_baseObject.get());

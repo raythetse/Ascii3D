@@ -10,7 +10,6 @@ class SDFScene;
 
 class SDFBuilder {
     static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_opMap;
-    static void discardWords(std::stringstream& ss, size_t numToDiscard);
 private:
     std::unique_ptr<SDFObject> m_baseObject;
     std::vector<SDFObject*> m_objChain;

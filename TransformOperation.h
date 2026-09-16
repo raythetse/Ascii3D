@@ -7,10 +7,10 @@ class TransformOperation : public SDFOperation
 protected:
 	void innerUpdate() override {};
 	virtual std::string getClassName() const = 0;
-	virtual void serializeInner(std::stringstream& ss) const {};
+	virtual void innerInnerSerialize(std::stringstream& ss) const {};
+	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	TransformOperation() : SDFOperation(SDFOperationType::Transform) {};
-	void serialize(std::vector<std::string>& strVec, size_t level) const override;
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override {};
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
@@ -85,7 +85,7 @@ private:
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPTranslate"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPTranslate(Vec3 translation = DEF::TRANSVector) : m_translation(translation) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
@@ -103,7 +103,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPTranslateSine"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPTranslateSine(Vec3 axis = DEF::TRANSVector, double amplitude = DEF::TRANSAmplitude, double period = DEF::TRANSPeriod, double phase = DEF::TRANSPhase)
 		: m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
@@ -125,7 +125,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPTranslateLinear"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPTranslateLinear(Vec3 vector = DEF::TRANSVector, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
 		: m_vector(vector), m_start(vector * -0.5), m_end(vector * 0.5), m_transitTimes(transitTimes)
@@ -145,7 +145,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPCubeRollHeight"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPCubeRollHeight(double cubeHeight = DEF::TRANSCubeHeight, double period = DEF::TRANSPeriod, double phase = DEF::TRANSPhase)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
@@ -162,7 +162,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotate"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPRotate(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations)
 		: m_axis(axis), m_rotations(rotations) {}
@@ -180,7 +180,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotateContinuous"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPRotateContinuous(Vec3 axis = DEF::TRANSVector, double rotationsPerSecond = DEF::TRANSRotsPerSec, double phase = DEF::TRANSPhase)
 		: m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
@@ -202,7 +202,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotateScan"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPRotateScan(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
 		: m_axis(axis), m_rotations(rotations), m_endAngle(rotations* MF::TAU)
@@ -226,7 +226,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotateDelay"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPRotateDelay(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations, double rotateTime = DEF::TRANSRotateTime, double delayTime = DEF::TRANSDelayTime, double phase = DEF::TRANSPhase)
 		: m_axis(axis), m_rotations(rotations), m_angle(rotations * MF::TAU), m_rotateTime(rotateTime), m_delayTime(delayTime), m_cycleTime(rotateTime + delayTime), m_phase(phase) {}
@@ -244,7 +244,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPCubeRoller"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPCubeRoller(std::vector<Vec3> axes = DEF::TRANSCubeRotAxes, double quarterTurnTime = DEF::TRANSQuarterTurnTime, double phase = DEF::TRANSPhase)
 		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
@@ -260,7 +260,7 @@ protected:
 	double m_halfLenNeg{};
 	void innerUpdate() override;
 	std::string getClassName() const { return "Elongate"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	Elongate(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
 		: m_length(length), m_offset(offset) {}
@@ -307,7 +307,7 @@ protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateXYZ"; }
-	void serializeInner(std::stringstream& ss) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
 	OPElongateXYZ(Vec3 lengths = DEF::TRANSElongateLength, Vec3 offsets = DEF::TRANSElongateOffset)
 		: m_lengths(lengths), m_offsets(offsets) {}

@@ -1,6 +1,8 @@
 Required:
+- add lights to scene saving
+- Test all objs/ops/propmods saving/loading from file
+- GLSL or HLSL hardward marching
 - bounding boxes for efficiency
-- input/output scene from/to file
 - toggle light attenuation
 - light movement
 - startup options

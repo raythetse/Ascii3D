@@ -2,20 +2,13 @@
 #include "SDFOperationInc.h"
 #include "SDFBuilder.h"
 
-void SDFScene::add(SDFBuilder& obj)
-{
-    m_objects.push_back(obj.get());
-}
-
-void SDFScene::add(SDFBuilder&& obj)
-{
-    m_objects.push_back(obj.get());
-}
-
 SDFScene::SDFScene(LoadOption loadOption)
 {
     switch (loadOption)
     {
+    case SDFScene::Test:
+        test();
+        break;
     case SDFScene::Cubes:
         cubesDemo();
         break;
@@ -37,6 +30,26 @@ SDFScene::SDFScene(LoadOption loadOption)
     }
 }
 
+SDFScene::SDFScene(SDFBuilder& obj)
+{
+    m_objects.push_back(obj.get());
+}
+
+SDFScene::SDFScene(SDFBuilder&& obj)
+{
+    m_objects.push_back(obj.get());
+}
+
+void SDFScene::add(SDFBuilder& obj)
+{
+    m_objects.push_back(obj.get());
+}
+
+void SDFScene::add(SDFBuilder&& obj)
+{
+    m_objects.push_back(obj.get());
+}
+
 void SDFScene::update()
 {
     for (auto& obj : m_objects) {
@@ -53,16 +66,29 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     return false;
 }
 
+void SDFScene::test()
+{
+    add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFSphere>(1.0, Color::Red, Vec3::Right)()
+        .pushOp<COMBAddSmooth, SDFSphere>(1.0, Color::Blue, Vec3::Left)()
+        .bindPropMod<PMOscillateSine>("colorBlending", 1.0, 2.0)
+        .pushOp<OPTranslate>()
+
+    );
+
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -4.0 }, 0.5));
+}
+
 void SDFScene::frameDemo()
 {
-    add(SDFBuilder{}.pushOp<OPTranslate>(Vec3::Down * 4.0).pushOp<COMBAdd, SDFBox>(Vec3{ 25.0, 0.0, 25.0 }, Color::SkyBlue)());
-
     add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFCylinderY>(0.01, 15.0, Color::SkyBlue, Vec3::Down * 4.0)()
+            .stepBack()
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.1)
         .pushOp<OPRotateContinuous>(Vec3::Right, 0.1)
         .pushOp<OPRotateContinuous>(Vec3::Forward, 0.1)
         .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 2.0 }, 0.1, Color::Gold)()
-            .pushOp<OPTranslateSine>(Vec3::Up, 2.0)
+            .pushOp<OPTranslateSine>(Vec3::Up, 3.0, 2.0)
             .pushOp<OPRotateContinuous>(Vec3::Down, 0.1)
             .pushOp<OPRotateContinuous>(Vec3::Left, 0.1)
             .pushOp<OPRotateContinuous>(Vec3::Backward, 0.1)

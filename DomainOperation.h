@@ -7,10 +7,10 @@ class DomainOperation : public TransformOperation
 protected:
 	Vec3 m_spacing;
 	virtual std::string getClassName() const = 0;
+	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	DomainOperation(Vec3 spacing = DEF::DOMSpacing) : m_spacing(spacing) {};
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-	virtual void serialize(std::vector<std::string>& strVec, size_t level) const override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
@@ -83,7 +83,7 @@ private:
 	Vec3 m_limits;
 protected:
 	void transform(Vec3& p) const override;
-	void serialize(std::vector<std::string>& strVec, size_t level) const override;
+	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	std::string getClassName() const override { return "OPRepeatLimited"; }
 public:
 	OPRepeatLimited(Vec3 limits = DEF::DOMLimits, Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing), m_limits(limits) {}

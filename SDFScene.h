@@ -11,6 +11,7 @@ class SDFScene
 {
 public:
 	enum LoadOption {
+		Test,
 		Cubes,
 		Elongate,
 		Frame,
@@ -21,6 +22,7 @@ public:
 private:
 	std::vector<std::unique_ptr<SDFObject>> m_objects{};
 	std::vector<std::unique_ptr<LightSource>> m_lights{};
+	void test();
 	void frameDemo();
 	void oxygenDemo();
 	void cubesDemo();
@@ -30,12 +32,13 @@ private:
 public:
 	SDFScene() = default;
 	SDFScene(LoadOption loadOption);
-	SDFScene(std::string_view fileName);
+	SDFScene(SDFBuilder& obj);
+	SDFScene(SDFBuilder&& obj);
+	void add(SDFBuilder& obj);
+	void add(SDFBuilder&& obj);
 	void update();
 	std::vector<std::unique_ptr<SDFObject>>& objects() { return m_objects; }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
 	bool serialize(std::vector<std::string>& strVec) const;
-	void add(SDFBuilder& obj);
-	void add(SDFBuilder&& obj);
 };
 

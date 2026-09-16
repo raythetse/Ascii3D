@@ -26,7 +26,7 @@ void DistortOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase
 	}
 }
 
-void DistortOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+void DistortOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
 	ss << std::string(level, '\t');

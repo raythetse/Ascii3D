@@ -43,6 +43,18 @@ void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifier
 
 void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t level) const
 {
+	for (auto& propMod : m_propMods) {
+		propMod->resetProperty();
+	}
+	innerSerialize(strVec, level);
+	for (auto& propMod : m_propMods) {
+		propMod->serialize(strVec, level);
+	}
+	m_combineObj->serialize(strVec, level);
+}
+
+void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
+{
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
@@ -50,8 +62,6 @@ void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t le
 	ss << " m_colorBlending " << m_colorBlending;
 	ss << " m_colorShifting " << m_colorShifting;
 	strVec.push_back(ss.str());
-
-	m_combineObj->serialize(strVec, level);
 }
 
 double COMBAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

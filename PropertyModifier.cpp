@@ -1,6 +1,6 @@
 #include "PropertyModifier.h"
 
-void PropertyModifierBase::serialize(std::vector<std::string> strVec, size_t level)
+void PropertyModifierBase::serialize(std::vector<std::string>& strVec, size_t level)
 {
     std::stringstream ss{};
     ss << std::string(level, '\t');

@@ -9,10 +9,10 @@ protected:
 	double m_updateValue{};
 	void innerUpdate() override {};
 	virtual std::string getClassName() const = 0;
+	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	ResurfaceOperation(double magnitude) : SDFOperation(SDFOperationType::Resurface), m_magnitude(magnitude) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-	void serialize(std::vector<std::string>& strVec, size_t level) const override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 

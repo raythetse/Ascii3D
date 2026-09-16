@@ -1,6 +1,6 @@
 #include "DomainOperation.h"
 
-void DomainOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
@@ -69,7 +69,7 @@ void OPRepeatLimited::transform(Vec3& p) const
 	p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
 }
 
-void OPRepeatLimited::serialize(std::vector<std::string>& strVec, size_t level) const
+void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
