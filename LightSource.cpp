@@ -22,6 +22,8 @@ double LightSource::signedDistanceInner(Vec3 p) const
 void LightSource::serialize(std::vector<std::string>& strVec)
 {
 	std::stringstream ss{};
-	ss << "LightSource " << m_position.x << ' ' << m_position.y << ' ' << m_position.z << ' ' << (m_luminance / 1000.0);
+	ss << "LightSource";
+	ss << " m_position " << m_position.x << ' ' << m_position.y << ' ' << m_position.z;
+	ss << " m_luminance " << ' ' << (m_luminance / 1000.0);
 	strVec.push_back(ss.str());
 }

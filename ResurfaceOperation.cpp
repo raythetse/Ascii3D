@@ -15,7 +15,6 @@ void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 	ss << std::string(level, '\t');
 	ss << getClassName();
 	ss << " m_magnitude " << m_magnitude;
-	ss << " m_updateValue " << m_updateValue;
 
 	strVec.push_back(ss.str());
 }
@@ -27,4 +26,8 @@ double OPRoundOff::resurface(double distance)
 
 double OPOnion::resurface(double distance) {
 	return abs(distance) - m_magnitude;
+}
+
+double OPInsideOut::resurface(double distance) {
+	return -distance;
 }

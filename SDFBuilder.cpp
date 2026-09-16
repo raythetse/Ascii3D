@@ -670,6 +670,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushOp<OPOnion>(m_magnitude);
     } },
+    { "OPInsideOut", [](SDFBuilder& builder, std::stringstream& ss) {
+        builder.pushOp<OPInsideOut>();
+    } },
 
     // Distortions
     { "OPBend", [](SDFBuilder& builder, std::stringstream& ss) {

@@ -32,6 +32,7 @@ private:
 public:
 	SDFScene() = default;
 	SDFScene(LoadOption loadOption);
+	SDFScene(std::string fileName);
 	SDFScene(SDFBuilder& obj);
 	SDFScene(SDFBuilder&& obj);
 	void add(SDFBuilder& obj);

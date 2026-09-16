@@ -6,7 +6,7 @@
 
 namespace FileHandler
 {
-	void saveSDFScene(std::vector<std::string>& strVec, std::string fileName)
+	inline void saveSDFScene(std::vector<std::string>& strVec, std::string fileName)
 	{
 		std::ofstream ofs{ fileName };
 		for (auto& str : strVec) {
@@ -15,7 +15,7 @@ namespace FileHandler
 		ofs.close();
 	}
 
-	void readSDFScene(std::vector<std::string>& strVec, std::string fileName) 
+	inline void readSDFScene(std::vector<std::string>& strVec, std::string fileName) 
 	{
 		std::ifstream ifs{ fileName };
 		std::string line{};

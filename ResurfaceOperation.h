@@ -6,7 +6,6 @@ class ResurfaceOperation : public SDFOperation
 {
 protected:
 	double m_magnitude{};
-	double m_updateValue{};
 	void innerUpdate() override {};
 	virtual std::string getClassName() const = 0;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
@@ -32,4 +31,13 @@ protected:
 	std::string getClassName() const { return "OPOnion"; }
 public:
 	OPOnion(double magnitude = DEF::RESURFOnionMagnitude) : ResurfaceOperation(magnitude) {}
+};
+
+class OPInsideOut : public ResurfaceOperation
+{
+protected:
+	double resurface(double distance) override;
+	std::string getClassName() const { return "OPOnion"; }
+public:
+	OPInsideOut() : ResurfaceOperation(0.0) {}
 };

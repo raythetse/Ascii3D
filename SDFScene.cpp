@@ -1,4 +1,5 @@
 #include "SDFScene.h"
+#include "FileHandler.h"
 #include "SDFOperationInc.h"
 #include "SDFBuilder.h"
 
@@ -28,6 +29,17 @@ SDFScene::SDFScene(LoadOption loadOption)
         propModTests();
         break;
     }
+}
+
+SDFScene::SDFScene(std::string fileName)
+{
+    std::vector<std::string> strVec;
+    FileHandler::readSDFScene(strVec, fileName);
+
+    SDFBuilder builder{};
+    builder.loadSerialized(strVec);
+
+    add(builder);
 }
 
 SDFScene::SDFScene(SDFBuilder& builder)
@@ -72,11 +84,10 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFObject>(1.0, Color::Red, Vec3::Right)()
-        .pushOp<COMBAddSmooth, SDFSphere>(1.0, Color::Blue, Vec3::Left)()
-        .bindPropMod<PMOscillateSine>("colorBlending", 1.0, 2.0)
-        .pushOp<OPTranslate>()
-        .addLightSource({ 3.0, 4.0, -4.0 }, 0.5)
+        .pushOp<COMBAdd, SDFBox>(10.0)()
+        .pushOp<OPInsideOut>()
+        .addLightSource({ 5.0, 5.0, -5.0 }, 1.0)
+        .addLightSource({ 1.0 }, 0.15)
     );
 }
 

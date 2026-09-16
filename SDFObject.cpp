@@ -123,7 +123,7 @@ double SDFBox::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
     p -= Vec3(m_dimensions) * 0.5;
-    return p.maximum(0.0).length();
+    return p.maximum(0.0).length() + std::min(std::max(p.x, std::max(p.y, p.z)), 0.0);
 }
 
 void SDFBoxFrame::serializeInner(std::stringstream& ss) const

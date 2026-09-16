@@ -1,12 +1,17 @@
 SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
 	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFObject m_position 1 0 0 m_rotationAxis 1 0 0 m_rotations 0 m_color 1 1 1
-		COMBAddSmooth m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-		PMOscillateSine m_propName colorBlending m_period 1 m_amplitude 2 m_phase 0
-		SDFSphere m_position -1 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 0 1 m_radius 1
-			OPTranslate m_translation 0 1 0
+	SDFBox m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_dimensions 10 10 10
+		OPOnion m_magnitude 0.01
+		COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+		SDFObject m_position 1 0 0 m_rotationAxis 1 0 0 m_rotations 0 m_color 1 1 1
+			COMBAddSmooth m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+			PMOscillateSine m_propName colorBlending m_period 1 m_amplitude 2 m_phase 0
+			SDFSphere m_position -1 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 0 1 m_radius 1
+				OPTranslate m_translation 0 1 0
+				stepBack
 			stepBack
 		stepBack
 	stepBack
-LightSource 3 4 -4 0.5
+LightSource m_position 5 5 -5 m_luminance  1
+LightSource m_position 1 1 1 m_luminance  0.15
 end

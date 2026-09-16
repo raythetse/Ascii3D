@@ -79,5 +79,5 @@ void Camera::setViewportSize(Vec2 size)
     double fontRatio = fontSize.X ? fontSize.X / fontSize.Y : 0.5;
     double sizeRatio = size.y / size.x;
     
-    m_viewportSize = Vec2{ fontRatio * size.x / size.y, 1.0 }.getNormal();
+    m_viewportSize = Vec2{ fontRatio * size.x / size.y, 1.0 }.getNormal() * 2.0;
 }
