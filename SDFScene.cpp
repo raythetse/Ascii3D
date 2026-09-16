@@ -69,7 +69,7 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFSphere>(1.0, Color::Red, Vec3::Right)()
+        .pushOp<COMBAdd, SDFObject>(1.0, Color::Red, Vec3::Right)()
         .pushOp<COMBAddSmooth, SDFSphere>(1.0, Color::Blue, Vec3::Left)()
         .bindPropMod<PMOscillateSine>("colorBlending", 1.0, 2.0)
         .pushOp<OPTranslate>()

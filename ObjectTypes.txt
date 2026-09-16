@@ -1,0 +1,74 @@
+[==== Objects ====]
+
+SDFObject
+SDFPlaneYZ
+SDFPlaneXY
+SDFBox
+SDFBoxFrame
+SDFSphere
+SDFTorus
+SDFCapsuleX
+SDFCapsuleY
+SDFCapsuleZ
+SDFCrystal
+SDFCylinderX
+SDFCylinderY
+SDFCylinderZ
+SDFChainLink
+SDFTube
+
+[==== Operations ====]
+
+* Combination *
+COMBAdd
+COMBSubtract
+COMBIntersect
+COMBAddSmooth
+COMBSubtractSmooth
+COMBIntersectSmooth
+
+* Distortion *
+OPTwist
+OPBend
+
+* Domain *
+OPRepeatX
+OPRepeatY
+OPRepeatZ
+OPRepeatXY
+OPRepeatXZ
+OPRepeatYZ
+OPRepeatXYZ
+OPRepeatLimited
+
+* Resurface *
+OPRoundOff
+OPOnion
+
+* Transform *
+OPMirrorX
+OPMirrorY
+OPMirrorZ
+OPMirrorXY
+OPMirrorXZ
+OPMirrorYZ
+OPMirrorXYZ
+OPTranslate
+OPTranslateSine
+OPTranslateLinear
+OPCubeRollHeight
+OPRotate
+OPRotateContinuous
+OPRotateScan
+OPRotateDelay
+OPCubeRoller
+OPElongateX
+OPElongateY
+OPElongateZ
+OPElongateXYZ
+
+[==== Property Modifiers ====]
+PMOscillateSine
+PMOscillateSineV3
+PMOscillateLinear
+PMOscillateLinearV3
