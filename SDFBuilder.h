@@ -27,7 +27,7 @@ public:
     SDFBuilder& pushOp(Args&&... args);
     template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
-    SDFBuilder& addLightSource(Vec3 position, double luminance);
+    SDFBuilder& addLightSource(Vec3 position, double luminance, Color color);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     SDFBuilder& position(Vec3 position);

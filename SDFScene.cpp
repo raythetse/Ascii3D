@@ -84,10 +84,20 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFBox>(10.0)()
+        .pushOp<COMBAdd, SDFBox>(15.0, Color::MediumGray)()
         .pushOp<OPInsideOut>()
-        .addLightSource({ 5.0, 5.0, -5.0 }, 1.0)
-        .addLightSource({ 1.0 }, 0.15)
+        .pushOp<OPTranslate>(Vec3{ -1.0, 1.0, 1.0 })
+        .pushOp<OPRotateContinuous>(Vec3::Up, 0.242)
+        .pushOp<OPRotateContinuous>(Vec3::Right, 0.143)
+        .pushOp<COMBAdd, SDFTorus>(Vec2{ 2.0, 0.35 }, Color::White)()
+        .stepBack()
+        .pushOp<OPTranslate>(Vec3{ -1.0, 1.0, 1.0 })
+        .pushOp<OPRotateContinuous>(Vec3::Up, 0.187)
+        .pushOp<OPRotateContinuous>(Vec3::Right, 0.231)
+        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 2.0, 0.35 }, Color::White)(3.0)
+        .addLightSource({ -4.0 }, 1.0, Color::Pink)
+        .addLightSource({ 4.0 }, 1.0, Color::LightBlue)
+        .addLightSource({ 0.0, 0.0, -4.0 }, 1.0, Color::LightGreen)
     );
 }
 

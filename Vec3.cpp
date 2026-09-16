@@ -67,7 +67,7 @@ Vec3 Vec3::minimum(double m) const
 
 Vec3 Vec3::clamp(double min, double max) const
 {
-    return maximum(max).minimum(min);
+    return maximum(min).minimum(max);
 }
 
 Vec3 Vec3::clamp(Vec3 min, Vec3 max) const

@@ -58,5 +58,6 @@ namespace DEF
 	// LightSource defaults
 	inline static Vec3		LSPosition{ 3.0, 4.0, -4.0 };
 	inline static double	LSLuminance{ 1.0 };
+	inline static Color		LSColor{ Color::White };
 };
 

@@ -17,9 +17,9 @@ std::vector<std::unique_ptr<LightSource>> SDFBuilder::getLights()
     return std::move(m_lights);
 }
 
-SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance)
+SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance, Color color)
 {
-    m_lights.push_back(std::make_unique<LightSource>(position, luminance));
+    m_lights.push_back(std::make_unique<LightSource>(position, luminance, color));
     return *this;
 }
 
@@ -836,14 +836,16 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     { "LightSource", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 m_position{ DEF::LSPosition };
         double m_luminance{ DEF::LSLuminance };
+        Color m_color;
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
             else if (param == "m_amplitude") ss >> m_luminance;
+            else if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
         }
-        builder.addLightSource(m_position, m_luminance);
+        builder.addLightSource(m_position, m_luminance, m_color);
     } },
 
 };
