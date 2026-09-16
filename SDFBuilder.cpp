@@ -8,8 +8,19 @@ SDFBuilder::SDFBuilder() {
     m_objChain.push_back(m_baseObject.get());
 }
 
-std::unique_ptr<SDFObject> SDFBuilder::get() {
+std::unique_ptr<SDFObject> SDFBuilder::getBaseObject() {
     return std::move(m_baseObject);
+}
+
+std::vector<std::unique_ptr<LightSource>> SDFBuilder::getLights()
+{
+    return std::move(m_lights);
+}
+
+SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance)
+{
+    m_lights.push_back(std::make_unique<LightSource>(position, luminance));
+    return *this;
 }
 
 SDFBuilder& SDFBuilder::stepBack(size_t steps)
@@ -818,6 +829,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "m_phase") ss >> m_phases.x >> m_phases.y >> m_phases.z;
         }
         builder.bindPropMod<PMOscillateLinearV3>(m_propName, m_periods, m_amplitudes, m_phases);
+    } },
+    { "LightSource", [](SDFBuilder& builder, std::stringstream& ss) {
+        Vec3 m_position{ DEF::LSPosition };
+        double m_luminance{ DEF::LSLuminance };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
+            else if (param == "m_amplitude") ss >> m_luminance;
+        }
+        builder.addLightSource(m_position, m_luminance);
     } },
 
 };

@@ -30,37 +30,40 @@ SDFScene::SDFScene(LoadOption loadOption)
     }
 }
 
-SDFScene::SDFScene(SDFBuilder& obj)
+SDFScene::SDFScene(SDFBuilder& builder)
 {
-    m_objects.push_back(obj.get());
+    m_baseObject = std::move(builder.getBaseObject());
+    m_lights = std::move(builder.getLights());
 }
 
-SDFScene::SDFScene(SDFBuilder&& obj)
+SDFScene::SDFScene(SDFBuilder&& builder)
 {
-    m_objects.push_back(obj.get());
+    m_baseObject = std::move(builder.getBaseObject());
+    m_lights = std::move(builder.getLights());
 }
 
-void SDFScene::add(SDFBuilder& obj)
+void SDFScene::add(SDFBuilder& builder)
 {
-    m_objects.push_back(obj.get());
+    m_baseObject = std::move(builder.getBaseObject());
+    m_lights = std::move(builder.getLights());
 }
 
-void SDFScene::add(SDFBuilder&& obj)
+void SDFScene::add(SDFBuilder&& builder)
 {
-    m_objects.push_back(obj.get());
+    m_baseObject = std::move(builder.getBaseObject());
+    m_lights = std::move(builder.getLights());
 }
 
 void SDFScene::update()
 {
-    for (auto& obj : m_objects) {
-        obj->update();
-    }
+    m_baseObject->update();
 }
 
 bool SDFScene::serialize(std::vector<std::string>& strVec) const
 {
-    for (auto& obj : m_objects) {
-        obj->serialize(strVec, 0);
+    m_baseObject->serialize(strVec, 0);
+    for (auto& light : m_lights) {
+        light->serialize(strVec);
     }
     strVec.push_back("end");
     return false;
@@ -73,10 +76,8 @@ void SDFScene::test()
         .pushOp<COMBAddSmooth, SDFSphere>(1.0, Color::Blue, Vec3::Left)()
         .bindPropMod<PMOscillateSine>("colorBlending", 1.0, 2.0)
         .pushOp<OPTranslate>()
-
+        .addLightSource({ 3.0, 4.0, -4.0 }, 0.5)
     );
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 4.0, -4.0 }, 0.5));
 }
 
 void SDFScene::frameDemo()

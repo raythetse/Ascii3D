@@ -17,8 +17,8 @@ private:
 	double m_tolerance;
 	double m_maxDistance;
 
-	void marchRay(Vec3 ray, Vec3 p, const std::vector<std::unique_ptr<SDFObject>>& objects, PixelSample& sample, double* shadowMax = nullptr, Vec3* lightPos = nullptr);
-	void SampleScene(Vec3 p, const std::vector<std::unique_ptr<SDFObject>>& objects, double & surfDist, size_t& objectIndex, double* shadowMax = nullptr, Vec3* lightPos = nullptr);
+	void marchRay(Vec3 ray, Vec3 camPos, Color* color, const SDFObject* objects, PixelSample& sample, double* shadowMax = nullptr, Vec3* lightPos = nullptr);
+	void SampleScene(Vec3 p, Color* color, const SDFObject* objects, double & surfDist, size_t& objectIndex, double* shadowMax = nullptr, Vec3* lightPos = nullptr);
 
 public:
 	RayMarcher(const double maxDistance, const double stepFactor = 1.0, const double tolerance = 0.001)

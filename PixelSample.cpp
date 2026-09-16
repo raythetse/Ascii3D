@@ -3,7 +3,7 @@
 
 const std::string PixelSample::charGradient{ ".~<=vri325EB" };
 
-void PixelSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Vec3 p, double maxDistance, const std::vector<LightSource*>& lights)
+void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<LightSource*>& lights)
 {
 	double totalLight{};
 
@@ -22,12 +22,8 @@ void PixelSample::buildRenderParams(const std::unique_ptr<SDFObject>& object, Ve
 
 	totalLight = totalLight > 1.0 ? 1.0 : totalLight;
 
-	Color color{};
-	if (object) {
-		object->signedDistance(p, &color);
-		color = color.quantize(32);
+	color = color.quantize(32);
 		//totalLight *= 1.0 - (camDistance / maxDistance);
-	}
 
 	size_t index = static_cast<size_t>(totalLight * (charGradient.length() - 1));
 	renderChar = camDistance >= maxDistance ? ' ' : charGradient[index];

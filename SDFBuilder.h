@@ -2,6 +2,7 @@
 #include <functional>
 #include <sstream>
 #include <unordered_map>
+#include "LightSource.h"
 #include "SDFObject.h"
 #include "SDFOperation.h"
 #include "SDFOperationInc.h"
@@ -13,17 +14,20 @@ class SDFBuilder {
 private:
     std::unique_ptr<SDFObject> m_baseObject;
     std::vector<SDFObject*> m_objChain;
+    std::vector<std::unique_ptr<LightSource>> m_lights;
     SDFOperation* m_lastOp{};
     template<typename T, typename... Args>
         requires (std::is_base_of_v<SDFObject, T> || std::same_as<SDFObject, T>)
     SDFBuilder& pushSDFObj(Args&&... args);
 public:
     SDFBuilder();
-    std::unique_ptr<SDFObject> get();
+    std::unique_ptr<SDFObject> getBaseObject();
+    std::vector<std::unique_ptr<LightSource>> getLights();
 	template <std::derived_from<SDFOperation> T, typename... Args>
     SDFBuilder& pushOp(Args&&... args);
     template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
     auto pushOp(ArgsT&&... argst);
+    SDFBuilder& addLightSource(Vec3 position, double luminance);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     SDFBuilder& position(Vec3 position);

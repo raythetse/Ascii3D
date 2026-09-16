@@ -54,5 +54,9 @@ namespace DEF
 	inline static double	PMPeriod{ 1.0 };
 	inline static double	PMAmplitude{ 1.0 };
 	inline static double	PMPhase{ 0.0 };
+
+	// LightSource defaults
+	inline static Vec3		LSPosition{ 3.0, 4.0, -4.0 };
+	inline static double	LSLuminance{ 1.0 };
 };
 
