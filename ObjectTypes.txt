@@ -1,29 +1,8 @@
-[==== Objects ====]
-
-SDFObject
-SDFBox
-SDFBoxFrame
-SDFSphere
-SDFTorus
-SDFCapsuleX
-SDFCapsuleY
-SDFCapsuleZ
-SDFCrystal
-SDFCylinderX
-SDFCylinderY
-SDFCylinderZ
-SDFChainLink
-SDFTube
-
 [==== Operations ====]
 
 * Combination *
-COMBAdd
-COMBSubtract
-COMBIntersect
 COMBAddSmooth
 COMBSubtractSmooth
-COMBIntersectSmooth
 
 * Distortion *
 OPTwist
@@ -38,10 +17,6 @@ OPRotateContinuous
 OPRotateScan
 OPRotateDelay
 OPCubeRoller
-OPElongateX
-OPElongateY
-OPElongateZ
-OPElongateXYZ
 
 [==== Property Modifiers ====]
 PMOscillateSine

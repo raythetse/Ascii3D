@@ -3,12 +3,12 @@ SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
 	SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
 		COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
 		SDFPlaneXZ m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 0 1 m_yPos -1
+			OPElongateY m_length 2 m_offset 0
+			OPElongateX m_length 2 m_offset 0
 			COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-			SDFBox m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 1 0 m_dimensions 1 1 1
-				OPOnion m_magnitude 0.05
-				OPOnion m_magnitude 0.01
-				COMBSubtract m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-				SDFBox m_position 0.5 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_dimensions 1.2 1.2 1.2
+			SDFCylinderZ m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 1 0 m_sideLength 2 m_radius 0.25
+				COMBIntersectSmooth m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+				SDFCylinderX m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 1 0 m_sideLength 2 m_radius 0.25
 					stepBack
 				stepBack
 			stepBack

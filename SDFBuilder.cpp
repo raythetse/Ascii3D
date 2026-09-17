@@ -296,7 +296,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFCapsuleY>(m_radius, m_bodyLength, m_color, m_position, m_rotationAxis, m_rotations);
     } },
-    { "SDFCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFCapsuleZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec3 m_position{ DEF::ObjPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
@@ -314,7 +314,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_bodyLength") ss >> m_bodyLength;
         }
-        builder.pushSDFObj<SDFCapsuleX>(m_radius, m_bodyLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCapsuleZ>(m_radius, m_bodyLength, m_color, m_position, m_rotationAxis, m_rotations);
     } },
     { "SDFCrystal", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
@@ -352,7 +352,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFCylinderX>(m_sideLength, m_radius, col, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCylinderX>(m_radius, m_sideLength, col, m_position, m_rotationAxis, m_rotations);
     } },
     { "SDFCylinderY", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
@@ -372,7 +372,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFCylinderY>(m_sideLength, m_radius, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCylinderY>(m_radius, m_sideLength, m_color, m_position, m_rotationAxis, m_rotations);
     } },
     { "SDFCylinderZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
@@ -392,7 +392,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFCylinderZ>(m_sideLength, m_radius, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCylinderZ>(m_radius, m_sideLength, m_color, m_position, m_rotationAxis, m_rotations);
     } },
     { "SDFChainLink", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
