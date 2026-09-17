@@ -147,7 +147,6 @@
     <ClCompile Include="Ascii3D.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CombinationOperation.cpp" />
-    <ClCompile Include="DistortOperation.cpp" />
     <ClCompile Include="DomainOperation.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameTimer.cpp" />
@@ -175,7 +174,6 @@
   <ItemGroup>
     <ClInclude Include="CombinationOperation.h" />
     <ClInclude Include="ConsoleFunctions.h" />
-    <ClInclude Include="DistortOperation.h" />
     <ClInclude Include="DomainOperation.h" />
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />

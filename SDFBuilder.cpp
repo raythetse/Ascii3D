@@ -674,28 +674,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPInsideOut>();
     } },
 
-    // Distortions
-    { "OPBend", [](SDFBuilder& builder, std::stringstream& ss) {
-        double m_magnitude{ DEF::DISTMagnitude };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "m_magnitude") ss >> m_magnitude;
-        }
-        builder.pushOp<OPTwist>(m_magnitude);
-    } },
-    { "OPBend", [](SDFBuilder& builder, std::stringstream& ss) {
-        double m_magnitude{ DEF::DISTMagnitude };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "m_magnitude") ss >> m_magnitude;
-        }
-        builder.pushOp<OPTwist>(m_magnitude);
-    } },
-
     // Domain Ops
     { "OPRepeatX", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 m_spacing{ DEF::DOMSpacing };

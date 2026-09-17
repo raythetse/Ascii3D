@@ -89,11 +89,8 @@ void SDFScene::test()
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFObject>()()
         .pushOp<COMBAdd, SDFPlaneXZ>(-1.0, Color::Blue)()
-        .pushOp<OPElongateY>(2.0)
-        .pushOp<OPElongateX>(2.0)
-        .pushOp<COMBAdd, SDFCylinderZ>(0.25, 2.0, Color::Green)()
-        .pushOp<COMBIntersectSmooth, SDFCylinderX>(0.25, 2.0, Color::Green)()
-        .addLightSource({ 6.0, 6.0 ,0.0 }, 100.0, Color::White)
+        .pushOp<COMBAdd, SDFBox>(Vec3{1.0,3.0,1.0}, Color::Red, Vec3::Up)()
+        .addLightSource({ 6.0, 6.0 ,-2.0 }, 100.0, Color::White)
     );
 }
 

@@ -93,9 +93,6 @@
     <ClCompile Include="CombinationOperation.cpp">
       <Filter>Source Files\Operations</Filter>
     </ClCompile>
-    <ClCompile Include="DistortOperation.cpp">
-      <Filter>Source Files\Operations</Filter>
-    </ClCompile>
     <ClCompile Include="DomainOperation.cpp">
       <Filter>Source Files\Operations</Filter>
     </ClCompile>
@@ -168,9 +165,6 @@
       <Filter>Header Files\SDF</Filter>
     </ClInclude>
     <ClInclude Include="CombinationOperation.h">
-      <Filter>Header Files\Operations</Filter>
-    </ClInclude>
-    <ClInclude Include="DistortOperation.h">
       <Filter>Header Files\Operations</Filter>
     </ClInclude>
     <ClInclude Include="DomainOperation.h">
