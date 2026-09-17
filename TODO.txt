@@ -1,5 +1,4 @@
 Required:
-- add lights to scene saving
 - GLSL or HLSL hardward marching
 - bounding boxes for efficiency
 - light movement
