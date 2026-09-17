@@ -89,7 +89,10 @@ void SDFScene::test()
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFObject>()()
         .pushOp<COMBAdd, SDFPlaneXZ>(-1.0, Color::Blue)()
-        .pushOp<COMBAdd, SDFBox>(Vec3{1.0,3.0,1.0}, Color::Red, Vec3::Up)()
+        .stepBack()
+        .pushOp<COMBAdd, SDFBox>(Vec3{ 1.0,3.0,1.0 }, Color::Red, Vec3::Up)()
+        .pushOp<COMBAddSmooth, SDFBox>(Vec3{ 3.0,1.0,1.0 }, Color::Green, Vec3::Up)(2.0)
+        .bindPropMod<PMOscillateLinear>("smoothing", 2.0, 2.0, 0.5)
         .addLightSource({ 6.0, 6.0 ,-2.0 }, 100.0, Color::White)
     );
 }

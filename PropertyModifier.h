@@ -90,7 +90,9 @@ public:
 		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
 		progress -= 0.5;
 		progress *= 2.0;
-		progress = 1.0 - abs(progress);
+		progress = abs(progress);
+		progress -= 0.5;
+		progress *= 2.0;
 
 		*ptr = m_initVal + progress * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
@@ -117,7 +119,8 @@ public:
 		progress -= 0.5;
 		progress *= 2.0;
 		progress = progress.abs();
-		progress = Vec3::One - progress;
+		progress -= 0.5;
+		progress *= 2.0;
 
 		*ptr = m_initVal + progress * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
