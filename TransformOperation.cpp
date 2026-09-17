@@ -19,7 +19,7 @@ void OPMirrorX::transform(Vec3& p) const
 
 void OPMirrorY::transform(Vec3& p) const
 {
-	p.y = abs(p.x);
+	p.y = abs(p.y);
 }
 
 void OPMirrorZ::transform(Vec3& p) const

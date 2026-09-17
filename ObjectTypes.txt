@@ -1,8 +1,6 @@
 [==== Objects ====]
 
 SDFObject
-SDFPlaneYZ
-SDFPlaneXY
 SDFBox
 SDFBoxFrame
 SDFSphere
@@ -31,29 +29,7 @@ COMBIntersectSmooth
 OPTwist
 OPBend
 
-* Domain *
-OPRepeatX
-OPRepeatY
-OPRepeatZ
-OPRepeatXY
-OPRepeatXZ
-OPRepeatYZ
-OPRepeatXYZ
-OPRepeatLimited
-
-* Resurface *
-OPRoundOff
-OPOnion
-
 * Transform *
-OPMirrorX
-OPMirrorY
-OPMirrorZ
-OPMirrorXY
-OPMirrorXZ
-OPMirrorYZ
-OPMirrorXYZ
-OPTranslate
 OPTranslateSine
 OPTranslateLinear
 OPCubeRollHeight

@@ -767,6 +767,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushOp<OPRepeatXYZ>(m_spacing);
     } },
+    { "OPRepeatLimited", [](SDFBuilder& builder, std::stringstream& ss) {
+        Vec3 m_spacing{ DEF::DOMSpacing };
+        Vec3 m_limits{ DEF::DOMLimits };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_spacing") ss >> m_spacing.x >> m_spacing.y >> m_spacing.z;
+            else if (param == "m_limits") ss >> m_limits.x >> m_limits.y >> m_limits.z;
+        }
+        builder.pushOp<OPRepeatLimited>(m_limits, m_spacing);
+    } },
 
     // Property Modifiers
     { "PMOscillateSine", [](SDFBuilder& builder, std::stringstream& ss) {

@@ -28,7 +28,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
 
 void GameEngine::run()
 {
-    m_scene = SDFScene(SDFScene::LoadOption::Torus);
+    m_scene = SDFScene(SDFScene::LoadOption::Test);
     //m_scene = SDFScene("MyFile.txt");
 
     while (true) {

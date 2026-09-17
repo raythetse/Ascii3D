@@ -5,7 +5,7 @@ void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t le
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << " m_spacing " << m_spacing;
+	ss << " m_spacing " << m_spacing.x << ' ' << m_spacing.y << ' ' << m_spacing.z;
 
 	strVec.push_back(ss.str());
 }
@@ -74,7 +74,7 @@ void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t le
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << " m_spacing " << m_spacing;
+	ss << " m_spacing " << m_spacing.x << ' ' << m_spacing.y << ' ' << m_spacing.z;
 	ss << " m_limits " << m_limits.x << ' ' << m_limits.y << ' ' << m_limits.z;
 
 	strVec.push_back(ss.str());

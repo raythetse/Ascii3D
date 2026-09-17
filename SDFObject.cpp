@@ -91,7 +91,7 @@ void SDFPlaneXZ::serializeInner(std::stringstream& ss) const
 
 double SDFPlaneXZ::signedDistanceInner(Vec3 p) const
 {
-    return p.y - m_yPos;
+    return abs(p.y - m_yPos);
 }
 
 void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
@@ -101,7 +101,7 @@ void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
 
 double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
 {
-    return p.x - m_xPos;
+    return abs(p.x - m_xPos);
 }
 
 void SDFPlaneXY::serializeInner(std::stringstream& ss) const
@@ -111,7 +111,7 @@ void SDFPlaneXY::serializeInner(std::stringstream& ss) const
 
 double SDFPlaneXY::signedDistanceInner(Vec3 p) const
 {
-    return p.z - m_zPos;
+    return abs(p.z - m_zPos);
 }
 
 void SDFBox::serializeInner(std::stringstream& ss) const

@@ -87,7 +87,12 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFSphere>(4.0)()
+        .pushOp<COMBAdd, SDFObject>()()
+        .pushOp<COMBAdd, SDFPlaneXZ>(-1.0, Color::Blue)()
+        .pushOp<COMBAdd, SDFBox>(1.0, Color::Green)()
+        .pushOp<OPOnion>(0.05)
+        .pushOp<OPOnion>(0.01)
+        .pushOp<COMBSubtract, SDFBox>(Vec3::One*1.2, Color::White, Vec3::Right * 0.5)()
         .addLightSource({ 6.0, 6.0 ,0.0 }, 100.0, Color::White)
     );
 }
@@ -257,7 +262,6 @@ void SDFScene::propModTests()
         .pushOp<OPElongateXYZ>()
         .bindPropMod<PMOscillateSineV3>("lengths", Vec3{1.54,2.14,3.12}, Vec3{0.64, 0.75, 0.48})
         .pushOp<COMBAdd, SDFCrystal>()()
+        .addLightSource(Vec3{ 3.0, 3.0, -3.0 }, 150.0, Color::White)
     );
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 3.0, -3.0 }, 0.25));
 }

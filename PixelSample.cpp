@@ -2,7 +2,7 @@
 #include <cmath>
 #include "MathFunctions.h"
 
-const std::string PixelSample::charGradient{ "-~+*vri325EB@" };
+const std::string PixelSample::charGradient{ "-~+*vri325E8B@" };
 
 void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<std::unique_ptr<LightSource>>& lights, const std::vector<bool>& directLighting)
 {
