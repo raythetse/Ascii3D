@@ -57,7 +57,7 @@ void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
         marchRay(ray, camera.getPosition(), &color, object, field(row, col));
 
         PixelSample& sample = field(row, col);
-        std::vector<LightSource*> directLights{};
+        std::vector<bool> directLighting{};
 
         bool hit = sample.camDistance < m_maxDistance;
         if (hit) {
@@ -79,14 +79,12 @@ void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
                 double shadowMax = diff.length();
                 Vec3 ray = diff.getNormal();
                 marchRay(ray, sample.samplePoint + ray * s_shadowTolerance, nullptr, object, shadowSample, &shadowMax, &lightPos);
-                if (shadowSample.camDistance == shadowMax) {
-                    directLights.push_back(light.get());
-                }
+                directLighting.push_back(shadowSample.camDistance == shadowMax);
             }
-            sample.buildRenderParams(object, color, sample.samplePoint, m_maxDistance, directLights);
+            sample.buildRenderParams(object, color, sample.samplePoint, m_maxDistance, lights, directLighting);
         }
         else {
-            sample.buildRenderParams(nullptr, color, sample.samplePoint, m_maxDistance, directLights);
+            sample.buildRenderParams(nullptr, {}, sample.samplePoint, m_maxDistance, lights, directLighting);
         }
     });
 }

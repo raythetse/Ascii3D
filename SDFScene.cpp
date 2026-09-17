@@ -25,6 +25,9 @@ SDFScene::SDFScene(LoadOption loadOption)
     case SDFScene::PropMod:
         propModDemo();
         break;
+    case SDFScene::Torus:
+        torusDemo();
+        break;
     default:
         propModTests();
         break;
@@ -84,20 +87,8 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFBox>(15.0, Color::MediumGray)()
-        .pushOp<OPInsideOut>()
-        .pushOp<OPTranslate>(Vec3{ -1.0, 1.0, 1.0 })
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.242)
-        .pushOp<OPRotateContinuous>(Vec3::Right, 0.143)
-        .pushOp<COMBAdd, SDFTorus>(Vec2{ 2.0, 0.35 }, Color::White)()
-        .stepBack()
-        .pushOp<OPTranslate>(Vec3{ -1.0, 1.0, 1.0 })
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.187)
-        .pushOp<OPRotateContinuous>(Vec3::Right, 0.231)
-        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 2.0, 0.35 }, Color::White)(3.0)
-        .addLightSource({ -4.0 }, 1.0, Color::Pink)
-        .addLightSource({ 4.0 }, 1.0, Color::LightBlue)
-        .addLightSource({ 0.0, 0.0, -4.0 }, 1.0, Color::LightGreen)
+        .pushOp<COMBAdd, SDFSphere>(4.0)()
+        .addLightSource({ 6.0, 6.0 ,0.0 }, 100.0, Color::White)
     );
 }
 
@@ -124,9 +115,8 @@ void SDFScene::frameDemo()
                     .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Blue, Vec3{ -0.5, -0.5, 0.5 })().stepBack()
                     .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Violet, Vec3{ -0.5, -0.5, -0.5 })().stepBack()
                     .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 1.25 }, 0.1, Color::White)()
+        .addLightSource(Vec3{ 1.0, 8.0, -1.0 }, 150.0, Color::White)
     );
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
 void SDFScene::oxygenDemo()
@@ -159,11 +149,11 @@ void SDFScene::oxygenDemo()
                             .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -.1, -.2256, .076 })
                                 .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.0, 0.26, 0.0 })
                                     .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -0.2, 0.01, 0.0 })
-                                        .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.19, -0.084, -0.02 });
+                                        .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.19, -0.084, -0.02 })
+        .addLightSource(Vec3{ 1.0, 4.0, -1.0 }, 1.0, Color::White)
+    ;
 
     add(std::move(builder));
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
 }
 
 void SDFScene::cubesDemo()
@@ -231,12 +221,34 @@ void SDFScene::elongateDemo()
         .pushOp<COMBAdd, SDFCrystal>(1.25)().color(Color::Blue)
             .pushOp<COMBSubtractSmooth, SDFBox>(1.5, Color::Red)(0.5, 25.0, 0.25)
                 .stepBack()
-            .pushOp<COMBSubtractSmooth, SDFBox>(1.0, Color::Green)(0.1, 100.0, 0.485)
+            .pushOp<COMBSubtractSmooth, SDFBox>(1.0, Color::Green)(0.1, 50.0, 0.4925)
                 .stepBack()
             .pushOp<COMBAdd, SDFCrystal>(0.1, Color::Yellow)()
+        .addLightSource(Vec3{ 3.0, 3.0, -3.0 }, 150.0, Color::White)
     );
+}
 
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 3.0, 3.0, -3.0 }, 0.25));
+void SDFScene::torusDemo()
+{
+    double lightPower{ 350.0 };
+    double lightDist{ 16.0 };
+
+    add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFBox>(50.0, Color::MediumGray)()
+        .pushOp<OPInsideOut>()
+        .pushOp<OPTranslate>(Vec3{ -2.0, 1.0, 1.0 })
+        .pushOp<OPRotateContinuous>(Vec3::Up, 0.242)
+        .pushOp<OPRotateContinuous>(Vec3::Right, 0.143)
+        .pushOp<COMBAdd, SDFTorus>(Vec2{ 6.0, 1.0 }, Color::White)()
+        .stepBack()
+        .pushOp<OPTranslate>(Vec3{ -2.0, 1.0, 1.0 })
+        .pushOp<OPRotateContinuous>(Vec3::Up, 0.187)
+        .pushOp<OPRotateContinuous>(Vec3::Right, 0.231)
+        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 5.0, 1.25 }, Color::White)(3.0)
+        .addLightSource({ -lightDist }, lightPower, Color::Pink)
+        .addLightSource({ lightDist }, lightPower, Color::LightBlue)
+        .addLightSource({ 0.5 * lightDist, 0.0, -lightDist }, lightPower, Color::LightGreen)
+    );
 }
 
 void SDFScene::propModTests()

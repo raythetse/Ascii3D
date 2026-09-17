@@ -10,7 +10,7 @@ int main()
     ConsoleFunctions::desyncSTDIO();
     ConsoleFunctions::setPrecision(3);
     ConsoleFunctions::goFullscreen();
-    GameEngine{ 15, 5, 50.0, 1.0, 0.01 }.run();
+    GameEngine{ 15, 5, 100.0, 1.0, 0.001 }.run();
     ConsoleFunctions::restoreTerminal();
     return 0;
 }

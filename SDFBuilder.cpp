@@ -842,7 +842,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_amplitude") ss >> m_luminance;
+            else if (param == "m_luminance") ss >> m_luminance;
             else if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
         }
         builder.addLightSource(m_position, m_luminance, m_color);

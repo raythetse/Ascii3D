@@ -21,6 +21,6 @@ public:
 
 	PixelSample() = default;
 	PixelSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}
-	void buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<LightSource*>& lights);
+	void buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<std::unique_ptr<LightSource>>& lights, const std::vector<bool>& directLighting);
 };
 

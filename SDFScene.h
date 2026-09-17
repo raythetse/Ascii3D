@@ -17,6 +17,7 @@ public:
 		Frame,
 		Oxygen,
 		PropMod,
+		Torus,
 	};
 
 private:
@@ -28,6 +29,7 @@ private:
 	void cubesDemo();
 	void propModDemo();
 	void elongateDemo();
+	void torusDemo();
 	void propModTests();
 public:
 	SDFScene() = default;

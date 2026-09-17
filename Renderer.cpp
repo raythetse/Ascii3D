@@ -14,8 +14,7 @@ void Renderer::render(PixelField& field)
 	for (int row{}; row < field.height(); ++row) {
 		for (int col{}; col < field.width(); ++col) {
 			Vec3 color = field(row, col).renderColor;
-			bool updateColor = (field.changedColor(row, col) || color != pColor);
-			if (updateColor) {
+			if (field.changedColor(row, col) || color != pColor) {
 				m_frameBuffer += field(row, col).colorCode;
 			}
 			m_frameBuffer += field(row, col).renderChar;

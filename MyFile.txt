@@ -1,22 +1,20 @@
 SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
+	OPTranslateSine m_axis 0 1 0 m_amplitude 0.1 m_period 2 m_phase 0
+	OPRotateContinuous m_axis 0 1 0 m_rotationsPerSecond 0.125 m_phase 0
+	OPElongateXYZ m_lengths 0.5 1 0.75 m_offsets 0 0 0
+	PMOscillateSineV3 m_propName lengths m_period 1 0.849 0.731 m_amplitude 0.5 0.5 0.5 m_phase 0 0 0
 	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFBox m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0.5 0.5 0.5 m_dimensions 15 15 15
-		OPOnion m_magnitude 0
-		OPTranslate m_translation -1 1 1
-		OPRotateContinuous m_axis 0 1 0 m_rotationsPerSecond 0.242 m_phase 0
-		OPRotateContinuous m_axis 1 0 0 m_rotationsPerSecond 0.143 m_phase 0
-		COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-		SDFTorus m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radii 2 0.35
+	SDFCrystal m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 0 1 m_edgeLength 1.25
+		COMBSubtractSmooth m_smoothing 0.5 m_colorBlending 25 m_colorShifting 0.25
+		SDFBox m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 0 0 m_dimensions 1.5 1.5 1.5
 			stepBack
-		OPTranslate m_translation -1 1 1
-		OPRotateContinuous m_axis 0 1 0 m_rotationsPerSecond 0.187 m_phase 0
-		OPRotateContinuous m_axis 1 0 0 m_rotationsPerSecond 0.231 m_phase 0
-		COMBAddSmooth m_smoothing 3 m_colorBlending 1 m_colorShifting 0
-		SDFTorus m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radii 2 0.35
+		COMBSubtractSmooth m_smoothing 0.1 m_colorBlending 50 m_colorShifting 0.4925
+		SDFBox m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 1 0 m_dimensions 1 1 1
+			stepBack
+		COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+		SDFCrystal m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 0 m_edgeLength 0.1
 			stepBack
 		stepBack
 	stepBack
-LightSource m_position -4 -4 -4 m_luminance  1 m_color  1 0.5 0.5
-LightSource m_position 4 4 4 m_luminance  1 m_color  0.5 0.5 1
-LightSource m_position 0 0 -4 m_luminance  1 m_color  0.5 1 0.5
+LightSource m_position 3 3 -3 m_luminance  150 m_color  1 1 1
 end
