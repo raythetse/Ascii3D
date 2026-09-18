@@ -114,11 +114,16 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>false</Profile>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:MSVCRTD %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
@@ -133,11 +138,16 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>false</Profile>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
@@ -156,6 +166,7 @@
     <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="Mat3.cpp" />
     <ClCompile Include="PropertyModifier.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ResurfaceOperation.cpp" />
     <ClCompile Include="SDFOperation.cpp" />
     <ClCompile Include="PerfMonitor.cpp" />
@@ -170,6 +181,7 @@
     <ClCompile Include="RayMarcher.cpp" />
     <ClCompile Include="SDFObject.cpp" />
     <ClCompile Include="PixelSample.cpp" />
+    <ClCompile Include="VKHandle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CombinationOperation.h" />
@@ -178,10 +190,12 @@
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="VulkanFunctions.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="PropertyModifier.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="SDFDefaults.h" />
     <ClInclude Include="SDFOperationInc.h" />
     <ClInclude Include="ResurfaceOperation.h" />
@@ -201,10 +215,14 @@
     <ClInclude Include="RayMarcher.h" />
     <ClInclude Include="SDFObject.h" />
     <ClInclude Include="PixelSample.h" />
+    <ClInclude Include="VKHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ObjectTypes.txt" />
     <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="raymacher.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
