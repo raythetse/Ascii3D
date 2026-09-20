@@ -104,8 +104,10 @@ std::string SDFScene::getSceneShader() const
             float customFloat;
             float width;
             float height;
-            float camPosX; float camPosY; float camPosZ; float pad2;
-            float camLookX; float camLookY; float camLookZ; float pad3;
+            float camPX; float camPY; float camPZ; float pad2;
+            float camFX; float camFY; float camFZ; float pad3;
+            float camUX; float camUY; float camUZ; float pad4;
+            float camRX; float camRY; float camRZ; float pad5;
         } push;
 
         void main() {
@@ -119,8 +121,10 @@ std::string SDFScene::getSceneShader() const
             // 3. Flatten index map
             uint idx = (coordY * uint(push.width)) + coordX;
 
+            float f = clamp(push.camFZ, 0.0, 1.0);
+
             // 4. Force a clean 0.0 to 1.0 floating point gradient across the grid
-            pixels[idx].r = float(coordX) / push.width; // Red fades across left-to-right
+            pixels[idx].r = f; // Red fades across left-to-right
             pixels[idx].g = float(coordY) / push.height;  // Green fades down top-to-bottom
             pixels[idx].b = push.customFloat;
             pixels[idx].depth = 42.0f; 

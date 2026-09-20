@@ -84,15 +84,41 @@ void GameEngine::march()
         case GameEngine::Software:
             m_rayMarcher.march(m_scene, m_pixelField, m_camera);
             break;
-        case GameEngine::Hardware: {
-            ShaderInputs inputs{};
-            inputs.width = static_cast<float>(m_dimensions.first);
-            inputs.height = static_cast<float>(m_dimensions.second);
-            m_hardwareRenderResult = m_vrm.renderFrame(inputs);
-        }
+        case GameEngine::Hardware:
+            marchHardware();
             break;
         }
     });
+}
+
+void GameEngine::marchHardware()
+{
+    ShaderInputs inputs{};
+    inputs.width = static_cast<float>(m_dimensions.first);
+    inputs.height = static_cast<float>(m_dimensions.second);
+
+    Vec3 camPos = m_camera.getPosition();
+    Vec3 camForward = m_camera.getForward();
+    Vec3 camRight = m_camera.getRight();
+    Vec3 camUp = m_camera.getUp();
+
+    inputs.camPos[0] = static_cast<float>(camPos.x);
+    inputs.camPos[1] = static_cast<float>(camPos.y);
+    inputs.camPos[2] = static_cast<float>(camPos.z);
+
+    inputs.camForward[0] = static_cast<float>(camForward.x);
+    inputs.camForward[1] = static_cast<float>(camForward.y);
+    inputs.camForward[2] = static_cast<float>(camForward.z);
+
+    inputs.camRight[0] = static_cast<float>(camRight.x);
+    inputs.camRight[1] = static_cast<float>(camRight.y);
+    inputs.camRight[2] = static_cast<float>(camRight.z);
+
+    inputs.camUp[0] = static_cast<float>(camUp.x);
+    inputs.camUp[1] = static_cast<float>(camUp.y);
+    inputs.camUp[2] = static_cast<float>(camUp.z);
+
+    m_hardwareRenderResult = m_vrm.renderFrame(inputs);
 }
 
 void GameEngine::render()

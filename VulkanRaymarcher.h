@@ -23,8 +23,14 @@ struct ShaderInputs {
     float camPos[3];   // X, Y, Z raw components
     float pad2;        // Pad out to 16 bytes boundary
 
-    float camLook[3];  // X, Y, Z raw components
+    float camForward[3];  // X, Y, Z raw components
     float pad3;
+
+    float camUp[3];  // X, Y, Z raw components
+    float pad4;
+
+    float camRight[3];  // X, Y, Z raw components
+    float pad5;
 };
 
 class VulkanRaymarcher {

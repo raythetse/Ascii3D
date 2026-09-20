@@ -34,7 +34,6 @@ private:
 	PixelOutput* m_hardwareRenderResult = nullptr;
 
 	void resizeCallback(size_t width, size_t height);
-	void marchSoftware();
 	void marchHardware();
 
 public:
