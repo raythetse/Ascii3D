@@ -20,7 +20,7 @@ VulkanRaymarcher::VulkanRaymarcher()
     instanceInfo.ppEnabledLayerNames = validationLayers.data();
 
     if (vkCreateInstance(&instanceInfo, nullptr, &m_Instance) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create Vulkan Instance!");
+        throw std::runtime_error{ "Failed to create Vulkan Instance!" };
     }
 }
 
@@ -28,7 +28,7 @@ bool VulkanRaymarcher::selectDevice() {
     // 2. Select GPU supporting Vulkan 1.3
     uint32_t deviceCount = 0;  
     vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
-    std::vector<VkPhysicalDevice> devices(deviceCount);
+    std::vector<VkPhysicalDevice> devices{ deviceCount };
     vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 
     std::vector<VkPhysicalDevice> candidateDevices{};
@@ -68,7 +68,7 @@ bool VulkanRaymarcher::selectDevice() {
     // 3. Find Compute Queue Family
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queueFamilyCount, nullptr);
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+    std::vector<VkQueueFamilyProperties> queueFamilies{ queueFamilyCount };
     vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queueFamilyCount, queueFamilies.data());
 
     for (uint32_t i = 0; i < queueFamilyCount; i++) {
@@ -299,7 +299,8 @@ std::vector<uint32_t> VulkanRaymarcher::compileDynamicGlslToSpirV(const std::str
     
     const uint32_t* bytes = reinterpret_cast<const uint32_t*>(shaderc_result_get_bytes(result));
     size_t len = shaderc_result_get_length(result);
-    std::vector<uint32_t> spirv(bytes, bytes + (len / sizeof(uint32_t))); shaderc_result_release(result);
+    std::vector<uint32_t> spirv(bytes, bytes + (len / sizeof(uint32_t)));
+    shaderc_result_release(result);
     shaderc_compile_options_release(options);
     shaderc_compiler_release(compiler);
     return spirv;

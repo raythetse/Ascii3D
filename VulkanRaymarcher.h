@@ -15,22 +15,18 @@ struct PixelOutput {
 
 // Packed hardware registers for per-frame data (Must be a multiple of 16 bytes total)
 struct ShaderInputs {
+
+    float camPos[3];
     float time;
-    float customFloat;
-    float width; // explicit 16-byte structural alignment boundary block
+
+    float camForward[3];
+    float width;
+
+    float camUp[3];
     float height;
 
-    float camPos[3];   // X, Y, Z raw components
-    float pad2;        // Pad out to 16 bytes boundary
-
-    float camForward[3];  // X, Y, Z raw components
-    float pad3;
-
-    float camUp[3];  // X, Y, Z raw components
-    float pad4;
-
-    float camRight[3];  // X, Y, Z raw components
-    float pad5;
+    float camRight[3];
+    float sceneDepth;
 };
 
 class VulkanRaymarcher {

@@ -3,6 +3,64 @@
 #include "SDFOperationInc.h"
 #include "SDFBuilder.h"
 
+const std::string SDFScene::m_shaderLayout{ 
+    R"( 
+        #version 450
+        layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+        struct PixelOutput {
+            float r, g, b, l;
+        };
+
+        layout(std430, binding = 0) buffer OutputBuffer {
+            PixelOutput pixels[];
+        };
+
+        layout(push_constant) uniform PushConstants {
+            float camPX; float camPY; float camPZ;
+            float time;
+            float camFX; float camFY; float camFZ;
+            float width;
+            float camUX; float camUY; float camUZ;
+            float height;
+            float camRX; float camRY; float camRZ;
+            float sceneDepth;
+        } push;
+    )"
+};
+
+const std::string SDFScene::m_shaderFunctions{
+    R"(
+        
+    )"
+};
+
+const std::string SDFScene::m_shaderMainBegin{
+    R"(
+        void main() {
+            uint coordX = gl_GlobalInvocationID.x;
+            uint coordY = gl_GlobalInvocationID.y;
+    
+            // 2. Strict bounds check (Never remove this!)
+            if (coordX >= uint(push.width) || coordY >= uint(push.height)) return;
+    
+            uint index = (coordY * uint(push.width)) + coordX;
+
+            float t = fract(push.time);
+            float f = clamp(push.camRZ, 0.0, 1.0);
+    )"
+};
+
+const std::string SDFScene::m_shaderMainEnd{
+    R"(
+            pixels[index].r = f; // Red fades across left-to-right
+            pixels[index].g = float(coordY) / push.height;  // Green fades down top-to-bottom
+            pixels[index].b = push.sceneDepth;
+            pixels[index].l = 1.0f;
+        }
+    )"
+};
+
 SDFScene::SDFScene(LoadOption loadOption)
 {
     switch (loadOption)
@@ -86,50 +144,9 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 
 std::string SDFScene::getSceneShader() const
 {
-    return std::string{ R"(
-        #version 450
-        layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
-
-        struct PixelOutput { 
-            float r, g, b; 
-            float depth; 
-        };
-        
-        layout(std430, binding = 0) buffer OutputBuffer { 
-            PixelOutput pixels[]; 
-        };
-
-        layout(push_constant) uniform PushConstants {
-            float time;
-            float customFloat;
-            float width;
-            float height;
-            float camPX; float camPY; float camPZ; float pad2;
-            float camFX; float camFY; float camFZ; float pad3;
-            float camUX; float camUY; float camUZ; float pad4;
-            float camRX; float camRY; float camRZ; float pad5;
-        } push;
-
-        void main() {
-            // 1. Fetch the exact pixel coordinate this thread is running on
-            uint coordX = gl_GlobalInvocationID.x;
-            uint coordY = gl_GlobalInvocationID.y;
-    
-            // 2. Strict bounds check (Never remove this!)
-            if (coordX >= uint(push.width) || coordY >= uint(push.height)) return;
-    
-            // 3. Flatten index map
-            uint idx = (coordY * uint(push.width)) + coordX;
-
-            float f = clamp(push.camFZ, 0.0, 1.0);
-
-            // 4. Force a clean 0.0 to 1.0 floating point gradient across the grid
-            pixels[idx].r = f; // Red fades across left-to-right
-            pixels[idx].g = float(coordY) / push.height;  // Green fades down top-to-bottom
-            pixels[idx].b = push.customFloat;
-            pixels[idx].depth = 42.0f; 
-        }
-    )" };
+    std::stringstream shaderCallStream{};
+    m_baseObject->getShaderCalls(shaderCallStream);
+    return m_shaderLayout + m_shaderFunctions + m_shaderMainBegin + shaderCallStream.str() + m_shaderMainEnd;
 }
 
 void SDFScene::test()

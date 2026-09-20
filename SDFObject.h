@@ -41,6 +41,7 @@ public:
 	SDFOperation* pushOperation(Args&&... args);
 	void setColor(Color color);
 	virtual void serialize(std::vector<std::string> &strVec, size_t level) const;
+	void getShaderCalls(std::stringstream& ss);
 };
 
 template <typename T, typename... Args>

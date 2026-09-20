@@ -63,6 +63,11 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     strVec.push_back(std::string(level, '\t') + "stepBack");
 }
 
+void SDFObject::getShaderCalls(std::stringstream& ss)
+{
+    // glsl-ify functions here.
+}
+
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
     p -= m_position;

@@ -93,14 +93,17 @@ void GameEngine::march()
 
 void GameEngine::marchHardware()
 {
-    ShaderInputs inputs{};
-    inputs.width = static_cast<float>(m_dimensions.first);
-    inputs.height = static_cast<float>(m_dimensions.second);
-
     Vec3 camPos = m_camera.getPosition();
     Vec3 camForward = m_camera.getForward();
     Vec3 camRight = m_camera.getRight();
     Vec3 camUp = m_camera.getUp();
+
+    ShaderInputs inputs{};
+
+    inputs.width = static_cast<float>(m_dimensions.first);
+    inputs.height = static_cast<float>(m_dimensions.second);
+    inputs.time = static_cast<float>(GameTimer::gameTime());
+    inputs.sceneDepth = static_cast<float>(m_sceneDepth);
 
     inputs.camPos[0] = static_cast<float>(camPos.x);
     inputs.camPos[1] = static_cast<float>(camPos.y);

@@ -10,6 +10,11 @@ class SDFBuilder;
 
 class SDFScene
 {
+private:
+	static const std::string m_shaderLayout;
+	static const std::string m_shaderFunctions;
+	static const std::string m_shaderMainBegin;
+	static const std::string m_shaderMainEnd;
 public:
 	enum LoadOption {
 		Test,
