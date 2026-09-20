@@ -84,6 +84,50 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     return false;
 }
 
+std::string SDFScene::getSceneShader() const
+{
+    return std::string{ R"(
+        #version 450
+        layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+        struct PixelOutput { 
+            float r, g, b; 
+            float depth; 
+        };
+        
+        layout(std430, binding = 0) buffer OutputBuffer { 
+            PixelOutput pixels[]; 
+        };
+
+        layout(push_constant) uniform PushConstants {
+            float time;
+            float customFloat;
+            float width;
+            float height;
+            float camPosX; float camPosY; float camPosZ; float pad2;
+            float camLookX; float camLookY; float camLookZ; float pad3;
+        } push;
+
+        void main() {
+            // 1. Fetch the exact pixel coordinate this thread is running on
+            uint coordX = gl_GlobalInvocationID.x;
+            uint coordY = gl_GlobalInvocationID.y;
+    
+            // 2. Strict bounds check (Never remove this!)
+            if (coordX >= uint(push.width) || coordY >= uint(push.height)) return;
+    
+            // 3. Flatten index map
+            uint idx = (coordY * uint(push.width)) + coordX;
+
+            // 4. Force a clean 0.0 to 1.0 floating point gradient across the grid
+            pixels[idx].r = float(coordX) / push.width; // Red fades across left-to-right
+            pixels[idx].g = float(coordY) / push.height;  // Green fades down top-to-bottom
+            pixels[idx].b = push.customFloat;
+            pixels[idx].depth = 42.0f; 
+        }
+    )" };
+}
+
 void SDFScene::test()
 {
     add(SDFBuilder{}

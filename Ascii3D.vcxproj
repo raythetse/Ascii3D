@@ -191,7 +191,6 @@
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="VulkanRaymarcher.h" />
-    <ClInclude Include="VulkanFunctions.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />

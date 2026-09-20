@@ -20,8 +20,12 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double st
     m_marchPM = m_perfMonitor.add("March");
     m_renderPM = m_perfMonitor.add("Render");
     InputManager::registerResizeCallback([this](size_t width, size_t height) {
-        m_pixelField.setSize(width, height);
-        m_camera.setViewportSize({ static_cast<double>(width), static_cast<double>(height) });
+        m_dimensions.first = width;
+        m_dimensions.second = height + (m_marchMode == Hardware ? 1 : 0);
+        m_pixelField.setSize(m_dimensions.first, m_dimensions.second);
+        m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
+
+        if (m_marchMode == Hardware) m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     });
     GameTimer::reset();
 }
@@ -30,6 +34,13 @@ void GameEngine::run()
 {
     m_scene = SDFScene(SDFScene::LoadOption::Torus);
     //m_scene = SDFScene("MyFile.txt");
+
+    m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
+    if (m_marchMode == Hardware) {
+        std::string shaderCode = m_scene.getSceneShader();
+        m_vrm.setShaderSource(shaderCode);
+        m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+    }
 
     while (true) {
         GameTimer::tick();
@@ -61,21 +72,54 @@ void GameEngine::update()
 {
     m_perfMonitor.sample(m_updatePM, [this]() {
         m_camera.update();
-        m_scene.update();
+        if (m_marchMode == Software) m_scene.update();
     });
 }
 
 void GameEngine::march()
 {
     m_perfMonitor.sample(m_marchPM, [this]() {
-        m_rayMarcher.march(m_scene, m_pixelField, m_camera);
+        switch (m_marchMode)
+        {
+        case GameEngine::Software:
+            m_rayMarcher.march(m_scene, m_pixelField, m_camera);
+            break;
+        case GameEngine::Hardware: {
+            ShaderInputs inputs{};
+            inputs.width = static_cast<float>(m_dimensions.first);
+            inputs.height = static_cast<float>(m_dimensions.second);
+            m_hardwareRenderResult = m_vrm.renderFrame(inputs);
+        }
+            break;
+        }
     });
 }
 
 void GameEngine::render()
 {
     m_perfMonitor.sample(m_renderPM, [this]() {
-        m_renderer.render(m_pixelField);
-        m_pixelField.swap();
+        switch (m_marchMode)
+        {
+        case GameEngine::Software:
+            m_renderer.render(m_pixelField);
+            m_pixelField.swap();
+            break;
+        case GameEngine::Hardware: {
+            const std::string charGradient{ "-~+*vri25E8B@" };
+            std::string buffer = "\033[1;1H\033[37m";
+            for (size_t i{}; i < m_dimensions.second; ++i) {
+                std::cout << '\n';
+                for (size_t j{}; j < m_dimensions.first; ++j) {
+                    size_t pixelIndex = static_cast<size_t>(i * m_dimensions.first + j);
+                    int index = static_cast<int>(m_hardwareRenderResult[i * m_dimensions.first + j].r * m_hardwareRenderResult[i * m_dimensions.first + j].g * (charGradient.size() - 1));
+                    buffer += charGradient[index];
+                }
+            }
+            std::cout.write(buffer.data(), buffer.size());
+        }
+            break;
+        default:
+            break;
+        }
     });
 }

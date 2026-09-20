@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <ranges>
+#include <string>
 #include <vector>
 #include "SDFObject.h"
 #include "LightSource.h"
@@ -43,5 +44,6 @@ public:
 	SDFObject* object() { return m_baseObject.get(); }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
 	bool serialize(std::vector<std::string>& strVec) const;
+	std::string getSceneShader() const;
 };
 

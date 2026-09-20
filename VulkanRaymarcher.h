@@ -14,7 +14,7 @@ struct PixelOutput {
 };
 
 // Packed hardware registers for per-frame data (Must be a multiple of 16 bytes total)
-struct RaymarchPushConstants {
+struct ShaderInputs {
     float time;
     float customFloat;
     float width; // explicit 16-byte structural alignment boundary block
@@ -36,9 +36,10 @@ public:
     VulkanRaymarcher(const VulkanRaymarcher&) = delete;
     VulkanRaymarcher& operator=(const VulkanRaymarcher&) = delete;
 
-    bool init();
-    void resizeCanvas(uint32_t width, uint32_t height);
-    PixelOutput* renderFrame(const RaymarchPushConstants& pushData);
+    bool selectDevice();
+    void setShaderSource(std::string& shaderCode);
+    void setCanvasSize(uint32_t width, uint32_t height);
+    PixelOutput* renderFrame(const ShaderInputs& pushData);
 
 private:
     // Core persistent objects (Never touched on resize)
@@ -55,6 +56,7 @@ private:
     VkPipeline m_ComputePipeline = VK_NULL_HANDLE;
     VkCommandPool m_CommandPool = VK_NULL_HANDLE;
     VkCommandBuffer m_CommandBuffer = VK_NULL_HANDLE;
+    std::string m_shaderSourceCode{};
 
     // Dynamic resolution-dependent objects
     uint32_t m_Width = 0;
@@ -70,5 +72,4 @@ private:
     void cleanupResolutionResources();
     void cleanup();
     std::vector<uint32_t> compileDynamicGlslToSpirV(const std::string& sourceCode);
-    std::string generateDynamicShaderSource();
 };

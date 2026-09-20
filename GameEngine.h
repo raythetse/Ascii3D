@@ -7,11 +7,16 @@
 #include "SDFObject.h"
 #include "Stopwatch.h"
 #include "SDFScene.h"
+#include "VulkanRaymarcher.h"
 
 class GameEngine
 {
+	enum MarchingMode {
+		Software,
+		Hardware,
+	};
 private:
-	std::pair<size_t, size_t> m_dimensions;
+	std::pair<size_t, size_t> m_dimensions{ 120, 40 };
 	double m_sceneDepth;
 	PixelField m_pixelField;
 	RayMarcher m_rayMarcher;
@@ -24,8 +29,13 @@ private:
 	size_t m_updatePM{};
 	size_t m_marchPM{};
 	size_t m_renderPM{};
+	VulkanRaymarcher m_vrm{};
+	MarchingMode m_marchMode{ Software };
+	PixelOutput* m_hardwareRenderResult = nullptr;
 
 	void resizeCallback(size_t width, size_t height);
+	void marchSoftware();
+	void marchHardware();
 
 public:
 	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);

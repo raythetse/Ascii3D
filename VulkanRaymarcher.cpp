@@ -24,9 +24,7 @@ VulkanRaymarcher::VulkanRaymarcher()
     }
 }
 
-bool VulkanRaymarcher::init() {
-    
-
+bool VulkanRaymarcher::selectDevice() {
     // 2. Select GPU supporting Vulkan 1.3
     uint32_t deviceCount = 0;  
     vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
@@ -137,7 +135,7 @@ bool VulkanRaymarcher::init() {
     VkPushConstantRange pushRange{};
     pushRange.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
     pushRange.offset = 0;
-    pushRange.size = sizeof(RaymarchPushConstants);
+    pushRange.size = sizeof(ShaderInputs);
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -146,10 +144,13 @@ bool VulkanRaymarcher::init() {
     pipelineLayoutInfo.pushConstantRangeCount = 1;
     pipelineLayoutInfo.pPushConstantRanges = &pushRange;
     vkCreatePipelineLayout(m_LogicalDevice, &pipelineLayoutInfo, nullptr, &m_PipelineLayout);
+    
+    return true;
+}
 
-    // 8. Compile Runtime Shader Module
-    std::string glslSource = generateDynamicShaderSource();
-    std::vector<uint32_t> spirvBytes = compileDynamicGlslToSpirV(glslSource);
+void VulkanRaymarcher::setShaderSource(std::string& shaderCode)
+{
+    std::vector<uint32_t> spirvBytes = compileDynamicGlslToSpirV(shaderCode);
 
     VkShaderModuleCreateInfo shaderModuleInfo{};
     shaderModuleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -180,11 +181,9 @@ bool VulkanRaymarcher::init() {
     cmdAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     cmdAllocInfo.commandBufferCount = 1;
     vkAllocateCommandBuffers(m_LogicalDevice, &cmdAllocInfo, &m_CommandBuffer);
-
-    return true;
 }
 
-void VulkanRaymarcher::resizeCanvas(uint32_t width, uint32_t height) {
+void VulkanRaymarcher::setCanvasSize(uint32_t width, uint32_t height) {
     if (width == m_Width && height == m_Height) return;
 
     cleanupResolutionResources();
@@ -206,8 +205,7 @@ void VulkanRaymarcher::resizeCanvas(uint32_t width, uint32_t height) {
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memReqs.size;
-    allocInfo.memoryTypeIndex = findMemoryType(memReqs.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    allocInfo.memoryTypeIndex = findMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
     vkAllocateMemory(m_LogicalDevice, &allocInfo, nullptr, &m_BufferMemory);
     vkBindBufferMemory(m_LogicalDevice, m_InfoBuffer, m_BufferMemory, 0);
@@ -238,18 +236,17 @@ void VulkanRaymarcher::resizeCanvas(uint32_t width, uint32_t height) {
     vkMapMemory(m_LogicalDevice, m_BufferMemory, 0, m_BufferSize, 0, (void**)&m_MappedData);
 }
 
-PixelOutput* VulkanRaymarcher::renderFrame(const RaymarchPushConstants& pushData) {
-    // ADD THIS AUDIT PRINT:
-    //std::cout << "[Vulkan Render Frame Audit] Active Canvas Size: "
-    //    << m_Width << "x" << m_Height
-    //    << " | Buffer Size: " << m_BufferSize << " bytes\n";
+PixelOutput* VulkanRaymarcher::renderFrame(const ShaderInputs& shaderInputs) {
 
     uint32_t groupCountX = (m_Width + 7) / 8;
     uint32_t groupCountY = (m_Height + 7) / 8;
 
-    // ADDITIONAL AUDIT CODE
-    //std::cout << "[Vulkan Dispatch Audit] Launching Work Groups: X="
-    //    << groupCountX << ", Y=" << groupCountY << "\n";
+    // ADD THIS AUDIT PRINT:
+    std::cout << "[Vulkan Render Frame Audit] Active Canvas Size: "
+        << m_Width << "x" << m_Height
+        << " | Buffer Size: " << m_BufferSize << " bytes\n";
+    std::cout << "[Vulkan Dispatch Audit] Launching Work Groups: X="
+        << groupCountX << ", Y=" << groupCountY << "\n";
 
     // ... rest of your command recording, vkCmdDispatch, etc ...
     vkResetCommandBuffer(m_CommandBuffer, 0);
@@ -260,10 +257,8 @@ PixelOutput* VulkanRaymarcher::renderFrame(const RaymarchPushConstants& pushData
     vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_ComputePipeline);
     vkCmdBindDescriptorSets(m_CommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_PipelineLayout, 0, 1, &m_DescriptorSet, 0, nullptr);
 
-    vkCmdPushConstants(m_CommandBuffer, m_PipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(RaymarchPushConstants), &pushData);
+    vkCmdPushConstants(m_CommandBuffer, m_PipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(ShaderInputs), &shaderInputs);
 
-    //uint32_t groupCountX = (m_Width + 7) / 8;
-    //uint32_t groupCountY = (m_Height + 7) / 8;
     vkCmdDispatch(m_CommandBuffer, groupCountX, groupCountY, 1);
 
     VkMemoryBarrier barrier{ VK_STRUCTURE_TYPE_MEMORY_BARRIER };
@@ -308,49 +303,6 @@ std::vector<uint32_t> VulkanRaymarcher::compileDynamicGlslToSpirV(const std::str
     shaderc_compile_options_release(options);
     shaderc_compiler_release(compiler);
     return spirv;
-}
-
-std::string VulkanRaymarcher::generateDynamicShaderSource() {
-    return R"(
-        #version 450
-        layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
-
-        struct PixelOutput { 
-            float r, g, b; 
-            float depth; 
-        };
-        
-        layout(std430, binding = 0) buffer OutputBuffer { 
-            PixelOutput pixels[]; 
-        };
-
-        layout(push_constant) uniform PushConstants {
-            float time;
-            float customFloat;
-            float width;
-            float height;
-            float camPosX; float camPosY; float camPosZ; float pad2;
-            float camLookX; float camLookY; float camLookZ; float pad3;
-        } push;
-
-        void main() {
-            // 1. Fetch the exact pixel coordinate this thread is running on
-            uint coordX = gl_GlobalInvocationID.x;
-            uint coordY = gl_GlobalInvocationID.y;
-    
-            // 2. Strict bounds check (Never remove this!)
-            if (coordX >= uint(push.width) || coordY >= uint(push.height)) return;
-    
-            // 3. Flatten index map
-            uint idx = (coordY * uint(push.width)) + coordX;
-
-            // 4. Force a clean 0.0 to 1.0 floating point gradient across the grid
-            pixels[idx].r = float(coordX) / push.width; // Red fades across left-to-right
-            pixels[idx].g = float(coordY) / push.height;  // Green fades down top-to-bottom
-            pixels[idx].b = push.customFloat;
-            pixels[idx].depth = 42.0f; 
-        }
-    )";
 }
 
 void VulkanRaymarcher::cleanupResolutionResources() {
