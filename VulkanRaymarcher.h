@@ -36,7 +36,7 @@ struct ShaderInputs {
 class VulkanRaymarcher {
 public:
     VulkanRaymarcher();
-    ~VulkanRaymarcher() { cleanup(); }
+    ~VulkanRaymarcher();
 
     // Prevents accidental copying of hardware resources
     VulkanRaymarcher(const VulkanRaymarcher&) = delete;
@@ -45,7 +45,7 @@ public:
     bool selectDevice();
     void setShaderSource(std::string& shaderCode);
     void setCanvasSize(uint32_t width, uint32_t height);
-    PixelOutput* renderFrame(const ShaderInputs& pushData);
+    const PixelOutput* renderFrame(const ShaderInputs& pushData);
 
 private:
     // Core persistent objects (Never touched on resize)
@@ -54,6 +54,7 @@ private:
     VkDevice m_LogicalDevice = VK_NULL_HANDLE;
     VkQueue m_ComputeQueue = VK_NULL_HANDLE;
     uint32_t m_QueueFamilyIndex = UINT32_MAX;
+    VkFence m_RenderFence = VK_NULL_HANDLE;
 
     VkDescriptorSetLayout m_DescriptorSetLayout = VK_NULL_HANDLE;
     VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
@@ -70,8 +71,12 @@ private:
     VkDeviceSize m_BufferSize = 0;
     VkBuffer m_InfoBuffer = VK_NULL_HANDLE;
     VkDeviceMemory m_BufferMemory = VK_NULL_HANDLE;
+    VkBuffer m_HostStagingBuffer = VK_NULL_HANDLE; // Cached System RAM for CPU reading
+    VkDeviceMemory m_HostStagingMemory = VK_NULL_HANDLE;
     VkDescriptorSet m_DescriptorSet = VK_NULL_HANDLE;
-    PixelOutput* m_MappedData = nullptr; // Kept persistently mapped!
+    VkBuffer m_DeviceLocalBuffer = VK_NULL_HANDLE; // Pure VRAM for Compute Shader writes
+    VkDeviceMemory m_DeviceLocalMemory = VK_NULL_HANDLE;
+    PixelOutput* m_MappedStagingData = nullptr;
 
     // Helper functions
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);

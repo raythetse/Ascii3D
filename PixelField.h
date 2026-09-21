@@ -3,6 +3,7 @@
 #include <vector>
 #include "SDFObject.h"
 #include "PixelSample.h"
+#include "VulkanRaymarcher.h"
 
 class PixelField
 {
@@ -28,8 +29,9 @@ public:
 	bool changedChar(std::size_t row, size_t col) const;
 	bool changedColor(std::size_t row, size_t col) const;
 	bool changed(std::size_t row, size_t col) const;
-	const std::ranges::iota_view<size_t, size_t> range();
+	const std::ranges::iota_view<size_t, size_t>& range();
 	void swap();
-	void setSize(size_t width, size_t height);
+	void setSize(const size_t width, const size_t height);
+	void fromHardware(const PixelOutput* pixelBuffer);
 };
 

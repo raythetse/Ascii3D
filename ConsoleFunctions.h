@@ -20,6 +20,11 @@ namespace ConsoleFunctions
         SetFocus(hwnd);
     }
 
+    inline void setBackgroundBlack() {
+        HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute(hStdout, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+    }
+
     inline void desyncSTDIO()
     {
         std::ios_base::sync_with_stdio(false);

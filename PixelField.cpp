@@ -1,4 +1,6 @@
 #include "PixelField.h"
+#include <execution>
+#include <ranges>
 #include "ConsoleFunctions.h"
 
 void PixelField::rebuildBuffers()
@@ -32,7 +34,7 @@ bool PixelField::changed(std::size_t row, size_t col) const
     return changedColor(row, col) || changedChar(row, col);
 }
 
-const std::ranges::iota_view<size_t, size_t> PixelField::range()
+const std::ranges::iota_view<size_t, size_t>& PixelField::range()
 {
     return m_pixelRange;
 }
@@ -42,11 +44,29 @@ void PixelField::swap()
     m_swap = !m_swap;
 }
 
-void PixelField::setSize(size_t width, size_t height)
+void PixelField::setSize(const size_t width, const size_t height)
 {
     if (m_width != width || m_height != height) {
         m_width = width;
         m_height = height;
         rebuildBuffers();
     }
+}
+
+void PixelField::fromHardware(const PixelOutput* pixelBuffer)
+{
+    auto& field = m_swap ? m_fieldB : m_fieldA;
+
+    std::for_each(std::execution::par, m_pixelRange.begin(), m_pixelRange.end(), [this, &field, pixelBuffer](size_t index) {
+        size_t row = index / m_width;
+        size_t col = index % m_width;
+
+        field[index].renderColor.x = pixelBuffer[index].r;
+        field[index].renderColor.y = pixelBuffer[index].g;
+        field[index].renderColor.z = pixelBuffer[index].b;
+        field[index].camDistance = pixelBuffer[index].l;
+
+        field[index].updateRenderChar(field[index].camDistance, field[index].camDistance);
+        field[index].updateColorCode();
+    });
 }

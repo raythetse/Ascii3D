@@ -1,6 +1,6 @@
  
         #version 450
-        layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+        layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 
         struct PixelOutput {
             float r, g, b, l;
@@ -52,14 +52,17 @@
             vec3 rayDir = normalize(screenPoint - camPos);
 
             float rayLength = 0.0;
-            float d0 = push.maxDistance;
 
             uint outIndex = (coordY * uint(push.width)) + coordX;
             pixels[outIndex].l = 1.0;
 
 	        while (rayLength < push.maxDistance) {
+                float d0 = push.maxDistance;
                 vec3 p0 = camPos + rayDir * rayLength;
-    p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
+
+ //// START DYNAMICALLY GENERATED CODE ////
+
+p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
 vec3 p1 = p0;
 float d1 = d0;
 p1 -= vec3(0.0000000, 0.0000000, 1.0000000);
@@ -73,11 +76,15 @@ d2 = sphere(p2, 0.5);
 if (d2 < d1) d1 = d2;
 if (d1 < d0) d0 = d1;
 
+//// END DYNAMICALLY GENERATED CODE ////
+
                 if (d0 < push.surfTolerance) {
-                    //pixels[outIndex].r = clamp(length(screenPoint), 0.0, 1.0); // Red fades across left-to-right
-                    //pixels[outIndex].g = float(coordY) / push.height;  // Green fades down top-to-bottom
-                    //pixels[outIndex].b = push.maxDistance;
-                    pixels[outIndex].l = rayLength / push.maxDistance;
+                    float dRatio = rayLength / push.maxDistance;
+                    pixels[outIndex].l = dRatio;
+                    float cVal = dRatio * (dRatio >= 0.99 ? 0.0 : 255.0);
+                    pixels[outIndex].r = 0.0;
+                    pixels[outIndex].g = 255.0;
+                    pixels[outIndex].b = 0.0;
                     return;
                 }
 		        rayLength += d0;

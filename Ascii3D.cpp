@@ -12,6 +12,7 @@ int main()
     ConsoleFunctions::setupDedicatedViewport();
     ConsoleFunctions::desyncSTDIO();
     ConsoleFunctions::setPrecision(3);
+    ConsoleFunctions::setBackgroundBlack();
     ConsoleFunctions::goFullscreen();
     GameEngine{ 120, 40, 100.0, 0.001 }.run();
     ConsoleFunctions::restoreTerminal();

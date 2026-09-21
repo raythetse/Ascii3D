@@ -6,7 +6,7 @@
 const std::string SDFScene::m_shaderLayout{ 
     R"( 
         #version 450
-        layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+        layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 
         struct PixelOutput {
             float r, g, b, l;
@@ -42,7 +42,7 @@ const std::string SDFScene::m_shaderFunctions{
 };
 
 const std::string SDFScene::m_shaderMainBegin{
-    R"(
+R"(
         void main() {
             uint coordX = gl_GlobalInvocationID.x;
             uint coordY = gl_GlobalInvocationID.y;
@@ -66,23 +66,30 @@ const std::string SDFScene::m_shaderMainBegin{
             vec3 rayDir = normalize(screenPoint - camPos);
 
             float rayLength = 0.0;
-            float d0 = push.maxDistance;
 
             uint outIndex = (coordY * uint(push.width)) + coordX;
             pixels[outIndex].l = 1.0;
 
 	        while (rayLength < push.maxDistance) {
+                float d0 = push.maxDistance;
                 vec3 p0 = camPos + rayDir * rayLength;
-    )"
+
+ //// START DYNAMICALLY GENERATED CODE ////
+
+)"
 };
 
-const std::string SDFScene::m_shaderMainEnd{
+const std::string SDFScene::m_shaderMainEnd {
     R"(
+//// END DYNAMICALLY GENERATED CODE ////
+
                 if (d0 < push.surfTolerance) {
-                    //pixels[outIndex].r = clamp(length(screenPoint), 0.0, 1.0); // Red fades across left-to-right
-                    //pixels[outIndex].g = float(coordY) / push.height;  // Green fades down top-to-bottom
-                    //pixels[outIndex].b = push.maxDistance;
-                    pixels[outIndex].l = rayLength / push.maxDistance;
+                    float dRatio = rayLength / push.maxDistance;
+                    pixels[outIndex].l = dRatio;
+                    float cVal = dRatio * (dRatio >= 0.99 ? 0.0 : 255.0);
+                    pixels[outIndex].r = 0.0;
+                    pixels[outIndex].g = 255.0;
+                    pixels[outIndex].b = 0.0;
                     return;
                 }
 		        rayLength += d0;

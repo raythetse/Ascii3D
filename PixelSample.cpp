@@ -37,12 +37,22 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 	//color = color.quantize(64);
 	//totalLight = 1.0 - (camDistance / maxDistance);
 
-	size_t index = static_cast<size_t>(totalLight * (charGradient.length() - 1));
-	renderChar = camDistance >= maxDistance ? ' ' : charGradient[index];
+	updateRenderChar(totalLight, camDistance / maxDistance);
 	renderColor = camDistance >= maxDistance ? 0 : lightColor * 255;
 
+	updateColorCode();
+}
+
+void PixelSample::updateColorCode()
+{
 	colorCode = std::format("\033[38;2;{};{};{}m",
 		static_cast<int>(renderColor.x),
 		static_cast<int>(renderColor.y),
 		static_cast<int>(renderColor.z));
+}
+
+void PixelSample::updateRenderChar(double lightVal, double distanceRatio)
+{
+	size_t index = static_cast<size_t>(lightVal * (charGradient.length() - 1));
+	renderChar = distanceRatio >= 1.0 ? ' ' : charGradient[index];
 }
