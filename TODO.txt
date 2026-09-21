@@ -1,4 +1,5 @@
 Required:
+- make getShaderOpCalls required
 - GLSL or HLSL hardward marching
 - bounding boxes for efficiency
 - light movement

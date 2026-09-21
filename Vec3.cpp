@@ -1,5 +1,6 @@
 #include <cmath>
 #include <algorithm>
+#include <format>
 #include "MathFunctions.h"
 #include "Vec3.h"
 
@@ -281,6 +282,11 @@ bool Vec3::operator==(const double d) const {
 Vec3::operator bool() const
 {
     return *this != Vec3::Zero;
+}
+
+std::string Vec3::getShaderVec3() const
+{
+    return std::format("vec3({:.7f}, {:.7f}, {:.7f})", static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 }
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p)

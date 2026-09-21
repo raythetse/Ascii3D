@@ -1,5 +1,6 @@
 #pragma once
 #include <ostream>
+#include <string>
 
 class Vec3
 {
@@ -94,6 +95,8 @@ public:
 	bool operator==(const Vec3& p) const;
 	bool operator==(double d) const;
 	explicit operator bool() const;
+
+	std::string getShaderVec3() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p);

@@ -29,6 +29,7 @@ protected:
 	virtual double signedDistanceInner(Vec3 p) const;
 	virtual void serializeInner(std::stringstream& ss) const {};
 	virtual std::string getClassName() const { return "SDFObject"; }
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const {};
 public:
 	SDFObject(Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations);
 	~SDFObject();
@@ -41,7 +42,7 @@ public:
 	SDFOperation* pushOperation(Args&&... args);
 	void setColor(Color color);
 	virtual void serialize(std::vector<std::string> &strVec, size_t level) const;
-	void getShaderCalls(std::stringstream& ss);
+	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel);
 };
 
 template <typename T, typename... Args>
@@ -123,6 +124,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFSphere"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFSphere(double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius) {}

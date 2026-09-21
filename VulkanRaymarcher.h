@@ -9,8 +9,7 @@
 
 // Structured pixel output mapped from VRAM
 struct PixelOutput {
-    float r, g, b;
-    float depth;
+    float r, g, b, l;
 };
 
 // Packed hardware registers for per-frame data (Must be a multiple of 16 bytes total)
@@ -27,6 +26,11 @@ struct ShaderInputs {
 
     float camRight[3];
     float sceneDepth;
+
+    float surfTolerance;
+    float pad0;
+    float pad1;
+    float pad2;
 };
 
 class VulkanRaymarcher {

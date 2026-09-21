@@ -22,7 +22,7 @@ void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, Color* color, const SDFObject* 
             sample.objectIndex = objectIndex;
             return;
         }
-		rayDist += m_stepFactor * surfDist;
+		rayDist += surfDist;
         ++samples;
 	}
     sample.camDistance = shadowMax ? *shadowMax : m_maxDistance;

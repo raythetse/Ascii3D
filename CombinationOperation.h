@@ -14,6 +14,7 @@ protected:
 	void innerUpdate() override {}
 	virtual std::string getClassName() const = 0;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const {};
 public:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj,
 		double smoothing = DEF::COMBSmooth,
@@ -24,6 +25,7 @@ public:
 	void update() override;
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	void serialize(std::vector<std::string>& strVec, size_t level) const override;
+	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };
 
@@ -32,6 +34,7 @@ class COMBAdd : public CombinationOperation
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBAdd"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	COMBAdd(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
 };

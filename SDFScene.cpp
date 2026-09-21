@@ -24,14 +24,20 @@ const std::string SDFScene::m_shaderLayout{
             float camUX; float camUY; float camUZ;
             float height;
             float camRX; float camRY; float camRZ;
-            float sceneDepth;
+            float maxDistance;
+            float surfTolerance;
+            float pad0;
+            float pad1;
+            float pad2;
         } push;
     )"
 };
 
 const std::string SDFScene::m_shaderFunctions{
     R"(
-        
+        float sphere(vec3 p, float radius) {
+            return length(p) - radius;
+        }
     )"
 };
 
@@ -43,23 +49,55 @@ const std::string SDFScene::m_shaderMainBegin{
     
             // 2. Strict bounds check (Never remove this!)
             if (coordX >= uint(push.width) || coordY >= uint(push.height)) return;
-    
-            uint index = (coordY * uint(push.width)) + coordX;
 
-            float t = fract(push.time);
-            float f = clamp(push.camRZ, 0.0, 1.0);
+            vec2 viewportCoords = vec2(float(coordX) / push.width, float(coordY) / push.height);
+
+            vec3 camPos = vec3(push.camPX, push.camPY, push.camPZ);
+            vec3 camForward = vec3(push.camFX, push.camFY, push.camFZ);
+            vec3 camRight = vec3(push.camRX, push.camRY, push.camRZ);
+            vec3 camUp = vec3(push.camUX, push.camUY, push.camUZ);
+
+            vec3 screenPoint = camPos + camForward;
+            screenPoint -= camRight;
+            screenPoint += camRight * 2.0 * viewportCoords.x;
+            screenPoint += camUp * 0.5;
+            screenPoint -= camUp * viewportCoords.y;
+
+            vec3 rayDir = normalize(screenPoint - camPos);
+
+            float rayLength = 0.0;
+            float d0 = push.maxDistance;
+
+            uint outIndex = (coordY * uint(push.width)) + coordX;
+            pixels[outIndex].l = 1.0;
+
+	        while (rayLength < push.maxDistance) {
+                vec3 p0 = camPos + rayDir * rayLength;
     )"
 };
 
 const std::string SDFScene::m_shaderMainEnd{
     R"(
-            pixels[index].r = f; // Red fades across left-to-right
-            pixels[index].g = float(coordY) / push.height;  // Green fades down top-to-bottom
-            pixels[index].b = push.sceneDepth;
-            pixels[index].l = 1.0f;
+                if (d0 < push.surfTolerance) {
+                    //pixels[outIndex].r = clamp(length(screenPoint), 0.0, 1.0); // Red fades across left-to-right
+                    //pixels[outIndex].g = float(coordY) / push.height;  // Green fades down top-to-bottom
+                    //pixels[outIndex].b = push.maxDistance;
+                    pixels[outIndex].l = rayLength / push.maxDistance;
+                    return;
+                }
+		        rayLength += d0;
+	        }
         }
     )"
 };
+
+std::string SDFScene::getSceneShader() const
+{
+    std::stringstream shaderCallStream{};
+    size_t maxLevel{ 0 };
+    m_baseObject->getShaderCalls(shaderCallStream, 0, maxLevel);
+    return m_shaderLayout + m_shaderFunctions + m_shaderMainBegin + shaderCallStream.str() + m_shaderMainEnd;
+}
 
 SDFScene::SDFScene(LoadOption loadOption)
 {
@@ -142,23 +180,11 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     return false;
 }
 
-std::string SDFScene::getSceneShader() const
-{
-    std::stringstream shaderCallStream{};
-    m_baseObject->getShaderCalls(shaderCallStream);
-    return m_shaderLayout + m_shaderFunctions + m_shaderMainBegin + shaderCallStream.str() + m_shaderMainEnd;
-}
-
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFObject>()()
-        .pushOp<COMBAdd, SDFPlaneXZ>(-1.0, Color::Blue)()
-        .stepBack()
-        .pushOp<COMBAdd, SDFBox>(Vec3{ 1.0,3.0,1.0 }, Color::Red, Vec3::Up)()
-        .pushOp<COMBAddSmooth, SDFBox>(Vec3{ 3.0,1.0,1.0 }, Color::Green, Vec3::Up)(2.0)
-        .bindPropMod<PMOscillateLinear>("smoothing", 2.0, 2.0, 0.5)
-        .addLightSource({ 6.0, 6.0 ,-2.0 }, 100.0, Color::White)
+        .pushOp<COMBAdd, SDFSphere>(0.5, Color::Blue, Vec3::Forward, Vec3::One, 0.5)()
+            .pushOp<COMBAdd, SDFSphere>(0.5, Color::Blue, Vec3::Down, Vec3::One, 0.5)()
     );
 }
 

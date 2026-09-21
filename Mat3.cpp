@@ -1,4 +1,5 @@
 #include "Mat3.h"
+#include <format>
 #include "MathFunctions.h"
 
 const Mat3 Mat3::Identity{ std::vector<double>{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0} };
@@ -38,6 +39,21 @@ bool Mat3::operator==(const Mat3& m) const {
         }
     }
     return true;
+}
+
+std::string Mat3::getShaderMat3()
+{
+    return std::format("mat3({:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f})"
+        , static_cast<float>(m_mat[0][0])
+        , static_cast<float>(m_mat[0][1])
+        , static_cast<float>(m_mat[0][2])
+        , static_cast<float>(m_mat[1][0])
+        , static_cast<float>(m_mat[1][1])
+        , static_cast<float>(m_mat[1][2])
+        , static_cast<float>(m_mat[2][0])
+        , static_cast<float>(m_mat[2][1])
+        , static_cast<float>(m_mat[2][2])
+    );
 }
 
 void Mat3::fromAxisAngle(Vec3 axis, Mat3& mat, const double rads)

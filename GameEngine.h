@@ -18,6 +18,7 @@ class GameEngine
 private:
 	std::pair<size_t, size_t> m_dimensions{ 120, 40 };
 	double m_sceneDepth;
+	double m_surTolerance;
 	PixelField m_pixelField;
 	RayMarcher m_rayMarcher;
 	Renderer m_renderer{};
@@ -37,7 +38,7 @@ private:
 	void marchHardware();
 
 public:
-	GameEngine(size_t width, size_t height, double maxSceneDepth, double stepFactor, double tolerance);
+	GameEngine(size_t width, size_t height, double maxSceneDepth, double tolerance);
 	void run();
 	bool handleInput();
 	void update();

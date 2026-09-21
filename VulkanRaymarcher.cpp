@@ -242,11 +242,11 @@ PixelOutput* VulkanRaymarcher::renderFrame(const ShaderInputs& shaderInputs) {
     uint32_t groupCountY = (m_Height + 7) / 8;
 
     // ADD THIS AUDIT PRINT:
-    std::cout << "[Vulkan Render Frame Audit] Active Canvas Size: "
-        << m_Width << "x" << m_Height
-        << " | Buffer Size: " << m_BufferSize << " bytes\n";
-    std::cout << "[Vulkan Dispatch Audit] Launching Work Groups: X="
-        << groupCountX << ", Y=" << groupCountY << "\n";
+    //std::cout << "[Vulkan Render Frame Audit] Active Canvas Size: "
+    //    << m_Width << "x" << m_Height
+    //    << " | Buffer Size: " << m_BufferSize << " bytes\n";
+    //std::cout << "[Vulkan Dispatch Audit] Launching Work Groups: X="
+    //    << groupCountX << ", Y=" << groupCountY << "\n";
 
     // ... rest of your command recording, vkCmdDispatch, etc ...
     vkResetCommandBuffer(m_CommandBuffer, 0);

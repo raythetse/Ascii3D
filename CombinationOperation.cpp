@@ -53,6 +53,12 @@ void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t le
 	m_combineObj->serialize(strVec, level);
 }
 
+void CombinationOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	m_combineObj->getShaderCalls(ss, level + 1, maxLevel);
+	getShaderOpCalls(ss, level, maxLevel);
+}
+
 void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
@@ -71,6 +77,11 @@ double COMBAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut
 		return distanceA;
 	}
 	return distanceB;
+}
+
+void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "if (d" << (level + 1) << " < d" << level << ") d" << level << " = d" << (level + 1) << ";\n";
 }
 
 double COMBSubtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

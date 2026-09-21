@@ -63,11 +63,6 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     strVec.push_back(std::string(level, '\t') + "stepBack");
 }
 
-void SDFObject::getShaderCalls(std::stringstream& ss)
-{
-    // glsl-ify functions here.
-}
-
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
     p -= m_position;
@@ -82,6 +77,23 @@ double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
         *colorOut = m_color;
     }
     return distance;
+}
+
+void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel)
+{
+    if (level > maxLevel) {
+        ss << "vec3 p" << level << " = p" << maxLevel << ";\n";
+        ss << "float d" << level << " = d" << maxLevel << ";\n";
+        maxLevel = level;
+    }
+
+    ss << "p" << level << " -= " << m_position.getShaderVec3() << ";\n";
+    if (m_hasRotation) ss << "p" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n";
+    getShaderObjectCalls(ss, level, maxLevel);
+
+    for (auto& op : m_operations) {
+        op->getShaderCalls(ss, level, maxLevel);
+    }
 }
 
 double SDFObject::signedDistanceInner(Vec3 p) const
@@ -150,6 +162,11 @@ double SDFBoxFrame::signedDistanceInner(Vec3 p) const
 void SDFSphere::serializeInner(std::stringstream& ss) const
 {
     ss << " m_radius " << m_radius;
+}
+
+void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "d" << level << " = sphere(p" << level << ", " << m_radius << "); \n";
 }
 
 double SDFSphere::signedDistanceInner(Vec3 p) const
