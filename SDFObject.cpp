@@ -82,13 +82,13 @@ double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel)
 {
     if (level > maxLevel) {
-        ss << "vec3 p" << level << " = p" << maxLevel << ";\n";
-        ss << "float d" << level << " = d" << maxLevel << ";\n";
+        ss << "\t\t\tvec3 p" << level << " = p" << maxLevel << ";\n";
+        ss << "\t\t\tfloat d" << level << " = d" << maxLevel << ";\n";
         maxLevel = level;
     }
 
-    ss << "p" << level << " -= " << m_position.getShaderVec3() << ";\n";
-    if (m_hasRotation) ss << "p" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n";
+    if (m_position) ss << "\t\t\tp" << level << " -= " << m_position.getShaderVec3() << ";\n";
+    if (m_hasRotation) ss << "\t\t\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n";
     getShaderObjectCalls(ss, level, maxLevel);
 
     for (auto& op : m_operations) {
@@ -166,7 +166,7 @@ void SDFSphere::serializeInner(std::stringstream& ss) const
 
 void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "d" << level << " = sphere(p" << level << ", " << m_radius << "); \n";
+    ss << "\t\t\td" << level << " = sphere(p" << level << ", " << m_radius << "); \n\n";
 }
 
 double SDFSphere::signedDistanceInner(Vec3 p) const

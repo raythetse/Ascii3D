@@ -61,9 +61,9 @@ void PixelField::fromHardware(const PixelOutput* pixelBuffer)
         size_t row = index / m_width;
         size_t col = index % m_width;
 
-        field[index].renderColor.x = pixelBuffer[index].r;
-        field[index].renderColor.y = pixelBuffer[index].g;
-        field[index].renderColor.z = pixelBuffer[index].b;
+        field[index].renderColor.x = pixelBuffer[index].r * 255.0;
+        field[index].renderColor.y = pixelBuffer[index].g * 255.0;
+        field[index].renderColor.z = pixelBuffer[index].b * 255.0;
         field[index].camDistance = pixelBuffer[index].l;
 
         field[index].updateRenderChar(field[index].camDistance, field[index].camDistance);

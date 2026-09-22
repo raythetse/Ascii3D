@@ -37,7 +37,7 @@ void GameEngine::run()
 
     m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
     if (m_marchMode == Hardware) {
-        std::string shaderCode = m_scene.getSceneShader();
+        std::string shaderCode = m_scene.buildSampleFunction();
         FileHandler::saveToFile(shaderCode, "ShaderSource.glsl");
         m_vrm.setShaderSource(shaderCode);
         m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));

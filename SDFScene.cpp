@@ -37,11 +37,10 @@ const std::string SDFScene::m_shaderFunctions{
     R"(
         float sphere(vec3 p, float radius) {
             return length(p) - radius;
-        }
-    )"
+        })"
 };
 
-const std::string SDFScene::m_shaderMainBegin{
+const std::string SDFScene::m_shaderMainMainFunction{
 R"(
         void main() {
             uint coordX = gl_GlobalInvocationID.x;
@@ -71,39 +70,33 @@ R"(
             pixels[outIndex].l = 1.0;
 
 	        while (rayLength < push.maxDistance) {
-                float d0 = push.maxDistance;
                 vec3 p0 = camPos + rayDir * rayLength;
+                float d0 = push.maxDistance;
+                vec3 color = vec3(0.0);
+                float lightVal;
 
- //// START DYNAMICALLY GENERATED CODE ////
-
-)"
-};
-
-const std::string SDFScene::m_shaderMainEnd {
-    R"(
-//// END DYNAMICALLY GENERATED CODE ////
+                sampleScene(p0, push.maxDistance, d0, color, lightVal);
 
                 if (d0 < push.surfTolerance) {
-                    float dRatio = rayLength / push.maxDistance;
-                    pixels[outIndex].l = dRatio;
-                    float cVal = dRatio * (dRatio >= 0.99 ? 0.0 : 255.0);
-                    pixels[outIndex].r = 0.0;
-                    pixels[outIndex].g = 255.0;
+                    pixels[outIndex].l = rayLength / push.maxDistance;
+                    pixels[outIndex].r = 1.0;
+                    pixels[outIndex].g = 0.0;
                     pixels[outIndex].b = 0.0;
-                    return;
+                    break;
                 }
 		        rayLength += d0;
 	        }
-        }
-    )"
+        })"
 };
 
-std::string SDFScene::getSceneShader() const
+std::string SDFScene::buildSampleFunction() const
 {
-    std::stringstream shaderCallStream{};
+    std::stringstream ss{};
+    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {\n\t\t\td0 = maxDist;\n";
     size_t maxLevel{ 0 };
-    m_baseObject->getShaderCalls(shaderCallStream, 0, maxLevel);
-    return m_shaderLayout + m_shaderFunctions + m_shaderMainBegin + shaderCallStream.str() + m_shaderMainEnd;
+    m_baseObject->getShaderCalls(ss, 0, maxLevel);
+    ss << "\t\t}\n";
+    return m_shaderLayout + m_shaderFunctions + ss.str() + m_shaderMainMainFunction;
 }
 
 SDFScene::SDFScene(LoadOption loadOption)

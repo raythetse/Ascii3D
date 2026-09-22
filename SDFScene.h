@@ -13,7 +13,7 @@ class SDFScene
 private:
 	static const std::string m_shaderLayout;
 	static const std::string m_shaderFunctions;
-	static const std::string m_shaderMainBegin;
+	static const std::string m_shaderMainMainFunction;
 	static const std::string m_shaderMainEnd;
 public:
 	enum LoadOption {
@@ -49,6 +49,6 @@ public:
 	SDFObject* object() { return m_baseObject.get(); }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
 	bool serialize(std::vector<std::string>& strVec) const;
-	std::string getSceneShader() const;
+	std::string buildSampleFunction() const;
 };
 

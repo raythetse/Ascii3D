@@ -81,7 +81,7 @@ double COMBAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut
 
 void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "if (d" << (level + 1) << " < d" << level << ") d" << level << " = d" << (level + 1) << ";\n";
+	ss << "\t\t\tif (d" << (level + 1) << " < d" << level << ") d" << level << " = d" << (level + 1) << ";\n";
 }
 
 double COMBSubtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

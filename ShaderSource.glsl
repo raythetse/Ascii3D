@@ -28,7 +28,25 @@
         float sphere(vec3 p, float radius) {
             return length(p) - radius;
         }
-    
+
+		void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {
+			d0 = maxDist;
+			vec3 p1 = p0;
+			float d1 = d0;
+			p1 -= vec3(0.0000000, 0.0000000, 1.0000000);
+			p1 = mat3(-0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333) * p1;
+			d1 = sphere(p1, 0.5); 
+
+			vec3 p2 = p1;
+			float d2 = d1;
+			p2 -= vec3(0.0000000, -1.0000000, 0.0000000);
+			p2 = mat3(-0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333) * p2;
+			d2 = sphere(p2, 0.5); 
+
+			if (d2 < d1) d1 = d2;
+			if (d1 < d0) d0 = d1;
+		}
+
         void main() {
             uint coordX = gl_GlobalInvocationID.x;
             uint coordY = gl_GlobalInvocationID.y;
@@ -57,37 +75,20 @@
             pixels[outIndex].l = 1.0;
 
 	        while (rayLength < push.maxDistance) {
-                float d0 = push.maxDistance;
                 vec3 p0 = camPos + rayDir * rayLength;
+                float d0 = push.maxDistance;
+                vec3 color = vec3(0.0);
+                float lightVal;
 
- //// START DYNAMICALLY GENERATED CODE ////
-
-p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
-vec3 p1 = p0;
-float d1 = d0;
-p1 -= vec3(0.0000000, 0.0000000, 1.0000000);
-p1 = mat3(-0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333) * p1;
-d1 = sphere(p1, 0.5); 
-vec3 p2 = p1;
-float d2 = d1;
-p2 -= vec3(0.0000000, -1.0000000, 0.0000000);
-p2 = mat3(-0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333, 0.6666667, 0.6666667, 0.6666667, -0.3333333) * p2;
-d2 = sphere(p2, 0.5); 
-if (d2 < d1) d1 = d2;
-if (d1 < d0) d0 = d1;
-
-//// END DYNAMICALLY GENERATED CODE ////
+                sampleScene(p0, push.maxDistance, d0, color, lightVal);
 
                 if (d0 < push.surfTolerance) {
-                    float dRatio = rayLength / push.maxDistance;
-                    pixels[outIndex].l = dRatio;
-                    float cVal = dRatio * (dRatio >= 0.99 ? 0.0 : 255.0);
-                    pixels[outIndex].r = 0.0;
-                    pixels[outIndex].g = 255.0;
+                    pixels[outIndex].l = rayLength / push.maxDistance;
+                    pixels[outIndex].r = 1.0;
+                    pixels[outIndex].g = 0.0;
                     pixels[outIndex].b = 0.0;
-                    return;
+                    break;
                 }
 		        rayLength += d0;
 	        }
         }
-    
