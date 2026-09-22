@@ -5,8 +5,9 @@
 
 const std::string SDFScene::m_shaderLayout{ 
     R"( 
-        #version 450
-        layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
+        #version 450 core
+        #extension GL_EXT_control_flow_attributes : enable
+        layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
 
         struct PixelOutput {
             float r, g, b, l;
@@ -37,6 +38,20 @@ const std::string SDFScene::m_shaderFunctions{
     R"(
         float sphere(vec3 p, float radius) {
             return length(p) - radius;
+        }
+        
+        float box(vec3 p, vec3 dimensions) {
+            p = abs(p) - dimensions;
+            return length(max(p,0.0)) + min(max(p.x,max(p.y,p.z)),0.0);
+        }
+
+        float boxFrame(vec3 p, vec3 dimensions, float edgeThickness) {
+            p = abs(p)-dimensions;
+            vec3 q = abs(p+edgeThickness)-edgeThickness;
+            return min(min(
+                length(max(vec3(p.x,q.y,q.z),0.0))+min(max(p.x,max(q.y,q.z)),0.0),
+                length(max(vec3(q.x,p.y,q.z),0.0))+min(max(q.x,max(p.y,q.z)),0.0)),
+                length(max(vec3(q.x,q.y,p.z),0.0))+min(max(q.x,max(q.y,p.z)),0.0));
         })"
 };
 
@@ -69,6 +84,8 @@ R"(
             uint outIndex = (coordY * uint(push.width)) + coordX;
             pixels[outIndex].l = 1.0;
 
+            bool hit = false;
+
 	        while (rayLength < push.maxDistance) {
                 vec3 p0 = camPos + rayDir * rayLength;
                 float d0 = push.maxDistance;
@@ -82,10 +99,17 @@ R"(
                     pixels[outIndex].r = 1.0;
                     pixels[outIndex].g = 0.0;
                     pixels[outIndex].b = 0.0;
+                    hit = true;
                     break;
                 }
 		        rayLength += d0;
 	        }
+
+            // Do normal calc here;
+
+            [[branch]] if (hit) {
+                // Shadow marching
+            }
         })"
 };
 
@@ -184,7 +208,20 @@ void SDFScene::test()
 {
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFSphere>(0.5, Color::Blue, Vec3::Forward, Vec3::One, 0.5)()
-            .pushOp<COMBAdd, SDFSphere>(0.5, Color::Blue, Vec3::Down, Vec3::One, 0.5)()
+        .pushOp<COMBAdd, SDFBox>(Vec3(0.5, 0.25, 0.75), Color::Blue, Vec3::Down, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3(0.5, 0.25, 0.75), 0.05, Color::Blue, Vec3::Up * 2.0, Vec3::One, 0.333)()
     );
 }
 

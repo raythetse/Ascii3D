@@ -97,6 +97,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBox"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFBox(Vec3 dimensions = DEF::OBJBoxDimensions, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions) {}
@@ -111,6 +112,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBoxFrame"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFBoxFrame(Vec3 dimensions = DEF::OBJBoxDimensions, double edgeThickness = DEF::OBJFrameThickness, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}

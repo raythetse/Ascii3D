@@ -136,6 +136,11 @@ void SDFBox::serializeInner(std::stringstream& ss) const
     ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
 }
 
+void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = box(p" << level << ", " << m_dimensions.getShaderVec3() << "); \n\n";
+}
+
 double SDFBox::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
@@ -147,6 +152,11 @@ void SDFBoxFrame::serializeInner(std::stringstream& ss) const
 {
     ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
     ss << " m_edgeThickness " << m_edgeThickness;
+}
+
+void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = boxFrame(p" << level << ", " << m_dimensions.getShaderVec3() << ", " << m_edgeThickness << "); \n\n";
 }
 
 double SDFBoxFrame::signedDistanceInner(Vec3 p) const
