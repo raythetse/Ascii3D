@@ -37,6 +37,7 @@ public:
 	Vec2& operator/=(const Vec2& p);
 	Vec2 operator*(const double d) const;
 	bool operator==(const Vec2& p) const;
+	std::string getShaderVec2() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vec2& p);

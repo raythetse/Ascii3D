@@ -106,6 +106,11 @@ void SDFPlaneXZ::serializeInner(std::stringstream& ss) const
     ss << " m_yPos " << m_yPos;
 }
 
+void SDFPlaneXZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = abs(p" << level << ".y - " << m_yPos << ");\n";
+}
+
 double SDFPlaneXZ::signedDistanceInner(Vec3 p) const
 {
     return abs(p.y - m_yPos);
@@ -116,6 +121,11 @@ void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
     ss << " m_xPos " << m_xPos;
 }
 
+void SDFPlaneYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = abs(p" << level << ".x - " << m_xPos << ");\n";
+}
+
 double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
 {
     return abs(p.x - m_xPos);
@@ -124,6 +134,11 @@ double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
 void SDFPlaneXY::serializeInner(std::stringstream& ss) const
 {
     ss << " m_zPos " << m_zPos;
+}
+
+void SDFPlaneXY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = abs(p" << level << ".z - " << m_zPos << ");\n";
 }
 
 double SDFPlaneXY::signedDistanceInner(Vec3 p) const
@@ -138,7 +153,7 @@ void SDFBox::serializeInner(std::stringstream& ss) const
 
 void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "\t\t\td" << level << " = box(p" << level << ", " << m_dimensions.getShaderVec3() << "); \n\n";
+    ss << "\t\t\td" << level << " = box(p" << level << ", " << m_dimensions.getShaderVec3() << ");\n\n";
 }
 
 double SDFBox::signedDistanceInner(Vec3 p) const
@@ -156,7 +171,7 @@ void SDFBoxFrame::serializeInner(std::stringstream& ss) const
 
 void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "\t\t\td" << level << " = boxFrame(p" << level << ", " << m_dimensions.getShaderVec3() << ", " << m_edgeThickness << "); \n\n";
+    ss << "\t\t\td" << level << " = boxFrame(p" << level << ", " << m_dimensions.getShaderVec3() << ", " << m_edgeThickness << ");\n\n";
 }
 
 double SDFBoxFrame::signedDistanceInner(Vec3 p) const
@@ -176,7 +191,7 @@ void SDFSphere::serializeInner(std::stringstream& ss) const
 
 void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "\t\t\td" << level << " = sphere(p" << level << ", " << m_radius << "); \n\n";
+    ss << "\t\t\td" << level << " = sphere(p" << level << ", " << m_radius << ");\n\n";
 }
 
 double SDFSphere::signedDistanceInner(Vec3 p) const
@@ -189,6 +204,11 @@ void SDFTorus::serializeInner(std::stringstream& ss) const
     ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
 }
 
+void SDFTorus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = torus(p" << level << ", " << m_radii.getShaderVec2() << ");\n\n";
+}
+
 double SDFTorus::signedDistanceInner(Vec3 p) const
 {
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
@@ -198,6 +218,11 @@ void SDFCapsuleX::serializeInner(std::stringstream& ss) const
 {
     ss << " m_radius " << m_radius;
     ss << " m_bodyLength " << m_bodyLength;
+}
+
+void SDFCapsuleX::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = capsuleX(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCapsuleX::signedDistanceInner(Vec3 p) const
@@ -212,6 +237,11 @@ void SDFCapsuleY::serializeInner(std::stringstream& ss) const
     ss << " m_bodyLength " << m_bodyLength;
 }
 
+void SDFCapsuleY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = capsuleY(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
+}
+
 double SDFCapsuleY::signedDistanceInner(Vec3 p) const
 {
     p.y = p.y > 0.0 ? std::max(0.0, p.y - 0.5 * m_bodyLength) : std::min(0.0, p.y + 0.5 * m_bodyLength);
@@ -222,6 +252,11 @@ void SDFCapsuleZ::serializeInner(std::stringstream& ss) const
 {
     ss << " m_radius " << m_radius;
     ss << " m_bodyLength " << m_bodyLength;
+}
+
+void SDFCapsuleZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = capsuleZ(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCapsuleZ::signedDistanceInner(Vec3 p) const

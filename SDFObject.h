@@ -58,6 +58,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneXZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPlaneXZ(double yPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_yPos{ yPos } {}
@@ -71,6 +72,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneYZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPlaneYZ(double xPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_xPos(xPos) {}
@@ -84,6 +86,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneXY"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPlaneXY(double zPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_zPos(zPos) {}
@@ -140,6 +143,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTorus"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFTorus(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radii(radii) {}
@@ -154,6 +158,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleX"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCapsuleX(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -168,6 +173,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleY"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCapsuleY(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -182,6 +188,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCapsuleZ(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
