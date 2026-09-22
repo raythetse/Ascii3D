@@ -90,6 +90,11 @@ double COMBSubtract::combine(Vec3 p, double distanceA, Color colorIn, Color* col
 	return distanceA > distanceB ? distanceA : distanceB;
 }
 
+void COMBSubtract::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tif (d" << level << " < -d" << (level + 1) << ") d" << level << " = -d" << (level + 1) << ";\n";
+}
+
 double COMBIntersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
@@ -99,11 +104,22 @@ double COMBIntersect::combine(Vec3 p, double distanceA, Color colorIn, Color* co
 	return distanceA;
 }
 
+void COMBIntersect::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tif (d" << level << " <= d" << (level + 1) << ") d" << level << " = d" << (level + 1) << ";\n";
+}
+
 double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 + 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);
 	if (colorOut) blendColors(std::clamp(1.0 - h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);
 	return std::lerp(distanceB, distanceA, h) - m_smoothing * h * (1.0 - h);
+}
+
+void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{	
+	ss << "\t\t\tblend = clamp(0.5 + 0.5 * (d" << (level + 1) << " - d" << level << ") / " << m_smoothing << ", 0.0, 1.0);\n";
+	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - (" << m_smoothing << " * blend * (1.0 - blend));\n";
 }
 
 double COMBSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -114,9 +130,22 @@ double COMBSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Colo
 	return (distanceA > -distanceB ? distanceA : -distanceB) + h * h * 0.25 / m_smoothing;
 }
 
+void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tblend = " << m_smoothing << " - abs(-d" << (level + 1) << " - d" << level << ");\n";
+	ss << "\t\t\tblend = max(blend, 0.0);\n";
+	ss << "\t\t\td" << level << " = (d" << level << " > -d" << (level + 1) << " ? d" << level << " : -d" << (level + 1) << ") + blend * blend * 0.25 / " << m_smoothing << ";\n";
+}
+
 double COMBIntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 - 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);
 	if (colorOut) blendColors(std::clamp(h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);
 	return std::lerp(distanceB, distanceA, h) + m_smoothing * h * (1.0 - h);
+}
+
+void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tblend = clamp(0.5 - 0.5 * (d" << (level + 1) << " - d" << level << ") / " << m_smoothing << ", 0.0, 1.0);\n";
+	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) + " << m_smoothing << " * blend * (1.0 - blend);\n";
 }

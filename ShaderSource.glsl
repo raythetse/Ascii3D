@@ -25,13 +25,9 @@
             float pad1;
             float pad2;
         } push;
-    
-        float sphere(vec3 p, float radius) {
-            return length(p) - radius;
-        }
-        
+            
         float box(vec3 p, vec3 dimensions) {
-            p = abs(p) - dimensions;
+            p = abs(p) - dimensions * 0.5;
             return length(max(p,0.0)) + min(max(p.x,max(p.y,p.z)),0.0);
         }
 
@@ -42,6 +38,10 @@
                 length(max(vec3(p.x,q.y,q.z),0.0))+min(max(p.x,max(q.y,q.z)),0.0),
                 length(max(vec3(q.x,p.y,q.z),0.0))+min(max(q.x,max(p.y,q.z)),0.0)),
                 length(max(vec3(q.x,q.y,p.z),0.0))+min(max(q.x,max(q.y,p.z)),0.0));
+        }
+
+        float sphere(vec3 p, float radius) {
+            return length(p) - radius;
         }
 
         float torus(vec3 p, vec2 radii) {
@@ -98,10 +98,19 @@
 
 		void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {
 			d0 = maxDist;
+			float blend;
+
 			vec3 p1 = p0;
 			float d1 = d0;
-			d1 = tube(p1, 2, vec2(1.0000000, 0.1250000));
+			d1 = box(p1, vec3(4.0000000, 0.5000000, 4.0000000));
 
+			vec3 p2 = p1;
+			float d2 = d1;
+			p2 -= vec3(1.0000000, 0.0000000, 0.0000000);
+			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
+
+			blend = clamp(0.5 - 0.5 * (d2 - d1) / 0.25, 0.0, 1.0);
+			d1 = mix(d2, d1, blend) + 0.25 * blend * (1.0 - blend);
 			if (d1 < d0) d0 = d1;
 		}
 
@@ -135,8 +144,8 @@
             bool hit = false;
 
 	        while (rayLength < push.maxDistance) {
-                vec3 p0 = camPos + rayDir * rayLength;
-                float d0 = push.maxDistance;
+                vec3 p0 = camPos + rayDir * rayLength;  // Marched sample point with inherited manipulation
+                float d0 = push.maxDistance;  // Blendable/selectable distance values
                 vec3 color = vec3(0.0);
                 float lightVal;
 

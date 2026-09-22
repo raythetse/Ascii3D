@@ -44,6 +44,7 @@ class COMBSubtract : public CombinationOperation
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBSubtract"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	COMBSubtract(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
 };
@@ -53,6 +54,7 @@ class COMBIntersect : public CombinationOperation
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBIntersect"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	COMBIntersect(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
 };
@@ -62,6 +64,7 @@ class COMBAddSmooth : public CombinationOperation
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBAddSmooth"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	COMBAddSmooth(std::unique_ptr<SDFObject> combineObj = nullptr,
 		double smoothing = DEF::COMBSmooth,
@@ -75,6 +78,7 @@ class COMBSubtractSmooth : public CombinationOperation
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBSubtractSmooth"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	COMBSubtractSmooth(std::unique_ptr<SDFObject> objectPtr = nullptr,
 		double smoothing = DEF::COMBSmooth,
@@ -88,6 +92,7 @@ class COMBIntersectSmooth : public CombinationOperation
 protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBIntersectSmooth"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	COMBIntersectSmooth(std::unique_ptr<SDFObject> objectPtr = nullptr,
 		double smoothing = DEF::COMBSmooth,

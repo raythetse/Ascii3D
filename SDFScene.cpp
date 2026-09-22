@@ -35,13 +35,9 @@ const std::string SDFScene::m_shaderLayout{
 };
 
 const std::string SDFScene::m_shaderFunctions{
-    R"(
-        float sphere(vec3 p, float radius) {
-            return length(p) - radius;
-        }
-        
+    R"(        
         float box(vec3 p, vec3 dimensions) {
-            p = abs(p) - dimensions;
+            p = abs(p) - dimensions * 0.5;
             return length(max(p,0.0)) + min(max(p.x,max(p.y,p.z)),0.0);
         }
 
@@ -52,6 +48,10 @@ const std::string SDFScene::m_shaderFunctions{
                 length(max(vec3(p.x,q.y,q.z),0.0))+min(max(p.x,max(q.y,q.z)),0.0),
                 length(max(vec3(q.x,p.y,q.z),0.0))+min(max(q.x,max(p.y,q.z)),0.0)),
                 length(max(vec3(q.x,q.y,p.z),0.0))+min(max(q.x,max(q.y,p.z)),0.0));
+        }
+
+        float sphere(vec3 p, float radius) {
+            return length(p) - radius;
         }
 
         float torus(vec3 p, vec2 radii) {
@@ -139,8 +139,8 @@ R"(
             bool hit = false;
 
 	        while (rayLength < push.maxDistance) {
-                vec3 p0 = camPos + rayDir * rayLength;
-                float d0 = push.maxDistance;
+                vec3 p0 = camPos + rayDir * rayLength;  // Marched sample point with inherited manipulation
+                float d0 = push.maxDistance;  // Blendable/selectable distance values
                 vec3 color = vec3(0.0);
                 float lightVal;
 
@@ -168,7 +168,7 @@ R"(
 std::string SDFScene::buildSampleFunction() const
 {
     std::stringstream ss{};
-    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {\n\t\t\td0 = maxDist;\n";
+    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {\n\t\t\td0 = maxDist;\n\t\t\tfloat blend;\n\n";
     size_t maxLevel{ 0 };
     m_baseObject->getShaderCalls(ss, 0, maxLevel);
     ss << "\t\t}\n";
@@ -259,7 +259,8 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFTube>(2.0, Vec2{ 1.0, 0.125 }, Color::Blue)()
+        .pushOp<COMBAdd, SDFBox>(Vec3{ 4.0, 0.5, 4.0 }, Color::Blue)()
+        .pushOp<COMBIntersectSmooth, SDFBox>(Vec3::One, Color::Blue, Vec3::Right)(0.25)
     );
 }
 
