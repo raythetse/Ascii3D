@@ -71,6 +71,39 @@ const std::string SDFScene::m_shaderFunctions{
         float capsuleZ(vec3 p, float bodyLength, float radius) {
             p.z = p.z > 0.0 ? max(0.0, p.z - 0.5 * bodyLength) : min(0.0, p.z + 0.5 * bodyLength);
             return length(p) - radius;
+        }
+
+        float crystal(vec3 p, float edgeLength) {
+            p = abs(p);
+            return (p.x + p.y + p.z - edgeLength) * 0.57735027;
+        }
+
+        float cylinderX(vec3 p, float bodyLength, float radius) {
+            vec2 yz = vec2(p.y, p.z);
+            vec2 d = abs(vec2(length(yz), p.x )) - vec2(radius, bodyLength);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+        }
+
+        float cylinderY(vec3 p, float bodyLength, float radius) {
+            vec2 xz = vec2(p.x, p.z);
+            vec2 d = abs(vec2(length(xz), p.y )) - vec2(radius, bodyLength);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+        }
+
+        float cylinderZ(vec3 p, float bodyLength, float radius) {
+            vec2 xy = vec2(p.x, p.y);
+            vec2 d = abs(vec2(length(xy), p.z )) - vec2(radius, bodyLength);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+        }
+
+        float chainLink(vec3 p, float sideLength, vec2 radii) {
+            p.x = p.x > 0.0 ? max(0.0, p.x - sideLength * 0.5) : min(0.0, p.x + sideLength * 0.5);
+            return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
+        }
+
+        float tube(vec3 p, float height, vec2 radii) {
+            p.y = p.y > 0.0 ? max(0.0, p.y - height * 0.5) : min(0.0, p.y + height * 0.5);
+            return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
         })"
 };
 
@@ -226,7 +259,7 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFCapsuleZ>(0.2, 1.0, Color::Blue)()
+        .pushOp<COMBAdd, SDFTube>(2.0, Vec2{ 1.0, 0.125 }, Color::Blue)()
     );
 }
 

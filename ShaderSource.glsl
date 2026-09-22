@@ -63,11 +63,44 @@
             return length(p) - radius;
         }
 
+        float crystal(vec3 p, float edgeLength) {
+            p = abs(p);
+            return (p.x + p.y + p.z - edgeLength) * 0.57735027;
+        }
+
+        float cylinderX(vec3 p, float bodyLength, float radius) {
+            vec2 yz = vec2(p.y, p.z);
+            vec2 d = abs(vec2(length(yz), p.x )) - vec2(radius, bodyLength);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+        }
+
+        float cylinderY(vec3 p, float bodyLength, float radius) {
+            vec2 xz = vec2(p.x, p.z);
+            vec2 d = abs(vec2(length(xz), p.y )) - vec2(radius, bodyLength);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+        }
+
+        float cylinderZ(vec3 p, float bodyLength, float radius) {
+            vec2 xy = vec2(p.x, p.y);
+            vec2 d = abs(vec2(length(xy), p.z )) - vec2(radius, bodyLength);
+            return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+        }
+
+        float chainLink(vec3 p, float sideLength, vec2 radii) {
+            p.x = p.x > 0.0 ? max(0.0, p.x - sideLength * 0.5) : min(0.0, p.x + sideLength * 0.5);
+            return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
+        }
+
+        float tube(vec3 p, float height, vec2 radii) {
+            p.y = p.y > 0.0 ? max(0.0, p.y - height * 0.5) : min(0.0, p.y + height * 0.5);
+            return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
+        }
+
 		void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {
 			d0 = maxDist;
 			vec3 p1 = p0;
 			float d1 = d0;
-			d1 = capsuleZ(p1, 1, 0.2);
+			d1 = tube(p1, 2, vec2(1.0000000, 0.1250000));
 
 			if (d1 < d0) d0 = d1;
 		}

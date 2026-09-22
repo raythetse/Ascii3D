@@ -270,6 +270,11 @@ void SDFCrystal::serializeInner(std::stringstream& ss) const
     ss << " m_edgeLength " << m_edgeLength;
 }
 
+void SDFCrystal::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = crystal(p" << level << ", " << m_edgeLength << ");\n\n";
+}
+
 double SDFCrystal::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
@@ -280,6 +285,11 @@ void SDFCylinderX::serializeInner(std::stringstream& ss) const
 {
     ss << " m_sideLength " << m_sideLength;
     ss << " m_radius " << m_radius;
+}
+
+void SDFCylinderX::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = cylinderX(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCylinderX::signedDistanceInner(Vec3 p) const
@@ -295,6 +305,11 @@ void SDFCylinderY::serializeInner(std::stringstream& ss) const
     ss << " m_radius " << m_radius;
 }
 
+void SDFCylinderY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = cylinderY(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
+}
+
 double SDFCylinderY::signedDistanceInner(Vec3 p) const
 {
     Vec2 xz{ p.x, p.z };
@@ -306,6 +321,11 @@ void SDFCylinderZ::serializeInner(std::stringstream& ss) const
 {
     ss << " m_sideLength " << m_sideLength;
     ss << " m_radius " << m_radius;
+}
+
+void SDFCylinderZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = cylinderZ(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCylinderZ::signedDistanceInner(Vec3 p) const
@@ -321,6 +341,11 @@ void SDFChainLink::serializeInner(std::stringstream& ss) const
     ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
 }
 
+void SDFChainLink::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = chainLink(p" << level << ", " << m_sideLength << ", " << m_radii.getShaderVec2() << ");\n\n";
+}
+
 double SDFChainLink::signedDistanceInner(Vec3 p) const
 {
     p.x = p.x > 0.0 ? std::max(0.0, p.x - m_sideLength * 0.5) : std::min(0.0, p.x + m_sideLength * 0.5);
@@ -331,6 +356,11 @@ void SDFTube::serializeInner(std::stringstream& ss) const
 {
     ss << " m_height " << m_height;
     ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
+}
+
+void SDFTube::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t\t\td" << level << " = tube(p" << level << ", " << m_height << ", " << m_radii.getShaderVec2() << ");\n\n";
 }
 
 double SDFTube::signedDistanceInner(Vec3 p) const
