@@ -35,7 +35,16 @@ const std::string SDFScene::m_shaderLayout{
 };
 
 const std::string SDFScene::m_shaderFunctions{
-    R"(        
+    R"(
+        vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
+        {
+	        alpha *= colorBlending;
+	        alpha -= 0.5 * (colorBlending - 1.0);
+	        alpha = alpha < 0.0 ? 0.0 : alpha;
+	        alpha = alpha > 1.0 ? 1.0 : alpha;
+	        return mix(colorA, colorB, alpha);
+        }
+        
         float box(vec3 p, vec3 dimensions) {
             p = abs(p) - dimensions * 0.5;
             return length(max(p,0.0)) + min(max(p.x,max(p.y,p.z)),0.0);
@@ -148,9 +157,9 @@ R"(
 
                 if (d0 < push.surfTolerance) {
                     pixels[outIndex].l = rayLength / push.maxDistance;
-                    pixels[outIndex].r = 1.0;
-                    pixels[outIndex].g = 0.0;
-                    pixels[outIndex].b = 0.0;
+                    pixels[outIndex].r = clamp(color.r, 0.0, 1.0);
+                    pixels[outIndex].g = clamp(color.g, 0.0, 1.0);
+                    pixels[outIndex].b = clamp(color.b, 0.0, 1.0);
                     hit = true;
                     break;
                 }
@@ -168,7 +177,10 @@ R"(
 std::string SDFScene::buildSampleFunction() const
 {
     std::stringstream ss{};
-    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {\n\t\t\td0 = maxDist;\n\t\t\tfloat blend;\n\n";
+    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, out float lightVal) {\n";
+    ss << "\t\t\td0 = maxDist;\n";
+    ss << "\t\t\tfloat blend;\n";
+    ss << "\t\t\tcolor0 = vec3(0.0);\n\n";
     size_t maxLevel{ 0 };
     m_baseObject->getShaderCalls(ss, 0, maxLevel);
     ss << "\t\t}\n";
@@ -260,7 +272,14 @@ void SDFScene::test()
 {
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFBox>(Vec3{ 4.0, 0.5, 4.0 }, Color::Blue)()
-        .pushOp<COMBIntersectSmooth, SDFBox>(Vec3::One, Color::Blue, Vec3::Right)(0.25)
+        .stepBack()
+        .pushOp<COMBIntersectSmooth, SDFBox>(Vec3::One, Color::Red, Vec3::Right)()
+        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Green, Vec3::Zero, Vec3::One, 0.125)()
+        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Yellow, Vec3::Left, Vec3::One, 0.125)()
+        .stepBack(3)
+        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Magenta, Vec3::One * 2.0, Vec3::One, 0.125)()
+        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Pink, Vec3::Left * 4.0, Vec3::One, 0.125)()
+        .addLightSource(Vec3::Up * 6.0, 20.0, Color::White)
     );
 }
 

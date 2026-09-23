@@ -45,13 +45,13 @@ std::string Mat3::getShaderMat3()
 {
     return std::format("mat3({:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f}, {:.7f})"
         , static_cast<float>(m_mat[0][0])
-        , static_cast<float>(m_mat[0][1])
-        , static_cast<float>(m_mat[0][2])
         , static_cast<float>(m_mat[1][0])
-        , static_cast<float>(m_mat[1][1])
-        , static_cast<float>(m_mat[1][2])
         , static_cast<float>(m_mat[2][0])
+        , static_cast<float>(m_mat[0][1])
+        , static_cast<float>(m_mat[1][1])
         , static_cast<float>(m_mat[2][1])
+        , static_cast<float>(m_mat[0][2])
+        , static_cast<float>(m_mat[1][2])
         , static_cast<float>(m_mat[2][2])
     );
 }

@@ -81,7 +81,10 @@ double COMBAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut
 
 void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\tif (d" << (level + 1) << " < d" << level << ") d" << level << " = d" << (level + 1) << ";\n";
+	ss << "\t\t\tif (d" << (level + 1) << " < d" << level << ") {\n";
+	ss << "\t\t\t\td" << level << " = d" << (level + 1) << ";\n";
+	ss << "\t\t\t\tcolor" << level << " = color" << (level + 1) << "; \n";
+	ss << "\t\t\t}\n";
 }
 
 double COMBSubtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -120,6 +123,7 @@ void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 {	
 	ss << "\t\t\tblend = clamp(0.5 + 0.5 * (d" << (level + 1) << " - d" << level << ") / " << m_smoothing << ", 0.0, 1.0);\n";
 	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - (" << m_smoothing << " * blend * (1.0 - blend));\n";
+	ss << "\t\t\tcolor" << level << " = blendColors(clamp(1.0 - blend + " << m_colorShifting << ", 0.0, 1.0), color" << level << ", color" << (level + 1) << ", " << m_colorBlending << ");\n";
 }
 
 double COMBSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -135,6 +139,7 @@ void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, s
 	ss << "\t\t\tblend = " << m_smoothing << " - abs(-d" << (level + 1) << " - d" << level << ");\n";
 	ss << "\t\t\tblend = max(blend, 0.0);\n";
 	ss << "\t\t\td" << level << " = (d" << level << " > -d" << (level + 1) << " ? d" << level << " : -d" << (level + 1) << ") + blend * blend * 0.25 / " << m_smoothing << ";\n";
+	ss << "\t\t\tcolor" << level << " = blendColors(clamp(blend + " << m_colorShifting << ", 0.0, 1.0), color" << level << ", color" << (level + 1) << ", " << m_colorBlending << ");\n";
 }
 
 double COMBIntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -148,4 +153,5 @@ void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, 
 {
 	ss << "\t\t\tblend = clamp(0.5 - 0.5 * (d" << (level + 1) << " - d" << level << ") / " << m_smoothing << ", 0.0, 1.0);\n";
 	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) + " << m_smoothing << " * blend * (1.0 - blend);\n";
+	ss << "\t\t\tcolor" << level << " = blendColors(clamp(blend + " << m_colorShifting << ", 0.0, 1.0), color" << level << ", color" << (level + 1) << ", " << m_colorBlending << ");\n";
 }

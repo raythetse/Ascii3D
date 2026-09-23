@@ -25,7 +25,16 @@
             float pad1;
             float pad2;
         } push;
-            
+    
+        vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
+        {
+	        alpha *= colorBlending;
+	        alpha -= 0.5 * (colorBlending - 1.0);
+	        alpha = alpha < 0.0 ? 0.0 : alpha;
+	        alpha = alpha > 1.0 ? 1.0 : alpha;
+	        return mix(colorA, colorB, alpha);
+        }
+        
         float box(vec3 p, vec3 dimensions) {
             p = abs(p) - dimensions * 0.5;
             return length(max(p,0.0)) + min(max(p.x,max(p.y,p.z)),0.0);
@@ -96,22 +105,85 @@
             return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
         }
 
-		void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color, out float lightVal) {
+		void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, out float lightVal) {
 			d0 = maxDist;
 			float blend;
+			color0 = vec3(0.0);
 
-			vec3 p1 = p0;
-			float d1 = d0;
+			color0 = vec3(1.0000000, 1.0000000, 1.0000000);
+			p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			vec3 p1;
+			float d1;
+			vec3 color1;
+			p1 = p0;
+			d1 = d0;
+			color1 = vec3(0.0000000, 0.0000000, 1.0000000);
+			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
 			d1 = box(p1, vec3(4.0000000, 0.5000000, 4.0000000));
 
-			vec3 p2 = p1;
-			float d2 = d1;
-			p2 -= vec3(1.0000000, 0.0000000, 0.0000000);
+			if (d1 < d0) {
+				d0 = d1;
+				color0 = color1; 
+			}
+			p1 = p0;
+			d1 = d0;
+			color1 = vec3(1.0000000, 0.0000000, 0.0000000);
+			p1 -= vec3(1.0000000, 0.0000000, 0.0000000);
+			d1 = box(p1, vec3(1.0000000, 1.0000000, 1.0000000));
+
+			vec3 p2;
+			float d2;
+			vec3 color2;
+			p2 = p1;
+			d2 = d1;
+			color2 = vec3(0.0000000, 1.0000000, 0.0000000);
+			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			p2 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p2;
 			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
 
-			blend = clamp(0.5 - 0.5 * (d2 - d1) / 0.25, 0.0, 1.0);
-			d1 = mix(d2, d1, blend) + 0.25 * blend * (1.0 - blend);
-			if (d1 < d0) d0 = d1;
+			vec3 p3;
+			float d3;
+			vec3 color3;
+			p3 = p2;
+			d3 = d2;
+			color3 = vec3(1.0000000, 1.0000000, 0.0000000);
+			p3 -= vec3(-1.0000000, 0.0000000, 0.0000000);
+			p3 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p3;
+			d3 = box(p3, vec3(1.0000000, 1.0000000, 1.0000000));
+
+			if (d3 < d2) {
+				d2 = d3;
+				color2 = color3; 
+			}
+			if (d2 < d1) {
+				d1 = d2;
+				color1 = color2; 
+			}
+			blend = clamp(0.5 - 0.5 * (d1 - d0) / 0.5, 0.0, 1.0);
+			d0 = mix(d1, d0, blend) + 0.5 * blend * (1.0 - blend);
+			color0 = blendColors(clamp(blend + 0, 0.0, 1.0), color0, color1, 1);
+			p1 = p0;
+			d1 = d0;
+			color1 = vec3(1.0000000, 0.0000000, 1.0000000);
+			p1 -= vec3(2.0000000, 2.0000000, 2.0000000);
+			p1 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p1;
+			d1 = box(p1, vec3(1.0000000, 1.0000000, 1.0000000));
+
+			p2 = p1;
+			d2 = d1;
+			color2 = vec3(1.0000000, 0.5000000, 0.5000000);
+			p2 -= vec3(-4.0000000, 0.0000000, 0.0000000);
+			p2 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p2;
+			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
+
+			if (d2 < d1) {
+				d1 = d2;
+				color1 = color2; 
+			}
+			if (d1 < d0) {
+				d0 = d1;
+				color0 = color1; 
+			}
 		}
 
         void main() {
@@ -153,9 +225,9 @@
 
                 if (d0 < push.surfTolerance) {
                     pixels[outIndex].l = rayLength / push.maxDistance;
-                    pixels[outIndex].r = 1.0;
-                    pixels[outIndex].g = 0.0;
-                    pixels[outIndex].b = 0.0;
+                    pixels[outIndex].r = clamp(color.r, 0.0, 1.0);
+                    pixels[outIndex].g = clamp(color.g, 0.0, 1.0);
+                    pixels[outIndex].b = clamp(color.b, 0.0, 1.0);
                     hit = true;
                     break;
                 }

@@ -45,6 +45,11 @@ void SDFObject::setColor(Color color)
     m_color = color;
 }
 
+Color SDFObject::getColor()
+{
+    return m_color;
+}
+
 void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
 {
     std::stringstream ss{};
@@ -82,12 +87,17 @@ double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel)
 {
     if (level > maxLevel) {
-        ss << "\t\t\tvec3 p" << level << " = p" << maxLevel << ";\n";
-        ss << "\t\t\tfloat d" << level << " = d" << maxLevel << ";\n";
+        ss << "\t\t\tvec3 p" << level << ";\n";
+        ss << "\t\t\tfloat d" << level << ";\n";
+        ss << "\t\t\tvec3 color" << level << ";\n";
         maxLevel = level;
     }
-
-    if (m_position) ss << "\t\t\tp" << level << " -= " << m_position.getShaderVec3() << ";\n";
+    if (level != 0) {
+        ss << "\t\t\tp" << level << " = p" << (level - 1) << ";\n";
+        ss << "\t\t\td" << level << " = d" << (level - 1) << ";\n";
+    }
+    ss << "\t\t\tcolor" << level << " = " << m_color.getShaderVec3() << ";\n";
+    ss << "\t\t\tp" << level << " -= " << m_position.getShaderVec3() << ";\n";
     if (m_hasRotation) ss << "\t\t\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n";
     getShaderObjectCalls(ss, level, maxLevel);
 
