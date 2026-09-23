@@ -35,7 +35,7 @@ void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifier
 		propMod->BindToProp(&m_colorBlending);
 		m_propMods.push_back(std::move(propMod));
 	}
-	else if (propMod->propName() == "colorshifting") {
+	else if (propMod->propName() == "colorShifting") {
 		propMod->BindToProp(&m_colorShifting);
 		m_propMods.push_back(std::move(propMod));
 	}
@@ -121,9 +121,13 @@ double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* co
 
 void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {	
-	ss << "\t\t\tblend = clamp(0.5 + 0.5 * (d" << (level + 1) << " - d" << level << ") / " << m_smoothing << ", 0.0, 1.0);\n";
-	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - (" << m_smoothing << " * blend * (1.0 - blend));\n";
-	ss << "\t\t\tcolor" << level << " = blendColors(clamp(1.0 - blend + " << m_colorShifting << ", 0.0, 1.0), color" << level << ", color" << (level + 1) << ", " << m_colorBlending << ");\n";
+	std::string propName{""};
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\t\t\tpmFloat2 = " << (getShaderPropModCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\t\t\tblend = clamp(0.5 + 0.5 * (d" << (level + 1) << " - d" << level << ") / pmFloat0, 0.0, 1.0);\n";
+	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - (pmFloat0 * blend * (1.0 - blend));\n";
+	ss << "\t\t\tcolor" << level << " = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
 }
 
 double COMBSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -136,10 +140,14 @@ double COMBSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Colo
 
 void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\tblend = " << m_smoothing << " - abs(-d" << (level + 1) << " - d" << level << ");\n";
+	std::string propName{ "" };
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\t\t\tpmFloat2 = " << (getShaderPropModCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\t\t\tblend = pmFloat0 - abs(-d" << (level + 1) << " - d" << level << ");\n";
 	ss << "\t\t\tblend = max(blend, 0.0);\n";
-	ss << "\t\t\td" << level << " = (d" << level << " > -d" << (level + 1) << " ? d" << level << " : -d" << (level + 1) << ") + blend * blend * 0.25 / " << m_smoothing << ";\n";
-	ss << "\t\t\tcolor" << level << " = blendColors(clamp(blend + " << m_colorShifting << ", 0.0, 1.0), color" << level << ", color" << (level + 1) << ", " << m_colorBlending << ");\n";
+	ss << "\t\t\td" << level << " = (d" << level << " > -d" << (level + 1) << " ? d" << level << " : -d" << (level + 1) << ") + blend * blend * 0.25 / pmFloat0;\n";
+	ss << "\t\t\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
 }
 
 double COMBIntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
@@ -151,7 +159,11 @@ double COMBIntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Col
 
 void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\tblend = clamp(0.5 - 0.5 * (d" << (level + 1) << " - d" << level << ") / " << m_smoothing << ", 0.0, 1.0);\n";
-	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) + " << m_smoothing << " * blend * (1.0 - blend);\n";
-	ss << "\t\t\tcolor" << level << " = blendColors(clamp(blend + " << m_colorShifting << ", 0.0, 1.0), color" << level << ", color" << (level + 1) << ", " << m_colorBlending << ");\n";
+	std::string propName{ "" };
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\t\t\tpmFloat2 = " << (getShaderPropModCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\t\t\tblend = clamp(0.5 - 0.5 * (d" << (level + 1) << " - d" << level << ") / pmFloat0, 0.0, 1.0);\n";
+	ss << "\t\t\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) + pmFloat0 * blend * (1.0 - blend);\n";
+	ss << "\t\t\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
 }

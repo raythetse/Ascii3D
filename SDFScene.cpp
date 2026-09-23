@@ -44,6 +44,28 @@ const std::string SDFScene::m_shaderFunctions{
 	        alpha = alpha > 1.0 ? 1.0 : alpha;
 	        return mix(colorA, colorB, alpha);
         }
+
+        float oscillateSine(float initVal, float period, float amplitude, float phase, float time) {
+            return initVal + sin((time + (phase * period)) / period) * amplitude;
+        }
+
+        float oscillateLinear(float initVal, float period, float amplitude, float phase, float time) {
+            float progress = mod(0.25 * period + (time + phase * period), period) / period;
+		    progress -= 0.5;
+		    progress *= 2.0;
+		    progress = abs(progress);
+		    progress -= 0.5;
+		    progress *= 2.0;
+            return initVal + progress * amplitude;
+        }
+
+        vec3 oscillateSineV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+            return initVal + sin((vec3(time) + (phase * period)) / period) * amplitude;
+        }
+
+        vec3 oscillateLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+            return initVal;
+        }
         
         float box(vec3 p, vec3 dimensions) {
             p = abs(p) - dimensions * 0.5;
@@ -153,7 +175,7 @@ R"(
                 vec3 color = vec3(0.0);
                 float lightVal;
 
-                sampleScene(p0, push.maxDistance, d0, color, lightVal);
+                sampleScene(p0, push.maxDistance, d0, color, lightVal, push.time);
 
                 if (d0 < push.surfTolerance) {
                     pixels[outIndex].l = rayLength / push.maxDistance;
@@ -177,10 +199,13 @@ R"(
 std::string SDFScene::buildSampleFunction() const
 {
     std::stringstream ss{};
-    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, out float lightVal) {\n";
+    ss << "\n\n\t\tvoid sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, out float lightVal, float time) {\n";
     ss << "\t\t\td0 = maxDist;\n";
     ss << "\t\t\tfloat blend;\n";
     ss << "\t\t\tcolor0 = vec3(0.0);\n\n";
+    ss << "\t\t\tfloat pmFloat0, pmFloat1, pmFloat2;\n";
+    ss << "\t\t\tvec2 pmVec20, pmVec21, pmVec22;\n";
+    ss << "\t\t\tvec3 pmVec30, pmVec31, pmVec32;\n\n";
     size_t maxLevel{ 0 };
     m_baseObject->getShaderCalls(ss, 0, maxLevel);
     ss << "\t\t}\n";
@@ -274,6 +299,7 @@ void SDFScene::test()
         .pushOp<COMBAdd, SDFBox>(Vec3{ 4.0, 0.5, 4.0 }, Color::Blue)()
         .stepBack()
         .pushOp<COMBIntersectSmooth, SDFBox>(Vec3::One, Color::Red, Vec3::Right)()
+        .bindPropMod<PMOscillateLinear>("smoothing", 2.0, 0.5, 0.5)
         .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Green, Vec3::Zero, Vec3::One, 0.125)()
         .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Yellow, Vec3::Left, Vec3::One, 0.125)()
         .stepBack(3)

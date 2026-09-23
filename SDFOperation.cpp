@@ -47,3 +47,11 @@ void SDFOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& m
 {
 	getShaderOpCalls(ss, level, maxLevel);
 }
+
+bool SDFOperation::getShaderPropModCalls(std::string& propName) const
+{
+	for (auto& propMod : m_propMods) {
+		if (propMod->getShaderCall(propName)) return true;
+	}
+	return false;
+}

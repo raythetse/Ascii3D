@@ -26,6 +26,7 @@ protected:
 	virtual void transform(Vec3& p) const {};
 	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const = 0;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const {};
+	bool getShaderPropModCalls(std::string& propName) const;
 public:
 	virtual void update();
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);

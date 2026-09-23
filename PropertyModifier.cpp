@@ -1,4 +1,5 @@
 #include "PropertyModifier.h"
+#include <format>
 
 void PropertyModifierBase::serialize(std::vector<std::string>& strVec, size_t level)
 {
@@ -10,11 +11,25 @@ void PropertyModifierBase::serialize(std::vector<std::string>& strVec, size_t le
     strVec.push_back(ss.str());
 }
 
+bool PropertyModifierBase::getShaderCall(std::string& propName) const
+{
+    if (m_propName == propName) {
+        getShaderModCall(propName);
+        return true;
+    }
+    return false;
+}
+
 void PMOscillateSine::serializeInner(std::stringstream& ss) const
 {
     ss << " m_period " << m_period;
     ss << " m_amplitude " << m_amplitude;
     ss << " m_phase " << m_phase;
+}
+
+void PMOscillateSine::getShaderModCall(std::string& call) const
+{
+    call = std::format("oscillateSine({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
 }
 
 void PMOscillateSineV3::serializeInner(std::stringstream& ss) const
@@ -24,11 +39,21 @@ void PMOscillateSineV3::serializeInner(std::stringstream& ss) const
     ss << " m_phase " << m_phase.x << ' ' << m_phase.y << ' ' << m_phase.z;
 }
 
+void PMOscillateSineV3::getShaderModCall(std::string& call) const
+{
+    call = std::format("oscillateSine({}, {}, {}, {}, time)", m_initVal.getShaderVec3(), m_period.getShaderVec3(), m_amplitude.getShaderVec3(), m_phase.getShaderVec3());
+}
+
 void PMOscillateLinear::serializeInner(std::stringstream& ss) const
 {
     ss << " m_period " << m_period;
     ss << " m_amplitude " << m_amplitude;
     ss << " m_phase " << m_phase;
+}
+
+void PMOscillateLinear::getShaderModCall(std::string& call) const
+{
+    call = std::format("oscillateLinear({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
 }
 
 void PMOscillateLinearV3::serializeInner(std::stringstream& ss) const
