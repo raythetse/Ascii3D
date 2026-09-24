@@ -20,7 +20,7 @@ class OPMirrorX : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorX"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorX() {};
 };
@@ -30,7 +30,7 @@ class OPMirrorY : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorY() {};
 };
@@ -40,7 +40,7 @@ class OPMirrorZ : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorZ() {};
 };
@@ -50,7 +50,7 @@ class OPMirrorXY : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorXY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorXY() {};
 };
@@ -60,7 +60,7 @@ class OPMirrorXZ : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorXZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorXZ() {};
 };
@@ -70,7 +70,7 @@ class OPMirrorYZ : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorYZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorYZ() {};
 };
@@ -80,7 +80,7 @@ class OPMirrorXYZ : public TransformOperation
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPMirrorXYZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPMirrorXYZ() {};
 };
@@ -93,7 +93,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPTranslate"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPTranslate(Vec3 translation = DEF::TRANSVector) : m_translation(translation) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
@@ -112,7 +112,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPTranslateSine"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPTranslateSine(Vec3 axis = DEF::TRANSVector, double amplitude = DEF::TRANSAmplitude, double period = DEF::TRANSPeriod, double phase = DEF::TRANSPhase)
 		: m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}

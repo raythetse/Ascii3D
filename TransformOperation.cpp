@@ -17,14 +17,29 @@ void OPMirrorX::transform(Vec3& p) const
 	p.x = abs(p.x);
 }
 
+void OPMirrorX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << ".x = abs(p" << level << ".x);\n";
+}
+
 void OPMirrorY::transform(Vec3& p) const
 {
 	p.y = abs(p.y);
 }
 
+void OPMirrorY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << ".y = abs(p" << level << ".y);\n";
+}
+
 void OPMirrorZ::transform(Vec3& p) const
 {
 	p.z = abs(p.z);
+}
+
+void OPMirrorZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << ".z = abs(p" << level << ".z);\n";
 }
 
 void OPMirrorXY::transform(Vec3& p) const
@@ -33,10 +48,20 @@ void OPMirrorXY::transform(Vec3& p) const
 	p.y = abs(p.y);
 }
 
+void OPMirrorXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << ".xy = abs(p" << level << ".xy);\n";
+}
+
 void OPMirrorXZ::transform(Vec3& p) const
 {
 	p.x = abs(p.x);
 	p.z = abs(p.z);
+}
+
+void OPMirrorXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << ".xz = abs(p" << level << ".xz);\n";
 }
 
 void OPMirrorYZ::transform(Vec3& p) const
@@ -45,9 +70,19 @@ void OPMirrorYZ::transform(Vec3& p) const
 	p.z = abs(p.z);
 }
 
+void OPMirrorYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << ".yz = abs(p" << level << ".yz);\n";
+}
+
 void OPMirrorXYZ::transform(Vec3& p) const
 {
 	p = p.abs();
+}
+
+void OPMirrorXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << " = abs(p" << level << ");\n";
 }
 
 void OPTranslate::transform(Vec3& p) const
@@ -60,6 +95,11 @@ void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
 }
 
+void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t\t\tp" << level << " -= " << m_translation.getShaderVec3() << "; \n";
+}
+
 void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "translation") {
@@ -69,7 +109,7 @@ void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> pro
 }
 
 void OPTranslateSine::innerUpdate() {
-	m_updateVal = m_axis * m_amplitude * sin(GameTimer::gameTime() / m_period * MF::TAU + m_phase * MF::TAU);
+	m_updateVal = m_axis * m_amplitude * sin(MF::TAU * (GameTimer::gameTime() / m_period + m_phase));
 }
 
 void OPTranslateSine::transform(Vec3& p) const
@@ -83,6 +123,16 @@ void OPTranslateSine::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_amplitude " << m_amplitude;
 	ss << " m_period " << m_period;
 	ss << " m_phase " << m_phase;
+}
+
+void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "amplitude") ? propName : std::to_string(m_amplitude)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\t\t\tpmFloat2 = " << (getShaderPropModCalls(propName = "period") ? propName : std::to_string(m_period)) << ";\n";
+	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
+	ss << "\t\t\tp" << level << " -= pmVec30 * pmFloat0 * sin(TAU * (pmFloat1 + time / pmFloat2));\n";
 }
 
 void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -137,6 +187,16 @@ void OPTranslateLinear::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
 	ss << " m_endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
 	ss << " m_phase " << m_phase;
+}
+
+void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t\t\tpmVec20 = " << (getShaderPropModCalls(propName = "transitTimes") ? propName : m_transitTimes.getShaderVec2()) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\t\t\tpmVec22 = " << (getShaderPropModCalls(propName = "endDelays") ? propName : m_endDelays.getShaderVec2()) << ";\n";
+	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "vector") ? propName : m_vector.getShaderVec3()) << ";\n";
+	ss << ""; // PICK IT UP RIGHT HERE NERD!!!!
 }
 
 void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)

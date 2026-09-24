@@ -120,7 +120,7 @@ double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* co
 }
 
 void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
-{	
+{
 	std::string propName{""};
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
 	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
