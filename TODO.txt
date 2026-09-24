@@ -12,6 +12,7 @@ Required:
 - fix constructor accessibilities on abstracts
 
 Optional:
+- change repeat operations to not rely of vec3
 - camera track
 - input for other params (draw dist, color depth, surf tolarance, etc)
 - transparency/reflection

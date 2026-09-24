@@ -25,7 +25,7 @@ public:
 	void update() override;
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	void serialize(std::vector<std::string>& strVec, size_t level) const override;
-	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const;
+	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);
 };
 

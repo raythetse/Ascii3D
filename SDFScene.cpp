@@ -36,6 +36,11 @@ const std::string SDFScene::m_shaderLayout{
 
 const std::string SDFScene::m_shaderFunctions{
     R"(
+        const float HALFPI = 1.570796;
+        const float PI = 3.1415923;
+        const float TAU = 6.283185;
+        const float ROOT2 = 1.414213;
+
         vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
         {
 	        alpha *= colorBlending;
@@ -46,11 +51,11 @@ const std::string SDFScene::m_shaderFunctions{
         }
 
         float oscillateSine(float initVal, float period, float amplitude, float phase, float time) {
-            return initVal + sin((time + (phase * period)) / period) * amplitude;
+            return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
         }
 
         float oscillateLinear(float initVal, float period, float amplitude, float phase, float time) {
-            float progress = mod(0.25 * period + (time + phase * period), period) / period;
+            float progress = mod(0.25 * period + time + phase * period, period) / period;
 		    progress -= 0.5;
 		    progress *= 2.0;
 		    progress = abs(progress);
@@ -60,11 +65,22 @@ const std::string SDFScene::m_shaderFunctions{
         }
 
         vec3 oscillateSineV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-            return initVal + sin((vec3(time) + (phase * period)) / period) * amplitude;
+            return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
         }
 
         vec3 oscillateLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-            return initVal;
+            vec3 progress = vec3(
+                mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
+                mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y,
+                mod(0.25 * period.z + time + phase.z * period.z, period.z) / period.z
+		    );
+		    progress -= 0.5;
+		    progress *= 2.0;
+		    progress = abs(progress);
+		    progress -= 0.5;
+		    progress *= 2.0;
+
+		    return initVal + progress * amplitude;
         }
         
         float box(vec3 p, vec3 dimensions) {
@@ -296,16 +312,10 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFBox>(Vec3{ 4.0, 0.5, 4.0 }, Color::Blue)()
-        .stepBack()
-        .pushOp<COMBIntersectSmooth, SDFBox>(Vec3::One, Color::Red, Vec3::Right)()
-        .bindPropMod<PMOscillateLinear>("smoothing", 2.0, 0.5, 0.5)
-        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Green, Vec3::Zero, Vec3::One, 0.125)()
-        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Yellow, Vec3::Left, Vec3::One, 0.125)()
-        .stepBack(3)
-        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Magenta, Vec3::One * 2.0, Vec3::One, 0.125)()
-        .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Pink, Vec3::Left * 4.0, Vec3::One, 0.125)()
-        .addLightSource(Vec3::Up * 6.0, 20.0, Color::White)
+        .pushOp<OPRepeatLimited>(3.0, 2.0)
+        .bindPropMod<PMOscillateLinearV3>("limits", 5.0, 3.0, 0.5)
+        .pushOp<COMBAdd, SDFBox>(Vec3{ 0.5 }, Color::Blue)()
+        .addLightSource(Vec3{ 1.0, 8.0, -1.0 }, 150.0, Color::White)
     );
 }
 

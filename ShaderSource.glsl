@@ -26,6 +26,11 @@
             float pad2;
         } push;
     
+        const float HALFPI = 1.570796;
+        const float PI = 3.1415923;
+        const float TAU = 6.283185;
+        const float ROOT2 = 1.414213;
+
         vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
         {
 	        alpha *= colorBlending;
@@ -36,11 +41,11 @@
         }
 
         float oscillateSine(float initVal, float period, float amplitude, float phase, float time) {
-            return initVal + sin((time + (phase * period)) / period) * amplitude;
+            return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
         }
 
         float oscillateLinear(float initVal, float period, float amplitude, float phase, float time) {
-            float progress = mod(0.25 * period + (time + phase * period), period) / period;
+            float progress = mod(0.25 * period + time + phase * period, period) / period;
 		    progress -= 0.5;
 		    progress *= 2.0;
 		    progress = abs(progress);
@@ -50,11 +55,22 @@
         }
 
         vec3 oscillateSineV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-            return initVal + sin((vec3(time) + (phase * period)) / period) * amplitude;
+            return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
         }
 
         vec3 oscillateLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-            return initVal;
+            vec3 progress = vec3(
+                mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
+                mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y,
+                mod(0.25 * period.z + time + phase.z * period.z, period.z) / period.z
+		    );
+		    progress -= 0.5;
+		    progress *= 2.0;
+		    progress = abs(progress);
+		    progress -= 0.5;
+		    progress *= 2.0;
+
+		    return initVal + progress * amplitude;
         }
         
         float box(vec3 p, vec3 dimensions) {
@@ -138,6 +154,9 @@
 
 			color0 = vec3(1.0000000, 1.0000000, 1.0000000);
 			p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			pmVec30 = vec3(2.0000000, 2.0000000, 2.0000000);
+			pmVec31 = oscillateLinearV3(vec3(3.0000000, 3.0000000, 3.0000000), vec3(5.0000000, 5.0000000, 5.0000000), vec3(3.0000000, 3.0000000, 3.0000000), vec3(0.5000000, 0.5000000, 0.5000000), time);
+			p0 -= pmVec30 * clamp(round(p0 / pmVec30), -pmVec31, pmVec31);
 			vec3 p1;
 			float d1;
 			vec3 color1;
@@ -145,70 +164,8 @@
 			d1 = d0;
 			color1 = vec3(0.0000000, 0.0000000, 1.0000000);
 			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-			d1 = box(p1, vec3(4.0000000, 0.5000000, 4.0000000));
+			d1 = box(p1, vec3(0.5000000, 0.5000000, 0.5000000));
 
-			if (d1 < d0) {
-				d0 = d1;
-				color0 = color1; 
-			}
-			p1 = p0;
-			d1 = d0;
-			color1 = vec3(1.0000000, 0.0000000, 0.0000000);
-			p1 -= vec3(1.0000000, 0.0000000, 0.0000000);
-			d1 = box(p1, vec3(1.0000000, 1.0000000, 1.0000000));
-
-			vec3 p2;
-			float d2;
-			vec3 color2;
-			p2 = p1;
-			d2 = d1;
-			color2 = vec3(0.0000000, 1.0000000, 0.0000000);
-			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
-			p2 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p2;
-			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
-
-			vec3 p3;
-			float d3;
-			vec3 color3;
-			p3 = p2;
-			d3 = d2;
-			color3 = vec3(1.0000000, 1.0000000, 0.0000000);
-			p3 -= vec3(-1.0000000, 0.0000000, 0.0000000);
-			p3 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p3;
-			d3 = box(p3, vec3(1.0000000, 1.0000000, 1.0000000));
-
-			if (d3 < d2) {
-				d2 = d3;
-				color2 = color3; 
-			}
-			if (d2 < d1) {
-				d1 = d2;
-				color1 = color2; 
-			}
-			pmFloat0 = oscillateLinear(0.5000000, 2.0000000, 0.5000000, 0.5000000, time);
-			pmFloat1 = 0.000000;
-			pmFloat2 = 1.000000;
-			blend = clamp(0.5 - 0.5 * (d1 - d0) / pmFloat0, 0.0, 1.0);
-			d0 = mix(d1, d0, blend) + pmFloat0 * blend * (1.0 - blend);
-			color0 = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color0, color1, pmFloat2);
-			p1 = p0;
-			d1 = d0;
-			color1 = vec3(1.0000000, 0.0000000, 1.0000000);
-			p1 -= vec3(2.0000000, 2.0000000, 2.0000000);
-			p1 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p1;
-			d1 = box(p1, vec3(1.0000000, 1.0000000, 1.0000000));
-
-			p2 = p1;
-			d2 = d1;
-			color2 = vec3(1.0000000, 0.5000000, 0.5000000);
-			p2 -= vec3(-4.0000000, 0.0000000, 0.0000000);
-			p2 = mat3(0.8047379, 0.5058793, -0.3106172, -0.3106172, 0.8047379, 0.5058793, 0.5058793, -0.3106172, 0.8047379) * p2;
-			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
-
-			if (d2 < d1) {
-				d1 = d2;
-				color1 = color2; 
-			}
 			if (d1 < d0) {
 				d0 = d1;
 				color0 = color1; 

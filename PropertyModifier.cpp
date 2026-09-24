@@ -41,7 +41,7 @@ void PMOscillateSineV3::serializeInner(std::stringstream& ss) const
 
 void PMOscillateSineV3::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateSine({}, {}, {}, {}, time)", m_initVal.getShaderVec3(), m_period.getShaderVec3(), m_amplitude.getShaderVec3(), m_phase.getShaderVec3());
+    call = std::format("oscillateSineV3({}, {}, {}, {}, time)", m_initVal.getShaderVec3(), m_period.getShaderVec3(), m_amplitude.getShaderVec3(), m_phase.getShaderVec3());
 }
 
 void PMOscillateLinear::serializeInner(std::stringstream& ss) const
@@ -61,4 +61,9 @@ void PMOscillateLinearV3::serializeInner(std::stringstream& ss) const
     ss << " m_period " << m_period.x << ' ' << m_period.y << ' ' << m_period.z;
     ss << " m_amplitude " << m_amplitude.x << ' ' << m_amplitude.y << ' ' << m_amplitude.z;
     ss << " m_phase " << m_phase.x << ' ' << m_phase.y << ' ' << m_phase.z;
+}
+
+void PMOscillateLinearV3::getShaderModCall(std::string& call) const
+{
+    call = std::format("oscillateLinearV3({}, {}, {}, {}, time)", m_initVal.getShaderVec3(), m_period.getShaderVec3(), m_amplitude.getShaderVec3(), m_phase.getShaderVec3());
 }

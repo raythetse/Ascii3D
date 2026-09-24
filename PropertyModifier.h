@@ -2,6 +2,7 @@
 #include <functional>
 #include <sstream>
 #include <string>
+#include "MathFunctions.h"
 #include "SDFDefaults.h"
 #include "GameTimer.h"
 #include "Vec3.h"
@@ -59,7 +60,7 @@ protected:
 public:
 	PMOscillateSine(std::string_view propName, double period = DEF::PMPeriod, double amplitude = DEF::PMAmplitude, double phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
-		*ptr = m_initVal + std::sin((GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
+		*ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };
 
@@ -76,7 +77,7 @@ protected:
 public:
 	PMOscillateSineV3(std::string_view propName, Vec3 period = DEF::PMPeriod, Vec3 amplitude = DEF::PMAmplitude, Vec3 phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
-		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) / m_period).sin() * m_amplitude;
+		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };
 
@@ -113,7 +114,7 @@ private:
 protected:
 	std::string getClassName() const override { return "PMOscillateLinearV3"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderModCall(std::string& call) const override {};
+	virtual void getShaderModCall(std::string& call) const override;
 public:
 	PMOscillateLinearV3(std::string_view propName, Vec3 period = DEF::PMPeriod, Vec3 amplitude = DEF::PMAmplitude, Vec3 phase = DEF::PMPhase)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
