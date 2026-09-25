@@ -26,7 +26,7 @@ void OPRepeatX::transform(Vec3& p) const
 
 void OPRepeatX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatX \\\n";
+	ss << "\t\t\t// OPRepeatX //\n";
 	if (!m_spacing.x) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".x" : std::to_string(m_spacing.x)) << ";\n";
@@ -41,7 +41,7 @@ void OPRepeatY::transform(Vec3& p) const
 
 void OPRepeatY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatY \\\n";
+	ss << "\t\t\t// OPRepeatY //\n";
 	if (!m_spacing.y) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".y" : std::to_string(m_spacing.y)) << ";\n";
@@ -56,7 +56,7 @@ void OPRepeatZ::transform(Vec3& p) const
 
 void OPRepeatZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatZ \\\n";
+	ss << "\t\t\t// OPRepeatZ //\n";
 	if (!m_spacing.z) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".z" : std::to_string(m_spacing.z)) << ";\n";
@@ -72,7 +72,7 @@ void OPRepeatXY::transform(Vec3& p) const
 
 void OPRepeatXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatXY \\\n";
+	ss << "\t\t\t// OPRepeatXY //\n";
 	if (!m_spacing.x || !m_spacing.y) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
@@ -88,7 +88,7 @@ void OPRepeatXZ::transform(Vec3& p) const
 
 void OPRepeatXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatXZ \\\n";
+	ss << "\t\t\t// OPRepeatXZ //\n";
 	if (!m_spacing.x || !m_spacing.z) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
@@ -104,7 +104,7 @@ void OPRepeatYZ::transform(Vec3& p) const
 
 void OPRepeatYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatYZ \\\n";
+	ss << "\t\t\t// OPRepeatYZ //\n";
 	if (!m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
@@ -119,7 +119,7 @@ void OPRepeatXYZ::transform(Vec3& p) const
 
 void OPRepeatXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatXYZ \\\n";
+	ss << "\t\t\t// OPRepeatXYZ //\n";
 	if (!m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
@@ -145,7 +145,7 @@ void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t le
 
 void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRepeatLimited \\\n";
+	ss << "\t\t\t// OPRepeatLimited //\n";
 	if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";

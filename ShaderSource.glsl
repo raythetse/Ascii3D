@@ -201,8 +201,11 @@
 			vec2 pmVec20, pmVec21, pmVec22;
 			vec3 pmVec30, pmVec31, pmVec32;
 
+			// SDFObject //
 			color0 = vec3(1.0000000, 1.0000000, 1.0000000);
 			p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
+
+			// SDFObject //
 			vec3 p1;
 			float d1;
 			vec3 color1;
@@ -210,7 +213,8 @@
 			d1 = d0;
 			color1 = vec3(1.0000000, 1.0000000, 1.0000000);
 			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-			\ OPCubeRollHeight \
+
+			// OPCubeRollHeight //
 			pmFloat0 = 0.500000;
 			pmFloat1 = 1.000000;
 			pmFloat2 = 1.000000;
@@ -222,21 +226,21 @@
 			pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
 			p1.y -= pmFloat0;
 
-			\ OPTranslateLinear \
+			// OPTranslateLinear //
 			pmFloat0 = 0.000000;
 			pmVec20 = vec2(1.0000000, 1.0000000);
 			pmVec21 = vec2(1.0000000, 1.0000000);
 			pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
 			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
 
-			\ OPTranslateLinear \
+			// OPTranslateLinear //
 			pmFloat0 = 1.000000;
 			pmVec20 = vec2(1.0000000, 1.0000000);
 			pmVec21 = vec2(1.0000000, 1.0000000);
 			pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
 			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
 
-			\ OPCubeRoller \
+			// OPCubeRoller //
 			pmFloat0 = 0.500000;
 			pmFloat1 = 1.000000;
 			vec3 axes0[4]; 
@@ -250,6 +254,7 @@
 			pmFloat2 /= pmFloat1;
 			p1 = rotateVec3(p1, axes0[int(pmFloat0)], 0.25 * pmFloat2);
 
+			// SDFObject //
 			vec3 p2;
 			float d2;
 			vec3 color2;
@@ -257,28 +262,32 @@
 			d2 = d1;
 			color2 = vec3(1.0000000, 0.0000000, 0.0000000);
 			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			// SDFBox //
 			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
 
-			\ COMBAdd \
+
+			// COMBAdd //
 			if (d2 < d1) {
 				d1 = d2;
 				color1 = color2; 
 			}
 
-			\ COMBAdd \
+			// COMBAdd //
 			if (d1 < d0) {
 				d0 = d1;
 				color0 = color1; 
 			}
 
+			// SDFObject //
 			p1 = p0;
 			d1 = d0;
 			color1 = vec3(1.0000000, 1.0000000, 1.0000000);
 			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-			\ OPTranslate \
+
+			// OPTranslate //
 			p1 -= vec3(0.0000000, 1.0000000, 0.0000000); 
 
-			\ OPCubeRollHeight \
+			// OPCubeRollHeight //
 			pmFloat0 = 0.500000;
 			pmFloat1 = 1.000000;
 			pmFloat2 = 3.000000;
@@ -290,21 +299,21 @@
 			pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
 			p1.y -= pmFloat0;
 
-			\ OPTranslateLinear \
+			// OPTranslateLinear //
 			pmFloat0 = 0.000000;
 			pmVec20 = vec2(1.0000000, 1.0000000);
 			pmVec21 = vec2(1.0000000, 1.0000000);
 			pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
 			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
 
-			\ OPTranslateLinear \
+			// OPTranslateLinear //
 			pmFloat0 = 1.000000;
 			pmVec20 = vec2(1.0000000, 1.0000000);
 			pmVec21 = vec2(1.0000000, 1.0000000);
 			pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
 			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
 
-			\ OPCubeRoller \
+			// OPCubeRoller //
 			pmFloat0 = 0.500000;
 			pmFloat1 = 1.000000;
 			vec3 axes1[4]; 
@@ -318,25 +327,28 @@
 			pmFloat2 /= pmFloat1;
 			p1 = rotateVec3(p1, axes1[int(pmFloat0)], 0.25 * pmFloat2);
 
+			// SDFObject //
 			p2 = p1;
 			d2 = d1;
 			color2 = vec3(1.0000000, 1.0000000, 0.0000000);
 			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			// SDFBox //
 			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
 
-			\ COMBAdd \
+
+			// COMBAdd //
 			if (d2 < d1) {
 				d1 = d2;
 				color1 = color2; 
 			}
 
-			\ COMBAddSmooth \
+			// COMBAddSmooth //
 			pmFloat0 = 0.250000;
 			pmFloat1 = 0.000000;
 			pmFloat2 = 0.950000;
 			blend = clamp(0.5 + 0.5 * (d1 - d0) / pmFloat0, 0.0, 1.0);
-			d0 = mix(d1, d0, blend) - pmFloat0 * blend * (1.0 - blend);
 			color0 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color0, color1, pmFloat2);
+			d0 = mix(d1, d0, blend) - pmFloat0 * blend * (1.0 - blend);
 
 		}
 

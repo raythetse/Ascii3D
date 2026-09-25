@@ -26,7 +26,7 @@ double OPRoundOff::resurface(double distance)
 
 void OPRoundOff::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRoundOff \\\n";
+	ss << "\t\t\t// OPRoundOff //\n";
 }
 
 double OPOnion::resurface(double distance) {
@@ -35,7 +35,7 @@ double OPOnion::resurface(double distance) {
 
 void OPOnion::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPOnion \\\n";
+	ss << "\t\t\t// OPOnion //\n";
 }
 
 double OPInsideOut::resurface(double distance) {
@@ -44,6 +44,6 @@ double OPInsideOut::resurface(double distance) {
 
 void OPInsideOut::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPInsideOut \\\n";
+	ss << "\t\t\t// OPInsideOut //\n";
 	ss << "\t\t\td" << level << " = -d" << level << ";\n";
 }

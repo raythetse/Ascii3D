@@ -19,7 +19,7 @@ void OPMirrorX::transform(Vec3& p) const
 
 void OPMirrorX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorX \\\n";
+	ss << "\t\t\t// OPMirrorX //\n";
 	ss << "\t\t\tp" << level << ".x = abs(p" << level << ".x);\n\n";
 }
 
@@ -30,7 +30,7 @@ void OPMirrorY::transform(Vec3& p) const
 
 void OPMirrorY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorY \\\n";
+	ss << "\t\t\t// OPMirrorY //\n";
 	ss << "\t\t\tp" << level << ".y = abs(p" << level << ".y);\n\n";
 }
 
@@ -41,7 +41,7 @@ void OPMirrorZ::transform(Vec3& p) const
 
 void OPMirrorZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorZ \\\n";
+	ss << "\t\t\t// OPMirrorZ //\n";
 	ss << "\t\t\tp" << level << ".z = abs(p" << level << ".z);\n\n";
 }
 
@@ -53,7 +53,7 @@ void OPMirrorXY::transform(Vec3& p) const
 
 void OPMirrorXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorXY \\\n";
+	ss << "\t\t\t// OPMirrorXY //\n";
 	ss << "\t\t\tp" << level << ".xy = abs(p" << level << ".xy);\n\n";
 }
 
@@ -65,7 +65,7 @@ void OPMirrorXZ::transform(Vec3& p) const
 
 void OPMirrorXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorXZ \\\n";
+	ss << "\t\t\t// OPMirrorXZ //\n";
 	ss << "\t\t\tp" << level << ".xz = abs(p" << level << ".xz);\n\n";
 }
 
@@ -77,7 +77,7 @@ void OPMirrorYZ::transform(Vec3& p) const
 
 void OPMirrorYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorYZ \\\n";
+	ss << "\t\t\t// OPMirrorYZ //\n";
 	ss << "\t\t\tp" << level << ".yz = abs(p" << level << ".yz);\n\n";
 }
 
@@ -88,7 +88,7 @@ void OPMirrorXYZ::transform(Vec3& p) const
 
 void OPMirrorXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPMirrorXYZ \\\n";
+	ss << "\t\t\t// OPMirrorXYZ //\n";
 	ss << "\t\t\tp" << level << " = abs(p" << level << ");\n\n";
 }
 
@@ -104,7 +104,7 @@ void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
 
 void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPTranslate \\\n";
+	ss << "\t\t\t// OPTranslate //\n";
 	ss << "\t\t\tp" << level << " -= " << m_translation.getShaderVec3() << "; \n\n";
 }
 
@@ -135,7 +135,7 @@ void OPTranslateSine::innerInnerSerialize(std::stringstream& ss) const
 
 void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPTranslateSine \\\n";
+	ss << "\t\t\t// OPTranslateSine //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "amplitude") ? propName : std::to_string(m_amplitude)) << ";\n";
 	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
@@ -201,7 +201,7 @@ void OPTranslateLinear::innerInnerSerialize(std::stringstream& ss) const
 
 void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPTranslateLinear \\\n";
+	ss << "\t\t\t// OPTranslateLinear //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
 	ss << "\t\t\tpmVec20 = " << (getShaderPropModCalls(propName = "transitTimes") ? propName : m_transitTimes.getShaderVec2()) << ";\n";
@@ -251,7 +251,7 @@ void OPCubeRollHeight::innerInnerSerialize(std::stringstream& ss) const
 
 void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPCubeRollHeight \\\n";
+	ss << "\t\t\t// OPCubeRollHeight //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
 	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "period") ? propName : std::to_string(m_period)) << ";\n";
@@ -299,7 +299,7 @@ void OPRotate::innerInnerSerialize(std::stringstream& ss) const
 
 void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRotate \\\n";
+	ss << "\t\t\t// OPRotate //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotations") ? propName : std::to_string(m_rotations)) << ";\n";
@@ -339,7 +339,7 @@ void OPRotateContinuous::innerInnerSerialize(std::stringstream& ss) const
 
 void OPRotateContinuous::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRotateContinuous \\\n";
+	ss << "\t\t\t// OPRotateContinuous //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotationsPerSecond") ? propName : std::to_string(m_rotationsPerSecond)) << ";\n";
@@ -400,7 +400,7 @@ void OPRotateScan::innerInnerSerialize(std::stringstream& ss) const
 
 void OPRotateScan::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRotateScan \\\n";
+	ss << "\t\t\t// OPRotateScan //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotations") ? propName : std::to_string(m_rotations)) << ";\n";
@@ -458,7 +458,7 @@ void OPRotateDelay::innerInnerSerialize(std::stringstream& ss) const
 
 void OPRotateDelay::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPRotateDelay \\\n";
+	ss << "\t\t\t// OPRotateDelay //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotations") ? propName : std::to_string(m_rotations)) << ";\n";
@@ -517,7 +517,7 @@ void OPCubeRoller::innerInnerSerialize(std::stringstream& ss) const
 
 void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPCubeRoller \\\n";
+	ss << "\t\t\t// OPCubeRoller //\n";
 	static size_t numRollers{ 0 };
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
@@ -581,7 +581,7 @@ void OPElongateX::transform(Vec3& p) const
 
 void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPElongateX \\\n";
+	ss << "\t\t\t// OPElongateX //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
 	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
@@ -595,7 +595,7 @@ void OPElongateY::transform(Vec3& p) const
 
 void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPElongateY \\\n";
+	ss << "\t\t\t// OPElongateY //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
 	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
@@ -609,7 +609,7 @@ void OPElongateZ::transform(Vec3& p) const
 
 void OPElongateZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPElongateZ \\\n";
+	ss << "\t\t\t// OPElongateZ //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
 	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
@@ -635,7 +635,7 @@ void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
 
 void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t\\ OPElongateXYZ \\\n";
+	ss << "\t\t\t// OPElongateXYZ //\n";
 	std::string propName{ "" };
 	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "lengths") ? propName : m_lengths.getShaderVec3()) << ";\n";
 	ss << "\t\t\tpmVec31 = " << (getShaderPropModCalls(propName = "offsets") ? propName : m_offsets.getShaderVec3()) << ";\n";
