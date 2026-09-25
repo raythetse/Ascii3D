@@ -137,17 +137,6 @@ void GameEngine::render()
             m_pixelField.swap();
             break;
         case GameEngine::Hardware: {
-            //const std::string charGradient{ "-~+*vri25E8B@" };
-            //std::string buffer = "\033[1;1H\033[37m";
-            //for (size_t i{}; i < m_dimensions.second; ++i) {
-            //    std::cout << '\n';
-            //    for (size_t j{}; j < m_dimensions.first; ++j) {
-            //        size_t pixelIndex = static_cast<size_t>(i * m_dimensions.first + j);
-            //        int index = static_cast<int>((1.0 - m_hardwareRenderResult[i * m_dimensions.first + j].l) * (charGradient.size() - 1));
-            //        buffer += charGradient[index];
-            //    }
-            //}
-            //std::cout.write(buffer.data(), buffer.size());
             m_renderer.render(m_pixelField);
             m_pixelField.swap();
         }

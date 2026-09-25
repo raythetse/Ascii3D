@@ -41,6 +41,12 @@ const std::string SDFScene::m_shaderFunctions{
         const float TAU = 6.283185;
         const float ROOT2 = 1.414213;
 
+        vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
+            vec3 a = normalize(axis);
+            float angle = rotations * TAU;
+            return p * cos(angle) + cross(a, p) * sin(angle) + a * dot(a, p) * (1.0 - cos(angle));
+        }
+
         vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
         {
 	        alpha *= colorBlending;
@@ -81,6 +87,50 @@ const std::string SDFScene::m_shaderFunctions{
 		    progress *= 2.0;
 
 		    return initVal + progress * amplitude;
+        }
+
+        vec3 translateLinear(vec3 vector, vec2 transitTimes, vec2 endDelays, float phase, float time) {
+	        float progress = mod(time + phase + transitTimes.x * 0.5, transitTimes.x + transitTimes.y + endDelays.x + endDelays.y);
+	        vec3 start = vector * -0.5;
+	        if (progress <= transitTimes.x) {
+		        progress /= transitTimes.x;
+		        return mix(start, -start, progress);
+	        }
+	        float timeFrame = transitTimes.x + endDelays.x;
+	        if (progress <= timeFrame) {
+		        return -start;
+	        }
+	        if (progress <= (timeFrame + transitTimes.y)) {
+		        progress = (progress - transitTimes.x - endDelays.x) / transitTimes.y;
+		        return mix(-start, start, progress);
+	        }
+	        return start;
+        }
+
+        vec3 rotateScan(vec3 p, vec3 axis, vec2 transitTimes, vec2 endDelays, float rotations, float phase, float time) {
+            float progress = mod(time + phase, transitTimes.x + transitTimes.y + endDelays.x + endDelays.y);
+	        if (progress <= transitTimes.x) {
+		        progress /= transitTimes.x;
+                return rotateVec3(p, axis, rotations * progress);
+	        }
+	        float timeFrame = transitTimes.x + endDelays.x;
+	        if (progress <= timeFrame) {
+                return rotateVec3(p, axis, rotations);
+	        }
+	        timeFrame += transitTimes.y;
+	        if (progress <= timeFrame) {
+		        progress = (progress - (transitTimes.x + endDelays.x)) / transitTimes.y;
+                return rotateVec3(p, axis, rotations * (1.0 - progress));
+	        }
+	        return p;
+        }
+
+        vec3 rotateDelay(vec3 p, vec3 axis, float rotations, float rotateTime, float delayTime, float phase, float time) {
+            float cycleTime = rotateTime + delayTime;
+	        float completeCycles = floor((time + phase) / cycleTime);
+	        float progress = mod(time + phase, cycleTime);
+	        completeCycles += min(rotateTime, progress) / rotateTime;
+            return rotateVec3(p, axis, completeCycles * rotations);
         }
         
         float box(vec3 p, vec3 dimensions) {
@@ -312,9 +362,8 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<OPTranslateSine>(Vec3::Right, 2.0, 1.0)
-        .bindPropMod<PMOscillateLinearV3>("axis", 2.0, 2.0, 0.0)
-        .pushOp<COMBAdd, SDFBox>(Vec3{ 0.5 }, Color::Blue, Vec3::Zero, Vec3::One, 0.125)()
+        .pushOp<OPCubeRoller>(std::vector<Vec3>{ Vec3::Right, Vec3::Backward, Vec3::Left, Vec3::Forward })
+        .pushOp<COMBAdd, SDFBox>(Vec3{ 1.0 }, Color::Blue, Vec3::Zero)()
         .addLightSource(Vec3{ 1.0, 8.0, -1.0 }, 150.0, Color::White)
     );
 }
@@ -385,7 +434,7 @@ void SDFScene::oxygenDemo()
 
 void SDFScene::cubesDemo()
 {
-    double smoothing{ 0.2 };
+    double smoothing{ 0.02 };
     double colorBlending{ 0.95 };
 
     add(SDFBuilder()
@@ -422,7 +471,7 @@ void SDFScene::cubesDemo()
             .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
     );
 
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -2.0 }, 0.5));
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 6.0, -2.0 }, 0.5));
 }
 
 void SDFScene::propModDemo()

@@ -126,21 +126,16 @@ private:
 	Vec2 m_transitTimes;
 	Vec2 m_endDelays;
 	double m_phase;
-	Vec3 m_start;
-	Vec3 m_end;
-	double m_cycleTime;
 	Vec3 m_updateVal;
 protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPTranslateLinear"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPTranslateLinear(Vec3 vector = DEF::TRANSVector, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
-		: m_vector(vector), m_start(vector * -0.5), m_end(vector * 0.5), m_transitTimes(transitTimes)
-		, m_endDelays(endDelays), m_phase(phase)
-		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
+		: m_vector(vector), m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -156,7 +151,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPCubeRollHeight"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPCubeRollHeight(double cubeHeight = DEF::TRANSCubeHeight, double period = DEF::TRANSPeriod, double phase = DEF::TRANSPhase)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
@@ -174,7 +169,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotate"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPRotate(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations)
 		: m_axis(axis), m_rotations(rotations) {}
@@ -193,7 +188,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotateContinuous"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPRotateContinuous(Vec3 axis = DEF::TRANSVector, double rotationsPerSecond = DEF::TRANSRotsPerSec, double phase = DEF::TRANSPhase)
 		: m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
@@ -208,20 +203,16 @@ private:
 	Vec2 m_transitTimes;
 	Vec2 m_endDelays;
 	double m_phase;
-	double m_endAngle;
-	double m_cycleTime;
 	Mat3 m_updateVal;
 protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotateScan"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPRotateScan(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
-		: m_axis(axis), m_rotations(rotations), m_endAngle(rotations* MF::TAU)
-		, m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase)
-		, m_cycleTime(m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) {}
+		: m_axis(axis), m_rotations(rotations), m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -233,18 +224,16 @@ private:
 	double m_rotateTime;
 	double m_delayTime;
 	double m_phase;
-	double m_angle;
-	double m_cycleTime;
 	Mat3 m_updateVal;
 protected:
 	void innerUpdate() override;
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPRotateDelay"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPRotateDelay(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations, double rotateTime = DEF::TRANSRotateTime, double delayTime = DEF::TRANSDelayTime, double phase = DEF::TRANSPhase)
-		: m_axis(axis), m_rotations(rotations), m_angle(rotations * MF::TAU), m_rotateTime(rotateTime), m_delayTime(delayTime), m_cycleTime(rotateTime + delayTime), m_phase(phase) {}
+		: m_axis(axis), m_rotations(rotations), m_rotateTime(rotateTime), m_delayTime(delayTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
@@ -260,7 +249,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPCubeRoller"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPCubeRoller(std::vector<Vec3> axes = DEF::TRANSCubeRotAxes, double quarterTurnTime = DEF::TRANSQuarterTurnTime, double phase = DEF::TRANSPhase)
 		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
