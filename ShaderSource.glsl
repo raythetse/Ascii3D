@@ -30,6 +30,7 @@
         const float PI = 3.1415923;
         const float TAU = 6.283185;
         const float ROOT2 = 1.414213;
+        const float FLOAT_MAX = 3.402823466e38;
 
         vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
             vec3 a = normalize(axis);
@@ -207,10 +208,10 @@
 
 			// SDFObject //
 			vec3 p1;
-			float d1;
+			float d1 = FLOAT_MAX;
 			vec3 color1;
 			p1 = p0;
-			d1 = d0;
+			d1 = FLOAT_MAX;
 			color1 = vec3(1.0000000, 1.0000000, 1.0000000);
 			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
 
@@ -256,10 +257,10 @@
 
 			// SDFObject //
 			vec3 p2;
-			float d2;
+			float d2 = FLOAT_MAX;
 			vec3 color2;
 			p2 = p1;
-			d2 = d1;
+			d2 = FLOAT_MAX;
 			color2 = vec3(1.0000000, 0.0000000, 0.0000000);
 			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
 			// SDFBox //
@@ -280,7 +281,7 @@
 
 			// SDFObject //
 			p1 = p0;
-			d1 = d0;
+			d1 = FLOAT_MAX;
 			color1 = vec3(1.0000000, 1.0000000, 1.0000000);
 			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
 
@@ -329,8 +330,159 @@
 
 			// SDFObject //
 			p2 = p1;
-			d2 = d1;
+			d2 = FLOAT_MAX;
 			color2 = vec3(1.0000000, 1.0000000, 0.0000000);
+			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			// SDFBox //
+			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
+
+
+			// COMBAdd //
+			if (d2 < d1) {
+				d1 = d2;
+				color1 = color2; 
+			}
+
+			// COMBAddSmooth //
+			pmFloat0 = 0.250000;
+			pmFloat1 = 0.000000;
+			pmFloat2 = 0.950000;
+			blend = clamp(0.5 + 0.5 * (d1 - d0) / pmFloat0, 0.0, 1.0);
+			color0 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color0, color1, pmFloat2);
+			d0 = mix(d1, d0, blend) - pmFloat0 * blend * (1.0 - blend);
+
+			// SDFObject //
+			p1 = p0;
+			d1 = FLOAT_MAX;
+			color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
+
+			// OPRotate //
+			pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+			pmFloat0 = 0.500000;
+			p1 = rotateVec3(p1, pmVec30, pmFloat0);
+
+			// OPCubeRollHeight //
+			pmFloat0 = 0.500000;
+			pmFloat1 = 1.000000;
+			pmFloat2 = 1.000000;
+			pmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;
+			pmFloat1 = cos(pmFloat0);
+			pmFloat0 = sin(pmFloat0);
+			pmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);
+			pmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);
+			pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
+			p1.y -= pmFloat0;
+
+			// OPTranslateLinear //
+			pmFloat0 = 0.000000;
+			pmVec20 = vec2(1.0000000, 1.0000000);
+			pmVec21 = vec2(1.0000000, 1.0000000);
+			pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
+
+			// OPTranslateLinear //
+			pmFloat0 = 1.000000;
+			pmVec20 = vec2(1.0000000, 1.0000000);
+			pmVec21 = vec2(1.0000000, 1.0000000);
+			pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
+
+			// OPCubeRoller //
+			pmFloat0 = 0.500000;
+			pmFloat1 = 1.000000;
+			vec3 axes2[4]; 
+			axes2[0] = vec3(0.0000000, 0.0000000, 1.0000000);
+			axes2[1] = vec3(1.0000000, 0.0000000, 0.0000000);
+			axes2[2] = vec3(0.0000000, 0.0000000, -1.0000000);
+			axes2[3] = vec3(-1.0000000, 0.0000000, 0.0000000);
+			pmFloat2 = 4 * pmFloat1;
+			pmFloat2 = mod(time + pmFloat0, pmFloat2);
+			pmFloat0 = floor(pmFloat2);
+			pmFloat2 /= pmFloat1;
+			p1 = rotateVec3(p1, axes2[int(pmFloat0)], 0.25 * pmFloat2);
+
+			// SDFObject //
+			p2 = p1;
+			d2 = FLOAT_MAX;
+			color2 = vec3(0.0000000, 0.0000000, 1.0000000);
+			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
+			// SDFBox //
+			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));
+
+
+			// COMBAdd //
+			if (d2 < d1) {
+				d1 = d2;
+				color1 = color2; 
+			}
+
+			// COMBAddSmooth //
+			pmFloat0 = 0.250000;
+			pmFloat1 = 0.000000;
+			pmFloat2 = 0.950000;
+			blend = clamp(0.5 + 0.5 * (d1 - d0) / pmFloat0, 0.0, 1.0);
+			color0 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color0, color1, pmFloat2);
+			d0 = mix(d1, d0, blend) - pmFloat0 * blend * (1.0 - blend);
+
+			// SDFObject //
+			p1 = p0;
+			d1 = FLOAT_MAX;
+			color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+			p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
+
+			// OPTranslate //
+			p1 -= vec3(0.0000000, 1.0000000, 0.0000000); 
+
+			// OPRotate //
+			pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+			pmFloat0 = 0.500000;
+			p1 = rotateVec3(p1, pmVec30, pmFloat0);
+
+			// OPCubeRollHeight //
+			pmFloat0 = 0.500000;
+			pmFloat1 = 1.000000;
+			pmFloat2 = 3.000000;
+			pmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;
+			pmFloat1 = cos(pmFloat0);
+			pmFloat0 = sin(pmFloat0);
+			pmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);
+			pmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);
+			pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
+			p1.y -= pmFloat0;
+
+			// OPTranslateLinear //
+			pmFloat0 = 0.000000;
+			pmVec20 = vec2(1.0000000, 1.0000000);
+			pmVec21 = vec2(1.0000000, 1.0000000);
+			pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
+
+			// OPTranslateLinear //
+			pmFloat0 = 1.000000;
+			pmVec20 = vec2(1.0000000, 1.0000000);
+			pmVec21 = vec2(1.0000000, 1.0000000);
+			pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+			p1 -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);
+
+			// OPCubeRoller //
+			pmFloat0 = 0.500000;
+			pmFloat1 = 1.000000;
+			vec3 axes3[4]; 
+			axes3[0] = vec3(0.0000000, 0.0000000, -1.0000000);
+			axes3[1] = vec3(-1.0000000, 0.0000000, 0.0000000);
+			axes3[2] = vec3(0.0000000, 0.0000000, 1.0000000);
+			axes3[3] = vec3(1.0000000, 0.0000000, 0.0000000);
+			pmFloat2 = 4 * pmFloat1;
+			pmFloat2 = mod(time + pmFloat0, pmFloat2);
+			pmFloat0 = floor(pmFloat2);
+			pmFloat2 /= pmFloat1;
+			p1 = rotateVec3(p1, axes3[int(pmFloat0)], 0.25 * pmFloat2);
+
+			// SDFObject //
+			p2 = p1;
+			d2 = FLOAT_MAX;
+			color2 = vec3(0.0000000, 1.0000000, 0.0000000);
 			p2 -= vec3(0.0000000, 0.0000000, 0.0000000);
 			// SDFBox //
 			d2 = box(p2, vec3(1.0000000, 1.0000000, 1.0000000));

@@ -40,6 +40,7 @@ const std::string SDFScene::m_shaderFunctions{
         const float PI = 3.1415923;
         const float TAU = 6.283185;
         const float ROOT2 = 1.414213;
+        const float FLOAT_MAX = 3.402823466e38;
 
         vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
             vec3 a = normalize(axis);
@@ -453,22 +454,22 @@ void SDFScene::cubesDemo()
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
             .pushOp<COMBAdd, SDFBox>()().color(Color::Yellow)
                 .stepBack(2)
-        //.pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-        //    .pushOp<OPRotate>()
-        //    .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
-        //    .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-        //    .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-        //    .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
-        //    .pushOp<COMBAdd, SDFBox>()().color(Color::Blue)
-        //        .stepBack(2)
-        //.pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-        //    .pushOp<OPTranslate>()
-        //    .pushOp<OPRotate>()
-        //    .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
-        //    .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-        //    .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-        //    .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
-        //    .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
+        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
+            .pushOp<OPRotate>()
+            .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
+            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
+            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
+            .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
+            .pushOp<COMBAdd, SDFBox>()().color(Color::Blue)
+                .stepBack(2)
+        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
+            .pushOp<OPTranslate>()
+            .pushOp<OPRotate>()
+            .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
+            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
+            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
+            .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
+            .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
     );
 
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 6.0, -2.0 }, 100.0));

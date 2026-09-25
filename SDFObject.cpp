@@ -89,13 +89,13 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
     ss << "\t\t\t// SDFObject //\n";
     if (level > maxLevel) {
         ss << "\t\t\tvec3 p" << level << ";\n";
-        ss << "\t\t\tfloat d" << level << ";\n";
+        ss << "\t\t\tfloat d" << level << " = FLOAT_MAX;\n";
         ss << "\t\t\tvec3 color" << level << ";\n";
         maxLevel = level;
     }
     if (level != 0) {
         ss << "\t\t\tp" << level << " = p" << (level - 1) << ";\n";
-        ss << "\t\t\td" << level << " = d" << (level - 1) << ";\n";
+        ss << "\t\t\td" << level << " = FLOAT_MAX;\n";
     }
     ss << "\t\t\tcolor" << level << " = " << m_color.getShaderVec3() << ";\n";
     ss << "\t\t\tp" << level << " -= " << m_position.getShaderVec3() << ";\n";
