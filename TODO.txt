@@ -1,4 +1,5 @@
 Required:
+- fix lighting and apply to GLSL
 - fix inconsistency in cubes demo
 - verify consistency of inheriting object local pos/rot between software/hardware rendering
 - make getShaderOpCalls required

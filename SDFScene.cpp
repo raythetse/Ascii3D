@@ -51,8 +51,7 @@ const std::string SDFScene::m_shaderFunctions{
         {
 	        alpha *= colorBlending;
 	        alpha -= 0.5 * (colorBlending - 1.0);
-	        alpha = alpha < 0.0 ? 0.0 : alpha;
-	        alpha = alpha > 1.0 ? 1.0 : alpha;
+	        alpha = clamp(alpha, 0.0, 1.0);
 	        return mix(colorA, colorB, alpha);
         }
 
@@ -372,7 +371,7 @@ void SDFScene::test()
 void SDFScene::frameDemo()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFCylinderY>(0.01, 15.0, Color::SkyBlue, Vec3::Down * 4.0)()
+        .pushOp<COMBAdd, SDFCylinderY>(15.0, 0.01, Color::SkyBlue, Vec3::Down * 4.0)()
             .stepBack()
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.1)
         .pushOp<OPRotateContinuous>(Vec3::Right, 0.1)
@@ -427,7 +426,7 @@ void SDFScene::oxygenDemo()
                                 .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.0, 0.26, 0.0 })
                                     .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -0.2, 0.01, 0.0 })
                                         .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.19, -0.084, -0.02 })
-        .addLightSource(Vec3{ 1.0, 4.0, -1.0 }, 1.0, Color::White)
+        .addLightSource(Vec3{ 1.0, 6.0, -2.0 }, 100.0, Color::White)
     ;
 
     add(std::move(builder));
@@ -435,7 +434,7 @@ void SDFScene::oxygenDemo()
 
 void SDFScene::cubesDemo()
 {
-    double smoothing{ 0.02 };
+    double smoothing{ 0.25 };
     double colorBlending{ 0.95 };
 
     add(SDFBuilder()
@@ -454,25 +453,25 @@ void SDFScene::cubesDemo()
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
             .pushOp<COMBAdd, SDFBox>()().color(Color::Yellow)
                 .stepBack(2)
-        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-            .pushOp<OPRotate>()
-            .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
-            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-            .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
-            .pushOp<COMBAdd, SDFBox>()().color(Color::Blue)
-                .stepBack(2)
-        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-            .pushOp<OPTranslate>()
-            .pushOp<OPRotate>()
-            .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
-            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-            .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
-            .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
+        //.pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
+        //    .pushOp<OPRotate>()
+        //    .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
+        //    .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
+        //    .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
+        //    .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
+        //    .pushOp<COMBAdd, SDFBox>()().color(Color::Blue)
+        //        .stepBack(2)
+        //.pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
+        //    .pushOp<OPTranslate>()
+        //    .pushOp<OPRotate>()
+        //    .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
+        //    .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
+        //    .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
+        //    .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
+        //    .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
     );
 
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 6.0, -2.0 }, 0.5));
+    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 6.0, -2.0 }, 100.0));
 }
 
 void SDFScene::propModDemo()

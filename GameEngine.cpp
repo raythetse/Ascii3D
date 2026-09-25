@@ -32,7 +32,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
 
 void GameEngine::run()
 {
-    m_scene = SDFScene(SDFScene::LoadOption::Test);
+    m_scene = SDFScene(SDFScene::LoadOption::Cubes);
     //m_scene = SDFScene("MyFile.txt");
 
     m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
