@@ -362,8 +362,9 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<OPCubeRoller>(std::vector<Vec3>{ Vec3::Right, Vec3::Backward, Vec3::Left, Vec3::Forward })
-        .pushOp<COMBAdd, SDFBox>(Vec3{ 1.0 }, Color::Blue, Vec3::Zero)()
+        .pushOp<OPElongateXYZ>(Vec3{ 2.0 }, Vec3{ 0.0, 0.0, 0.0 })
+        .bindPropMod<PMOscillateSineV3>("offsets", 4.0, 0.51, Vec3{ 0.0, 0.333333, 0.666666 })
+        .pushOp<COMBAdd, SDFSphere>(0.5, Color::Blue)()
         .addLightSource(Vec3{ 1.0, 8.0, -1.0 }, 150.0, Color::White)
     );
 }

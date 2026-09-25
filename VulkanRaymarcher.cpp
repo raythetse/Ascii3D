@@ -60,7 +60,7 @@ bool VulkanRaymarcher::selectDevice() {
     std::cout << "      ASCII Raymarcher 3D - Ray Young\n";
     std::cout << "===========================================\n\n";
     std::cout << "          Valid Rendering Devices:\n\n";
-    std::cout << " - CPU (Multi-threaded)\n";
+    std::cout << "[1] - CPU (Multi-threaded)\n";
 
     for (size_t i{}; i < candidateDevices.size(); ++i) {
         std::cout << "[" << (i + 2) << "] - " << candidateDeviceProps[i].deviceName << '\n';

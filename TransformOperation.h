@@ -278,7 +278,7 @@ class OPElongateX : public Elongate
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateX"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPElongateX(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
 		: Elongate(length, offset) {}
@@ -289,7 +289,7 @@ class OPElongateY : public Elongate
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPElongateY(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
 		: Elongate(length, offset) {}
@@ -300,7 +300,7 @@ class OPElongateZ : public Elongate
 protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPElongateZ(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
 		: Elongate(length, offset) {}
@@ -317,7 +317,7 @@ protected:
 	void transform(Vec3& p) const override;
 	std::string getClassName() const { return "OPElongateXYZ"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPElongateXYZ(Vec3 lengths = DEF::TRANSElongateLength, Vec3 offsets = DEF::TRANSElongateOffset)
 		: m_lengths(lengths), m_offsets(offsets) {}

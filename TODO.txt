@@ -13,6 +13,7 @@ Required:
 - fix constructor accessibilities on abstracts
 
 Optional:
+- Add oscillate prop modes with end delays
 - change repeat operations to not rely of vec3
 - camera track
 - input for other params (draw dist, color depth, surf tolarance, etc)

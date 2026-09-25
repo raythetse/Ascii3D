@@ -516,7 +516,7 @@ void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 		ss << "\t\t\taxes" << numRollers << "[" << i << "] = " << m_axes[i].getShaderVec3() << ";\n";
 	}
 
-	ss << "\t\t\pmFloat2 = " << m_axes.size() << " * pmFloat1;\n";
+	ss << "\t\t\tpmFloat2 = " << m_axes.size() << " * pmFloat1;\n";
 	ss << "\t\t\tpmFloat2 = mod(time + pmFloat0, pmFloat2);\n";
 	ss << "\t\t\tpmFloat0 = floor(pmFloat2);\n";
 	ss << "\t\t\tpmFloat2 /= pmFloat1;\n";
@@ -569,14 +569,41 @@ void OPElongateX::transform(Vec3& p) const
 	p.x -= std::clamp(p.x - m_offset, m_halfLenNeg, m_halfLen);
 }
 
+void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+
+	ss << "p" << level << ".x -= clamp(p" << level << ".x - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n";
+}
+
 void OPElongateY::transform(Vec3& p) const
 {
 	p.y -= std::clamp(p.y - m_offset, m_halfLenNeg, m_halfLen);
 }
 
+void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+
+	ss << "p" << level << ".y -= clamp(p" << level << ".y - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n";
+}
+
 void OPElongateZ::transform(Vec3& p) const
 {
 	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
+}
+
+void OPElongateZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\t\t\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+
+	ss << "p" << level << ".z -= clamp(p" << level << ".z - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n";
 }
 
 void OPElongateXYZ::innerUpdate()
@@ -594,6 +621,15 @@ void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
 {
 	ss << " m_lengths " << m_lengths.x << ' ' << m_lengths.y << ' ' << m_lengths.z;
 	ss << " m_offsets " << m_offsets.x << ' ' << m_offsets.y << ' ' << m_offsets.z;
+}
+
+void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "lengths") ? propName : m_lengths.getShaderVec3()) << ";\n";
+	ss << "\t\t\tpmVec31 = " << (getShaderPropModCalls(propName = "offsets") ? propName : m_offsets.getShaderVec3()) << ";\n";
+
+	ss << "p" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n";
 }
 
 void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
