@@ -94,7 +94,7 @@ void GameEngine::march()
 
 void GameEngine::marchHardware()
 {
-    m_vrm.setCanvasSize(m_dimensions.first, m_dimensions.second);
+    m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     Vec3 camPos = m_camera.getPosition();
     Vec3 camForward = m_camera.getForward();
     Vec3 camRight = m_camera.getRight();

@@ -30,7 +30,6 @@ bool PixelField::changedColor(std::size_t row, size_t col) const
 
 bool PixelField::changed(std::size_t row, size_t col) const
 {
-    std::size_t index = row * m_width + col;
     return changedColor(row, col) || changedChar(row, col);
 }
 
@@ -55,18 +54,17 @@ void PixelField::setSize(const size_t width, const size_t height)
 
 void PixelField::fromHardware(const PixelOutput* pixelBuffer)
 {
-    auto& field = m_swap ? m_fieldB : m_fieldA;
-
-    std::for_each(std::execution::par, m_pixelRange.begin(), m_pixelRange.end(), [this, &field, pixelBuffer](size_t index) {
+    std::for_each(std::execution::par, m_pixelRange.begin(), m_pixelRange.end(), [this, pixelBuffer](size_t index) {
         size_t row = index / m_width;
         size_t col = index % m_width;
 
-        field[index].renderColor.x = pixelBuffer[index].r * 255.0;
-        field[index].renderColor.y = pixelBuffer[index].g * 255.0;
-        field[index].renderColor.z = pixelBuffer[index].b * 255.0;
-        field[index].camDistance = 1.0 - pixelBuffer[index].d;
+        (*this)(row, col).renderColor.x = pixelBuffer[index].r;
+        (*this)(row, col).renderColor.y = pixelBuffer[index].g;
+        (*this)(row, col).renderColor.z = pixelBuffer[index].b;
+        (*this)(row, col).renderColor = (*this)(row, col).renderColor.quantize(16);
+        (*this)(row, col).renderColor *= 255.0;
 
-        field[index].updateRenderChar(pixelBuffer[index].l, field[index].camDistance);
-        field[index].updateColorCode();
+        (*this)(row, col).updateRenderChar(pixelBuffer[index].l, 1.0 - pixelBuffer[index].d);
+        (*this)(row, col).updateColorCode();
     });
 }

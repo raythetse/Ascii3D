@@ -23,15 +23,12 @@ void Renderer::render(PixelField& field)
 		}
 	}
 
-	size_t numChanges{};
-
-	std::for_each(std::execution::par, m_rowIndices.begin(), m_rowIndices.end(), [this, &field, &numChanges](size_t row) {
+	std::for_each(std::execution::par, m_rowIndices.begin(), m_rowIndices.end(), [this, &field](size_t row) {
 		Vec3 pColor{ -1, -1, -1 };
 		for (int col{}; col < field.width(); ++col) {
 			Vec3 color = field(row, col).renderColor;
 			if (field.changedColor(row, col) || color != pColor) {
 				m_rowBuffer[row] += field(row, col).colorCode;
-				++numChanges;
 			}
 			m_rowBuffer[row] += field(row, col).renderChar;
 			pColor = color;

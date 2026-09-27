@@ -8,7 +8,7 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 {
 	Vec3 lightColor{ 0.0 };
 	double totalLight{ 0.0 };
-	double ambPower = 0.05;
+	double ambPower = 0.15;
 
 	if (object) {
 		for (size_t i{}; i < lights.size(); ++i) {
@@ -34,7 +34,7 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 		totalLight = std::min(1.0, lightColor.length());
 	}
 
-	//color = color.quantize(64);
+	lightColor = lightColor.quantize(16);
 	//totalLight = 1.0 - (camDistance / maxDistance);
 
 	updateRenderChar(totalLight, camDistance / maxDistance);

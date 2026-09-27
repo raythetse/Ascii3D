@@ -146,7 +146,7 @@ Vec3 Vec3::getNormal() const
 Vec3 Vec3::quantize(size_t level)
 {
     if (level <= 0) return *this;
-    return { std::floor(level * x) / level, std::floor(level * y) / level, std::floor(level * z) / level };
+    return { std::round(level * x) / level, std::round(level * y) / level, std::round(level * z) / level };
 }
 
 Vec3 Vec3::floor() const

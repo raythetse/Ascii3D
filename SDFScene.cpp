@@ -42,7 +42,7 @@ const float TAU = 6.283185;
 const float ROOT2 = 1.414213;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
-const float AMB_LIGHT_POW = 0.05;
+const float AMB_LIGHT_POW = 0.15;
 const float SHADOW_TOLERANCE = 0.01;
 
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
@@ -236,7 +236,11 @@ void main() {
     float rayLength = 0.0;
 
     uint outIndex = (coordY * uint(push.width)) + coordX;
+    pixels[outIndex].r = 0.0;
+    pixels[outIndex].g = 0.0;
+    pixels[outIndex].b = 0.0;
     pixels[outIndex].l = 0.0;
+    pixels[outIndex].d = FLOAT_MAX;
 
     bool hit = false;
     vec3 p0;
@@ -318,6 +322,12 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
     ss << "\t\tfloat d0;\n";
     ss << "\t\tfloat rayLength;\n";
     ss << "\t\tvec3 cumulativeColor = vec3(0.0);\n";
+
+
+    ss << "\t\tpixels[outIndex].r = 0.0;\n";
+    ss << "\t\tpixels[outIndex].g = 0.0;\n";
+    ss << "\t\tpixels[outIndex].b = 0.0;\n";
+    ss << "\t\tpixels[outIndex].l = 0.0;\n";
 
     for (size_t i{}; i < m_lights.size(); ++i) {
         ss << "\n\t\t// SAMPLE LIGHT [" << i << "] //\n";
