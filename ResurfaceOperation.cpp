@@ -26,10 +26,10 @@ double OPRoundOff::resurface(double distance)
 
 void OPRoundOff::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRoundOff //\n";
 	std::string propName{ "" };
-	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-	ss << "\t\t\td" << level << " -= pmFloat0;\n\n";
+	ss << "\t// OPRoundOff //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+	ss << "\td" << level << " -= pmFloat0;\n\n";
 }
 
 double OPOnion::resurface(double distance) {
@@ -38,10 +38,10 @@ double OPOnion::resurface(double distance) {
 
 void OPOnion::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPOnion //\n";
 	std::string propName{ "" };
-	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-	ss << "\t\t\td" << level << " = abs(d" << level << ") - pmFloat0; \n\n";
+	ss << "\t// OPOnion //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+	ss << "\td" << level << " = abs(d" << level << ") - pmFloat0; \n\n";
 }
 
 double OPInsideOut::resurface(double distance) {
@@ -50,6 +50,6 @@ double OPInsideOut::resurface(double distance) {
 
 void OPInsideOut::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPInsideOut //\n";
-	ss << "\t\t\td" << level << " = -d" << level << ";\n\n";
+	ss << "\t// OPInsideOut //\n";
+	ss << "\td" << level << " = -d" << level << ";\n\n";
 }

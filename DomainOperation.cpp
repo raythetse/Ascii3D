@@ -26,11 +26,11 @@ void OPRepeatX::transform(Vec3& p) const
 
 void OPRepeatX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatX //\n";
 	if (!m_spacing.x) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".x" : std::to_string(m_spacing.x)) << ";\n";
-	ss << "\t\t\tp" << level << ".x -= pmFloat0 * round(p" << level << ".x / pmFloat0);\n\n";
+	ss << "\t// OPRepeatX //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".x" : std::to_string(m_spacing.x)) << ";\n";
+	ss << "\tp" << level << ".x -= pmFloat0 * round(p" << level << ".x / pmFloat0);\n\n";
 }
 
 void OPRepeatY::transform(Vec3& p) const
@@ -41,11 +41,11 @@ void OPRepeatY::transform(Vec3& p) const
 
 void OPRepeatY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatY //\n";
 	if (!m_spacing.y) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".y" : std::to_string(m_spacing.y)) << ";\n";
-	ss << "\t\t\tp" << level << ".y -= pmFloat0 * round(p" << level << ".y / pmFloat0);\n\n";
+	ss << "\t// OPRepeatY //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".y" : std::to_string(m_spacing.y)) << ";\n";
+	ss << "\tp" << level << ".y -= pmFloat0 * round(p" << level << ".y / pmFloat0);\n\n";
 }
 
 void OPRepeatZ::transform(Vec3& p) const
@@ -56,11 +56,11 @@ void OPRepeatZ::transform(Vec3& p) const
 
 void OPRepeatZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatZ //\n";
 	if (!m_spacing.z) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".z" : std::to_string(m_spacing.z)) << ";\n";
-	ss << "\t\t\tp" << level << ".z -= pmFloat0 * round(p" << level << ".z / pmFloat0);\n\n";
+	ss << "\t// OPRepeatZ //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "spacing") ? propName + ".z" : std::to_string(m_spacing.z)) << ";\n";
+	ss << "\tp" << level << ".z -= pmFloat0 * round(p" << level << ".z / pmFloat0);\n\n";
 }
 
 void OPRepeatXY::transform(Vec3& p) const
@@ -72,11 +72,11 @@ void OPRepeatXY::transform(Vec3& p) const
 
 void OPRepeatXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatXY //\n";
 	if (!m_spacing.x || !m_spacing.y) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
-	ss << "\t\t\tp" << level << ".xy -= pmVec30.xy * round(p" << level << ".xy / pmVec30.xy);\n\n";
+	ss << "\t// OPRepeatXY //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << ".xy -= pmVec30.xy * round(p" << level << ".xy / pmVec30.xy);\n\n";
 }
 
 void OPRepeatXZ::transform(Vec3& p) const
@@ -88,11 +88,11 @@ void OPRepeatXZ::transform(Vec3& p) const
 
 void OPRepeatXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatXZ //\n";
 	if (!m_spacing.x || !m_spacing.z) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
-	ss << "\t\t\tp" << level << ".xz -= pmVec30.xz * round(p" << level << ".xz / pmVec30.xz);\n\n";
+	ss << "\t// OPRepeatXZ //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << ".xz -= pmVec30.xz * round(p" << level << ".xz / pmVec30.xz);\n\n";
 }
 
 void OPRepeatYZ::transform(Vec3& p) const
@@ -104,11 +104,11 @@ void OPRepeatYZ::transform(Vec3& p) const
 
 void OPRepeatYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatYZ //\n";
 	if (!m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
-	ss << "\t\t\tp" << level << ".yz -= pmVec30.yz * round(p" << level << ".yz / pmVec30.yz);\n\n";
+	ss << "\t// OPRepeatYZ //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << ".yz -= pmVec30.yz * round(p" << level << ".yz / pmVec30.yz);\n\n";
 }
 
 void OPRepeatXYZ::transform(Vec3& p) const
@@ -119,11 +119,11 @@ void OPRepeatXYZ::transform(Vec3& p) const
 
 void OPRepeatXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatXYZ //\n";
 	if (!m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
-	ss << "\t\t\tp" << level << " -= pmVec30 * round(p" << level << " / pmVec30);\n\n";
+	ss << "\t// OPRepeatXYZ //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << " -= pmVec30 * round(p" << level << " / pmVec30);\n\n";
 }
 
 void OPRepeatLimited::transform(Vec3& p) const
@@ -145,12 +145,12 @@ void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t le
 
 void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
-	ss << "\t\t\t// OPRepeatLimited //\n";
 	if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
-	ss << "\t\t\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
-	ss << "\t\t\tpmVec31 = " << (getShaderPropModCalls(propName = "limits") ? propName : m_limits.getShaderVec3()) << ";\n";
-	ss << "\t\t\tp" << level << " -= pmVec30 * clamp(round(p" << level << " / pmVec30), -pmVec31, pmVec31);\n\n";
+	ss << "\t// OPRepeatLimited //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "spacing") ? propName : m_spacing.getShaderVec3()) << ";\n";
+	ss << "\tpmVec31 = " << (getShaderPropModCalls(propName = "limits") ? propName : m_limits.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << " -= pmVec30 * clamp(round(p" << level << " / pmVec30), -pmVec31, pmVec31);\n\n";
 }
 
 void OPRepeatLimited::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)

@@ -1,6 +1,5 @@
 Required:
-- fix lighting and apply to GLSL
-- fix inconsistency in cubes demo
+- fix render loop slowdown when getting close then backing off in glsl mode with black background
 - verify consistency of inheriting object local pos/rot between software/hardware rendering
 - make getShaderOpCalls required
 - GLSL or HLSL hardward marching

@@ -9,7 +9,7 @@
 
 // Structured pixel output mapped from VRAM
 struct PixelOutput {
-    float r, g, b, l;
+    float r, g, b, d, l;
 };
 
 // Packed hardware registers for per-frame data (Must be a multiple of 16 bytes total)

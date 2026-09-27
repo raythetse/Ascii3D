@@ -2,7 +2,7 @@
 #include <sstream>
 
 LightSource::LightSource(Vec3 position, double luminance, Color color)
-	: SDFObject(color), m_luminance(luminance), m_position(position) {}
+	: m_color(color), m_luminance(luminance), m_position(position) {}
 
 Vec3 LightSource::position()
 {
@@ -17,11 +17,6 @@ double LightSource::luminance()
 Color LightSource::color()
 {
 	return m_color;
-}
-
-double LightSource::signedDistanceInner(Vec3 p) const
-{
-	return 0.0;
 }
 
 void LightSource::serialize(std::vector<std::string>& strVec)

@@ -32,12 +32,12 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
 
 void GameEngine::run()
 {
-    m_scene = SDFScene(SDFScene::LoadOption::Test);
+    m_scene = SDFScene(SDFScene::LoadOption::Torus);
     //m_scene = SDFScene("MyFile.txt");
 
     m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
     if (m_marchMode == Hardware) {
-        std::string shaderCode = m_scene.buildSampleFunction();
+        std::string shaderCode = m_scene.buildComputeShader();
         FileHandler::saveToFile(shaderCode, "ShaderSource.glsl");
         m_vrm.setShaderSource(shaderCode);
         m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
@@ -94,6 +94,7 @@ void GameEngine::march()
 
 void GameEngine::marchHardware()
 {
+    m_vrm.setCanvasSize(m_dimensions.first, m_dimensions.second);
     Vec3 camPos = m_camera.getPosition();
     Vec3 camForward = m_camera.getForward();
     Vec3 camRight = m_camera.getRight();

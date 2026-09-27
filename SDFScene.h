@@ -37,6 +37,8 @@ private:
 	void elongateDemo();
 	void torusDemo();
 	void propModTests();
+	void buildSampleFunction(std::stringstream& ss) const;
+	void buildLightPasses(std::stringstream& ss) const;
 public:
 	SDFScene() = default;
 	SDFScene(LoadOption loadOption);
@@ -49,6 +51,6 @@ public:
 	SDFObject* object() { return m_baseObject.get(); }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
 	bool serialize(std::vector<std::string>& strVec) const;
-	std::string buildSampleFunction() const;
+	std::string buildComputeShader() const;
 };
 
