@@ -33,7 +33,7 @@ const float ROOT2 = 1.414213;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.05;
-const float SHADOW_TOLERANCE = 0.99;
+const float SHADOW_TOLERANCE = 0.01;
 
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
     vec3 a = normalize(axis);
@@ -370,38 +370,33 @@ void main() {
         sampleScene(np - offsetZ, push.maxDistance, d2, colorSample, push.time);
         normal.z = d1 - d2;
 
-        normal = abs(normalize(normal));
+        normal = normalize(normal);
 
 		// LIGHT SAMPLING //
 		float lightDist;
 		float d0;
 		float rayLength;
 		vec3 cumulativeColor = vec3(0.0);
-		float cumulativeLightPow = 0.0;
 
 		// SAMPLE LIGHT [0] //
 		rayDir = vec3(-16.0000000, -16.0000000, -16.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
-		rayLength = push.surfTolerance;
+		rayLength = push.surfTolerance+0.001;
 		d0 = push.maxDistance;
-		while (rayLength < lightDist) {
-			np = p0 + rayDir * SHADOW_TOLERANCE;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
 
 			sampleScene(np, lightDist, d0, colorSample, push.time);
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = rayLength >= lightDist ? attenuation * 350 : 0.0;
+				float directLight = (rayLength >= lightDist) ? attenuation * 350 : 0.0;
 				float ambLight = 350 * AMB_LIGHT_POW * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeLightPow += lightPower;
 				cumulativeColor += vec3(1.0000000, 0.5000000, 0.5000000) * lightPower;
-		pixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);
-		pixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);
-		pixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);
 				break;
 			}
 		}
@@ -410,25 +405,21 @@ void main() {
 		rayDir = vec3(16.0000000, 16.0000000, 16.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
-		rayLength = push.surfTolerance;
+		rayLength = push.surfTolerance+0.001;
 		d0 = push.maxDistance;
-		while (rayLength < lightDist) {
-			np = p0 + rayDir * SHADOW_TOLERANCE;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
 
 			sampleScene(np, lightDist, d0, colorSample, push.time);
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = rayLength >= lightDist ? attenuation * 350 : 0.0;
+				float directLight = (rayLength >= lightDist) ? attenuation * 350 : 0.0;
 				float ambLight = 350 * AMB_LIGHT_POW * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeLightPow += lightPower;
 				cumulativeColor += vec3(0.5000000, 0.5000000, 1.0000000) * lightPower;
-		pixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);
-		pixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);
-		pixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);
 				break;
 			}
 		}
@@ -437,32 +428,30 @@ void main() {
 		rayDir = vec3(8.0000000, 0.0000000, -16.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
-		rayLength = push.surfTolerance;
+		rayLength = push.surfTolerance+0.001;
 		d0 = push.maxDistance;
-		while (rayLength < lightDist) {
-			np = p0 + rayDir * SHADOW_TOLERANCE;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
 
 			sampleScene(np, lightDist, d0, colorSample, push.time);
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = rayLength >= lightDist ? attenuation * 350 : 0.0;
+				float directLight = (rayLength >= lightDist) ? attenuation * 350 : 0.0;
 				float ambLight = 350 * AMB_LIGHT_POW * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeLightPow += lightPower;
 				cumulativeColor += vec3(0.5000000, 1.0000000, 0.5000000) * lightPower;
-		pixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);
-		pixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);
-		pixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);
 				break;
 			}
 		}
 
 		cumulativeColor = clamp(cumulativeColor * color, 0.0, 1.0);
 		cumulativeColor = mix(cumulativeColor, cumulativeColor, 0.2);
-		cumulativeLightPow = min(1.0, length(cumulativeColor));
-		pixels[outIndex].l = cumulativeLightPow;
+		pixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);
+		pixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);
+		pixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);
+		pixels[outIndex].l = min(1.0, length(cumulativeColor));
 	}
 }

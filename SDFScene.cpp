@@ -43,7 +43,7 @@ const float ROOT2 = 1.414213;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.05;
-const float SHADOW_TOLERANCE = 0.99;
+const float SHADOW_TOLERANCE = 0.01;
 
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
     vec3 a = normalize(axis);
@@ -283,7 +283,7 @@ void main() {
         sampleScene(np - offsetZ, push.maxDistance, d2, colorSample, push.time);
         normal.z = d1 - d2;
 
-        normal = abs(normalize(normal));
+        normal = normalize(normal);
 
 )"
 };
@@ -318,29 +318,27 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
     ss << "\t\tfloat d0;\n";
     ss << "\t\tfloat rayLength;\n";
     ss << "\t\tvec3 cumulativeColor = vec3(0.0);\n";
-    ss << "\t\tfloat cumulativeLightPow = 0.0;\n";
 
     for (size_t i{}; i < m_lights.size(); ++i) {
         ss << "\n\t\t// SAMPLE LIGHT [" << i << "] //\n";
         ss << "\t\trayDir = " << m_lights[i]->position().getShaderVec3() << " - p0;\n";
         ss << "\t\tlightDist = length(rayDir);\n";
         ss << "\t\trayDir = normalize(rayDir);\n";
-        ss << "\t\trayLength = push.surfTolerance;\n";
+        ss << "\t\trayLength = push.surfTolerance+0.001;\n";
         ss << "\t\td0 = push.maxDistance;\n";
 
-        ss << "\t\twhile (rayLength < lightDist) {\n";
-        ss << "\t\t\tnp = p0 + rayDir * SHADOW_TOLERANCE;\n\n";
+        ss << "\t\twhile (true) {\n";
+        ss << "\t\t\tnp = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;\n\n";
         ss << "\t\t\tsampleScene(np, lightDist, d0, colorSample, push.time);\n";
 
         ss << "\t\t\trayLength += d0;\n";
         ss << "\t\t\tif (d0 < push.surfTolerance || rayLength >= lightDist) {\n";
         ss << "\t\t\t\tfloat attenuation = 1.0 / (lightDist * lightDist);\n";
-        ss << "\t\t\t\tfloat directLight = rayLength >= lightDist ? attenuation * " << m_lights[i]->luminance() << " : 0.0;\n";
+        ss << "\t\t\t\tfloat directLight = (rayLength >= lightDist) ? attenuation * " << m_lights[i]->luminance() << " : 0.0;\n";
         ss << "\t\t\t\tfloat ambLight = " << m_lights[i]->luminance() << " * AMB_LIGHT_POW * attenuation;\n";
         ss << "\t\t\t\tfloat dot = max(0.0, dot(rayDir, normal));\n";
         ss << "\t\t\t\tdirectLight *= dot;\n";
         ss << "\t\t\t\tfloat lightPower = directLight + ambLight;\n";
-        ss << "\t\t\t\tcumulativeLightPow += lightPower;\n";
         ss << "\t\t\t\tcumulativeColor += " << m_lights[i]->color().getShaderVec3() << " * lightPower;\n";
         ss << "\t\t\t\tbreak;\n";
         ss << "\t\t\t}\n";
@@ -348,11 +346,10 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
     }
     ss << "\n\t\tcumulativeColor = clamp(cumulativeColor * color, 0.0, 1.0);\n";
     ss << "\t\tcumulativeColor = mix(cumulativeColor, cumulativeColor, 0.2);\n";
-    ss << "\t\tcumulativeLightPow = min(1.0, length(cumulativeColor));\n";
     ss << "\t\tpixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);\n";
     ss << "\t\tpixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);\n";
     ss << "\t\tpixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);\n";
-    ss << "\t\tpixels[outIndex].l = cumulativeLightPow;\n";
+    ss << "\t\tpixels[outIndex].l = min(1.0, length(cumulativeColor));\n";
 }
 
 SDFScene::SDFScene(LoadOption loadOption)
