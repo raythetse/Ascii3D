@@ -6,11 +6,10 @@
 class Renderer
 {
 private:
-	std::vector<std::string> m_rowBuffer{};
 	std::string m_frameBuffer{};
 	size_t m_width{};
 	size_t m_height{};
-	std::vector<size_t> m_rowIndices{};
+	std::vector<PixelSample> m_prevFrame;
 public:
 	void render(PixelField& field);
 };

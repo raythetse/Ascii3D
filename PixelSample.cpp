@@ -34,7 +34,7 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 		totalLight = std::min(1.0, lightColor.length());
 	}
 
-	lightColor = lightColor.quantize(16);
+	//lightColor = lightColor.quantize(16);
 	//totalLight = 1.0 - (camDistance / maxDistance);
 
 	updateRenderChar(totalLight, camDistance / maxDistance);
@@ -45,10 +45,34 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 
 void PixelSample::updateColorCode()
 {
-	colorCode = std::format("\033[38;2;{};{};{}m",
-		static_cast<int>(renderColor.x),
-		static_cast<int>(renderColor.y),
-		static_cast<int>(renderColor.z));
+	char* ptr = colorCodeData;
+
+	// 1. Write the ANSI RGB prefix
+	std::memcpy(ptr, "\033[38;2;", 7);
+	ptr += 7;
+
+	// 2. Convert R channel
+	auto res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.x));
+	ptr = res.ptr;
+	*ptr++ = ';';
+
+	// 3. Convert G channel
+	res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.y));
+	ptr = res.ptr;
+	*ptr++ = ';';
+
+	// 4. Convert B channel
+	res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.z));
+	ptr = res.ptr;
+	*ptr++ = 'm';
+
+	// 5. Save the precise length written
+	colorCodeLen = static_cast<uint8_t>(ptr - colorCodeData);
+}
+
+std::string_view PixelSample::getColorCode() const
+{
+	return std::string_view(colorCodeData, colorCodeLen);
 }
 
 void PixelSample::updateRenderChar(double lightVal, double distanceRatio)

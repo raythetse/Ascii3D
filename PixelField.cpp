@@ -61,7 +61,7 @@ void PixelField::fromHardware(const PixelOutput* pixelBuffer)
         (*this)(row, col).renderColor.x = pixelBuffer[index].r;
         (*this)(row, col).renderColor.y = pixelBuffer[index].g;
         (*this)(row, col).renderColor.z = pixelBuffer[index].b;
-        (*this)(row, col).renderColor = (*this)(row, col).renderColor.quantize(16);
+        //(*this)(row, col).renderColor = (*this)(row, col).renderColor.quantize(16);
         (*this)(row, col).renderColor *= 255.0;
 
         (*this)(row, col).updateRenderChar(pixelBuffer[index].l, 1.0 - pixelBuffer[index].d);

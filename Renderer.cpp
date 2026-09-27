@@ -1,48 +1,94 @@
 #include "Renderer.h"
-#include <execution>
+#include <Windows.h>
 #include <iostream>
+#include <array>
+#include <charconv>
+
+// 1. Define a global or static 15-bit color table (32 * 32 * 32 = 32,768 colors)
+struct AnsiColorCode {
+    char data[24];
+    uint8_t len;
+};
+
+class ColorLUT {
+public:
+    std::array<AnsiColorCode, 32768> table;
+
+    ColorLUT() {
+        // Pre-calculate every single color string once at startup
+        for (int r = 0; r < 32; ++r) {
+            for (int g = 0; g < 32; ++g) {
+                for (int b = 0; b < 32; ++b) {
+                    // Scale 0-31 up to 0-255
+                    int realR = (r * 255) / 31;
+                    int realG = (g * 255) / 31;
+                    int realB = (b * 255) / 31;
+
+                    char* ptr = table[(r << 10) | (g << 5) | b].data;
+                    std::memcpy(ptr, "\033[38;2;", 7);
+                    ptr += 7;
+
+                    auto res = std::to_chars(ptr, ptr + 4, realR); ptr = res.ptr; *ptr++ = ';';
+                    res = std::to_chars(ptr, ptr + 4, realG);     ptr = res.ptr; *ptr++ = ';';
+                    res = std::to_chars(ptr, ptr + 4, realB);     ptr = res.ptr; *ptr++ = 'm';
+
+                    table[(r << 10) | (g << 5) | b].len = static_cast<uint8_t>(ptr - table[(r << 10) | (g << 5) | b].data);
+                }
+            }
+        }
+    }
+};
+
+// Instantiate the table once globally
+static ColorLUT g_ColorLUT;
 
 void Renderer::render(PixelField& field)
 {
-	if (m_width != field.width() || m_height != field.height()) {
-		m_width = field.width();
-		m_height = field.height();
-		m_rowBuffer.clear();
-		m_rowBuffer.reserve(m_height);
-		for (size_t i{}; i < m_height; ++i) {
-			m_rowBuffer.push_back("");
-			m_rowBuffer[i].reserve(field.width() * 40);
-		}
-		m_rowIndices.resize(field.height());
-		std::iota(m_rowIndices.begin(), m_rowIndices.end(), 0);
-		m_frameBuffer.reserve(m_width * m_height * 40);
-	}
-	else {
-		for (auto& str : m_rowBuffer) {
-			str.clear();
-		}
-	}
+    const size_t maxFrameSize = (field.width() * field.height() * 24) + 32;
 
-	std::for_each(std::execution::par, m_rowIndices.begin(), m_rowIndices.end(), [this, &field](size_t row) {
-		Vec3 pColor{ -1, -1, -1 };
-		for (int col{}; col < field.width(); ++col) {
-			Vec3 color = field(row, col).renderColor;
-			if (field.changedColor(row, col) || color != pColor) {
-				m_rowBuffer[row] += field(row, col).colorCode;
-			}
-			m_rowBuffer[row] += field(row, col).renderChar;
-			pColor = color;
-		}
-		m_rowBuffer[row] += '\n';
-	});
+    if (m_width != field.width() || m_height != field.height()) {
+        m_width = field.width();
+        m_height = field.height();
+        m_frameBuffer.resize(maxFrameSize);
+    }
 
-	m_frameBuffer.clear();
-	m_frameBuffer += "\033[1;1H"; // Set cursor to top left
+    char* out = m_frameBuffer.data();
 
-	for (auto& str : m_rowBuffer) {
-		m_frameBuffer += str;
-	}
+    // Reset terminal cursor position
+    std::memcpy(out, "\033[1;1H", 6);
+    out += 6;
 
-	std::cout.write(m_frameBuffer.data(), m_frameBuffer.size());
-	std::cout.flush();
+    uint16_t lastColorKey = 0xFFFF; // Out of bounds initial state
+
+    for (int row = 0; row < field.height(); ++row) {
+        for (int col = 0; col < field.width(); ++col) {
+            auto& pixel = field(row, col);
+
+            // 2. Quantize your 0-255 values down to 0-31 range using fast bit-shifts
+            int r = static_cast<int>(pixel.renderColor.x) >> 3;
+            int g = static_cast<int>(pixel.renderColor.y) >> 3;
+            int b = static_cast<int>(pixel.renderColor.z) >> 3;
+
+            // Generate a unique 15-bit integer key for this color
+            uint16_t colorKey = (r << 10) | (g << 5) | b;
+
+            // Only update color stream if the color key changed
+            if (colorKey != lastColorKey) {
+                // 3. Instant array lookup. Zero string parsing, zero math!
+                const auto& ansi = g_ColorLUT.table[colorKey];
+                std::memcpy(out, ansi.data, ansi.len);
+                out += ansi.len;
+                lastColorKey = colorKey;
+            }
+
+            *out++ = pixel.renderChar;
+        }
+        *out++ = '\n';
+    }
+
+    // Single atomic write straight to the GPU-backed Windows Terminal window
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD written;
+    size_t totalBytes = out - m_frameBuffer.data();
+    WriteConsoleA(hConsole, m_frameBuffer.data(), static_cast<DWORD>(totalBytes), &written, NULL);
 }
