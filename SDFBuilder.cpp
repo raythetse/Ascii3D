@@ -63,7 +63,7 @@ void SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
         std::stringstream ss{ strVec[i] };
         std::string opName;
         ss >> opName;
-        std::cout << opName << '\n';
+        //std::cout << opName << '\n';
         if (s_opMap.contains(opName)) {
             s_opMap.at(opName)(*this, ss);
         }
@@ -182,6 +182,20 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFPlaneYZ>(m_xPos, m_color);
     }},
+    { "SDFPlane", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_normal{ DEF::OBJNormal };
+        double m_offset{ DEF::OBJOffset };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_normal") ss >> m_normal.x >> m_normal.y >> m_normal.z;
+            else if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_offset") ss >> m_offset;
+        }
+        builder.pushSDFObj<SDFPlane>(m_normal, m_offset, m_color);
+    } },
     { "SDFBox", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec3 m_position{ DEF::ObjPosition };

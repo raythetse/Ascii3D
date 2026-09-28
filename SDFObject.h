@@ -94,6 +94,21 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+class SDFPlane : public SDFObject
+{
+private:
+	Vec3 m_normal{};
+	double m_offset{};
+protected:
+	std::string getClassName() const override { return "SDFPlane"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFPlane(Vec3 normal = DEF::OBJNormal, double offset = DEF::OBJOffset, Color color = DEF::OBJColor)
+		: SDFObject{ color }, m_normal(normal), m_offset(offset) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
 class SDFBox : public SDFObject
 {
 private:

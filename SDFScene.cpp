@@ -470,6 +470,8 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFPlane>((Vec3::Up + Vec3::Right).getNormal(), 2.0, Color::Blue)()
+        .stepBack()
         .pushOp<OPMirrorXZ>()
         .pushOp<OPRotate>(Vec3::Up, -4.0 / 32.0)
         .pushOp<OPMirrorX>()

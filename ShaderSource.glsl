@@ -232,6 +232,24 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color0 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
 
+	// SDFObject //
+	vec3 p1;
+	float d1 = FLOAT_MAX;
+	vec3 color1;
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = vec3(0.0000000, 0.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
+	// SDFPlaneXY //
+	d1 = abs(dot(p1, vec3(0.7071068, 0.7071068, 0.0000000)) + 2);
+
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+
 	// OPMirrorXZ //
 	p0.xz = abs(p0.xz);
 
@@ -260,9 +278,6 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p0 -= vec3(0.0000000, 0.0000000, 3.0000000); 
 
 	// SDFObject //
-	vec3 p1;
-	float d1 = FLOAT_MAX;
-	vec3 color1;
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = vec3(0.0000000, 1.0000000, 0.0000000);

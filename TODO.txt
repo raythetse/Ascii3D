@@ -11,7 +11,6 @@ Optional:
 - bounding boxes for efficiency
 - Add oscillate prop mods with end delays
 - change repeat operations to not rely of vec3
-- input for other params (draw dist, color depth, surf tolarance, etc)
 - transparency/reflection
 - object chain copying/merging
 - error handling on file loading
