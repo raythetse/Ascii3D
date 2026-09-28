@@ -19,6 +19,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
     m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
     m_renderPM = m_perfMonitor.add("Render");
+    m_viewportSize = m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
     InputManager::registerResizeCallback([this](size_t width, size_t height) {
         m_dimensions.first = width;
         m_dimensions.second = height;
