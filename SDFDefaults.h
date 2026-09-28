@@ -16,6 +16,7 @@ namespace DEF
 	inline static double	OBJRadius{ 0.5 };
 	inline static Vec2		OBJRadii{ 1.0, 0.25 };
 	inline static double	OBJLength{ 1.0 };
+	inline static double	OBJRatio{ 0.125 };
 
 	// Combo defaults
 	inline static double	COMBSmooth{ 0.5 };

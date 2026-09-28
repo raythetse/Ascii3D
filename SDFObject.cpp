@@ -396,3 +396,27 @@ double SDFTube::signedDistanceInner(Vec3 p) const
     p.y = p.y > 0.0 ? std::max(0.0, p.y - m_height * 0.5) : std::min(0.0, p.y + m_height * 0.5);
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
+
+void SDFCone::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_height " << m_height;
+    ss << "m_ratio " << m_ratio;
+}
+
+void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFCone //\n";
+    ss << "\td" << level << " = cone(p" << level << ", " << m_height << ", " << (m_ratio * MF::TAU) << ");\n\n";
+}
+
+double SDFCone::signedDistanceInner(Vec3 p) const
+{
+    Vec2 q = Vec2{ sc.x / sc.y, -1.0 } * m_height;
+    Vec2 w = Vec2{ Vec2{ p.x, p.z }.length(), p.y };
+    Vec2 a = w - q * std::clamp(w.dot(q) / q.dot(q), 0.0, 1.0);
+    Vec2 b = w - q * Vec2{ std::clamp(w.x / q.x, 0.0, 1.0), 1.0 };
+    double k = q.y >= 0.0 ? 1.0 : -1.0;
+    double d = std::min(a.dot(a), b.dot(b));
+    double s = std::max(k * (w.x * q.y - w.y * q.x), k * (w.y - q.y));
+    return std::sqrt(d) * (s >= 0.0 ? 1.0 : -1.0);
+}

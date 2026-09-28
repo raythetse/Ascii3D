@@ -285,3 +285,19 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+class SDFCone : public SDFObject
+{
+private:
+	double m_height{};
+	double m_ratio{};
+	Vec2 sc{};
+protected:
+	std::string getClassName() const override { return "SDFCone"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFCone(double height = DEF::OBJLength, double ratio = DEF::OBJRatio, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_ratio(ratio), sc(MF::fast_sincos(ratio * MF::TAU)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+

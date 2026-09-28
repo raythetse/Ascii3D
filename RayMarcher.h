@@ -11,7 +11,7 @@ class RayMarcher
 {
 private:
 	const double s_normalCheckOffset{ 0.001 };
-	const double s_shadowTolerance{ 0.01 };
+	const double s_shadowTolerance{ 0.1 };
 	const int m_maxSamples{ 300 };
 	double m_tolerance;
 	double m_maxDistance;

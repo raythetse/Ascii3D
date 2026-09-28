@@ -5,10 +5,11 @@
 #include "SDFObject.h"
 #include "LightSource.h"
 
-class PixelSample
+struct PixelSample
 {
 private:
-	static const std::string charGradient;
+	static const std::string s_charGradient;
+
 public:
 	double camDistance{};
 	double surfDistance{};
@@ -17,7 +18,7 @@ public:
 	Vec3 normal{};
 	Color renderColor{};
 	char renderChar{};
-	char colorCodeData[24];
+	char colorCodeData[24]{};
 	uint8_t colorCodeLen{ 0 };
 
 	PixelSample() = default;

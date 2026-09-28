@@ -2,7 +2,7 @@
 #include <cmath>
 #include "MathFunctions.h"
 
-const std::string PixelSample::charGradient{ "-~+*vri325E8B@" };
+const std::string PixelSample::s_charGradient{ " -~+*vri325E8B@" };
 
 void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<std::unique_ptr<LightSource>>& lights, const std::vector<bool>& directLighting)
 {
@@ -34,9 +34,6 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 		totalLight = std::min(1.0, lightColor.length());
 	}
 
-	//lightColor = lightColor.quantize(16);
-	//totalLight = 1.0 - (camDistance / maxDistance);
-
 	updateRenderChar(totalLight, camDistance / maxDistance);
 	renderColor = camDistance >= maxDistance ? 0 : lightColor * 255;
 
@@ -47,26 +44,21 @@ void PixelSample::updateColorCode()
 {
 	char* ptr = colorCodeData;
 
-	// 1. Write the ANSI RGB prefix
 	std::memcpy(ptr, "\033[38;2;", 7);
 	ptr += 7;
 
-	// 2. Convert R channel
-	auto res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.x));
+	std::to_chars_result res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.x));
 	ptr = res.ptr;
 	*ptr++ = ';';
 
-	// 3. Convert G channel
 	res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.y));
 	ptr = res.ptr;
 	*ptr++ = ';';
 
-	// 4. Convert B channel
 	res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.z));
 	ptr = res.ptr;
 	*ptr++ = 'm';
 
-	// 5. Save the precise length written
 	colorCodeLen = static_cast<uint8_t>(ptr - colorCodeData);
 }
 
@@ -77,6 +69,6 @@ std::string_view PixelSample::getColorCode() const
 
 void PixelSample::updateRenderChar(double lightVal, double distanceRatio)
 {
-	size_t index = static_cast<size_t>(lightVal * (charGradient.length() - 1));
-	renderChar = distanceRatio >= 1.0 ? ' ' : charGradient[index];
+	size_t index = static_cast<size_t>(lightVal * (s_charGradient.length() - 1));
+	renderChar = distanceRatio >= 1.0 ? ' ' : s_charGradient[index];
 }

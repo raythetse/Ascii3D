@@ -64,17 +64,16 @@ void Renderer::render(PixelField& field)
         for (int col = 0; col < field.width(); ++col) {
             auto& pixel = field(row, col);
 
-            // 2. Quantize your 0-255 values down to 0-31 range using fast bit-shifts
+            // Quantize to 0-31 range 
             int r = static_cast<int>(pixel.renderColor.x) >> 3;
             int g = static_cast<int>(pixel.renderColor.y) >> 3;
             int b = static_cast<int>(pixel.renderColor.z) >> 3;
 
-            // Generate a unique 15-bit integer key for this color
+            // Generate 15-bit key
             uint16_t colorKey = (r << 10) | (g << 5) | b;
 
-            // Only update color stream if the color key changed
+            // Update if the key changed
             if (colorKey != lastColorKey) {
-                // 3. Instant array lookup. Zero string parsing, zero math!
                 const auto& ansi = g_ColorLUT.table[colorKey];
                 std::memcpy(out, ansi.data, ansi.len);
                 out += ansi.len;
@@ -86,7 +85,7 @@ void Renderer::render(PixelField& field)
         *out++ = '\n';
     }
 
-    // Single atomic write straight to the GPU-backed Windows Terminal window
+    // Write straight terminal window
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD written;
     size_t totalBytes = out - m_frameBuffer.data();

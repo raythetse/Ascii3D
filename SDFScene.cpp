@@ -43,12 +43,20 @@ const float ROOT2 = 1.414213;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
-const float SHADOW_TOLERANCE = 0.01;
+const float SHADOW_TOLERANCE = 0.1;
 
+// UTILITY FUNCTIONS //
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
     vec3 a = normalize(axis);
     float angle = rotations * TAU;
     return p * cos(angle) + cross(a, p) * sin(angle) + a * dot(a, p) * (1.0 - cos(angle));
+}
+
+vec2 rotateVec2(vec2 p, float rotations) {
+    float c = cos(rotations * TAU);
+    float s = sin(rotations * TAU);
+    mat2 m = mat2(c, -s, s, c);
+    return m * p;
 }
 
 vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
@@ -59,6 +67,7 @@ vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 	return mix(colorA, colorB, alpha);
 }
 
+// OPERATOR FUNCTIONS //
 float oscillateSine(float initVal, float period, float amplitude, float phase, float time) {
     return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
 }
@@ -135,7 +144,8 @@ vec3 rotateDelay(vec3 p, vec3 axis, float rotations, float rotateTime, float del
 	completeCycles += min(rotateTime, progress) / rotateTime;
     return rotateVec3(p, axis, completeCycles * rotations);
 }
-        
+
+// OBJECT FUNCTIONS //
 float box(vec3 p, vec3 dimensions) {
     p = abs(p) - dimensions * 0.5;
     return length(max(p,0.0)) + min(max(p.x,max(p.y,p.z)),0.0);
@@ -204,6 +214,19 @@ float chainLink(vec3 p, float sideLength, vec2 radii) {
 float tube(vec3 p, float height, vec2 radii) {
     p.y = p.y > 0.0 ? max(0.0, p.y - height * 0.5) : min(0.0, p.y + height * 0.5);
     return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
+}
+
+float cone(vec3 p, float height, float angle) {
+    float c = cos(angle);
+    float s = sin(angle);
+    vec2 q = height * vec2(s / c, -1.0);
+    vec2 w = vec2( length(p.xz), p.y );
+    vec2 a = w - q*clamp( dot(w,q)/dot(q,q), 0.0, 1.0 );
+    vec2 b = w - q*vec2( clamp( w.x/q.x, 0.0, 1.0 ), 1.0 );
+    float k = sign( q.y );
+    float d = min(dot( a, a ),dot(b, b));
+    float t = max( k*(w.x*q.y-w.y*q.x),k*(w.y-q.y)  );
+    return sqrt(d)*sign(t);
 }
 
 )"
@@ -446,11 +469,15 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFSphere>(2.0, Color::Blue)()
-        .pushOp<OPOnion>(0.25)
-        .pushOp<OPOnion>(0.05)
-        .pushOp<COMBSubtractSmooth, SDFBox>(5.0, Color::Red, Vec3::Up*3.0)(0.5, 1.0, 0.5)
-        .addLightSource(Vec3{ 1.0, 8.0, -1.0 }, 150.0, Color::White)
+        .pushOp<OPMirrorXZ>()
+        .pushOp<OPRotate>(Vec3::Up, -4.0 / 32.0)
+        .pushOp<OPMirrorX>()
+        .pushOp<OPRotate>(Vec3::Up, -2.0 / 32.0)
+        .pushOp<OPMirrorX>()
+        .pushOp<OPRotate>(Vec3::Up, -1.0 / 32.0)
+        .pushOp<OPTranslate>(Vec3::Forward * 3.0)
+        .pushOp<COMBAdd, SDFCone>(2.0, 0.025, Color::Green)()
+        .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 150.0, Color::White)
     );
 }
 
@@ -485,7 +512,7 @@ void SDFScene::oxygenDemo()
 {
     auto builder = SDFBuilder{};
     
-    size_t numElectrons = 8;
+    size_t numElectrons = 64;
 
     for (size_t i{}; i < numElectrons; ++i) {
         double phase{ i * MF::TAU };
@@ -520,7 +547,7 @@ void SDFScene::oxygenDemo()
 
 void SDFScene::cubesDemo()
 {
-    double smoothing{ 0.25 };
+    double smoothing{ 0.15 };
     double colorBlending{ 0.95 };
 
     add(SDFBuilder()
@@ -593,7 +620,7 @@ void SDFScene::elongateDemo()
 
 void SDFScene::torusDemo()
 {
-    double lightPower{ 350.0 };
+    double lightPower{ 200.0 };
     double lightDist{ 16.0 };
 
     add(SDFBuilder{}
@@ -608,9 +635,11 @@ void SDFScene::torusDemo()
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.187)
         .pushOp<OPRotateContinuous>(Vec3::Right, 0.231)
         .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 5.0, 1.25 }, Color::White)(3.0)
-        .addLightSource({ -lightDist }, lightPower, Color::Pink)
-        .addLightSource({ lightDist }, lightPower, Color::LightBlue)
-        .addLightSource({ 0.5 * lightDist, 0.0, -lightDist }, lightPower, Color::LightGreen)
+        .addLightSource({ -lightDist }, lightPower, Color::Red)
+        .addLightSource({ lightDist }, lightPower, Color::Blue)
+        .addLightSource({ lightDist, 0.0, -lightDist }, lightPower, Color::Green)
+        .addLightSource({ -0.5 * lightDist, lightDist, -lightDist }, lightPower, Color::Magenta)
+        .addLightSource({ -0.5 * lightDist, 0.0, lightDist }, lightPower, Color::Yellow)
     );
 }
 
