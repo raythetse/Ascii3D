@@ -17,14 +17,32 @@ void OPMirrorX::transform(Vec3& p) const
 	p.x = abs(p.x);
 }
 
+void OPMirrorX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorX //\n";
+	ss << "\tp" << level << ".x = abs(p" << level << ".x);\n\n";
+}
+
 void OPMirrorY::transform(Vec3& p) const
 {
 	p.y = abs(p.y);
 }
 
+void OPMirrorY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorY //\n";
+	ss << "\tp" << level << ".y = abs(p" << level << ".y);\n\n";
+}
+
 void OPMirrorZ::transform(Vec3& p) const
 {
 	p.z = abs(p.z);
+}
+
+void OPMirrorZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorZ //\n";
+	ss << "\tp" << level << ".z = abs(p" << level << ".z);\n\n";
 }
 
 void OPMirrorXY::transform(Vec3& p) const
@@ -33,10 +51,22 @@ void OPMirrorXY::transform(Vec3& p) const
 	p.y = abs(p.y);
 }
 
+void OPMirrorXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorXY //\n";
+	ss << "\tp" << level << ".xy = abs(p" << level << ".xy);\n\n";
+}
+
 void OPMirrorXZ::transform(Vec3& p) const
 {
 	p.x = abs(p.x);
 	p.z = abs(p.z);
+}
+
+void OPMirrorXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorXZ //\n";
+	ss << "\tp" << level << ".xz = abs(p" << level << ".xz);\n\n";
 }
 
 void OPMirrorYZ::transform(Vec3& p) const
@@ -45,9 +75,21 @@ void OPMirrorYZ::transform(Vec3& p) const
 	p.z = abs(p.z);
 }
 
+void OPMirrorYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorYZ //\n";
+	ss << "\tp" << level << ".yz = abs(p" << level << ".yz);\n\n";
+}
+
 void OPMirrorXYZ::transform(Vec3& p) const
 {
 	p = p.abs();
+}
+
+void OPMirrorXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPMirrorXYZ //\n";
+	ss << "\tp" << level << " = abs(p" << level << ");\n\n";
 }
 
 void OPTranslate::transform(Vec3& p) const
@@ -60,6 +102,12 @@ void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
 }
 
+void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	ss << "\t// OPTranslate //\n";
+	ss << "\tp" << level << " -= " << m_translation.getShaderVec3() << "; \n\n";
+}
+
 void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "translation") {
@@ -69,7 +117,7 @@ void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> pro
 }
 
 void OPTranslateSine::innerUpdate() {
-	m_updateVal = m_axis * m_amplitude * sin(GameTimer::gameTime() / m_period * MF::TAU + m_phase * MF::TAU);
+	m_updateVal = m_axis * m_amplitude * sin(MF::TAU * (GameTimer::gameTime() / m_period + m_phase));
 }
 
 void OPTranslateSine::transform(Vec3& p) const
@@ -83,6 +131,17 @@ void OPTranslateSine::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_amplitude " << m_amplitude;
 	ss << " m_period " << m_period;
 	ss << " m_phase " << m_phase;
+}
+
+void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPTranslateSine //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "amplitude") ? propName : std::to_string(m_amplitude)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "period") ? propName : std::to_string(m_period)) << ";\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << " -= pmVec30 * pmFloat0 * sin(TAU * (pmFloat1 + time / pmFloat2));\n\n";
 }
 
 void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -106,24 +165,25 @@ void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase>
 }
 
 void OPTranslateLinear::innerUpdate() {
-	double time{ std::fmod(GameTimer::gameTime() + m_phase + m_transitTimes.x * 0.5, m_cycleTime) };
-	if (time <= m_transitTimes.x) {
-		time /= m_transitTimes.x;
-		m_updateVal = m_start.lerp(m_end, time);
+	double cycleTime = m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y;
+	double progress{ std::fmod(GameTimer::gameTime() + m_phase + m_transitTimes.x * 0.5, cycleTime) };
+	Vec3 start{ m_vector * -0.5 };
+	if (progress <= m_transitTimes.x) {
+		progress /= m_transitTimes.x;
+		m_updateVal = start.lerp(-start, progress);
 		return;
 	}
 	double timeFrame = m_transitTimes.x + m_endDelays.x;
-	if (time <= timeFrame) {
-		m_updateVal = m_end;
+	if (progress <= timeFrame) {
+		m_updateVal = -start;
 		return;
 	}
-	timeFrame += m_transitTimes.y;
-	if (time <= timeFrame) {
-		time = (time - m_transitTimes.x - m_endDelays.x) / m_transitTimes.y;
-		m_updateVal = m_end.lerp(m_start, time);
+	if (progress <= (timeFrame + m_transitTimes.y)) {
+		progress = (progress - m_transitTimes.x - m_endDelays.x) / m_transitTimes.y;
+		m_updateVal = (-start).lerp(start, progress);
 		return;
 	}
-	m_updateVal = m_start;
+	m_updateVal = start;
 }
 
 void OPTranslateLinear::transform(Vec3& p) const
@@ -139,14 +199,21 @@ void OPTranslateLinear::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_phase " << m_phase;
 }
 
+void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPTranslateLinear //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "transitTimes") ? propName : m_transitTimes.getShaderVec2()) << ";\n";
+	ss << "\tpmVec21 = " << (getShaderPropModCalls(propName = "endDelays") ? propName : m_endDelays.getShaderVec2()) << ";\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "vector") ? propName : m_vector.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << " -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);\n\n";
+}
+
 void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
-	if (propMod->propName() == "cycleTime") {
-		propMod->BindToProp(&m_cycleTime);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "end") {
-		propMod->BindToProp(&m_end);
+	if (propMod->propName() == "vector") {
+		propMod->BindToProp(&m_vector);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "endDelays") {
@@ -155,10 +222,6 @@ void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBas
 	}
 	else if (propMod->propName() == "phase") {
 		propMod->BindToProp(&m_phase);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "start") {
-		propMod->BindToProp(&m_start);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "transitTimes") {
@@ -183,6 +246,22 @@ void OPCubeRollHeight::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_cubeHeight " << m_cubeHeight;
 	ss << " m_period " << m_period;
 	ss << " m_phase " << m_phase;
+}
+
+void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPCubeRollHeight //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "period") ? propName : std::to_string(m_period)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "cubeHeight") ? propName : std::to_string(m_cubeHeight)) << ";\n";
+	ss << "\tpmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;\n";
+	ss << "\tpmFloat1 = cos(pmFloat0);\n";
+	ss << "\tpmFloat0 = sin(pmFloat0);\n";
+	ss << "\tpmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);\n";
+	ss << "\tpmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);\n";
+	ss << "\tpmFloat0 = (pmVec20.y - pmFloat2 * 0.5);\n";
+	ss << "\tp" << level << ".y -= pmFloat0;\n\n";
 }
 
 void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -217,6 +296,15 @@ void OPRotate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_rotations " << m_rotations;
 }
 
+void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPRotate //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotations") ? propName : std::to_string(m_rotations)) << ";\n";
+	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, pmFloat0);\n\n";
+}
+
 void OPRotate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axis") {
@@ -248,6 +336,16 @@ void OPRotateContinuous::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_phase " << m_phase;
 }
 
+void OPRotateContinuous::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPRotateContinuous //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotationsPerSecond") ? propName : std::to_string(m_rotationsPerSecond)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, time * pmFloat0 + pmFloat1);\n\n";
+}
+
 void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axis") {
@@ -265,21 +363,21 @@ void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBa
 }
 
 void OPRotateScan::innerUpdate() {
-	double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
-	if (time <= m_transitTimes.x) {
-		time /= m_transitTimes.x;
-		Mat3::fromAxisAngle(m_axis, m_updateVal, m_endAngle * time);
+	double progress{ std::fmod(GameTimer::gameTime() + m_phase, m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y) };
+	double endAngle = m_rotations * MF::TAU;
+	if (progress <= m_transitTimes.x) {
+		progress /= m_transitTimes.x;
+		Mat3::fromAxisAngle(m_axis, m_updateVal, endAngle * progress);
 		return;
 	}
 	double timeFrame = m_transitTimes.x + m_endDelays.x;
-	if (time <= timeFrame) {
-		Mat3::fromAxisAngle(m_axis, m_updateVal, m_endAngle);
+	if (progress <= timeFrame) {
+		Mat3::fromAxisAngle(m_axis, m_updateVal, endAngle);
 		return;
 	}
-	timeFrame += m_transitTimes.y;
-	if (time <= timeFrame) {
-		time = (time - (m_transitTimes.x + m_endDelays.x)) / m_transitTimes.y;
-		Mat3::fromAxisAngle(m_axis, m_updateVal, m_endAngle * (1.0 - time));
+	if (progress <= timeFrame + m_transitTimes.y) {
+		progress = (progress - (m_transitTimes.x + m_endDelays.x)) / m_transitTimes.y;
+		Mat3::fromAxisAngle(m_axis, m_updateVal, endAngle * (1.0 - progress));
 		return;
 	}
 	m_updateVal = Mat3::Identity;
@@ -299,18 +397,26 @@ void OPRotateScan::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_phase " << m_phase;
 }
 
+void OPRotateScan::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPRotateScan //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotations") ? propName : std::to_string(m_rotations)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "transitTimes") ? propName : m_transitTimes.getShaderVec2()) << ";\n";
+	ss << "\tpmVec21 = " << (getShaderPropModCalls(propName = "endDelays") ? propName : m_endDelays.getShaderVec2()) << ";\n";
+	ss << "\tp" << level << " = rotateScan(p" << level << ", pmVec30, pmVec20, pmVec21, pmFloat0, pmFloat1, time);\n\n";
+}
+
 void OPRotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
 		m_propMods.push_back(std::move(propMod));
 	}
-	else if (propMod->propName() == "cycleTime") {
-		propMod->BindToProp(&m_cycleTime);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "endAngle") {
-		propMod->BindToProp(&m_endAngle);
+	else if (propMod->propName() == "rotations") {
+		propMod->BindToProp(&m_rotations);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "endDelays") {
@@ -328,10 +434,11 @@ void OPRotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> pr
 }
 
 void OPRotateDelay::innerUpdate() {
-	double completeCycles{ std::floor((GameTimer::gameTime() + m_phase) / m_cycleTime) };
-	double time{ std::fmod(GameTimer::gameTime() + m_phase, m_cycleTime) };
-	completeCycles += std::min(m_rotateTime, time) / m_rotateTime;
-	Mat3::fromAxisAngle(m_axis, m_updateVal, completeCycles * m_angle);
+	double cycleTime = m_rotateTime + m_delayTime;
+	double completeCycles{ std::floor((GameTimer::gameTime() + m_phase) / cycleTime) };
+	double progress{ std::fmod(GameTimer::gameTime() + m_phase, cycleTime) };
+	completeCycles += std::min(m_rotateTime, progress) / m_rotateTime;
+	Mat3::fromAxisAngle(m_axis, m_updateVal, completeCycles * m_rotations * MF::TAU);
 }
 
 void OPRotateDelay::transform(Vec3& p) const
@@ -348,18 +455,22 @@ void OPRotateDelay::innerInnerSerialize(std::stringstream& ss) const
 	ss << " m_phase " << m_phase;
 }
 
+void OPRotateDelay::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPRotateDelay //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShaderVec3()) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "rotations") ? propName : std::to_string(m_rotations)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "rotateTime") ? propName : std::to_string(m_rotateTime)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "delayTime") ? propName : std::to_string(m_delayTime)) << ";\n";
+	ss << "\tpmVec31.x = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tp" << level << " = rotateDelay(p" << level << ", pmVec30, pmFloat0, pmFloat1, pmFloat2, pmVec31.x, time);\n\n";
+}
+
 void OPRotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
-	if (propMod->propName() == "angle") {
-		propMod->BindToProp(&m_angle);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "axis") {
+	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "cycleTime") {
-		propMod->BindToProp(&m_cycleTime);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
@@ -368,6 +479,14 @@ void OPRotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> p
 	}
 	else if (propMod->propName() == "rotateTime") {
 		propMod->BindToProp(&m_rotateTime);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "rotations") {
+		propMod->BindToProp(&m_rotations);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "delayTime") {
+		propMod->BindToProp(&m_delayTime);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -393,6 +512,26 @@ void OPCubeRoller::innerInnerSerialize(std::stringstream& ss) const
 	}
 	ss << " m_quarterTurnTime " << m_quarterTurnTime;
 	ss << " m_phase " << m_phase;
+}
+
+void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	static size_t numRollers{ 0 };
+	std::string propName{ "" };
+	ss << "\t// OPCubeRoller //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "quarterTurnTime") ? propName : std::to_string(m_quarterTurnTime)) << ";\n";
+	ss << "\tvec3 axes" << numRollers << "[" << m_axes.size() << "]; \n";
+	for (size_t i{}; i < m_axes.size(); ++i) {
+		ss << "\taxes" << numRollers << "[" << i << "] = " << m_axes[i].getShaderVec3() << ";\n";
+	}
+	ss << "\tpmFloat2 = " << m_axes.size() << " * pmFloat1;\n";
+	ss << "\tpmFloat2 = mod(time + pmFloat0, pmFloat2);\n";
+	ss << "\tpmFloat0 = floor(pmFloat2);\n";
+	ss << "\tpmFloat2 /= pmFloat1;\n";
+	ss << "\tp" << level << " = rotateVec3(p" << level << ", axes" << numRollers << "[int(pmFloat0)], 0.25 * pmFloat2);\n\n";
+
+	++numRollers;
 }
 
 void OPCubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -439,14 +578,41 @@ void OPElongateX::transform(Vec3& p) const
 	p.x -= std::clamp(p.x - m_offset, m_halfLenNeg, m_halfLen);
 }
 
+void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPElongateX //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+	ss << "\tp" << level << ".x -= clamp(p" << level << ".x - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
+}
+
 void OPElongateY::transform(Vec3& p) const
 {
 	p.y -= std::clamp(p.y - m_offset, m_halfLenNeg, m_halfLen);
 }
 
+void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPElongateY //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+	ss << "\tp" << level << ".y -= clamp(p" << level << ".y - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
+}
+
 void OPElongateZ::transform(Vec3& p) const
 {
 	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
+}
+
+void OPElongateZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPElongateZ //\n";
+	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+	ss << "\tp" << level << ".z -= clamp(p" << level << ".z - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
 }
 
 void OPElongateXYZ::innerUpdate()
@@ -464,6 +630,15 @@ void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
 {
 	ss << " m_lengths " << m_lengths.x << ' ' << m_lengths.y << ' ' << m_lengths.z;
 	ss << " m_offsets " << m_offsets.x << ' ' << m_offsets.y << ' ' << m_offsets.z;
+}
+
+void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPElongateXYZ //\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "lengths") ? propName : m_lengths.getShaderVec3()) << ";\n";
+	ss << "\tpmVec31 = " << (getShaderPropModCalls(propName = "offsets") ? propName : m_offsets.getShaderVec3()) << ";\n";
+	ss << "\tp" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n\n";
 }
 
 void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)

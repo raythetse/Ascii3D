@@ -1,17 +1,16 @@
 Required:
-- GLSL or HLSL hardward marching
-- bounding boxes for efficiency
+- fix screen params detection on start
+- verify consistency of inheriting object local pos/rot between software/hardware rendering
 - light movement
 - startup options
 - comment everything
-- exceptions
 - consts wherever sensical
-- Fix pixelsample accessibility
 - fix constructor accessibilities on abstracts
 
 Optional:
-- camera track
-- input for other params (draw dist, color depth, surf tolarance, etc)
+- bounding boxes for efficiency
+- Add oscillate prop mods with end delays
+- change repeat operations to not rely of vec3
 - transparency/reflection
 - object chain copying/merging
 - error handling on file loading

@@ -14,7 +14,7 @@ class SDFOperation;
 
 // SDFObjects use 'Signed-Distance Fields' (SDFs) to build out a scene
 // For more information on SDFs: https://iquilezles.org/articles/distfunctions/
-// Many SDF functions are adapted from the above article.
+// Most SDF functions are adapted from the above article.
 class SDFObject
 {
 public:
@@ -23,12 +23,12 @@ protected:
 	Vec3 m_rotationAxis{};
 	double m_rotations{};
 	Mat3 m_rotMat{};
-	bool m_hasRotation{};
 	Color m_color{};
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
 	virtual double signedDistanceInner(Vec3 p) const;
 	virtual void serializeInner(std::stringstream& ss) const {};
 	virtual std::string getClassName() const { return "SDFObject"; }
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const {};
 public:
 	SDFObject(Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations);
 	~SDFObject();
@@ -40,7 +40,9 @@ public:
 	template <typename T, typename... Args>
 	SDFOperation* pushOperation(Args&&... args);
 	void setColor(Color color);
+	Color getColor();
 	virtual void serialize(std::vector<std::string> &strVec, size_t level) const;
+	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel);
 };
 
 template <typename T, typename... Args>
@@ -56,6 +58,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneXZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPlaneXZ(double yPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_yPos{ yPos } {}
@@ -69,6 +72,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneYZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPlaneYZ(double xPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_xPos(xPos) {}
@@ -82,9 +86,25 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlaneXY"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPlaneXY(double zPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
 		: SDFObject{ color }, m_zPos(zPos) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFPlane : public SDFObject
+{
+private:
+	Vec3 m_normal{};
+	double m_offset{};
+protected:
+	std::string getClassName() const override { return "SDFPlane"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFPlane(Vec3 normal = DEF::OBJNormal, double offset = DEF::OBJOffset, Color color = DEF::OBJColor)
+		: SDFObject{ color }, m_normal(normal), m_offset(offset) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -95,6 +115,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBox"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFBox(Vec3 dimensions = DEF::OBJBoxDimensions, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions) {}
@@ -109,6 +130,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBoxFrame"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFBoxFrame(Vec3 dimensions = DEF::OBJBoxDimensions, double edgeThickness = DEF::OBJFrameThickness, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
@@ -122,6 +144,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFSphere"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFSphere(double radius = DEF::OBJRadius, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius) {}
@@ -135,6 +158,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTorus"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFTorus(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radii(radii) {}
@@ -149,6 +173,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleX"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCapsuleX(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -163,6 +188,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleY"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCapsuleY(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -177,6 +203,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsuleZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCapsuleZ(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -190,6 +217,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCrystal"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCrystal(double edgeLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_edgeLength(edgeLength) {}
@@ -204,6 +232,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinderX"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCylinderX(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
@@ -218,6 +247,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinderY"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCylinderY(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
@@ -232,6 +262,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinderZ"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCylinderZ(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radius(radius) {}
@@ -246,6 +277,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFChainLink"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFChainLink(double sideLength = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_sideLength(sideLength), m_radii(radii) {}
@@ -260,9 +292,42 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTube"; }
 	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFTube(double height = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_radii(radii) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFCone : public SDFObject
+{
+private:
+	double m_height{};
+	double m_ratio{};
+	Vec2 m_sincos{};
+protected:
+	std::string getClassName() const override { return "SDFCone"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFCone(double height = DEF::OBJLength, double ratio = DEF::OBJRatio, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_ratio(ratio), m_sincos(MF::fast_sincos(ratio* MF::TAU)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFSolidAngle : public SDFObject
+{
+private:
+	double m_radius{};
+	double m_sweep{};
+	Vec2 m_sincos{};
+protected:
+	std::string getClassName() const override { return "SDFSolidAngle"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFSolidAngle(double radius = DEF::OBJRadius, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

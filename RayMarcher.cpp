@@ -4,17 +4,17 @@
 #include <execution>
 #include <ranges>
 
-void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, Color* color, const SDFObject* object, PixelSample& sample, double* shadowMax, Vec3* lightPos)
+void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, Color* color, const SDFObject* object, PixelSample& sample, double maxDist, Vec3* lightPos)
 {
 	double rayDist{ 0 };
-    double surfDist{ shadowMax ? *shadowMax : m_maxDistance };
+    double surfDist{ maxDist };
     int samples{};
     size_t objectIndex{};
 
-	while (rayDist < (shadowMax ? *shadowMax : m_maxDistance) && samples <= m_maxSamples) {
+	while (rayDist < (maxDist) && samples <= m_maxSamples) {
         Vec3 p = camPos + ray * rayDist;
         if (lightPos) surfDist = min(surfDist, (p - *lightPos).length());
-        SampleScene(p, color, object, surfDist, objectIndex);
+        SampleScene(p, color, object, surfDist, objectIndex, maxDist);
         if (surfDist < m_tolerance) {
             sample.camDistance = rayDist;
             sample.samplePoint = p;
@@ -22,15 +22,15 @@ void RayMarcher::marchRay(Vec3 ray, Vec3 camPos, Color* color, const SDFObject* 
             sample.objectIndex = objectIndex;
             return;
         }
-		rayDist += m_stepFactor * surfDist;
+		rayDist += surfDist;
         ++samples;
 	}
-    sample.camDistance = shadowMax ? *shadowMax : m_maxDistance;
+    sample.camDistance = maxDist;
 }
 
-void RayMarcher::SampleScene(Vec3 p, Color* color, const SDFObject* object, double& surfDist, size_t& objectIndex, double* shadowMax, Vec3* lightPos)
+void RayMarcher::SampleScene(Vec3 p, Color* color, const SDFObject* object, double& surfDist, size_t& objectIndex, double maxDist, Vec3* lightPos)
 {
-    surfDist = shadowMax ? *shadowMax : m_maxDistance;
+    surfDist = maxDist;
 
     double d = object->signedDistance(p, color);
     if (d < surfDist) {
@@ -54,7 +54,7 @@ void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
 
         Vec3 ray = camera.getViewportRay(static_cast<double>(col) / static_cast<double>(width), static_cast<double>(row) / static_cast<double>(height)).getNormal();
         Color color{ 0.0 };
-        marchRay(ray, camera.getPosition(), &color, object, field(row, col));
+        marchRay(ray, camera.getPosition(), &color, object, field(row, col), m_maxDistance);
 
         PixelSample& sample = field(row, col);
         std::vector<bool> directLighting{};
@@ -78,7 +78,7 @@ void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
                 Vec3 diff = lightPos - sample.samplePoint;
                 double shadowMax = diff.length();
                 Vec3 ray = diff.getNormal();
-                marchRay(ray, sample.samplePoint + ray * s_shadowTolerance, nullptr, object, shadowSample, &shadowMax, &lightPos);
+                marchRay(ray, sample.samplePoint + ray * s_shadowTolerance, nullptr, object, shadowSample, shadowMax, &lightPos);
                 directLighting.push_back(shadowSample.camDistance == shadowMax);
             }
             sample.buildRenderParams(object, color, sample.samplePoint, m_maxDistance, lights, directLighting);

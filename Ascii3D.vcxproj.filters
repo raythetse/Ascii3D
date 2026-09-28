@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Operations">
       <UniqueIdentifier>{74204d7c-d4d4-4b61-91de-f955454d99f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rendering\Vulkan">
+      <UniqueIdentifier>{393e58fd-676f-4b56-92fa-f5d20ae8b59b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering\Vulkan">
+      <UniqueIdentifier>{e12536cc-cda6-4f99-9b0d-1c863be8fa78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -122,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
       <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanRaymarcher.cpp">
+      <Filter>Source Files\Rendering\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +221,17 @@
     <ClInclude Include="SDFDefaults.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanRaymarcher.h">
+      <Filter>Header Files\Rendering\Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
     <Text Include="ObjectTypes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="raymacher.comp">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

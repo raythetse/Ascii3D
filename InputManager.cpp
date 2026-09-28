@@ -14,7 +14,7 @@ InputManager::InputManager()
 	m_console = (realWindow != NULL) ? realWindow : m_console;
 
 	acquireCentre();
-	SetCursorPos(m_screenCentre.x, m_screenCentre.y);
+	SetCursorPos(m_windowCentre.x, m_windowCentre.y);
 	m_input = GetStdHandle(STD_INPUT_HANDLE);
 	m_output = GetStdHandle(STD_OUTPUT_HANDLE);
 }
@@ -97,32 +97,23 @@ void InputManager::processInputEvents()
 void InputManager::processMouseMovement()
 {
 	if (m_holdMouse) {
-		if (m_skipFrame) {
-			m_skipFrame = false;
-		}
-		else {
-			POINT cursorPos;
-			GetCursorPos(&cursorPos);
-			m_mouseMotion = {
-				static_cast<double>(cursorPos.x - m_screenCentre.x),
-				static_cast<double>(cursorPos.y - m_screenCentre.y)
-			};
-		}
-		SetCursorPos(m_screenCentre.x, m_screenCentre.y);
-	}
-	else {
-		m_skipFrame = true;
+		POINT cursorPos;
+		GetCursorPos(&cursorPos);
+		m_mouseMotion = {
+			static_cast<double>(cursorPos.x - m_windowCentre.x),
+			static_cast<double>(cursorPos.y - m_windowCentre.y)
+		};
+		SetCursorPos(m_windowCentre.x, m_windowCentre.y);
 	}
 }
 
 void InputManager::acquireCentre()
 {
 	RECT rect;
-	if (GetClientRect(m_console, &rect)) {
-		m_screenCentre.x = static_cast<long>(0.5 * (rect.right - rect.left));
-		m_screenCentre.y = static_cast<long>(0.5 * (rect.bottom - rect.top));
+	if (GetWindowRect(m_console, &rect)) {
+		m_windowCentre.x = static_cast<long>(rect.left + 0.5 * (rect.right - rect.left));
+		m_windowCentre.y = static_cast<long>(rect.top + 0.5 * (rect.bottom - rect.top));
 	}
-	m_skipFrame = true;
 }
 
 void InputManager::checkActive()
@@ -133,6 +124,7 @@ void InputManager::checkActive()
 
 void InputManager::update()
 {
+	instance().acquireCentre();
 	instance().checkActive();
 	instance().processMouseMovement();
 	instance().processInputEvents();

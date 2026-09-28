@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec2.h"
 #include <cmath>
+#include <format>
 #include <limits>
 #include "MathFunctions.h"
 
@@ -115,6 +116,11 @@ Vec2 Vec2::operator*(const double d) const {
 
 bool Vec2::operator==(const Vec2& p) const {
     return (x == p.x && y == p.y);
+}
+
+std::string Vec2::getShaderVec2() const
+{
+    return std::format("vec2({:.7f}, {:.7f})", static_cast<float>(x), static_cast<float>(y));
 }
 
 std::ostream& operator<<(std::ostream& os, const Vec2& p)

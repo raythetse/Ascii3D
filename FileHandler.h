@@ -6,12 +6,24 @@
 
 namespace FileHandler
 {
-	inline void saveSDFScene(std::vector<std::string>& strVec, std::string fileName)
+	inline void saveToFile(std::string& str, std::string fileName) {
+		std::ofstream ofs{ fileName };
+		ofs << str;
+		ofs.close();
+	}
+
+	inline void saveToFile(std::vector<std::string>& strVec, std::string fileName)
 	{
 		std::ofstream ofs{ fileName };
 		for (auto& str : strVec) {
 			ofs << str << '\n';
 		}
+		ofs.close();
+	}
+
+	inline void saveToFile(std::stringstream& ss, std::string fileName) {
+		std::ofstream ofs{ fileName };
+		ofs << ss.str();
 		ofs.close();
 	}
 

@@ -22,8 +22,7 @@ private:
 	HWND m_console;
 	HANDLE m_input;
 	HANDLE m_output;
-	POINT m_screenCentre;
-	bool m_skipFrame{ true };
+	POINT m_windowCentre;
 	bool m_holdMouse{ true };
 	bool m_isActiveWindow{ true };
 

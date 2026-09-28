@@ -114,11 +114,17 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>false</Profile>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
@@ -133,11 +139,16 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>false</Profile>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
@@ -151,6 +162,7 @@
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
+    <ClCompile Include="VulkanRaymarcher.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Mat2.cpp" />
@@ -178,6 +190,7 @@
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="VulkanRaymarcher.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
@@ -205,6 +218,9 @@
   <ItemGroup>
     <Text Include="ObjectTypes.txt" />
     <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="raymacher.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,13 +2,13 @@
 #include <cmath>
 #include "MathFunctions.h"
 
-const std::string PixelSample::charGradient{ "-~+*vri325E8B@" };
+const std::string PixelSample::s_charGradient{ " -~+*vri325E8B@" };
 
 void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<std::unique_ptr<LightSource>>& lights, const std::vector<bool>& directLighting)
 {
 	Vec3 lightColor{ 0.0 };
 	double totalLight{ 0.0 };
-	double ambPower = 0.05;
+	double ambPower = 0.15;
 
 	if (object) {
 		for (size_t i{}; i < lights.size(); ++i) {
@@ -34,15 +34,41 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 		totalLight = std::min(1.0, lightColor.length());
 	}
 
-	//color = color.quantize(64);
-	//totalLight = 1.0 - (camDistance / maxDistance);
-
-	size_t index = static_cast<size_t>(totalLight * (charGradient.length() - 1));
-	renderChar = camDistance >= maxDistance ? ' ' : charGradient[index];
+	updateRenderChar(totalLight, camDistance / maxDistance);
 	renderColor = camDistance >= maxDistance ? 0 : lightColor * 255;
 
-	colorCode = std::format("\033[38;2;{};{};{}m",
-		static_cast<int>(renderColor.x),
-		static_cast<int>(renderColor.y),
-		static_cast<int>(renderColor.z));
+	updateColorCode();
+}
+
+void PixelSample::updateColorCode()
+{
+	char* ptr = colorCodeData;
+
+	std::memcpy(ptr, "\033[38;2;", 7);
+	ptr += 7;
+
+	std::to_chars_result res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.x));
+	ptr = res.ptr;
+	*ptr++ = ';';
+
+	res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.y));
+	ptr = res.ptr;
+	*ptr++ = ';';
+
+	res = std::to_chars(ptr, ptr + 4, static_cast<int>(renderColor.z));
+	ptr = res.ptr;
+	*ptr++ = 'm';
+
+	colorCodeLen = static_cast<uint8_t>(ptr - colorCodeData);
+}
+
+std::string_view PixelSample::getColorCode() const
+{
+	return std::string_view(colorCodeData, colorCodeLen);
+}
+
+void PixelSample::updateRenderChar(double lightVal, double distanceRatio)
+{
+	size_t index = static_cast<size_t>(lightVal * (s_charGradient.length() - 1));
+	renderChar = distanceRatio >= 1.0 ? ' ' : s_charGradient[index];
 }

@@ -1,17 +1,30 @@
 SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
+	OPRotateContinuous m_axis 0 1 0 m_rotationsPerSecond 0.2 m_phase 0
+	OPRotateContinuous m_axis 1 1 1 m_rotationsPerSecond 0.1 m_phase 0
 	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
-		COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-		SDFPlaneXZ m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 0 1 m_yPos -1
-			stepBack
-		COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-		SDFBox m_position 0 1 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 0 0 m_dimensions 1 3 1
-			COMBAddSmooth m_smoothing 2 m_colorBlending 1 m_colorShifting 0
-			PMOscillateLinear m_propName smoothing m_period 2 m_amplitude 2 m_phase 0.5
-			SDFBox m_position 0 1 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 0 1 0 m_dimensions 3 1 1
-				stepBack
-			stepBack
+	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
+		stepBack
+	OPRotate m_axis 0 0 1 m_rotations 0.25
+	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
+		stepBack
+	OPRotate m_axis 0 0 1 m_rotations 0.5
+	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
+		stepBack
+	OPRotate m_axis 0 0 1 m_rotations 0.75
+	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
+		stepBack
+	OPRotate m_axis 1 0 0 m_rotations 0.25
+	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
+		stepBack
+	OPRotate m_axis 1 0 0 m_rotations 0.5
+	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
+	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
 		stepBack
 	stepBack
-LightSource m_position 6 6 -2 m_luminance 100 m_color 1 1 1
+LightSource m_position 5 2 0 m_luminance 50 m_color 0.5 0.5 1
+LightSource m_position -5 2 0 m_luminance 50 m_color 1 0.5 0.5
 end

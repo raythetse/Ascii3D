@@ -42,3 +42,16 @@ void SDFOperation::serialize(std::vector<std::string>& strVec, size_t level) con
 		propMod->serialize(strVec, level);
 	}
 }
+
+void SDFOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	getShaderOpCalls(ss, level, maxLevel);
+}
+
+bool SDFOperation::getShaderPropModCalls(std::string& propName) const
+{
+	for (auto& propMod : m_propMods) {
+		if (propMod->getShaderCall(propName)) return true;
+	}
+	return false;
+}

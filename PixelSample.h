@@ -5,10 +5,11 @@
 #include "SDFObject.h"
 #include "LightSource.h"
 
-class PixelSample
+struct PixelSample
 {
 private:
-	static const std::string charGradient;
+	static const std::string s_charGradient;
+
 public:
 	double camDistance{};
 	double surfDistance{};
@@ -17,10 +18,14 @@ public:
 	Vec3 normal{};
 	Color renderColor{};
 	char renderChar{};
-	std::string colorCode{};
+	char colorCodeData[24]{};
+	uint8_t colorCodeLen{ 0 };
 
 	PixelSample() = default;
 	PixelSample(double camDist, double surfDist, Vec3 point) : camDistance(camDist), surfDistance(surfDist), samplePoint(point) {}
 	void buildRenderParams(const SDFObject* object, Color color, Vec3 p, double maxDistance, const std::vector<std::unique_ptr<LightSource>>& lights, const std::vector<bool>& directLighting);
+	void updateRenderChar(double lightVal, double distanceRatio);
+	void updateColorCode();
+	std::string_view getColorCode() const;
 };
 

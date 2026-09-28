@@ -20,6 +20,7 @@ class OPRoundOff : public ResurfaceOperation
 protected:
 	double resurface(double distance) override;
 	std::string getClassName() const { return "OPRoundOff"; }
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPRoundOff(double magnitude = DEF::RESURFRoundMagnitude) : ResurfaceOperation(magnitude) {}
 };
@@ -29,6 +30,7 @@ class OPOnion : public ResurfaceOperation
 protected:
 	double resurface(double distance) override;
 	std::string getClassName() const { return "OPOnion"; }
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPOnion(double magnitude = DEF::RESURFOnionMagnitude) : ResurfaceOperation(magnitude) {}
 };
@@ -38,6 +40,7 @@ class OPInsideOut : public ResurfaceOperation
 protected:
 	double resurface(double distance) override;
 	std::string getClassName() const { return "OPOnion"; }
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPInsideOut() : ResurfaceOperation(0.0) {}
 };
