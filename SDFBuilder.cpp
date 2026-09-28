@@ -468,6 +468,26 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFCone>(m_height, m_ratio, m_color, m_position, m_rotationAxis, m_rotations);
     } },
+    { "SDFSolidAngle", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
+        double m_rotations{ DEF::OBJRotations };
+        double m_radius{ DEF::OBJRadius };
+        double m_sweep{ DEF::OBJSweep };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
+            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
+            else if (param == "m_rotations") ss >> m_rotations;
+            else if (param == "m_radius") ss >> m_radius;
+            else if (param == "m_sweep") ss >> m_sweep;
+        }
+        builder.pushSDFObj<SDFSolidAngle>(m_radius, m_sweep, m_color, m_position, m_rotationAxis, m_rotations);
+    } },
 
     // Mirrors
     { "OPMirrorX", [](SDFBuilder& builder, std::stringstream& ss) {

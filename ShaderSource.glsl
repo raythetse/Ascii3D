@@ -210,13 +210,20 @@ float cone(vec3 p, float height, float angle) {
     float c = cos(angle);
     float s = sin(angle);
     vec2 q = height * vec2(s / c, -1.0);
-    vec2 w = vec2( length(p.xz), p.y );
-    vec2 a = w - q*clamp( dot(w,q)/dot(q,q), 0.0, 1.0 );
-    vec2 b = w - q*vec2( clamp( w.x/q.x, 0.0, 1.0 ), 1.0 );
-    float k = sign( q.y );
-    float d = min(dot( a, a ),dot(b, b));
-    float t = max( k*(w.x*q.y-w.y*q.x),k*(w.y-q.y)  );
-    return sqrt(d)*sign(t);
+    vec2 w = vec2(length(p.xz), p.y);
+    vec2 a = w - q * clamp(dot(w, q) / dot(q, q), 0.0, 1.0);
+    vec2 b = w - q * vec2(clamp(w.x / q.x, 0.0, 1.0), 1.0);
+    float k = sign(q.y);
+    float d = min(dot(a, a), dot(b, b));
+    float t = max(k * (w.x * q.y - w.y * q.x), k * (w.y - q.y));
+    return sqrt(d) * sign(t);
+}
+
+float solidAngle(vec3 p, vec2 c, float r) {
+    vec2 q = vec2(length(p.xz), p.y);
+    float l = length(q) - r;
+    float m = length(q - c*clamp(dot(q, c), 0.0, r));
+    return max(l, m * sign(c.y * q.x - c.x * q.y));
 }
 
 void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in float time) {
@@ -232,16 +239,28 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color0 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
 
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.200000;
+	pmFloat1 = 0.000000;
+	p0 = rotateVec3(p0, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.000000;
+	p0 = rotateVec3(p0, pmVec30, time * pmFloat0 + pmFloat1);
+
 	// SDFObject //
 	vec3 p1;
 	float d1 = FLOAT_MAX;
 	vec3 color1;
 	p1 = p0;
 	d1 = FLOAT_MAX;
-	color1 = vec3(0.0000000, 0.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-	// SDFPlaneXY //
-	d1 = abs(dot(p1, vec3(0.7071068, 0.7071068, 0.0000000)) + 2);
+	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
+	// SDFSolidAngle //
+	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
 
 
 	// COMBAdd //
@@ -250,40 +269,98 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 		color0 = color1; 
 	}
 
-	// OPMirrorXZ //
-	p0.xz = abs(p0.xz);
-
 	// OPRotate //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = -0.125000;
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.250000;
 	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// OPMirrorX //
-	p0.x = abs(p0.x);
-
-	// OPRotate //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = -0.062500;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// OPMirrorX //
-	p0.x = abs(p0.x);
-
-	// OPRotate //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = -0.031250;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// OPTranslate //
-	p0 -= vec3(0.0000000, 0.0000000, 3.0000000); 
 
 	// SDFObject //
 	p1 = p0;
 	d1 = FLOAT_MAX;
-	color1 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-	// SDFCone //
-	d1 = cone(p1, 2, 0.15708);
+	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
+	// SDFSolidAngle //
+	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
+
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.500000;
+	p0 = rotateVec3(p0, pmVec30, pmFloat0);
+
+	// SDFObject //
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
+	// SDFSolidAngle //
+	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
+
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.750000;
+	p0 = rotateVec3(p0, pmVec30, pmFloat0);
+
+	// SDFObject //
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
+	// SDFSolidAngle //
+	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
+
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+
+	// OPRotate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.250000;
+	p0 = rotateVec3(p0, pmVec30, pmFloat0);
+
+	// SDFObject //
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
+	// SDFSolidAngle //
+	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
+
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+
+	// OPRotate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.500000;
+	p0 = rotateVec3(p0, pmVec30, pmFloat0);
+
+	// SDFObject //
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
+	// SDFSolidAngle //
+	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
 
 
 	// COMBAdd //
@@ -397,12 +474,35 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 150 : 0.0;
-				float ambLight = 150 * AMB_LIGHT_POW * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
+				float ambLight = 50 * AMB_LIGHT_POW * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeColor += vec3(1.0000000, 1.0000000, 1.0000000) * lightPower;
+				cumulativeColor += vec3(0.5000000, 0.5000000, 1.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [1] //
+		rayDir = vec3(-5.0000000, 2.0000000, 0.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
+				float ambLight = 50 * AMB_LIGHT_POW * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(1.0000000, 0.5000000, 0.5000000) * lightPower;
 				break;
 			}
 		}

@@ -29,8 +29,6 @@ void SDFObject::setRotation(Vec3 axis, double rotations)
     m_rotationAxis = axis;
     m_rotations = rotations;
     Mat3::fromAxisAngle(m_rotationAxis, m_rotMat, m_rotations * MF::TAU);
-
-    m_hasRotation = m_rotMat != Mat3::Identity;
 }
 
 SDFOperation* SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
@@ -71,7 +69,7 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
     p -= m_position;
-    if (m_hasRotation) p = m_rotMat * p;
+    if (m_rotations != 0.0) p = m_rotMat * p;
     double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
     for (auto& op : m_operations) {
@@ -99,7 +97,7 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
     }
     ss << "\tcolor" << level << " = " << m_color.getShaderVec3() << ";\n";
     ss << "\tp" << level << " -= " << m_position.getShaderVec3() << ";\n";
-    if (m_hasRotation) ss << "\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n\n";
+    if (m_rotations != 0.0) ss << "\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n\n";
     getShaderObjectCalls(ss, level, maxLevel);
     ss << "\n";
 
@@ -417,7 +415,7 @@ double SDFTube::signedDistanceInner(Vec3 p) const
 void SDFCone::serializeInner(std::stringstream& ss) const
 {
     ss << " m_height " << m_height;
-    ss << "m_ratio " << m_ratio;
+    ss << " m_ratio " << m_ratio;
 }
 
 void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
@@ -428,7 +426,7 @@ void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t 
 
 double SDFCone::signedDistanceInner(Vec3 p) const
 {
-    Vec2 q = Vec2{ sc.x / sc.y, -1.0 } * m_height;
+    Vec2 q = Vec2{ m_sincos.x / m_sincos.y, -1.0 } * m_height;
     Vec2 w = Vec2{ Vec2{ p.x, p.z }.length(), p.y };
     Vec2 a = w - q * std::clamp(w.dot(q) / q.dot(q), 0.0, 1.0);
     Vec2 b = w - q * Vec2{ std::clamp(w.x / q.x, 0.0, 1.0), 1.0 };
@@ -436,4 +434,24 @@ double SDFCone::signedDistanceInner(Vec3 p) const
     double d = std::min(a.dot(a), b.dot(b));
     double s = std::max(k * (w.x * q.y - w.y * q.x), k * (w.y - q.y));
     return std::sqrt(d) * (s >= 0.0 ? 1.0 : -1.0);
+}
+
+void SDFSolidAngle::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_sweep " << m_sweep;
+}
+
+void SDFSolidAngle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFSolidAngle //\n";
+    ss << "\td" << level << " = solidAngle(p" << level << ", " << m_sincos.getShaderVec2() <<", " <<m_radius << ");\n\n";
+}
+
+double SDFSolidAngle::signedDistanceInner(Vec3 p) const
+{
+    Vec2 q = Vec2{ Vec2{ p.x, p.z }.length(), p.y };
+    double l = q.length() - m_radius;
+    double m = (q - m_sincos * std::clamp(q.dot(m_sincos), 0.0, m_radius)).length();
+    return std::max(l, m * ((m_sincos.y * q.x - m_sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
 }

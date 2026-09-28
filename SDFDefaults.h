@@ -19,6 +19,7 @@ namespace DEF
 	inline static double	OBJRatio{ 0.125 };
 	inline static Vec3		OBJNormal{ 0.0, 1.0, 0.0 };
 	inline static double	OBJOffset{ 0.0 };
+	inline static double	OBJSweep{ 0.25 };
 
 	// Combo defaults
 	inline static double	COMBSmooth{ 0.5 };

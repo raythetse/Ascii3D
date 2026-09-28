@@ -220,13 +220,20 @@ float cone(vec3 p, float height, float angle) {
     float c = cos(angle);
     float s = sin(angle);
     vec2 q = height * vec2(s / c, -1.0);
-    vec2 w = vec2( length(p.xz), p.y );
-    vec2 a = w - q*clamp( dot(w,q)/dot(q,q), 0.0, 1.0 );
-    vec2 b = w - q*vec2( clamp( w.x/q.x, 0.0, 1.0 ), 1.0 );
-    float k = sign( q.y );
-    float d = min(dot( a, a ),dot(b, b));
-    float t = max( k*(w.x*q.y-w.y*q.x),k*(w.y-q.y)  );
-    return sqrt(d)*sign(t);
+    vec2 w = vec2(length(p.xz), p.y);
+    vec2 a = w - q * clamp(dot(w, q) / dot(q, q), 0.0, 1.0);
+    vec2 b = w - q * vec2(clamp(w.x / q.x, 0.0, 1.0), 1.0);
+    float k = sign(q.y);
+    float d = min(dot(a, a), dot(b, b));
+    float t = max(k * (w.x * q.y - w.y * q.x), k * (w.y - q.y));
+    return sqrt(d) * sign(t);
+}
+
+float solidAngle(vec3 p, vec2 c, float r) {
+    vec2 q = vec2(length(p.xz), p.y);
+    float l = length(q) - r;
+    float m = length(q - c*clamp(dot(q, c), 0.0, r));
+    return max(l, m * sign(c.y * q.x - c.x * q.y));
 }
 
 )"
@@ -393,6 +400,9 @@ SDFScene::SDFScene(LoadOption loadOption)
     case SDFScene::Test:
         test();
         break;
+    case SDFScene::RepeatCircle:
+        repeatCircle();
+        break;
     case SDFScene::Cubes:
         cubesDemo();
         break;
@@ -469,9 +479,36 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 
 void SDFScene::test()
 {
+    double offset = 0.5;
+    add(SDFBuilder{}
+        .pushOp<OPRotateContinuous>(Vec3::Up, 0.2)
+        .pushOp<OPRotateContinuous>(Vec3::One, 0.1)
+        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
+        .stepBack()
+        .pushOp<OPRotate>(Vec3::Forward, 0.25)
+        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
+        .stepBack()
+        .pushOp<OPRotate>(Vec3::Forward, 0.5)
+        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
+        .stepBack()
+        .pushOp<OPRotate>(Vec3::Forward, 0.75)
+        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
+        .stepBack()
+        .pushOp<OPRotate>(Vec3::Right, 0.25)
+        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
+        .stepBack()
+        .pushOp<OPRotate>(Vec3::Right, 0.5)
+        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
+        .stepBack()
+        .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 50.0, Color::LightBlue)
+        .addLightSource(Vec3{ -5.0, 2.0, 0.0 }, 50.0, Color::Pink)
+    );
+}
+
+void SDFScene::repeatCircle()
+{
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFPlane>((Vec3::Up + Vec3::Right).getNormal(), 2.0, Color::Blue)()
-        .stepBack()
         .pushOp<OPMirrorXZ>()
         .pushOp<OPRotate>(Vec3::Up, -4.0 / 32.0)
         .pushOp<OPMirrorX>()

@@ -14,7 +14,7 @@ class SDFOperation;
 
 // SDFObjects use 'Signed-Distance Fields' (SDFs) to build out a scene
 // For more information on SDFs: https://iquilezles.org/articles/distfunctions/
-// Many SDF functions are adapted from the above article.
+// Most SDF functions are adapted from the above article.
 class SDFObject
 {
 public:
@@ -23,7 +23,6 @@ protected:
 	Vec3 m_rotationAxis{};
 	double m_rotations{};
 	Mat3 m_rotMat{};
-	bool m_hasRotation{};
 	Color m_color{};
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
 	virtual double signedDistanceInner(Vec3 p) const;
@@ -305,14 +304,30 @@ class SDFCone : public SDFObject
 private:
 	double m_height{};
 	double m_ratio{};
-	Vec2 sc{};
+	Vec2 m_sincos{};
 protected:
 	std::string getClassName() const override { return "SDFCone"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCone(double height = DEF::OBJLength, double ratio = DEF::OBJRatio, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
-		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_ratio(ratio), sc(MF::fast_sincos(ratio * MF::TAU)) {}
+		: SDFObject(color, position, rotationAxis, rotations), m_height(height), m_ratio(ratio), m_sincos(MF::fast_sincos(ratio* MF::TAU)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFSolidAngle : public SDFObject
+{
+private:
+	double m_radius{};
+	double m_sweep{};
+	Vec2 m_sincos{};
+protected:
+	std::string getClassName() const override { return "SDFSolidAngle"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFSolidAngle(double radius = DEF::OBJRadius, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor, Vec3 position = DEF::ObjPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
