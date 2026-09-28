@@ -23,7 +23,7 @@ public:
 	void update();
 	void reset();
 	Vec3 getViewportRay(const double x, const double y) const;
-	void setViewportSize(Vec2 size);
+	Vec2 setViewportSize(Vec2 size);
 	Vec3 getPosition() const { return m_position; }
 	Vec3 getForward() const { return m_forward; }
 	Vec3 getRight() const { return m_right; }

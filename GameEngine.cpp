@@ -23,7 +23,7 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
         m_dimensions.first = width;
         m_dimensions.second = height;
         m_pixelField.setSize(m_dimensions.first, m_dimensions.second);
-        m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
+        m_viewportSize = m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
 
         if (m_marchMode == Hardware) m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     });
@@ -123,6 +123,8 @@ void GameEngine::marchHardware()
     inputs.camUp[0] = static_cast<float>(camUp.x);
     inputs.camUp[1] = static_cast<float>(camUp.y);
     inputs.camUp[2] = static_cast<float>(camUp.z);
+    inputs.viewportSize[0] = m_viewportSize.x;
+    inputs.viewportSize[1] = m_viewportSize.y;
 
     auto result = m_vrm.renderFrame(inputs);
     m_pixelField.fromHardware(result);

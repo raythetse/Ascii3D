@@ -27,8 +27,8 @@ layout(push_constant) uniform PushConstants {
     float camRX; float camRY; float camRZ;
     float maxDistance;
     float surfTolerance;
-    float pad0;
-    float pad1;
+    float viewportX;
+    float viewportY;
     float pad2;
 } push;
     )"
@@ -242,6 +242,7 @@ void main() {
     if (coordX >= uint(push.width) || coordY >= uint(push.height)) return;
 
     vec2 viewportCoords = vec2(float(coordX) / push.width, float(coordY) / push.height);
+    vec2 viewportSize = vec2(push.viewportX, push.viewportY);
 
     vec3 camPos = vec3(push.camPX, push.camPY, push.camPZ);
     vec3 camForward = vec3(push.camFX, push.camFY, push.camFZ);
@@ -249,10 +250,10 @@ void main() {
     vec3 camUp = vec3(push.camUX, push.camUY, push.camUZ);
 
     vec3 screenPoint = camPos + camForward;
-    screenPoint -= camRight;
-    screenPoint += camRight * 2.0 * viewportCoords.x;
-    screenPoint += camUp * 0.5;
-    screenPoint -= camUp * viewportCoords.y;
+    screenPoint -= camRight * 0.5 * viewportSize.x;
+    screenPoint += camRight * viewportSize.x * viewportCoords.x;
+    screenPoint += camUp * 0.5 * viewportSize.y;
+    screenPoint -= camUp * viewportSize.y * viewportCoords.y;
 
     vec3 rayDir = normalize(screenPoint - camPos);
 

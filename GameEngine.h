@@ -17,6 +17,7 @@ class GameEngine
 	};
 private:
 	std::pair<size_t, size_t> m_dimensions{ 120, 40 };
+	Vec2 m_viewportSize{ 2.0, 1.0 };
 	double m_sceneDepth;
 	double m_surTolerance;
 	PixelField m_pixelField;

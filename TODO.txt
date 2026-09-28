@@ -1,5 +1,5 @@
 Required:
-- fix aspect ratio in glsl mode
+- fix screen params detection on start
 - verify consistency of inheriting object local pos/rot between software/hardware rendering
 - light movement
 - startup options

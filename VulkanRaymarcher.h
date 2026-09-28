@@ -28,8 +28,7 @@ struct ShaderInputs {
     float sceneDepth;
 
     float surfTolerance;
-    float pad0;
-    float pad1;
+    float viewportSize[2];
     float pad2;
 };
 
