@@ -259,6 +259,26 @@ double SDFTorus::signedDistanceInner(Vec3 p) const
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
+void SDFTorusSegment::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
+    ss << " m_sweep " << m_sweep;
+}
+
+void SDFTorusSegment::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFTorus //\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ", " << m_radii.getShaderVec2() << ", " << m_sincos.getShaderVec2() << ");\n\n";
+}
+
+double SDFTorusSegment::signedDistanceInner(Vec3 p) const
+{
+    p.x = abs(p.x);
+    Vec2 pXY{ p.x, p.y };
+    double k = (m_sincos.y * p.x > m_sincos.x * p.y) ? pXY.dot(m_sincos) : pXY.length();
+    return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
+}
+
 void SDFCapsuleX::serializeInner(std::stringstream& ss) const
 {
     ss << " m_radius " << m_radius;
@@ -517,6 +537,31 @@ double SDFEquilateralTriangle::signedDistanceInner(Vec3 p) const
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
 
+void SDFIsoscelesTriangle::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFIsoscelesTriangle //\n";
+    ss << "\td" << level << " = isoscelesTriangle(p" << level << ", " << m_dimensions.getShaderVec2() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFIsoscelesTriangle::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    Vec2 p2D{ std::abs(p.x), p.z };
+    Vec2 a = p2D - m_dimensions * std::clamp(p2D.dot(m_dimensions) / m_dimensions.dot(m_dimensions), 0.0, 1.0);
+    Vec2 b = p2D - m_dimensions * Vec2{ std::clamp(p2D.x / m_dimensions.x, 0.0, 1.0), 1.0 };
+    double s = m_dimensions.y >= 0.0 ? -1.0 : 1.0;
+    Vec2 d = Vec2{ a.dot(a), s * (p2D.x * m_dimensions.y - p2D.y * m_dimensions.x) }.minimum(Vec2{ b.dot(b), s * (p2D.y - m_dimensions.y) });
+    double d2D = std::sqrt(d.x) * (d.y >= 0.0 ? -1.0 : 1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
 void SDFPieSlice::serializeInner(std::stringstream& ss) const
 {
     ss << " m_sweep " << m_sweep;
@@ -535,9 +580,83 @@ double SDFPieSlice::signedDistanceInner(Vec3 p) const
 {
     if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
     Vec2 p2D{ p.x, p.z };
-    p2D.x = abs(p2D.x);
+    p2D.x = std::abs(p2D.x);
     double l = p2D.length() - m_radius;
     double m = (p2D - m_sincos * std::clamp(p2D.dot(m_sincos), 0.0, m_radius)).length(); // c=sin/cos of aperture
     double d2D = std::max(l, m * (m_sincos.y * p2D.x - m_sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFPentagon::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFPentagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFPentagon //\n";
+    ss << "\td" << level << " = pentagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFPentagon::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    const Vec3 k{ 0.809016994, 0.587785252, 0.726542528 };
+    Vec2 p2D{ std::abs(p.x), p.z };
+    p2D -= Vec2{ -k.x, k.y } * std::min(Vec2{ -k.x, k.y }.dot(p2D), 0.0) * 2.0;
+    p2D -= Vec2 { k.x, k.y } * std::min(Vec2{ k.x, k.y }.dot(p2D), 0.0) * 2.0;
+    p2D -= Vec2{ std::clamp(p2D.x, -m_radius * k.z, m_radius * k.z), m_radius };
+    double d2D = p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFHexagon::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFHexagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFHexagon //\n";
+    ss << "\td" << level << " = hexagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFHexagon::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    const Vec3 k{ -0.866025404, 0.5, 0.577350269 };
+    Vec2 p2D{ std::abs(p.x), std::abs(p.z) };
+    p2D -= Vec2{ k.x, k.y } * std::min(Vec2{ k.x, k.y }.dot(p2D), 0.0) * 2.0;
+    p2D -= Vec2{ std::clamp(p2D.x, -k.z * m_radius, k.z * m_radius), m_radius };
+    double d2D = p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFOctagon::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radius " << m_radius;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFOctagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFOctagon //\n";
+    ss << "\td" << level << " = hexagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFOctagon::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    const Vec3 k{ -0.9238795325, 0.3826834323, 0.4142135623 };
+    Vec2 p2D{ std::abs(p.x), std::abs(p.z) };
+    p2D -= Vec2{ k.x, k.y } * std::min(Vec2{ k.x, k.y }.dot(p2D), 0.0) * 2.0;
+    p2D -= Vec2{ -k.x, k.y } * std::min(Vec2{ -k.x, k.y }.dot(p2D), 0.0) * 2.0;
+    p2D -= Vec2{ std::clamp(p2D.x, -k.z * m_radius, k.z * m_radius), m_radius };
+    double d2D = p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }

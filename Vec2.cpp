@@ -27,14 +27,24 @@ double Vec2::dot(const Vec2& p) const
     return x * p.x + y * p.y;
 }
 
-Vec2 Vec2::maximum(double m)
+Vec2 Vec2::maximum(const double m)
 {
     return { m > x ? m : x, m > y ? m : y };
 }
 
-Vec2 Vec2::minimum(double m)
+Vec2 Vec2::minimum(const double m)
 {
     return { m < x ? m : x, m < y ? m : y };
+}
+
+Vec2 Vec2::maximum(const Vec2 m)
+{
+    return Vec2{ x > m.x ? x : m.x, y > m.y ? y : m.y };
+}
+
+Vec2 Vec2::minimum(const Vec2 m)
+{
+    return Vec2{ x < m.x ? x : m.x, y < m.y ? y : m.y };
 }
 
 Vec2 Vec2::cross(const Vec2& p)

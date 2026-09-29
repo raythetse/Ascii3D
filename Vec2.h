@@ -20,8 +20,10 @@ public:
 	double length() const;
 	double distance(const Vec2& p) const;
 	double dot(const Vec2& p) const;
-	Vec2 maximum(double m);
-	Vec2 minimum(double m);
+	Vec2 maximum(const double m);
+	Vec2 minimum(const double m);
+	Vec2 maximum(const Vec2 m);
+	Vec2 minimum(const Vec2 m);
 	Vec2 cross(const Vec2& p);
 	Vec2 abs();
 	void normalize();

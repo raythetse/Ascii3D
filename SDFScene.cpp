@@ -181,6 +181,12 @@ float torus(vec3 p, vec2 radii) {
     return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
 }
 
+float torusSegment(vec3 p, vec2 radii, vec2 sincos) {
+    p.x = abs(p.x);
+    float k = (sincos.y * p.x > sincos.x * p.y) ? dot(p.xy, sincos) : length(p.xy);
+    return sqrt(dot(p, p) + radii.x * radii.x - 2.0 * radii.x * k) - radii.y;
+}
+
 float capsuleX(vec3 p, float bodyLength, float radius) {
     p.x = p.x > 0.0 ? max(0.0, p.x - 0.5 * bodyLength) : min(0.0, p.x + 0.5 * bodyLength);
     return length(p) - radius;
@@ -272,14 +278,56 @@ float equilateralTriangle(vec3 p, float base, int operation, float magnitude) {
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float pieSlice(vec3 p, vec2 sincos, float radius, int operation, float magnitude)
-{
+float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 p2D = vec2(abs(p.x), p.z);
+    vec2 a = p2D - dimensions * clamp(dot(p2D, dimensions) / dot(dimensions, dimensions), 0.0, 1.0 );
+    vec2 b = p2D - dimensions * vec2(clamp(p2D.x / dimensions.x, 0.0, 1.0 ), 1.0 );
+    float s = -sign(dimensions.y);
+    vec2 d = min(vec2(dot(a, a), s * (p2D.x * dimensions.y - p2D.y * dimensions.x)), vec2(dot(b, b), s * (p2D.y - dimensions.y)));
+    float d2D = -sqrt(d.x) * sign(d.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float pieSlice(vec3 p, vec2 sincos, float radius, int operation, float magnitude) {
     if (operation == 1) p = revolve2D(p, magnitude);
     vec2 p2D = vec2(p.x, p.z);
     p2D.x = abs(p2D.x);
     float l = length(p2D) - radius;
     float m = length(p2D - sincos * clamp(dot(p2D, sincos), 0.0, radius));
     float d2D = max(l, m * sign(sincos.y * p2D.x - sincos.x * p2D.y));
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float pentagon(vec3 p, float radius, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    const vec3 k = vec3(0.809016994, 0.587785252, 0.726542528);
+    vec2 p2D = vec2(abs(p.x), p.z);
+    p2D -= 2.0 * min(dot(vec2(-k.x, k.y), p2D), 0.0) * vec2(-k.x, k.y);
+    p2D -= 2.0 * min(dot(vec2( k.x, k.y), p2D), 0.0) * vec2( k.x, k.y);
+    p2D -= vec2(clamp(p2D.x, -radius * k.z, radius * k.z), radius);    
+    float d2D = length(p2D) * sign(p2D.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float hexagon(vec3 p, float radius, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    const vec3 k = vec3(-0.866025404,0.5,0.577350269);
+    vec2 p2D = vec2(abs(p.x), abs(p.z));
+    p2D -= 2.0 * min(dot(k.xy, p2D), 0.0) * k.xy;
+    p2D -= vec2(clamp(p2D.x, -k.z * radius, k.z * radius), radius);
+    float d2D = length(p2D) * sign(p2D.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float octagon(vec3 p, float radius, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    const vec3 k = vec3(-0.9238795325, 0.3826834323, 0.4142135623);
+    vec2 p2D = vec2(abs(p.x), abs(p.y));
+    p2D -= 2.0 * min(dot(vec2(k.x, k.y), p2D), 0.0) * vec2(k.x, k.y);
+    p2D -= 2.0 * min(dot(vec2(-k.x, k.y), p2D), 0.0) * vec2(-k.x, k.y);
+    p2D -= vec2(clamp(p2D.x, -k.z * radius, k.z * radius), radius);
+    float d2D = length(p2D) * sign(p2D.y);
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
@@ -528,8 +576,7 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFPieSlice>(SDFObject::Extrude)()
-        //.pushOp<COMBAdd, SDFBox>()()
+        .pushOp<COMBAdd, SDFOctagon>(SDFObject::Revolve)()
         .addLightSource(Vec3{ 5.0, 1.0, -5.0 }, 25.0, Color::White)
     );
 }

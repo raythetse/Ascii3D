@@ -172,6 +172,22 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+class SDFTorusSegment : public SDFObject
+{
+private:
+	Vec2 m_radii;
+	double m_sweep;
+	Vec2 m_sincos;
+protected:
+	std::string getClassName() const override { return "SDFTorusSegment"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTorusSegment(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
 class SDFCapsuleX : public SDFObject
 {
 private:
@@ -338,6 +354,9 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+// Following SDFs are 2D shapes projected into 3D either with exrusion or revolution
+// SDFs are adapted from https://iquilezles.org/articles/distfunctions2d/
+// Extrusion/Revolution Ops are adapted from article linked near the top of this file
 class SDFRhombus : public SDFObject
 {
 private:
@@ -349,7 +368,7 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFRhombus(OP2D operation = Extrude, Vec2 dimensions = DEF::OBJRhombDimensions, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+	SDFRhombus(OP2D operation = Extrude, Vec2 dimensions = DEF::OBJOP2DDimensions, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_dimensions(dimensions), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
@@ -370,6 +389,22 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+class SDFIsoscelesTriangle : public SDFObject
+{
+private:
+	OP2D m_operation;
+	Vec2 m_dimensions;
+	double m_magnitude;
+protected:
+	std::string getClassName() const override { return "SDFIsoscelesTriangle"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFIsoscelesTriangle(OP2D operation = Extrude, Vec2 dimensions = DEF::OBJOP2DDimensions, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_dimensions(dimensions), m_magnitude(magnitude) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
 class SDFPieSlice : public SDFObject
 {
 private:
@@ -385,6 +420,54 @@ protected:
 public:
 	SDFPieSlice(OP2D operation = Extrude, double sweep = DEF::OBJSweep, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_sweep(sweep), m_radius(radius), m_magnitude(magnitude), m_sincos(MF::fast_sincos(m_sweep * MF::PI)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFPentagon : public SDFObject
+{
+private:
+	OP2D m_operation;
+	double m_radius;
+	double m_magnitude;
+protected:
+	std::string getClassName() const override { return "SDFPentagon"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFPentagon(OP2D operation = Extrude, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_radius(radius), m_magnitude(magnitude) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFHexagon : public SDFObject
+{
+private:
+	OP2D m_operation;
+	double m_radius;
+	double m_magnitude;
+protected:
+	std::string getClassName() const override { return "SDFHexagon"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFHexagon(OP2D operation = Extrude, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_radius(radius), m_magnitude(magnitude) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFOctagon : public SDFObject
+{
+private:
+	OP2D m_operation;
+	double m_radius;
+	double m_magnitude;
+protected:
+	std::string getClassName() const override { return "SDFOctagon"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFOctagon(OP2D operation = Extrude, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_radius(radius), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

@@ -20,7 +20,7 @@ namespace DEF
 	inline static Vec3		OBJNormal{ 0.0, 1.0, 0.0 };
 	inline static double	OBJOffset{ 0.0 };
 	inline static double	OBJSweep{ 0.25 };
-	inline static Vec2		OBJRhombDimensions{ 1.0, 0.5 };
+	inline static Vec2		OBJOP2DDimensions{ 1.0, 0.5 };
 	inline static int       OBJOP2D{ 0 };
 	inline static double	OBJOP2DMagnitude{ 2.0 };
 
