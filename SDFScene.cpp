@@ -323,11 +323,25 @@ float hexagon(vec3 p, float radius, int operation, float magnitude) {
 float octagon(vec3 p, float radius, int operation, float magnitude) {
     if (operation == 1) p = revolve2D(p, magnitude);
     const vec3 k = vec3(-0.9238795325, 0.3826834323, 0.4142135623);
-    vec2 p2D = vec2(abs(p.x), abs(p.y));
+    vec2 p2D = vec2(abs(p.x), abs(p.z));
     p2D -= 2.0 * min(dot(vec2(k.x, k.y), p2D), 0.0) * vec2(k.x, k.y);
     p2D -= 2.0 * min(dot(vec2(-k.x, k.y), p2D), 0.0) * vec2(-k.x, k.y);
     p2D -= vec2(clamp(p2D.x, -k.z * radius, k.z * radius), radius);
     float d2D = length(p2D) * sign(p2D.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 acs, vec2 ecs) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+
+    vec2 p2D = vec2(abs(p.x), p.z);
+    float bn = mod(atan(p2D.x, p2D.y), 2.0 * an) - an;
+    float sinbn = sin(bn);
+    float cosbn = cos(bn);
+    p2D = length(p2D) * vec2(cosbn, abs(sinbn));
+    p2D -= radius * acs;
+    p2D += ecs * clamp(-dot(p2D, ecs), 0.0, radius * acs.y / ecs.y);
+    float d2D = length(p2D) * sign(p2D.x);
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
@@ -455,7 +469,7 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
 
     for (size_t i{}; i < m_lights.size(); ++i) {
         ss << "\n\t\t// SAMPLE LIGHT [" << i << "] //\n";
-        ss << "\t\trayDir = " << m_lights[i]->position().getShaderVec3() << " - p0;\n";
+        ss << "\t\trayDir = " << m_lights[i]->position().getShader() << " - p0;\n";
         ss << "\t\tlightDist = length(rayDir);\n";
         ss << "\t\trayDir = normalize(rayDir);\n";
         ss << "\t\trayLength = push.surfTolerance+0.001;\n";
@@ -473,7 +487,7 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
         ss << "\t\t\t\tfloat dot = max(0.0, dot(rayDir, normal));\n";
         ss << "\t\t\t\tdirectLight *= dot;\n";
         ss << "\t\t\t\tfloat lightPower = directLight + ambLight;\n";
-        ss << "\t\t\t\tcumulativeColor += " << m_lights[i]->color().getShaderVec3() << " * lightPower;\n";
+        ss << "\t\t\t\tcumulativeColor += " << m_lights[i]->color().getShader() << " * lightPower;\n";
         ss << "\t\t\t\tbreak;\n";
         ss << "\t\t\t}\n";
         ss << "\t\t}\n";
@@ -576,8 +590,9 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 void SDFScene::test()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFOctagon>(SDFObject::Revolve)()
-        .addLightSource(Vec3{ 5.0, 1.0, -5.0 }, 25.0, Color::White)
+        .pushOp<COMBAdd, SDFStar>(SDFObject::Extrude, 8, 2.0, 0.25)()
+        //.pushOp<OPRoundOff>(0.25)
+        .addLightSource(Vec3{ 5.0, 3.0, -5.0 }, 25.0, Color::White)
     );
 }
 

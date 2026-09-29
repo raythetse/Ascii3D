@@ -21,8 +21,8 @@ namespace DEF
 	inline static double	OBJOffset{ 0.0 };
 	inline static double	OBJSweep{ 0.25 };
 	inline static Vec2		OBJOP2DDimensions{ 1.0, 0.5 };
-	inline static int       OBJOP2D{ 0 };
 	inline static double	OBJOP2DMagnitude{ 2.0 };
+	inline static size_t	OBJOP2DPoints{ 5 };
 
 	// Combo defaults
 	inline static double	COMBSmooth{ 0.5 };

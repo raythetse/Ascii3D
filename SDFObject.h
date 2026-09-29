@@ -471,3 +471,26 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+class SDFStar : public SDFObject
+{
+private:
+	OP2D m_operation;
+	size_t m_numPoints;
+	double m_radius;
+	double m_ratio;
+	double m_magnitude;
+	double m_an;
+	double m_en;
+	Vec2 m_asincos;
+	Vec2 m_esincos;
+protected:
+	std::string getClassName() const override { return "SDFStar"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFStar(OP2D operation = Extrude, size_t numPoints = DEF::OBJOP2DPoints, double radius = DEF::OBJRadius, double ratio = DEF::OBJRatio, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio), m_magnitude(magnitude)
+		, m_an(MF::PI / static_cast<double>(numPoints)), m_en(MF::PI / m_ratio), m_asincos(MF::fast_sincos(MF::PI / static_cast<double>(numPoints))), m_esincos(MF::fast_sincos(MF::PI / std::lerp(2.0, static_cast<double>(numPoints), ratio))) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+

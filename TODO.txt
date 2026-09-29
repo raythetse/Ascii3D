@@ -8,9 +8,10 @@ Required:
 - fix constructor accessibilities on abstracts
 
 Optional:
+- per-scene camera start pos/look dir
 - propMods for SDFObjects
 - fix mouse movement catching
-- bounding boxes for efficiency
+- bounding boxes/spheres/capsules for efficiency
 - Add oscillate prop mods with end delays
 - change repeat operations to not rely of vec3
 - transparency/reflection

@@ -96,7 +96,7 @@ public:
 	bool operator==(double d) const;
 	explicit operator bool() const;
 
-	std::string getShaderVec3() const;
+	std::string getShader() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p);

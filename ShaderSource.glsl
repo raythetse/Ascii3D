@@ -313,11 +313,25 @@ float hexagon(vec3 p, float radius, int operation, float magnitude) {
 float octagon(vec3 p, float radius, int operation, float magnitude) {
     if (operation == 1) p = revolve2D(p, magnitude);
     const vec3 k = vec3(-0.9238795325, 0.3826834323, 0.4142135623);
-    vec2 p2D = vec2(abs(p.x), abs(p.y));
+    vec2 p2D = vec2(abs(p.x), abs(p.z));
     p2D -= 2.0 * min(dot(vec2(k.x, k.y), p2D), 0.0) * vec2(k.x, k.y);
     p2D -= 2.0 * min(dot(vec2(-k.x, k.y), p2D), 0.0) * vec2(-k.x, k.y);
     p2D -= vec2(clamp(p2D.x, -k.z * radius, k.z * radius), radius);
     float d2D = length(p2D) * sign(p2D.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 acs, vec2 ecs) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+
+    vec2 p2D = vec2(abs(p.x), p.z);
+    float bn = mod(atan(p2D.x, p2D.y), 2.0 * an) - an;
+    float sinbn = sin(bn);
+    float cosbn = cos(bn);
+    p2D = length(p2D) * vec2(cosbn, abs(sinbn));
+    p2D -= radius * acs;
+    p2D += ecs * clamp(-dot(p2D, ecs), 0.0, radius * acs.y / ecs.y);
+    float d2D = length(p2D) * sign(p2D.x);
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
@@ -342,8 +356,8 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = FLOAT_MAX;
 	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-	// SDFOctagon //
-	d1 = hexagon(p1, 0.5, 1, 2);
+	// SDFStar //
+	d1 = star(p1, 2, 0, 2, 0.392699, vec2(0.9238795, 0.3826834), vec2(0.6234898, 0.7818315));
 
 
 	// COMBAdd //
@@ -443,7 +457,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(5.0000000, 1.0000000, -5.0000000) - p0;
+		rayDir = vec3(5.0000000, 3.0000000, -5.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;

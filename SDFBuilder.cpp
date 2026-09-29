@@ -694,6 +694,36 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFOctagon>(m_operation, m_radius, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
     } },
+    { "SDFStar", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_position{ DEF::OBJPosition };
+        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
+        double m_rotations{ DEF::OBJRotations };
+        double m_radius{ DEF::OBJLength };
+        double m_ratio{ DEF::OBJLength };
+        double m_magnitude{ DEF::OBJLength };
+        size_t m_numPoints{ DEF::OBJOP2DPoints };
+        SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
+            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
+            else if (param == "m_rotations") ss >> m_rotations;
+            else if (param == "m_radius") ss >> m_radius;
+            else if (param == "m_numPoints") ss >> m_numPoints;
+            else if (param == "m_ratio") ss >> m_ratio;
+            else if (param == "m_magnitude") ss >> m_magnitude;
+            else if (param == "m_operation") {
+                int opID;
+                ss >> opID;
+                m_operation = static_cast<SDFObject::OP2D>(opID);
+            }
+        }
+        builder.pushSDFObj<SDFStar>(m_operation, m_numPoints, m_radius, m_ratio, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+    } },
 
     // Mirrors
     { "OPMirrorX", [](SDFBuilder& builder, std::stringstream& ss) {

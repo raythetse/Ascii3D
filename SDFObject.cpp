@@ -1,5 +1,6 @@
 #include "SDFObject.h"
 #include <algorithm>
+#include <cmath>
 #include <limits>
 #include "Vec2.h"
 #include "SDFOperation.h"
@@ -106,8 +107,8 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
         ss << "\tp" << level << " = p" << (level - 1) << ";\n";
         ss << "\td" << level << " = FLOAT_MAX;\n";
     }
-    ss << "\tcolor" << level << " = " << m_color.getShaderVec3() << ";\n";
-    ss << "\tp" << level << " -= " << m_position.getShaderVec3() << ";\n";
+    ss << "\tcolor" << level << " = " << m_color.getShader() << ";\n";
+    ss << "\tp" << level << " -= " << m_position.getShader() << ";\n";
     if (m_rotations != 0.0) ss << "\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n\n";
     getShaderObjectCalls(ss, level, maxLevel);
     ss << "\n";
@@ -179,7 +180,7 @@ void SDFPlane::serializeInner(std::stringstream& ss) const
 void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPlaneXY //\n";
-    ss << "\td" << level << " = abs(dot(p" << level << ", " << m_normal.getShaderVec3() << ") + " << m_offset << ");\n\n";
+    ss << "\td" << level << " = abs(dot(p" << level << ", " << m_normal.getShader() << ") + " << m_offset << ");\n\n";
 }
 
 double SDFPlane::signedDistanceInner(Vec3 p) const
@@ -195,7 +196,7 @@ void SDFBox::serializeInner(std::stringstream& ss) const
 void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFBox //\n";
-    ss << "\td" << level << " = box(p" << level << ", " << m_dimensions.getShaderVec3() << ");\n\n";
+    ss << "\td" << level << " = box(p" << level << ", " << m_dimensions.getShader() << ");\n\n";
 }
 
 double SDFBox::signedDistanceInner(Vec3 p) const
@@ -214,7 +215,7 @@ void SDFBoxFrame::serializeInner(std::stringstream& ss) const
 void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFBoxFrame //\n";
-    ss << "\td" << level << " = boxFrame(p" << level << ", " << m_dimensions.getShaderVec3() << ", " << m_edgeThickness << ");\n\n";
+    ss << "\td" << level << " = boxFrame(p" << level << ", " << m_dimensions.getShader() << ", " << m_edgeThickness << ");\n\n";
 }
 
 double SDFBoxFrame::signedDistanceInner(Vec3 p) const
@@ -251,7 +252,7 @@ void SDFTorus::serializeInner(std::stringstream& ss) const
 void SDFTorus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorus //\n";
-    ss << "\td" << level << " = torus(p" << level << ", " << m_radii.getShaderVec2() << ");\n\n";
+    ss << "\td" << level << " = torus(p" << level << ", " << m_radii.getShader() << ");\n\n";
 }
 
 double SDFTorus::signedDistanceInner(Vec3 p) const
@@ -268,7 +269,7 @@ void SDFTorusSegment::serializeInner(std::stringstream& ss) const
 void SDFTorusSegment::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorus //\n";
-    ss << "\td" << level << " = torusSegment(p" << level << ", " << m_radii.getShaderVec2() << ", " << m_sincos.getShaderVec2() << ");\n\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ", " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
 }
 
 double SDFTorusSegment::signedDistanceInner(Vec3 p) const
@@ -416,7 +417,7 @@ void SDFChainLink::serializeInner(std::stringstream& ss) const
 void SDFChainLink::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFChainLink //\n";
-    ss << "\td" << level << " = chainLink(p" << level << ", " << m_sideLength << ", " << m_radii.getShaderVec2() << ");\n\n";
+    ss << "\td" << level << " = chainLink(p" << level << ", " << m_sideLength << ", " << m_radii.getShader() << ");\n\n";
 }
 
 double SDFChainLink::signedDistanceInner(Vec3 p) const
@@ -434,7 +435,7 @@ void SDFTube::serializeInner(std::stringstream& ss) const
 void SDFTube::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTube //\n";
-    ss << "\td" << level << " = tube(p" << level << ", " << m_height << ", " << m_radii.getShaderVec2() << ");\n\n";
+    ss << "\td" << level << " = tube(p" << level << ", " << m_height << ", " << m_radii.getShader() << ");\n\n";
 }
 
 double SDFTube::signedDistanceInner(Vec3 p) const
@@ -476,7 +477,7 @@ void SDFSolidAngle::serializeInner(std::stringstream& ss) const
 void SDFSolidAngle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFSolidAngle //\n";
-    ss << "\td" << level << " = solidAngle(p" << level << ", " << m_sincos.getShaderVec2() <<", " <<m_radius << ");\n\n";
+    ss << "\td" << level << " = solidAngle(p" << level << ", " << m_sincos.getShader() <<", " <<m_radius << ");\n\n";
 }
 
 double SDFSolidAngle::signedDistanceInner(Vec3 p) const
@@ -497,7 +498,7 @@ void SDFRhombus::serializeInner(std::stringstream& ss) const
 void SDFRhombus::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFRhombus //\n";
-    ss << "\td" << level << " = rhombus(p" << level << ", " << m_dimensions.getShaderVec2() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    ss << "\td" << level << " = rhombus(p" << level << ", " << m_dimensions.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
 }
 
 double SDFRhombus::signedDistanceInner(Vec3 p) const
@@ -547,7 +548,7 @@ void SDFIsoscelesTriangle::serializeInner(std::stringstream& ss) const
 void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFIsoscelesTriangle //\n";
-    ss << "\td" << level << " = isoscelesTriangle(p" << level << ", " << m_dimensions.getShaderVec2() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    ss << "\td" << level << " = isoscelesTriangle(p" << level << ", " << m_dimensions.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
 }
 
 double SDFIsoscelesTriangle::signedDistanceInner(Vec3 p) const
@@ -573,7 +574,7 @@ void SDFPieSlice::serializeInner(std::stringstream& ss) const
 void SDFPieSlice::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPieSlice //\n";
-    ss << "\td" << level << " = pieSlice(p" << level << ", " << m_sincos.getShaderVec2() << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    ss << "\td" << level << " = pieSlice(p" << level << ", " << m_sincos.getShader() << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
 }
 
 double SDFPieSlice::signedDistanceInner(Vec3 p) const
@@ -646,7 +647,7 @@ void SDFOctagon::serializeInner(std::stringstream& ss) const
 void SDFOctagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFOctagon //\n";
-    ss << "\td" << level << " = hexagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    ss << "\td" << level << " = octagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
 }
 
 double SDFOctagon::signedDistanceInner(Vec3 p) const
@@ -658,5 +659,37 @@ double SDFOctagon::signedDistanceInner(Vec3 p) const
     p2D -= Vec2{ -k.x, k.y } * std::min(Vec2{ -k.x, k.y }.dot(p2D), 0.0) * 2.0;
     p2D -= Vec2{ std::clamp(p2D.x, -k.z * m_radius, k.z * m_radius), m_radius };
     double d2D = p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFStar::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_numPoints " << m_numPoints;
+    ss << " m_radius " << m_radius;
+    ss << " m_ratio " << m_ratio;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFStar::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFStar //\n";
+    ss << "\td" << level << " = star(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ", " << m_an;
+    ss << ", " << Vec2{ m_asincos.y, m_asincos.x }.getShader() << ", " << Vec2{ m_esincos.y, m_esincos.x }.getShader() << ");\n\n";
+}
+
+double SDFStar::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    Vec2 acs{ m_asincos.y, m_asincos.x };
+    Vec2 ecs{ m_esincos.y, m_esincos.x }; // ecs=vec2(0,1) for regular polygon
+
+    Vec2 p2D{ abs(p.x), p.z };
+    double bn = std::fmod(std::atan2(p2D.x, p2D.y), 2.0 * m_an) - m_an;
+    Vec2 bnsincos = MF::fast_sincos(bn);
+    p2D = Vec2{ bnsincos.y, std::abs(bnsincos.x) } * p2D.length();
+    p2D -= acs * m_radius;
+    p2D += ecs * std::clamp(-(p2D.dot(ecs)), 0.0, m_radius * acs.y / ecs.y);
+    double d2D = p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
