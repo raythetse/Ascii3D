@@ -17,6 +17,14 @@ InputManager::InputManager()
 	SetCursorPos(m_windowCentre.x, m_windowCentre.y);
 	m_input = GetStdHandle(STD_INPUT_HANDLE);
 	m_output = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	if (GetConsoleMode(m_input, &mode)) {
+		// Enable mouse input and disable QuickEdit mode
+		mode |= ENABLE_MOUSE_INPUT;
+		mode &= ~ENABLE_QUICK_EDIT_MODE;
+		mode |= ENABLE_EXTENDED_FLAGS; // Required to change extended flags safely
+		SetConsoleMode(m_input, mode);
+	}
 }
 
 void InputManager::processKeyEvents(INPUT_RECORD inputRecord)
@@ -86,6 +94,7 @@ void InputManager::processInputEvents()
 				break;
 			case WINDOW_BUFFER_SIZE_EVENT:
 				processWindowResizeEvents(inputBuffer[i]);
+				m_windowResized = true;
 				break;
 			default:
 				break;
@@ -99,16 +108,21 @@ void InputManager::processMouseMovement()
 	if (m_holdMouse) {
 		POINT cursorPos;
 		GetCursorPos(&cursorPos);
-		m_mouseMotion = {
-			static_cast<double>(cursorPos.x - m_windowCentre.x),
-			static_cast<double>(cursorPos.y - m_windowCentre.y)
-		};
+		if (m_windowResized) {
+			m_mouseMotion = { 0.0 };
+			m_windowResized = false;
+		}
+		else {
+			m_mouseMotion = { static_cast<double>(cursorPos.x - m_windowCentre.x), static_cast<double>(cursorPos.y - m_windowCentre.y) };
+		}
 		SetCursorPos(m_windowCentre.x, m_windowCentre.y);
 	}
 }
 
 void InputManager::acquireCentre()
 {
+	if (!m_windowResized) return;
+
 	RECT rect;
 	if (GetWindowRect(m_console, &rect)) {
 		m_windowCentre.x = static_cast<long>(rect.left + 0.5 * (rect.right - rect.left));

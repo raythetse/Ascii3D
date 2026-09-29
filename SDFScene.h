@@ -18,6 +18,7 @@ private:
 public:
 	enum LoadOption {
 		Test,
+		SolidAngles,
 		RepeatCircle,
 		Cubes,
 		Elongate,
@@ -31,6 +32,7 @@ private:
 	std::unique_ptr<SDFObject> m_baseObject{};
 	std::vector<std::unique_ptr<LightSource>> m_lights{};
 	void test();
+	void solidAngles();
 	void repeatCircle();
 	void frameDemo();
 	void oxygenDemo();

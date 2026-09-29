@@ -4,7 +4,7 @@
 layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
 
 struct PixelOutput {
-    float r, g, b, d, l;
+    float r, g, b, l;
 };
 
 layout(std430, binding = 0) buffer OutputBuffer {
@@ -30,6 +30,7 @@ const float HALFPI = 1.570796;
 const float PI = 3.1415923;
 const float TAU = 6.283185;
 const float ROOT2 = 1.414213;
+const float ROOT3 = 1.732051;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
@@ -39,7 +40,9 @@ const float SHADOW_TOLERANCE = 0.1;
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
     vec3 a = normalize(axis);
     float angle = rotations * TAU;
-    return p * cos(angle) + cross(a, p) * sin(angle) + a * dot(a, p) * (1.0 - cos(angle));
+    float s = sin(angle);
+    float c = cos(angle);
+    return p * c + cross(a, p) * s + a * dot(a, p) * (1.0 - c);
 }
 
 vec2 rotateVec2(vec2 p, float rotations) {
@@ -47,6 +50,16 @@ vec2 rotateVec2(vec2 p, float rotations) {
     float s = sin(rotations * TAU);
     mat2 m = mat2(c, -s, s, c);
     return m * p;
+}
+
+float extrude2D(double pDotY, float d2D, float height) {
+    vec2 w = vec2(d2D, abs(pDotY) - height * 0.5);
+    return min(max(w.x, w.y), 0.0) + length(max(w, 0.0));
+}
+
+vec3 revolve2D(vec3 p, float radius)
+{
+    return vec3(length(vec2(p.x, p.y)) - radius, p.z, p.z);
 }
 
 vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
@@ -226,6 +239,40 @@ float solidAngle(vec3 p, vec2 c, float r) {
     return max(l, m * sign(c.y * q.x - c.x * q.y));
 }
 
+float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude) // if not extrude, then revolve 
+{
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 dim2D = vec2(dimensions.x, -dimensions.y);
+    vec2 p2D = vec2(p.x, p.z);
+    p2D = abs(p2D);
+    float h = clamp((dot(dim2D, p2D) + dim2D.y * dim2D.y) / dot(dim2D, dim2D), 0.0, 1.0 );
+    p2D -= dim2D * vec2(h, h-1.0);
+    float d2D = length(p2D) * sign(p2D.x);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
+}
+
+float equilateralTriangle(vec3 p, float base, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    float halfBase = base * 0.5;
+    vec2 p2D = vec2(p.x, p.z - base * ROOT3 / 6.0 + halfBase);
+    p2D.x = abs(p2D.x);
+    p2D -= vec2(0.5, 0.5 * ROOT3) * max(p2D.x + ROOT3 * p2D.y, 0.0);
+    p2D -= vec2(clamp(p2D.x, -halfBase, halfBase), -halfBase / ROOT3);
+    float d2D = length(p2D) * sign(-p2D.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float pieSlice(vec3 p, vec2 sincos, float radius, int operation, float magnitude)
+{
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 p2D = vec2(p.x, p.z);
+    p2D.x = abs(p2D.x);
+    float l = length(p2D) - radius;
+    float m = length(p2D - sincos * clamp(dot(p2D, sincos), 0.0, radius));
+    float d2D = max(l, m * sign(sincos.y * p2D.x - sincos.x * p2D.y));
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
 void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in float time) {
 	d0 = maxDist;
 	float blend;
@@ -239,18 +286,6 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color0 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p0 -= vec3(0.0000000, 0.0000000, 0.0000000);
 
-	// OPRotateContinuous //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = 0.200000;
-	pmFloat1 = 0.000000;
-	p0 = rotateVec3(p0, pmVec30, time * pmFloat0 + pmFloat1);
-
-	// OPRotateContinuous //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	pmFloat0 = 0.100000;
-	pmFloat1 = 0.000000;
-	p0 = rotateVec3(p0, pmVec30, time * pmFloat0 + pmFloat1);
-
 	// SDFObject //
 	vec3 p1;
 	float d1 = FLOAT_MAX;
@@ -258,109 +293,9 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
-	// SDFSolidAngle //
-	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
-
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-
-	// OPRotate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = 0.250000;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
-	// SDFSolidAngle //
-	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
-
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-
-	// OPRotate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = 0.500000;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
-	// SDFSolidAngle //
-	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
-
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-
-	// OPRotate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = 0.750000;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
-	// SDFSolidAngle //
-	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
-
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-
-	// OPRotate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	pmFloat0 = 0.250000;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
-	// SDFSolidAngle //
-	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
-
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-
-	// OPRotate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	pmFloat0 = 0.500000;
-	p0 = rotateVec3(p0, pmVec30, pmFloat0);
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 -= vec3(0.0000000, 0.5000000, 0.0000000);
-	// SDFSolidAngle //
-	d1 = solidAngle(p1, vec2(0.7071068, 0.7071068), 2);
+	p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
+	// SDFPieSlice //
+	d1 = pieSlice(p1, vec2(0.7071068, 0.7071068), 0.5, 0, 2);
 
 
 	// COMBAdd //
@@ -402,7 +337,6 @@ void main() {
     pixels[outIndex].g = 0.0;
     pixels[outIndex].b = 0.0;
     pixels[outIndex].l = 0.0;
-    pixels[outIndex].d = FLOAT_MAX;
 
     bool hit = false;
     vec3 p0;
@@ -417,7 +351,6 @@ void main() {
         sampleScene(p0, push.maxDistance, d0, color, push.time);
 
         if (d0 < push.surfTolerance) {
-            pixels[outIndex].d = rayLength / push.maxDistance;
             hit = true;
             break;
         }
@@ -462,7 +395,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(5.0000000, 2.0000000, 0.0000000) - p0;
+		rayDir = vec3(5.0000000, 1.0000000, -5.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -474,41 +407,18 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
-				float ambLight = 50 * AMB_LIGHT_POW * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 25 : 0.0;
+				float ambLight = 25 * AMB_LIGHT_POW * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeColor += vec3(0.5000000, 0.5000000, 1.0000000) * lightPower;
-				break;
-			}
-		}
-
-		// SAMPLE LIGHT [1] //
-		rayDir = vec3(-5.0000000, 2.0000000, 0.0000000) - p0;
-		lightDist = length(rayDir);
-		rayDir = normalize(rayDir);
-		rayLength = push.surfTolerance+0.001;
-		d0 = push.maxDistance;
-		while (true) {
-			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
-
-			sampleScene(np, lightDist, d0, colorSample, push.time);
-			rayLength += d0;
-			if (d0 < push.surfTolerance || rayLength >= lightDist) {
-				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
-				float ambLight = 50 * AMB_LIGHT_POW * attenuation;
-				float dot = max(0.0, dot(rayDir, normal));
-				directLight *= dot;
-				float lightPower = directLight + ambLight;
-				cumulativeColor += vec3(1.0000000, 0.5000000, 0.5000000) * lightPower;
+				cumulativeColor += vec3(1.0000000, 1.0000000, 1.0000000) * lightPower;
 				break;
 			}
 		}
 
 		cumulativeColor = clamp(cumulativeColor * color, 0.0, 1.0);
-		cumulativeColor = mix(cumulativeColor, cumulativeColor, 0.2);
+		cumulativeColor = mix(cumulativeColor, normalize(cumulativeColor), 0.2);
 		pixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);
 		pixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);
 		pixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);

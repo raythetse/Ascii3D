@@ -10,7 +10,7 @@ const std::string SDFScene::m_shaderLayout{
 layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
 
 struct PixelOutput {
-    float r, g, b, d, l;
+    float r, g, b, l;
 };
 
 layout(std430, binding = 0) buffer OutputBuffer {
@@ -40,6 +40,7 @@ const float HALFPI = 1.570796;
 const float PI = 3.1415923;
 const float TAU = 6.283185;
 const float ROOT2 = 1.414213;
+const float ROOT3 = 1.732051;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
@@ -49,7 +50,9 @@ const float SHADOW_TOLERANCE = 0.1;
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
     vec3 a = normalize(axis);
     float angle = rotations * TAU;
-    return p * cos(angle) + cross(a, p) * sin(angle) + a * dot(a, p) * (1.0 - cos(angle));
+    float s = sin(angle);
+    float c = cos(angle);
+    return p * c + cross(a, p) * s + a * dot(a, p) * (1.0 - c);
 }
 
 vec2 rotateVec2(vec2 p, float rotations) {
@@ -57,6 +60,16 @@ vec2 rotateVec2(vec2 p, float rotations) {
     float s = sin(rotations * TAU);
     mat2 m = mat2(c, -s, s, c);
     return m * p;
+}
+
+float extrude2D(double pDotY, float d2D, float height) {
+    vec2 w = vec2(d2D, abs(pDotY) - height * 0.5);
+    return min(max(w.x, w.y), 0.0) + length(max(w, 0.0));
+}
+
+vec3 revolve2D(vec3 p, float radius)
+{
+    return vec3(length(vec2(p.x, p.y)) - radius, p.z, p.z);
 }
 
 vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
@@ -236,6 +249,40 @@ float solidAngle(vec3 p, vec2 c, float r) {
     return max(l, m * sign(c.y * q.x - c.x * q.y));
 }
 
+float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude) // if not extrude, then revolve 
+{
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 dim2D = vec2(dimensions.x, -dimensions.y);
+    vec2 p2D = vec2(p.x, p.z);
+    p2D = abs(p2D);
+    float h = clamp((dot(dim2D, p2D) + dim2D.y * dim2D.y) / dot(dim2D, dim2D), 0.0, 1.0 );
+    p2D -= dim2D * vec2(h, h-1.0);
+    float d2D = length(p2D) * sign(p2D.x);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
+}
+
+float equilateralTriangle(vec3 p, float base, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    float halfBase = base * 0.5;
+    vec2 p2D = vec2(p.x, p.z - base * ROOT3 / 6.0 + halfBase);
+    p2D.x = abs(p2D.x);
+    p2D -= vec2(0.5, 0.5 * ROOT3) * max(p2D.x + ROOT3 * p2D.y, 0.0);
+    p2D -= vec2(clamp(p2D.x, -halfBase, halfBase), -halfBase / ROOT3);
+    float d2D = length(p2D) * sign(-p2D.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
+float pieSlice(vec3 p, vec2 sincos, float radius, int operation, float magnitude)
+{
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 p2D = vec2(p.x, p.z);
+    p2D.x = abs(p2D.x);
+    float l = length(p2D) - radius;
+    float m = length(p2D - sincos * clamp(dot(p2D, sincos), 0.0, radius));
+    float d2D = max(l, m * sign(sincos.y * p2D.x - sincos.x * p2D.y));
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+}
+
 )"
 };
 
@@ -271,7 +318,6 @@ void main() {
     pixels[outIndex].g = 0.0;
     pixels[outIndex].b = 0.0;
     pixels[outIndex].l = 0.0;
-    pixels[outIndex].d = FLOAT_MAX;
 
     bool hit = false;
     vec3 p0;
@@ -286,7 +332,6 @@ void main() {
         sampleScene(p0, push.maxDistance, d0, color, push.time);
 
         if (d0 < push.surfTolerance) {
-            pixels[outIndex].d = rayLength / push.maxDistance;
             hit = true;
             break;
         }
@@ -386,7 +431,7 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
         ss << "\t\t}\n";
     }
     ss << "\n\t\tcumulativeColor = clamp(cumulativeColor * color, 0.0, 1.0);\n";
-    ss << "\t\tcumulativeColor = mix(cumulativeColor, cumulativeColor, 0.2);\n";
+    ss << "\t\tcumulativeColor = mix(cumulativeColor, normalize(cumulativeColor), 0.2);\n";
     ss << "\t\tpixels[outIndex].r = clamp(cumulativeColor.r, 0.0, 1.0);\n";
     ss << "\t\tpixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);\n";
     ss << "\t\tpixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);\n";
@@ -399,6 +444,9 @@ SDFScene::SDFScene(LoadOption loadOption)
     {
     case SDFScene::Test:
         test();
+        break;
+    case SDFScene::SolidAngles:
+        solidAngles();
         break;
     case SDFScene::RepeatCircle:
         repeatCircle();
@@ -479,10 +527,22 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 
 void SDFScene::test()
 {
-    double offset = 0.5;
     add(SDFBuilder{}
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.2)
-        .pushOp<OPRotateContinuous>(Vec3::One, 0.1)
+        .pushOp<COMBAdd, SDFPieSlice>(SDFObject::Extrude)()
+        //.pushOp<COMBAdd, SDFBox>()()
+        .addLightSource(Vec3{ 5.0, 1.0, -5.0 }, 25.0, Color::White)
+    );
+}
+
+void SDFScene::solidAngles()
+{
+    double offset = 2.0;
+    add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 1.5 }, 0.1, Color::White)()
+        .pushOp<COMBAddSmooth, SDFObject>()(2.0, 0.25)
+        .pushOp<OPRotateContinuous>(Vec3::Up, 0.237)
+        .pushOp<OPRotateContinuous>(Vec3::Right, 0.173)
+        .pushOp<OPRotateContinuous>(Vec3::Forward, 0.138)
         .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
         .stepBack()
         .pushOp<OPRotate>(Vec3::Forward, 0.25)
@@ -500,15 +560,15 @@ void SDFScene::test()
         .pushOp<OPRotate>(Vec3::Right, 0.5)
         .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
         .stepBack()
-        .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 50.0, Color::LightBlue)
-        .addLightSource(Vec3{ -5.0, 2.0, 0.0 }, 50.0, Color::Pink)
+        .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 50.0, Color::Blue)
+        .addLightSource(Vec3{ -5.0, 2.0, 0.0 }, 50.0, Color::Red)
+        .addLightSource(Vec3{ 0.0 }, 5.0, Color::Green)
     );
 }
 
 void SDFScene::repeatCircle()
 {
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFPlane>((Vec3::Up + Vec3::Right).getNormal(), 2.0, Color::Blue)()
         .pushOp<OPMirrorXZ>()
         .pushOp<OPRotate>(Vec3::Up, -4.0 / 32.0)
         .pushOp<OPMirrorX>()
@@ -516,7 +576,9 @@ void SDFScene::repeatCircle()
         .pushOp<OPMirrorX>()
         .pushOp<OPRotate>(Vec3::Up, -1.0 / 32.0)
         .pushOp<OPTranslate>(Vec3::Forward * 3.0)
-        .pushOp<COMBAdd, SDFCone>(2.0, 0.025, Color::Green)()
+        .pushOp<OPRotate>(Vec3::Right, -0.02)
+        .pushOp<COMBAdd, SDFCone>(2.0, 0.035, Color::Green)()
+        .pushOp<OPRoundOff>(0.1)
         .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 150.0, Color::White)
     );
 }

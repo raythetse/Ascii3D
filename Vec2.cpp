@@ -22,7 +22,7 @@ double Vec2::distance(const Vec2& p) const
     return (p - *this).length();
 }
 
-double Vec2::dot(const Vec2& p)
+double Vec2::dot(const Vec2& p) const
 {
     return x * p.x + y * p.y;
 }

@@ -19,7 +19,7 @@ public:
 	Vec2(const double v) : x(v), y(v) {}
 	double length() const;
 	double distance(const Vec2& p) const;
-	double dot(const Vec2& p);
+	double dot(const Vec2& p) const;
 	Vec2 maximum(double m);
 	Vec2 minimum(double m);
 	Vec2 cross(const Vec2& p);

@@ -33,8 +33,8 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
 
 void GameEngine::run()
 {
-    //m_scene = SDFScene(SDFScene::LoadOption::Test);
-    m_scene = SDFScene("MyFile.txt");
+    m_scene = SDFScene(SDFScene::LoadOption::Test);
+    //m_scene = SDFScene("MyFile.txt");
 
     m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
     if (m_marchMode == Hardware) {
@@ -103,29 +103,30 @@ void GameEngine::marchHardware()
 
     ShaderInputs inputs{};
 
-    inputs.width = static_cast<float>(m_dimensions.first);
-    inputs.height = static_cast<float>(m_dimensions.second);
-    inputs.time = static_cast<float>(GameTimer::gameTime());
-    inputs.sceneDepth = static_cast<float>(m_sceneDepth);
-    inputs.surfTolerance = static_cast<float>(m_surTolerance);
+    inputs.time             = static_cast<float>(GameTimer::gameTime());
+    inputs.width            = static_cast<float>(m_dimensions.first);
+    inputs.height           = static_cast<float>(m_dimensions.second);
+    inputs.sceneDepth       = static_cast<float>(m_sceneDepth);
+    inputs.surfTolerance    = static_cast<float>(m_surTolerance);
 
-    inputs.camPos[0] = static_cast<float>(camPos.x);
-    inputs.camPos[1] = static_cast<float>(camPos.y);
-    inputs.camPos[2] = static_cast<float>(camPos.z);
+    inputs.camPos[0]        = static_cast<float>(camPos.x);
+    inputs.camPos[1]        = static_cast<float>(camPos.y);
+    inputs.camPos[2]        = static_cast<float>(camPos.z);
 
-    inputs.camForward[0] = static_cast<float>(camForward.x);
-    inputs.camForward[1] = static_cast<float>(camForward.y);
-    inputs.camForward[2] = static_cast<float>(camForward.z);
+    inputs.camForward[0]    = static_cast<float>(camForward.x);
+    inputs.camForward[1]    = static_cast<float>(camForward.y);
+    inputs.camForward[2]    = static_cast<float>(camForward.z);
 
-    inputs.camRight[0] = static_cast<float>(camRight.x);
-    inputs.camRight[1] = static_cast<float>(camRight.y);
-    inputs.camRight[2] = static_cast<float>(camRight.z);
+    inputs.camRight[0]      = static_cast<float>(camRight.x);
+    inputs.camRight[1]      = static_cast<float>(camRight.y);
+    inputs.camRight[2]      = static_cast<float>(camRight.z);
 
-    inputs.camUp[0] = static_cast<float>(camUp.x);
-    inputs.camUp[1] = static_cast<float>(camUp.y);
-    inputs.camUp[2] = static_cast<float>(camUp.z);
-    inputs.viewportSize[0] = m_viewportSize.x;
-    inputs.viewportSize[1] = m_viewportSize.y;
+    inputs.camUp[0]         = static_cast<float>(camUp.x);
+    inputs.camUp[1]         = static_cast<float>(camUp.y);
+    inputs.camUp[2]         = static_cast<float>(camUp.z);
+
+    inputs.viewportSize[0]  = static_cast<float>(m_viewportSize.x);
+    inputs.viewportSize[1]  = static_cast<float>(m_viewportSize.y);
 
     auto result = m_vrm.renderFrame(inputs);
     m_pixelField.fromHardware(result);

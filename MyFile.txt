@@ -1,30 +1,7 @@
 SDFObject m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1
-	OPRotateContinuous m_axis 0 1 0 m_rotationsPerSecond 0.2 m_phase 0
-	OPRotateContinuous m_axis 1 1 1 m_rotationsPerSecond 0.1 m_phase 0
 	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
-		stepBack
-	OPRotate m_axis 0 0 1 m_rotations 0.25
-	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
-		stepBack
-	OPRotate m_axis 0 0 1 m_rotations 0.5
-	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
-		stepBack
-	OPRotate m_axis 0 0 1 m_rotations 0.75
-	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
-		stepBack
-	OPRotate m_axis 1 0 0 m_rotations 0.25
-	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
-		stepBack
-	OPRotate m_axis 1 0 0 m_rotations 0.5
-	COMBAdd m_smoothing 0.5 m_colorBlending 1 m_colorShifting 0
-	SDFSolidAngle m_position 0 0.5 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_radius 2 m_sweep 0.25
+	SDFPieSlice m_position 0 0 0 m_rotationAxis 0 1 0 m_rotations 0 m_color 1 1 1 m_sweep 0.25 m_radius 0.5 m_magnitude 2 m_operation 0
 		stepBack
 	stepBack
-LightSource m_position 5 2 0 m_luminance 50 m_color 0.5 0.5 1
-LightSource m_position -5 2 0 m_luminance 50 m_color 1 0.5 0.5
+LightSource m_position 5 1 -5 m_luminance 25 m_color 1 1 1
 end

@@ -132,7 +132,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     // Objects
     { "SDFObject", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
 
@@ -198,7 +198,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFBox", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_dimensions{ DEF::OBJBoxDimensions };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
@@ -217,7 +217,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     { "SDFBoxFrame", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         double m_edgeThickness{ DEF::OBJFrameThickness };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_dimensions{ DEF::OBJBoxDimensions };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
@@ -236,7 +236,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     }},
     { "SDFSphere", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
@@ -255,7 +255,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     { "SDFTorus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec2 m_radii{ DEF::OBJRadii };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
 
@@ -272,7 +272,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
@@ -292,7 +292,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCapsuleY", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
@@ -312,7 +312,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCapsuleZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
@@ -332,7 +332,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCrystal", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_edgeLength{ DEF::OBJLength };
@@ -350,7 +350,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCylinderX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color col{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
@@ -370,7 +370,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCylinderY", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
@@ -390,7 +390,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCylinderZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
@@ -410,7 +410,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFChainLink", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
@@ -430,7 +430,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFTube", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
@@ -450,7 +450,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFCone", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_height{ DEF::OBJLength };
@@ -470,7 +470,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFSolidAngle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::ObjPosition };
+        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_rotationAxis{ DEF::OBJRotAxis };
         double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
@@ -487,6 +487,87 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "m_sweep") ss >> m_sweep;
         }
         builder.pushSDFObj<SDFSolidAngle>(m_radius, m_sweep, m_color, m_position, m_rotationAxis, m_rotations);
+    } },
+    { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_position{ DEF::OBJPosition };
+        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
+        double m_rotations{ DEF::OBJRotations };
+        Vec2 m_dimensions{ DEF::OBJRhombDimensions };
+        double m_magnitude{ DEF::OBJLength };
+        SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
+            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
+            else if (param == "m_rotations") ss >> m_rotations;
+            else if (param == "m_dimensions") ss >> m_dimensions.x >> m_dimensions.y;
+            else if (param == "m_magnitude") ss >> m_magnitude;
+            else if (param == "m_operation") {
+                int opID;
+                ss >> opID;
+                m_operation = static_cast<SDFObject::OP2D>(opID);
+            }
+        }
+        builder.pushSDFObj<SDFRhombus>(m_operation, m_dimensions, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+    } },
+    { "SDFEquilateralTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_position{ DEF::OBJPosition };
+        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
+        double m_rotations{ DEF::OBJRotations };
+        double m_base{ DEF::OBJLength };
+        double m_magnitude{ DEF::OBJOP2DMagnitude };
+        SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
+
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
+            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
+            else if (param == "m_rotations") ss >> m_rotations;
+            else if (param == "m_base") ss >> m_base;
+            else if (param == "m_magnitude") ss >> m_magnitude;
+            else if (param == "m_operation") {
+                int opID;
+                ss >> opID;
+                m_operation = static_cast<SDFObject::OP2D>(opID);
+            }
+        }
+        builder.pushSDFObj<SDFEquilateralTriangle>(m_operation, m_base, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+    } },
+    { "SDFPieSlice", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_position{ DEF::OBJPosition };
+        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
+        double m_rotations{ DEF::OBJRotations };
+        double m_sweep{ DEF::OBJLength };
+        double m_radius{ DEF::OBJLength };
+        double m_magnitude{ DEF::OBJLength };
+        SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
+            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
+            else if (param == "m_rotations") ss >> m_rotations;
+            else if (param == "m_sweep") ss >> m_sweep;
+            else if (param == "m_radius") ss >> m_radius;
+            else if (param == "m_magnitude") ss >> m_magnitude;
+            else if (param == "m_operation") {
+                int opID;
+                ss >> opID;
+                m_operation = static_cast<SDFObject::OP2D>(opID);
+            }
+        }
+        builder.pushSDFObj<SDFPieSlice>(m_operation, m_sweep, m_radius, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
     } },
 
     // Mirrors
@@ -514,7 +595,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Transformations
     { "OPTranslate", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 m_translation{ DEF::ObjPosition};
+        Vec3 m_translation{ DEF::OBJPosition};
 
         while (ss.peek() != EOF) {
             std::string param;

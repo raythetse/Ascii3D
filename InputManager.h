@@ -25,6 +25,7 @@ private:
 	POINT m_windowCentre;
 	bool m_holdMouse{ true };
 	bool m_isActiveWindow{ true };
+	bool m_windowResized{ true };
 
 	InputManager();
 	~InputManager() {}

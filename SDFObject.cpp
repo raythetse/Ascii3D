@@ -4,6 +4,17 @@
 #include "Vec2.h"
 #include "SDFOperation.h"
 
+double SDFObject::extrude2D(double pDotY, double d2D, double height) const
+{
+    Vec2 w{ d2D, std::abs(pDotY) - height * 0.5 };
+    return std::min(std::max(w.x, w.y), 0.0) + w.maximum(0.0).length();
+}
+
+Vec3 SDFObject::revolve2D(Vec3 p, double radius) const
+{
+    return Vec3(Vec2(p.x, p.y).length() - radius, p.z, p.z);
+}
+
 SDFObject::SDFObject(Color color, Vec3 position, Vec3 rotationAxis, double rotations)
     : m_position{ position }, m_rotationAxis{ rotationAxis }, m_rotations{ rotations }, m_color{ color }
 {
@@ -454,4 +465,79 @@ double SDFSolidAngle::signedDistanceInner(Vec3 p) const
     double l = q.length() - m_radius;
     double m = (q - m_sincos * std::clamp(q.dot(m_sincos), 0.0, m_radius)).length();
     return std::max(l, m * ((m_sincos.y * q.x - m_sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
+}
+
+void SDFRhombus::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFRhombus::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFRhombus //\n";
+    ss << "\td" << level << " = rhombus(p" << level << ", " << m_dimensions.getShaderVec2() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFRhombus::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    Vec2 dim2D{ m_dimensions.x, -m_dimensions.y };
+    Vec2 p2D{ p.x, p.z };
+    p2D = p2D.abs();
+    double h = std::clamp((dim2D.dot(p2D) + dim2D.y * dim2D.y) / dim2D.dot(dim2D), 0.0, 1.0);
+    p2D -= dim2D * Vec2{ h, h - 1.0 };
+    double d2D = p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
+    return m_operation == Revolve ? d2D : extrude2D(p.y, d2D, m_magnitude);
+}
+
+void SDFEquilateralTriangle::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_base " << m_base;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFEquilateralTriangle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFEquilateralTriangle //\n";
+    ss << "\td" << level << " = equilateralTriangle(p" << level << ", " << m_base << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFEquilateralTriangle::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    double halfBase = m_base * 0.5;
+    Vec2 p2D{ p.x, p.z - m_base * MF::ROOT3 / 6.0 + halfBase };
+    p2D.x = std::abs(p2D.x);
+    p2D -= Vec2{ 0.5, 0.5 * MF::ROOT3 } * std::max(p2D.x + MF::ROOT3 * p2D.y, 0.0);
+    p2D -= Vec2{ std::clamp(p2D.x, -halfBase, halfBase), -halfBase / MF::ROOT3 };
+    double d2D = p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFPieSlice::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_sweep " << m_sweep;
+    ss << " m_radius " << m_radius;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFPieSlice::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFPieSlice //\n";
+    ss << "\td" << level << " = pieSlice(p" << level << ", " << m_sincos.getShaderVec2() << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFPieSlice::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    Vec2 p2D{ p.x, p.z };
+    p2D.x = abs(p2D.x);
+    double l = p2D.length() - m_radius;
+    double m = (p2D - m_sincos * std::clamp(p2D.dot(m_sincos), 0.0, m_radius)).length(); // c=sin/cos of aperture
+    double d2D = std::max(l, m * (m_sincos.y * p2D.x - m_sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
