@@ -489,9 +489,27 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFStar(OP2D operation = Extrude, size_t numPoints = DEF::OBJOP2DPoints, double radius = DEF::OBJRadius, double ratio = DEF::OBJRatio, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+	SDFStar(OP2D operation = Extrude, size_t numPoints = DEF::OBJOP2DNumPoints, double radius = DEF::OBJRadius, double ratio = DEF::OBJRatio, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
 		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio), m_magnitude(magnitude)
 		, m_an(MF::PI / static_cast<double>(numPoints)), m_en(MF::PI / m_ratio), m_asincos(MF::fast_sincos(MF::PI / static_cast<double>(numPoints))), m_esincos(MF::fast_sincos(MF::PI / std::lerp(2.0, static_cast<double>(numPoints), ratio))) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFTriangle : public SDFObject
+{
+private:
+	OP2D m_operation;
+	double m_magnitude;
+	Vec2 m_point1;
+	Vec2 m_point2;
+	Vec2 m_point3;
+protected:
+	std::string getClassName() const override { return "SDFTriangle"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTriangle(OP2D operation = Extrude, Vec2 point1 = DEF::OBJOP2DTPoint1, Vec2 point2 = DEF::OBJOP2DTPoint2, Vec2 point3 = DEF::OBJOP2DTPoint3, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor, Vec3 position = DEF::OBJPosition, Vec3 rotationAxis = DEF::OBJRotAxis, double rotations = DEF::OBJRotations)
+		: SDFObject(color, position, rotationAxis, rotations), m_operation(operation), m_point1(point1), m_point2(point2), m_point3(point3), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

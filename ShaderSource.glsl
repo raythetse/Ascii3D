@@ -323,7 +323,6 @@ float octagon(vec3 p, float radius, int operation, float magnitude) {
 
 float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 acs, vec2 ecs) {
     if (operation == 1) p = revolve2D(p, magnitude);
-
     vec2 p2D = vec2(abs(p.x), p.z);
     float bn = mod(atan(p2D.x, p2D.y), 2.0 * an) - an;
     float sinbn = sin(bn);
@@ -335,6 +334,22 @@ float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
+float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 p2D = vec2(p.x, p.z);
+    vec2 e0 = point2 - point1, e1 = point3 - point2, e2 = point1 - point3;
+    vec2 v0 = p2D - point1, v1 = p2D - point2, v2 = p2D - point3;
+    vec2 pq0 = v0 - e0 * clamp(dot(v0, e0) / dot(e0, e0), 0.0, 1.0 );
+    vec2 pq1 = v1 - e1 * clamp(dot(v1, e1) / dot(e1, e1), 0.0, 1.0 );
+    vec2 pq2 = v2 - e2 * clamp(dot(v2, e2) / dot(e2, e2), 0.0, 1.0 );
+    float s = sign(e0.x * e2.y - e0.y * e2.x);
+    vec2 d = min(min(vec2(dot(pq0, pq0), s * (v0.x * e0.y - v0.y * e0.x)),
+                     vec2(dot(pq1, pq1), s * (v1.x * e1.y - v1.y * e1.x))),
+                     vec2(dot(pq2, pq2), s * (v2.x * e2.y - v2.y * e2.x)));
+    float d2D = -sqrt(d.x) * sign(d.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;    
+}
+    
 void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in float time) {
 	d0 = maxDist;
 	float blend;
@@ -356,34 +371,9 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = FLOAT_MAX;
 	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p1 -= vec3(0.0000000, 0.0000000, 0.0000000);
-	// SDFStar //
-	d1 = star(p1, 2, 0, 2, 0.392699, vec2(0.9238795, 0.3826834), vec2(0.6234898, 0.7818315));
+	// SDFTriangle //
+	d1 = triangle(p1, vec2(-1.0000000, 1.0000000), vec2(0.2500000, 0.8000000), vec2(1.2500000, -0.5000000), 1, 2);
 
-
-	// OPOnion //
-	pmFloat0 = 0.100000;
-	d1 = abs(d1) - pmFloat0; 
-
-	// SDFObject //
-	vec3 p2;
-	float d2 = FLOAT_MAX;
-	vec3 color2;
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p2 -= vec3(0.0000000, 3.0000000, 0.0000000);
-	// SDFBox //
-	d2 = box(p2, vec3(6.0000000, 6.0000000, 6.0000000));
-
-
-	// COMBSubtractSmooth //
-	pmFloat0 = 0.500000;
-	pmFloat1 = 0.000000;
-	pmFloat2 = 1.000000;
-	blend = pmFloat0 - abs(-d2 - d1);
-	blend = max(blend, 0.0);
-	color1 = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color1, color2, pmFloat2);
-	d1 = (d1 > -d2 ? d1 : -d2) + blend * blend * 0.25 / pmFloat0;
 
 	// COMBAdd //
 	if (d1 < d0) {

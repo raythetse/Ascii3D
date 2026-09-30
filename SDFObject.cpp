@@ -693,3 +693,39 @@ double SDFStar::signedDistanceInner(Vec3 p) const
     double d2D = p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
+
+void SDFTriangle::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_point1 " << m_point1.x << ' ' << m_point1.y;
+    ss << " m_point2 " << m_point2.x << ' ' << m_point2.y;
+    ss << " m_point3 " << m_point3.x << ' ' << m_point3.y;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFTriangle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFTriangle //\n";
+    ss << "\td" << level << " = triangle(p" << level << ", " << m_point1.getShader() << ", " << m_point2.getShader() << ", " << m_point3.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFTriangle::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    Vec2 p2D{ p.x, p.z };
+    Vec2 e0 = m_point2 - m_point1;
+    Vec2 e1 = m_point3 - m_point2;
+    Vec2 e2 = m_point1 - m_point3;
+    Vec2 v0 = p2D - m_point1;
+    Vec2 v1 = p2D - m_point2;
+    Vec2 v2 = p2D - m_point3;
+    Vec2 pq0 = v0 - e0 * std::clamp(v0.dot(e0) / e0.dot(e0), 0.0, 1.0);
+    Vec2 pq1 = v1 - e1 * std::clamp(v1.dot(e1) / e1.dot(e1), 0.0, 1.0);
+    Vec2 pq2 = v2 - e2 * std::clamp(v2.dot(e2) / e2.dot(e2), 0.0, 1.0);
+    double s = (e0.x * e2.y - e0.y * e2.x) >= 0.0 ? 1.0 : -1.0;
+    Vec2 d = Vec2{ pq0.dot(pq0), s * (v0.x * e0.y - v0.y * e0.x) }
+        .minimum(Vec2{ pq1.dot(pq1), s * (v1.x * e1.y - v1.y * e1.x) })
+        .minimum(Vec2{ pq2.dot(pq2), s * (v2.x * e2.y - v2.y * e2.x) });
+    double d2D = -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}

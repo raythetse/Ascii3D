@@ -5,8 +5,10 @@ Required:
 - comment everything
 - consts wherever sensical
 - fix constructor accessibilities on abstracts
+- instructions for custom scene files
 
 Optional:
+- improve names of obj/op defaults
 - light movement
 - per-scene camera start pos/look dir
 - propMods for SDFObjects
