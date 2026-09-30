@@ -360,6 +360,31 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = star(p1, 2, 0, 2, 0.392699, vec2(0.9238795, 0.3826834), vec2(0.6234898, 0.7818315));
 
 
+	// OPOnion //
+	pmFloat0 = 0.100000;
+	d1 = abs(d1) - pmFloat0; 
+
+	// SDFObject //
+	vec3 p2;
+	float d2 = FLOAT_MAX;
+	vec3 color2;
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 -= vec3(0.0000000, 3.0000000, 0.0000000);
+	// SDFBox //
+	d2 = box(p2, vec3(6.0000000, 6.0000000, 6.0000000));
+
+
+	// COMBSubtractSmooth //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = pmFloat0 - abs(-d2 - d1);
+	blend = max(blend, 0.0);
+	color1 = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color1, color2, pmFloat2);
+	d1 = (d1 > -d2 ? d1 : -d2) + blend * blend * 0.25 / pmFloat0;
+
 	// COMBAdd //
 	if (d1 < d0) {
 		d0 = d1;

@@ -22,6 +22,7 @@ public:
 	{
 		Extrude,
 		Revolve,
+		None,
 	};
 protected:
 	Vec3 m_position{};

@@ -50,11 +50,11 @@ namespace ConsoleFunctions
         GetConsoleMode(hOut, &dwMode);
         SetConsoleMode(hOut, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 
-        // \x1b[?1049h -> Switch to Alternate Screen Buffer
-        // \x1b[?25l   -> Hide text cursor
-        // \x1b[?1003h -> Enable Any-Event Mouse Tracking (Suppresses the hardware arrow cursor) - doesnt seem to work?
-        // \x1b[?1006h -> Enable SGR Extended Mouse Reporting coordinates
-        std::cout << "\x1b[?1049h\x1b[?25l\x1b[?1003h\x1b[?1006h" << std::flush;
+        // \x1b[?1049h - Switch to Alternate Screen Buffer
+        // \x1b[?25l   - Hide text cursor
+        // \x1b[?1006h - Enable SGR Extended Mouse Reporting coordinates
+        std::cout << "\x1b[?1049h\x1b[?25l\x1b[?1006h" << std::flush;
+    SetProcessDPIAware();
     }
 
     inline void restoreTerminal()
@@ -80,5 +80,20 @@ namespace ConsoleFunctions
         int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
         return { static_cast<size_t>(width), static_cast<size_t>(height) };
+    }
+
+    inline void DisableConsoleQuickEdit() {
+        HWND hConsole = GetConsoleWindow();
+        HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD prevMode;
+
+        // Get the current console input mode
+        GetConsoleMode(hInput, &prevMode);
+
+        // Wipe out the ENABLE_QUICK_EDIT_MODE flag but keep extended flags active
+        DWORD newMode = prevMode & ~ENABLE_QUICK_EDIT_MODE;
+        newMode |= ENABLE_EXTENDED_FLAGS;
+
+        SetConsoleMode(hInput, newMode);
     }
 }

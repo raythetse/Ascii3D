@@ -591,7 +591,8 @@ void SDFScene::test()
 {
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFStar>(SDFObject::Extrude, 8, 2.0, 0.25)()
-        //.pushOp<OPRoundOff>(0.25)
+        .pushOp<OPOnion>(0.1)
+        .pushOp<COMBSubtractSmooth, SDFBox>(Vec3{ 6.0 }, Color::White, Vec3::Up * 3.0)()
         .addLightSource(Vec3{ 5.0, 3.0, -5.0 }, 25.0, Color::White)
     );
 }
