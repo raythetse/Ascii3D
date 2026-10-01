@@ -117,12 +117,15 @@ bool GameEngine::selectScene()
     if (selection == 3) return false;
 
     bool customFound = false;
-    if (selection == 2) if (!selectCustomScene()) {
-        selectBuiltInScene(true);
-        return true;
+    if (selection == 2) {
+        if (!selectCustomScene()) {
+            selectBuiltInScene(true);
+            return true;
+        }
     }
-
-    selectBuiltInScene(false);
+    else {
+        selectBuiltInScene(false);
+    }
     return true;
 }
 
@@ -168,26 +171,28 @@ bool GameEngine::selectCustomScene()
 
     if (!scenes.size()) return false;
 
-    std::cout << "\033[2J\033[1;1H"; // clear console
-    std::cout << "Select a Custom Scene\n\n";
-    for (size_t i{}; i < scenes.size(); ++i) {
-        std::cout << "[" << (i + 1) << "] " << scenes[i] << '\n';
-    }
-
-    int selection{};
+    bool inputFailed{};
+    int selection{}; 
+    std::string line;
     std::cin.clear();
     std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
-
-    while (!(std::cin >> selection && selection >= 1 && selection <= scenes.size() && selection != 12345)) {
+    while (true) {
         std::cout << "\033[2J\033[1;1H";
-        std::cout << "- INVALID SELECTION -\n\n";
+        if (inputFailed) std::cout << "- INVALID SELECTION -\n\n";
+        std::cout << "Select a Custom Scene\n\n";
         for (size_t i{}; i < scenes.size(); ++i) {
             std::cout << "[" << (i + 1) << "] " << scenes[i] << '\n';
         }
-        std::cin.clear();
-        std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+
+        if (std::getline(std::cin, line)) {
+            std::stringstream ss(line);
+            if (ss >> selection && selection >= 1 && selection <= scenes.size()) {
+                m_scene = SDFScene(scenes[selection - 1]);
+                return true;
+            }
+        }
+        inputFailed = true;
     }
-    m_scene = SDFScene(scenes[selection - 1]);
 }
 
 void GameEngine::marchHardware()

@@ -1,4 +1,5 @@
 Required:
+- make menu input loops consistent
 - Fix double press required to esc
 - ensure all sdf dimensions correct
 - lots of built-in demos to illustrate all sdfs and ops with propmods

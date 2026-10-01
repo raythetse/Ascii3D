@@ -44,7 +44,7 @@ const float ROOT3 = 1.732051;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
-const float SHADOW_TOLERANCE = 0.1;
+const float SHADOW_TOLERANCE = 0.05;
 
 // UTILITY FUNCTIONS //
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
@@ -589,6 +589,9 @@ void SDFScene::test()
     Vec3 skinCol{ 234.0 / 255.0, 191.0 / 255.0, 4.0 / 255.0 };
 
     add(SDFBuilder{}
+        // Head
+        .pushOp<COMBAdd, SDFObject>()()
+
         // Skull
         .pushOp<COMBAdd, SDFCylinderY>(0.5, 1.2, skinCol)()
 
@@ -610,16 +613,50 @@ void SDFScene::test()
 
         // Upper lip contour
         .pushOp<OPTranslate>(Vec3{ 0.0, -0.6, -0.07 })
-        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 0.375, 0.05 }, skinCol)(0.15)
+        .pushOp<COMBAddSmooth, SDFCylinderY>(0.375, 0.0, skinCol)(0.15)
+        .pushOp<OPRoundOff>(0.1)
+        .stepBack()
 
         // Lower lip
-        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.35, 0.05 }, skinCol)()
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.15 })
+        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.2, 0.065 }, skinCol)()
+        .stepBack()
 
         // Neck
-        //.pushOp<COMBAdd, SDFCylinderY>(0.3, 0.4, skinCol)()
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.2 })
+        .pushOp<OPRotate>(Vec3::Right, 0.04)
+        .pushOp<COMBAddSmooth, SDFCylinderY>(0.25, 0.4, skinCol)(0.15)
+        .stepBack()
 
+        // Nose
+        .pushOp<OPTranslate>(Vec3{ 0.0, 0.8, -0.6 })
+        .pushOp<COMBAddSmooth, SDFCapsuleZ>(0.1, 0.2, skinCol)(0.05)
+        .stepBack()
 
-        .addLightSource(Vec3{ 2.0, 3.0, -10.0 }, 250.0, Color::White)
+        // Eye brows
+        .pushOp<OPMirrorX>()
+        .pushOp<OPTranslate>(Vec3{ 0.18, 0.25, 0.24})
+        .pushOp<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
+        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 0.20, 0.015 }, skinCol)(0.1)
+        .stepBack(2)
+
+        // Eyes
+        .pushOp<OPMirrorX>()
+        .pushOp<OPTranslate>(Vec3{ 0.21, -0.1, -0.4 })
+        .pushOp<COMBAdd, SDFSphere>(0.23)()
+
+        // Pupils
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.05, -0.13 })
+        .pushOp<COMBAdd, SDFSphere>(0.1, Color::Black)()
+        .stepBack(2)
+
+        //// Ears
+        .pushOp<OPTranslate>(Vec3{ 0.29, -0.2, 0.3 })
+        .pushOp<OPRotate>(Vec3::Down, 0.12)
+        .pushOp<OPRotate>(Vec3::Forward, 0.25)
+        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ .075, 0.02 }, skinCol)(0.05)
+
+        .addLightSource(Vec3{ 10.0, 5.0, -10.0 }, 300.0, Color::White)
     );
 }
 
