@@ -7,9 +7,6 @@ namespace DEF
 {
 	// SDFObject defaults
 	inline static Color		OBJColor{ 1.0 };
-	inline static Vec3		OBJPosition{ 0.0 };	
-	inline static Vec3		OBJRotAxis{ 0.0, 1.0, 0.0 };
-	inline static double	OBJRotations{ 0.0 };
 	inline static double	OBJPlanePos{ 0.0 };
 	inline static Vec3		OBJBoxDimensions{ 1.0 };
 	inline static double	OBJFrameThickness{ 0.1 };

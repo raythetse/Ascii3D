@@ -19,12 +19,9 @@ public:
 	enum LoadOption {
 		Test,
 		SolidAngles,
-		RepeatCircle,
-		Cubes,
+		WalkingCubes,
 		Elongate,
 		Frame,
-		Oxygen,
-		PropMod,
 		Torus,
 	};
 
@@ -32,15 +29,9 @@ private:
 	std::unique_ptr<SDFObject> m_baseObject{};
 	std::vector<std::unique_ptr<LightSource>> m_lights{};
 	void test();
-	void solidAngles();
-	void repeatCircle();
-	void frameDemo();
-	void oxygenDemo();
 	void cubesDemo();
-	void propModDemo();
 	void elongateDemo();
 	void torusDemo();
-	void propModTests();
 	void buildSampleFunction(std::stringstream& ss) const;
 	void buildLightPasses(std::stringstream& ss) const;
 public:
@@ -52,7 +43,7 @@ public:
 	void add(SDFBuilder& obj);
 	void add(SDFBuilder&& obj);
 	void update();
-	SDFObject* object() { return m_baseObject.get(); }
+	SDFObject* baseObject() { return m_baseObject.get(); }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
 	bool serialize(std::vector<std::string>& strVec) const;
 	std::string buildComputeShader() const;

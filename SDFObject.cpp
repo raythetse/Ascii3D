@@ -16,12 +16,6 @@ Vec3 SDFObject::revolve2D(Vec3 p, double radius) const
     return Vec3(Vec2(p.x, p.y).length() - radius, p.z, p.z);
 }
 
-SDFObject::SDFObject(Color color, Vec3 position, Vec3 rotationAxis, double rotations)
-    : m_position{ position }, m_rotationAxis{ rotationAxis }, m_rotations{ rotations }, m_color{ color }
-{
-    setRotation(rotationAxis, rotations);
-}
-
 SDFObject::~SDFObject() {}
 
 void SDFObject::update()
@@ -29,18 +23,6 @@ void SDFObject::update()
     for (auto& op : m_operations) {
         op->update();
     }
-}
-
-void SDFObject::setPosition(Vec3 position)
-{
-    m_position = position;
-}
-
-void SDFObject::setRotation(Vec3 axis, double rotations)
-{
-    m_rotationAxis = axis;
-    m_rotations = rotations;
-    Mat3::fromAxisAngle(m_rotationAxis, m_rotMat, m_rotations * MF::TAU);
 }
 
 SDFOperation* SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
@@ -65,9 +47,6 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     std::stringstream ss{};
     ss << std::string(level, '\t');
     ss << getClassName();
-    ss << " m_position " << m_position.x << ' ' << m_position.y << ' ' << m_position.z;
-    ss << " m_rotationAxis " << m_rotationAxis.x << ' ' << m_rotationAxis.y << ' ' << m_rotationAxis.z;
-    ss << " m_rotations " << m_rotations;
     ss << " m_color " << m_color.x << ' ' << m_color.y << ' ' << m_color.z;
     serializeInner(ss);
     strVec.push_back(ss.str());
@@ -80,8 +59,6 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
 
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
-    p -= m_position;
-    if (m_rotations != 0.0) p = m_rotMat * p;
     double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
     for (auto& op : m_operations) {
@@ -108,8 +85,6 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
         ss << "\td" << level << " = FLOAT_MAX;\n";
     }
     ss << "\tcolor" << level << " = " << m_color.getShader() << ";\n";
-    ss << "\tp" << level << " -= " << m_position.getShader() << ";\n";
-    if (m_rotations != 0.0) ss << "\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n\n";
     getShaderObjectCalls(ss, level, maxLevel);
     ss << "\n";
 
@@ -366,7 +341,7 @@ void SDFCylinderX::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 double SDFCylinderX::signedDistanceInner(Vec3 p) const
 {
     Vec2 yz{ p.y, p.z };
-    Vec2 d = Vec2{ yz.length(), p.x }.abs() - Vec2(m_radius, m_sideLength);
+    Vec2 d = Vec2{ yz.length(), p.x }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
@@ -385,7 +360,7 @@ void SDFCylinderY::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 double SDFCylinderY::signedDistanceInner(Vec3 p) const
 {
     Vec2 xz{ p.x, p.z };
-    Vec2 d = Vec2{ xz.length(), p.y }.abs() - Vec2(m_radius, m_sideLength);
+    Vec2 d = Vec2{ xz.length(), p.y }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
@@ -404,7 +379,7 @@ void SDFCylinderZ::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 double SDFCylinderZ::signedDistanceInner(Vec3 p) const
 {
     Vec2 xy{ p.x, p.y };
-    Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength);
+    Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
