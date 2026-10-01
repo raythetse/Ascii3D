@@ -35,6 +35,9 @@ const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
 const float SHADOW_TOLERANCE = 0.05;
+const int AMB_OCC_SAMPLES = 5;
+const float AMB_OCC_ATTEN = 0.8;
+const float AMB_OCC_REACH = 0.1;
 
 // UTILITY FUNCTIONS //
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
@@ -378,8 +381,12 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d2 = FLOAT_MAX;
 	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
-	d2 = cylinderY(p2, 1.2, 0.5);
+	d2 = cylinderY(p2, 1.2, 0.46);
 
+
+	// OPRoundOff //
+	pmFloat0 = 0.050000;
+	d2 -= pmFloat0;
 
 	// OPMirrorXZ //
 	p2.xz = abs(p2.xz);
@@ -454,18 +461,18 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	}
 
 	// OPTranslate //
-	p1 -= vec3(0.0000000, -0.6000000, -0.0700000); 
+	p1 -= vec3(0.0000000, -0.6000000, -0.1200000); 
 
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
-	d2 = cylinderY(p2, 0, 0.375);
+	d2 = cylinderY(p2, 0, 0.35);
 
 
 	// OPRoundOff //
-	pmFloat0 = 0.100000;
+	pmFloat0 = 0.050000;
 	d2 -= pmFloat0;
 
 	// COMBAddSmooth //
@@ -477,15 +484,19 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = mix(d2, d1, blend) - pmFloat0 * blend * (1.0 - blend);
 
 	// OPTranslate //
-	p1 -= vec3(0.0000000, -0.1500000, 0.1500000); 
+	p1 -= vec3(0.0000000, -0.0750000, 0.2000000); 
 
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
-	// SDFTorus //
-	d2 = torus(p2, vec2(0.2000000, 0.0650000));
+	// SDFCylinderY //
+	d2 = cylinderY(p2, 0.05, 0.18);
 
+
+	// OPRoundOff //
+	pmFloat0 = 0.100000;
+	d2 -= pmFloat0;
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -493,21 +504,32 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 		color1 = color2; 
 	}
 
+	// SDFObject //
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = vec3(1.0000000, 1.0000000, 1.0000000);
+
 	// OPTranslate //
-	p1 -= vec3(0.0000000, -0.1500000, 0.2000000); 
+	p2 -= vec3(0.0000000, -0.1500000, 0.2000000); 
 
 	// OPRotate //
 	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
 	pmFloat0 = 0.040000;
-	p1 = rotateVec3(p1, pmVec30, pmFloat0);
+	p2 = rotateVec3(p2, pmVec30, pmFloat0);
 
 	// SDFObject //
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
-	d2 = cylinderY(p2, 0.4, 0.25);
+	d3 = cylinderY(p3, 0.4, 0.25);
 
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
 
 	// COMBAddSmooth //
 	pmFloat0 = 0.150000;
@@ -518,7 +540,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = mix(d2, d1, blend) - pmFloat0 * blend * (1.0 - blend);
 
 	// OPTranslate //
-	p1 -= vec3(0.0000000, 0.8000000, -0.6000000); 
+	p1 -= vec3(0.0000000, 0.4000000, -0.6000000); 
 
 	// SDFObject //
 	p2 = p1;
@@ -540,7 +562,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1.x = abs(p1.x);
 
 	// OPTranslate //
-	p1 -= vec3(0.1800000, 0.2500000, 0.2400000); 
+	p1 -= vec3(0.1800000, 0.3500000, 0.2000000); 
 
 	// OPRotate //
 	pmVec30 = vec3(0.8944272, 0.0000000, 0.4472136);
@@ -573,7 +595,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p0.x = abs(p0.x);
 
 	// OPTranslate //
-	p0 -= vec3(0.2100000, -0.1000000, -0.4000000); 
+	p0 -= vec3(0.2100000, -0.0500000, -0.4000000); 
 
 	// SDFObject //
 	p1 = p0;
@@ -738,8 +760,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 300 : 0.0;
-				float ambLight = 300 * AMB_LIGHT_POW * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 500 : 0.0;
+				float ambLight = 500 * AMB_LIGHT_POW * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
@@ -754,5 +776,26 @@ void main() {
 		pixels[outIndex].g = clamp(cumulativeColor.g, 0.0, 1.0);
 		pixels[outIndex].b = clamp(cumulativeColor.b, 0.0, 1.0);
 		pixels[outIndex].l = min(1.0, length(cumulativeColor));
-	}
+
+        float occ = 0.0;
+        float sca = 1.0;
+    
+        for(int i = 0; i < AMB_OCC_SAMPLES; i++) {
+            float h = 0.01 + AMB_OCC_REACH * float(i) / float(AMB_OCC_SAMPLES - 1);
+            float d;
+            sampleScene(p0 + normal * h, push.maxDistance, d, color, push.time);
+            occ += (h - d) * sca;
+        
+            // Attenuate the contribution of further samples
+            sca *= AMB_OCC_ATTEN;
+        }
+    
+        // Clamp the final factor to prevent negative light values
+        occ = clamp(1.0 - 3.0 * occ, 0.0, 1.0);   
+
+        pixels[outIndex].r *= occ;
+        pixels[outIndex].g *= occ;
+        pixels[outIndex].b *= occ;
+        pixels[outIndex].l *= occ;
+    	}
 }

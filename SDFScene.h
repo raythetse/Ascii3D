@@ -13,7 +13,7 @@ class SDFScene
 private:
 	static const std::string m_shaderLayout;
 	static const std::string m_shaderFunctions;
-	static const std::string m_shaderMainMainFunction;
+	static const std::string m_shaderMainFunction;
 	static const std::string m_shaderMainEnd;
 public:
 	enum LoadOption {

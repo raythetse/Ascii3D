@@ -45,6 +45,9 @@ const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
 const float SHADOW_TOLERANCE = 0.05;
+const int AMB_OCC_SAMPLES = 5;
+const float AMB_OCC_ATTEN = 0.8;
+const float AMB_OCC_REACH = 0.1;
 
 // UTILITY FUNCTIONS //
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
@@ -363,7 +366,7 @@ float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, flo
 )"
 };
 
-const std::string SDFScene::m_shaderMainMainFunction{
+const std::string SDFScene::m_shaderMainFunction{
 R"(
 void main() {
     uint coordX = gl_GlobalInvocationID.x;
@@ -445,13 +448,38 @@ void main() {
 )"
 };
 
+const std::string SDFScene::m_shaderMainEnd = {
+    R"(
+        float occ = 0.0;
+        float sca = 1.0;
+    
+        for(int i = 0; i < AMB_OCC_SAMPLES; i++) {
+            float h = 0.01 + AMB_OCC_REACH * float(i) / float(AMB_OCC_SAMPLES - 1);
+            float d;
+            sampleScene(p0 + normal * h, push.maxDistance, d, color, push.time);
+            occ += (h - d) * sca;
+        
+            // Attenuate the contribution of further samples
+            sca *= AMB_OCC_ATTEN;
+        }
+    
+        // Clamp the final factor to prevent negative light values
+        occ = clamp(1.0 - 3.0 * occ, 0.0, 1.0);   
+
+        pixels[outIndex].r *= occ;
+        pixels[outIndex].g *= occ;
+        pixels[outIndex].b *= occ;
+        pixels[outIndex].l *= occ;
+    )"
+};
+
 std::string SDFScene::buildComputeShader() const
 {
     std::stringstream ssSample;
     buildSampleFunction(ssSample);
     std::stringstream ssLight;
     buildLightPasses(ssLight);
-    return m_shaderLayout + m_shaderFunctions + ssSample.str() + m_shaderMainMainFunction + ssLight.str() + "\t}\n}\n";
+    return m_shaderLayout + m_shaderFunctions + ssSample.str() + m_shaderMainFunction + ssLight.str() + m_shaderMainEnd + "\t}\n}\n";
 }
 
 void SDFScene::buildSampleFunction(std::stringstream& ss) const
@@ -593,7 +621,8 @@ void SDFScene::test()
         .pushOp<COMBAdd, SDFObject>()()
 
         // Skull
-        .pushOp<COMBAdd, SDFCylinderY>(0.5, 1.2, skinCol)()
+        .pushOp<COMBAdd, SDFCylinderY>(0.46, 1.2, skinCol)()
+        .pushOp<OPRoundOff>(0.05)
 
         // Hair
         .pushOp<OPMirrorXZ>()
@@ -612,37 +641,39 @@ void SDFScene::test()
         .stepBack(2)
 
         // Upper lip contour
-        .pushOp<OPTranslate>(Vec3{ 0.0, -0.6, -0.07 })
-        .pushOp<COMBAddSmooth, SDFCylinderY>(0.375, 0.0, skinCol)(0.15)
-        .pushOp<OPRoundOff>(0.1)
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.6, -0.12 })
+        .pushOp<COMBAddSmooth, SDFCylinderY>(0.35, 0.0, skinCol)(0.15)
+        .pushOp<OPRoundOff>(0.05)
         .stepBack()
 
         // Lower lip
-        .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.15 })
-        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.2, 0.065 }, skinCol)()
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.075, 0.2 })
+        .pushOp<COMBAdd, SDFCylinderY>(0.18, 0.05, skinCol)()
+        .pushOp<OPRoundOff>(0.1)
         .stepBack()
 
         // Neck
+        .pushOp<COMBAddSmooth, SDFObject>()(0.15)
         .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.2 })
         .pushOp<OPRotate>(Vec3::Right, 0.04)
-        .pushOp<COMBAddSmooth, SDFCylinderY>(0.25, 0.4, skinCol)(0.15)
-        .stepBack()
+        .pushOp<COMBAdd, SDFCylinderY>(0.25, 0.4, skinCol)()
+        .stepBack(2)
 
         // Nose
-        .pushOp<OPTranslate>(Vec3{ 0.0, 0.8, -0.6 })
+        .pushOp<OPTranslate>(Vec3{ 0.0, 0.4, -0.6 })
         .pushOp<COMBAddSmooth, SDFCapsuleZ>(0.1, 0.2, skinCol)(0.05)
         .stepBack()
 
-        // Eye brows
+        // Eye ridges
         .pushOp<OPMirrorX>()
-        .pushOp<OPTranslate>(Vec3{ 0.18, 0.25, 0.24})
+        .pushOp<OPTranslate>(Vec3{ 0.18, 0.35, 0.2})
         .pushOp<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
         .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 0.20, 0.015 }, skinCol)(0.1)
         .stepBack(2)
 
         // Eyes
         .pushOp<OPMirrorX>()
-        .pushOp<OPTranslate>(Vec3{ 0.21, -0.1, -0.4 })
+        .pushOp<OPTranslate>(Vec3{ 0.21, -0.05, -0.4 })
         .pushOp<COMBAdd, SDFSphere>(0.23)()
 
         // Pupils
@@ -656,7 +687,7 @@ void SDFScene::test()
         .pushOp<OPRotate>(Vec3::Forward, 0.25)
         .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ .075, 0.02 }, skinCol)(0.05)
 
-        .addLightSource(Vec3{ 10.0, 5.0, -10.0 }, 300.0, Color::White)
+        .addLightSource(Vec3{ 10.0, 5.0, -10.0 }, 500.0, Color::White)
     );
 }
 

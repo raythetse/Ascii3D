@@ -106,12 +106,12 @@ void SDFPlaneXZ::serializeInner(std::stringstream& ss) const
 void SDFPlaneXZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPlaneXZ //\n";
-    ss << "\td" << level << " = abs(p" << level << ".y - " << m_yPos << ");\n\n";
+    ss << "\td" << level << " = p" << level << ".y - " << m_yPos << ";\n\n";
 }
 
 double SDFPlaneXZ::signedDistanceInner(Vec3 p) const
 {
-    return abs(p.y - m_yPos);
+    return p.y - m_yPos;
 }
 
 void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
@@ -122,12 +122,12 @@ void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
 void SDFPlaneYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPlaneYZ //\n";
-    ss << "\td" << level << " = abs(p" << level << ".x - " << m_xPos << ");\n\n";
+    ss << "\td" << level << " = p" << level << ".x - " << m_xPos << ";\n\n";
 }
 
 double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
 {
-    return abs(p.x - m_xPos);
+    return p.x - m_xPos;
 }
 
 void SDFPlaneXY::serializeInner(std::stringstream& ss) const
@@ -138,12 +138,12 @@ void SDFPlaneXY::serializeInner(std::stringstream& ss) const
 void SDFPlaneXY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPlaneXY //\n";
-    ss << "\td" << level << " = abs(p" << level << ".z - " << m_zPos << ");\n\n";
+    ss << "\td" << level << " = p" << level << ".z - " << m_zPos << ";\n\n";
 }
 
 double SDFPlaneXY::signedDistanceInner(Vec3 p) const
 {
-    return abs(p.z - m_zPos);
+    return p.z - m_zPos;
 }
 
 void SDFPlane::serializeInner(std::stringstream& ss) const
@@ -155,12 +155,12 @@ void SDFPlane::serializeInner(std::stringstream& ss) const
 void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPlaneXY //\n";
-    ss << "\td" << level << " = abs(dot(p" << level << ", " << m_normal.getShader() << ") + " << m_offset << ");\n\n";
+    ss << "\td" << level << " = dot(p" << level << ", " << m_normal.getShader() << ") + " << m_offset << ";\n\n";
 }
 
 double SDFPlane::signedDistanceInner(Vec3 p) const
 {
-    return abs(p.dot(m_normal) + m_offset);
+    return p.dot(m_normal) + m_offset;
 }
 
 void SDFBox::serializeInner(std::stringstream& ss) const
