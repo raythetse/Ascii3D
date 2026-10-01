@@ -1,12 +1,17 @@
 Required:
+- make menu input loops consistent
+- Fix double press required to esc
+- ensure all sdf dimensions correct
+- lots of built-in demos to illustrate all sdfs and ops with propmods
+- rich demo scenes for GPU
 - fix screen params detection on start
-- verify consistency of inheriting object local pos/rot between software/hardware rendering
-- startup options
 - comment everything
 - consts wherever sensical
 - fix constructor accessibilities on abstracts
+- instructions for custom scene files
 
 Optional:
+- improve names of obj/op defaults
 - light movement
 - per-scene camera start pos/look dir
 - propMods for SDFObjects

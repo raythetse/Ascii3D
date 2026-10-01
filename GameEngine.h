@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <utility>
 #include "PixelField.h"
 #include "PerfMonitor.h"
@@ -36,6 +37,9 @@ private:
 	PixelOutput* m_hardwareRenderResult = nullptr;
 
 	void resizeCallback(size_t width, size_t height);
+	bool selectScene();
+	void selectBuiltInScene(bool noCustom);
+	bool selectCustomScene();
 	void marchHardware();
 
 public:

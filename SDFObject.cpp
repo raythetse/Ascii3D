@@ -16,12 +16,6 @@ Vec3 SDFObject::revolve2D(Vec3 p, double radius) const
     return Vec3(Vec2(p.x, p.y).length() - radius, p.z, p.z);
 }
 
-SDFObject::SDFObject(Color color, Vec3 position, Vec3 rotationAxis, double rotations)
-    : m_position{ position }, m_rotationAxis{ rotationAxis }, m_rotations{ rotations }, m_color{ color }
-{
-    setRotation(rotationAxis, rotations);
-}
-
 SDFObject::~SDFObject() {}
 
 void SDFObject::update()
@@ -29,18 +23,6 @@ void SDFObject::update()
     for (auto& op : m_operations) {
         op->update();
     }
-}
-
-void SDFObject::setPosition(Vec3 position)
-{
-    m_position = position;
-}
-
-void SDFObject::setRotation(Vec3 axis, double rotations)
-{
-    m_rotationAxis = axis;
-    m_rotations = rotations;
-    Mat3::fromAxisAngle(m_rotationAxis, m_rotMat, m_rotations * MF::TAU);
 }
 
 SDFOperation* SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
@@ -65,9 +47,6 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     std::stringstream ss{};
     ss << std::string(level, '\t');
     ss << getClassName();
-    ss << " m_position " << m_position.x << ' ' << m_position.y << ' ' << m_position.z;
-    ss << " m_rotationAxis " << m_rotationAxis.x << ' ' << m_rotationAxis.y << ' ' << m_rotationAxis.z;
-    ss << " m_rotations " << m_rotations;
     ss << " m_color " << m_color.x << ' ' << m_color.y << ' ' << m_color.z;
     serializeInner(ss);
     strVec.push_back(ss.str());
@@ -80,8 +59,6 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
 
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 {
-    p -= m_position;
-    if (m_rotations != 0.0) p = m_rotMat * p;
     double distance{ signedDistanceInner(p) };
     Color colorIn = m_color;
     for (auto& op : m_operations) {
@@ -108,8 +85,6 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
         ss << "\td" << level << " = FLOAT_MAX;\n";
     }
     ss << "\tcolor" << level << " = " << m_color.getShader() << ";\n";
-    ss << "\tp" << level << " -= " << m_position.getShader() << ";\n";
-    if (m_rotations != 0.0) ss << "\tp" << level << " = " << m_rotMat.getShaderMat3() << " * p" << level << ";\n\n";
     getShaderObjectCalls(ss, level, maxLevel);
     ss << "\n";
 
@@ -366,7 +341,7 @@ void SDFCylinderX::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 double SDFCylinderX::signedDistanceInner(Vec3 p) const
 {
     Vec2 yz{ p.y, p.z };
-    Vec2 d = Vec2{ yz.length(), p.x }.abs() - Vec2(m_radius, m_sideLength);
+    Vec2 d = Vec2{ yz.length(), p.x }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
@@ -385,7 +360,7 @@ void SDFCylinderY::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 double SDFCylinderY::signedDistanceInner(Vec3 p) const
 {
     Vec2 xz{ p.x, p.z };
-    Vec2 d = Vec2{ xz.length(), p.y }.abs() - Vec2(m_radius, m_sideLength);
+    Vec2 d = Vec2{ xz.length(), p.y }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
@@ -404,7 +379,7 @@ void SDFCylinderZ::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 double SDFCylinderZ::signedDistanceInner(Vec3 p) const
 {
     Vec2 xy{ p.x, p.y };
-    Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength);
+    Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
@@ -691,5 +666,41 @@ double SDFStar::signedDistanceInner(Vec3 p) const
     p2D -= acs * m_radius;
     p2D += ecs * std::clamp(-(p2D.dot(ecs)), 0.0, m_radius * acs.y / ecs.y);
     double d2D = p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
+    return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFTriangle::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_point1 " << m_point1.x << ' ' << m_point1.y;
+    ss << " m_point2 " << m_point2.x << ' ' << m_point2.y;
+    ss << " m_point3 " << m_point3.x << ' ' << m_point3.y;
+    ss << " m_magnitude " << m_magnitude;
+    ss << " m_operation " << m_operation;
+}
+
+void SDFTriangle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFTriangle //\n";
+    ss << "\td" << level << " = triangle(p" << level << ", " << m_point1.getShader() << ", " << m_point2.getShader() << ", " << m_point3.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+}
+
+double SDFTriangle::signedDistanceInner(Vec3 p) const
+{
+    if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
+    Vec2 p2D{ p.x, p.z };
+    Vec2 e0 = m_point2 - m_point1;
+    Vec2 e1 = m_point3 - m_point2;
+    Vec2 e2 = m_point1 - m_point3;
+    Vec2 v0 = p2D - m_point1;
+    Vec2 v1 = p2D - m_point2;
+    Vec2 v2 = p2D - m_point3;
+    Vec2 pq0 = v0 - e0 * std::clamp(v0.dot(e0) / e0.dot(e0), 0.0, 1.0);
+    Vec2 pq1 = v1 - e1 * std::clamp(v1.dot(e1) / e1.dot(e1), 0.0, 1.0);
+    Vec2 pq2 = v2 - e2 * std::clamp(v2.dot(e2) / e2.dot(e2), 0.0, 1.0);
+    double s = (e0.x * e2.y - e0.y * e2.x) >= 0.0 ? 1.0 : -1.0;
+    Vec2 d = Vec2{ pq0.dot(pq0), s * (v0.x * e0.y - v0.y * e0.x) }
+        .minimum(Vec2{ pq1.dot(pq1), s * (v1.x * e1.y - v1.y * e1.x) })
+        .minimum(Vec2{ pq2.dot(pq2), s * (v2.x * e2.y - v2.y * e2.x) });
+    double d2D = -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }

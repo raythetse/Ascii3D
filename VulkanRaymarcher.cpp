@@ -59,7 +59,7 @@ bool VulkanRaymarcher::selectDevice() {
     std::cout << "===========================================\n";
     std::cout << "      ASCII Raymarcher 3D - Ray Young\n";
     std::cout << "===========================================\n\n";
-    std::cout << "          Valid Rendering Devices:\n\n";
+    std::cout << "      Rendering Devices\n\n";
     std::cout << "[1] - CPU (Multi-threaded)\n";
 
     for (size_t i{}; i < candidateDevices.size(); ++i) {
@@ -80,7 +80,6 @@ bool VulkanRaymarcher::selectDevice() {
 
     VkPhysicalDeviceProperties props;
     vkGetPhysicalDeviceProperties(m_PhysicalDevice, &props);
-    std::cout << "You picked: " << props.deviceName << "\n";
 
     // 3. Find Compute Queue Family
     uint32_t queueFamilyCount = 0;

@@ -41,7 +41,7 @@ void RayMarcher::SampleScene(Vec3 p, Color* color, const SDFObject* object, doub
 
 void RayMarcher::march(SDFScene& scene, PixelField& field, const Camera& camera)
 {
-    auto* object = scene.object();
+    auto* object = scene.baseObject();
     auto& lights = scene.lights();
     auto& range = field.range();
     // parallel execution policy parallelizes the iterations automatically

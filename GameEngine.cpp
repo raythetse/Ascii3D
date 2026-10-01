@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 #include <execution>
+#include <limits>
 #include <ranges>
 
 #include "ConsoleFunctions.h"
@@ -8,8 +9,8 @@
 #include "InputManager.h"
 #include "MathFunctions.h"
 #include "PropertyModifier.h"
-#include "SDFOperationInc.h"
 #include "SDFBuilder.h"
+#include "SDFOperationInc.h"
 
 GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double tolerance)
 	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_surTolerance(tolerance), m_pixelField{ width, height }
@@ -33,26 +34,31 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
 
 void GameEngine::run()
 {
-    m_scene = SDFScene(SDFScene::LoadOption::Test);
     //m_scene = SDFScene("MyFile.txt");
 
     m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
-    if (m_marchMode == Hardware) {
-        std::string shaderCode = m_scene.buildComputeShader();
-        FileHandler::saveToFile(shaderCode, "ShaderSource.glsl");
-        m_vrm.setShaderSource(shaderCode);
-        m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
-    }
+    m_scene = SDFScene::LoadOption::Test;
 
     while (true) {
-        GameTimer::tick();
-        if (!handleInput()) break;
-        m_perfMonitor.sample(m_framePM, [this]() {
-            update();
-            march();
-            render();
-        });
-        m_perfMonitor.printMonitors();
+        if (!selectScene()) break;
+        if (m_marchMode == Hardware) {
+            std::string shaderCode = m_scene.buildComputeShader();
+            FileHandler::saveShader(shaderCode, "ShaderSource.glsl");
+            m_vrm.setShaderSource(shaderCode);
+            m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+        }
+        GameTimer::reset();
+        m_camera.reset();
+        while (true) {
+            GameTimer::tick();
+            if (!handleInput()) break;
+            m_perfMonitor.sample(m_framePM, [this]() {
+                update();
+                march();
+                render();
+            });
+            m_perfMonitor.printMonitors();
+        }
     }
 }
 
@@ -61,10 +67,10 @@ bool GameEngine::handleInput()
     InputManager::update();
     if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
     if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
-    if (InputManager::keyJustPushed('M')) {
+    if (InputManager::keyJustPushed('M') && InputManager::keyDown(VK_CONTROL)) {
         std::vector<std::string> strVec{};
         m_scene.serialize(strVec);
-        FileHandler::saveToFile(strVec, "MyFile.txt");
+        FileHandler::saveScene(strVec, "CustomScenes/MyFile.txt");
     }
 
     return true;
@@ -91,6 +97,102 @@ void GameEngine::march()
             break;
         }
     });
+}
+
+bool GameEngine::selectScene()
+{
+    std::cout << "\033[2J\033[1;1H"; // clear console
+    std::cout << "Select a scene-type (WARNING: Custom scenes may run very poorly on CPU Renderer)\n\n";
+    std::cout << "[1] Built-In (Hardcoded in SDFScene.cpp source file)\n[2] Custom (Defined in the \\CustomScenes folder)\n[3] Exit\n";
+
+    int selection{};
+
+    while (!(std::cin >> selection && selection >= 1 && selection <= 3)) {
+        std::cout << "\033[2J\033[1;1H";
+        std::cout << "- INVALID SELECTION -\n[1] Built-in scenes (Hardcoded in SDFScene.cpp source file)\n[2] Custom scenes (Defined in the CustomScenes folder)\n[3] Exit\n";
+        std::cin.clear();
+        std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+    }
+
+    if (selection == 3) return false;
+
+    bool customFound = false;
+    if (selection == 2) {
+        if (!selectCustomScene()) {
+            selectBuiltInScene(true);
+            return true;
+        }
+    }
+    else {
+        selectBuiltInScene(false);
+    }
+    return true;
+}
+
+void GameEngine::selectBuiltInScene(bool noCustom)
+{
+    int selection{0};
+    bool inputFailed{};
+
+    while (true) {
+        std::cout << "\033[2J\033[1;1H";
+        if (noCustom) std::cout << "No Custom Scenes found\n\n";
+        if (inputFailed) std::cout << "- INVALID SELECTION -\n";
+        std::cout << "Choose a Built-In Scene\n\n";
+        std::cout << "[1] WalkingCubes\n[2] Elongatiions\n[3] Torus\n";
+        std::string line;
+        if (std::getline(std::cin, line)) {
+            std::stringstream ss(line);
+            if (ss >> selection) {
+                switch (selection) {
+                case 1:
+                    m_scene = SDFScene{ SDFScene::WalkingCubes };
+                    return;
+                case 2:
+                    m_scene = SDFScene{ SDFScene::Elongate };
+                    return;
+                case 3:
+                    m_scene = SDFScene{ SDFScene::Torus };
+                    return;
+                case 123:
+                    m_scene = SDFScene{ SDFScene::Test };
+                    return;
+                }
+            }
+        }
+        inputFailed = true;
+    }
+}
+
+bool GameEngine::selectCustomScene()
+{
+    std::vector<std::string> scenes{};
+    FileHandler::enumerateCustomScenes(scenes);
+
+    if (!scenes.size()) return false;
+
+    bool inputFailed{};
+    int selection{}; 
+    std::string line;
+    std::cin.clear();
+    std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+    while (true) {
+        std::cout << "\033[2J\033[1;1H";
+        if (inputFailed) std::cout << "- INVALID SELECTION -\n\n";
+        std::cout << "Select a Custom Scene\n\n";
+        for (size_t i{}; i < scenes.size(); ++i) {
+            std::cout << "[" << (i + 1) << "] " << scenes[i] << '\n';
+        }
+
+        if (std::getline(std::cin, line)) {
+            std::stringstream ss(line);
+            if (ss >> selection && selection >= 1 && selection <= scenes.size()) {
+                m_scene = SDFScene(scenes[selection - 1]);
+                return true;
+            }
+        }
+        inputFailed = true;
+    }
 }
 
 void GameEngine::marchHardware()

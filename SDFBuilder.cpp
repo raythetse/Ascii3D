@@ -34,18 +34,6 @@ SDFBuilder& SDFBuilder::stepBack(size_t steps)
     return *this;
 }
 
-SDFBuilder& SDFBuilder::position(Vec3 position)
-{
-    m_objChain.back()->setPosition(position);
-    return *this;
-}
-
-SDFBuilder& SDFBuilder::rotation(Vec3 axis, double rotations)
-{
-    m_objChain.back()->setRotation(axis, rotations);
-    return *this;
-}
-
 SDFBuilder& SDFBuilder::color(Vec3 color)
 {
     m_objChain.back()->setColor(color);
@@ -132,19 +120,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     // Objects
     { "SDFObject", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
         }
-        builder.pushSDFObj<SDFObject>(m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFObject>(m_color);
     }},
     { "SDFPlaneXZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
@@ -198,103 +180,70 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "SDFBox", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_dimensions{ DEF::OBJBoxDimensions };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_dimensions") ss >> m_dimensions.x >> m_dimensions.y >> m_dimensions.z;
             else if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
         }
-        builder.pushSDFObj<SDFBox>(m_dimensions, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFBox>(m_dimensions, m_color);
     } },
     { "SDFBoxFrame", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         double m_edgeThickness{ DEF::OBJFrameThickness };
-        Vec3 m_position{ DEF::OBJPosition };
         Vec3 m_dimensions{ DEF::OBJBoxDimensions };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_dimensions") ss >> m_dimensions.x >> m_dimensions.y >> m_dimensions.z;
             else if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_edgeThickness") ss >> m_edgeThickness;
         }
-        builder.pushSDFObj<SDFBoxFrame>(m_dimensions, m_edgeThickness, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFBoxFrame>(m_dimensions, m_edgeThickness, m_color);
     }},
     { "SDFSphere", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFSphere>(m_radius, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFSphere>(m_radius, m_color);
     } },
     { "SDFTorus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec2 m_radii{ DEF::OBJRadii };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radii") ss >> m_radii.x >> m_radii.y;
         }
-        builder.pushSDFObj<SDFTorus>(m_radii, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFTorus>(m_radii, m_color);
     } },
     { "SDFTorusSegment", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec2 m_radii{ DEF::OBJRadii };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sweep{ DEF::OBJSweep };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radii") ss >> m_radii.x >> m_radii.y;
             else if (param == "m_sweep") ss >> m_sweep;
         }
-        builder.pushSDFObj<SDFTorusSegment>(m_radii, m_sweep, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFTorusSegment>(m_radii, m_sweep, m_color);
     } },
     { "SDFCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
         double m_bodyLength{ DEF::OBJLength };
 
@@ -302,19 +251,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_bodyLength") ss >> m_bodyLength;
         }
-        builder.pushSDFObj<SDFCapsuleX>(m_radius, m_bodyLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCapsuleX>(m_radius, m_bodyLength, m_color);
     } },
     { "SDFCapsuleY", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
         double m_bodyLength{ DEF::OBJLength };
 
@@ -322,19 +265,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_bodyLength") ss >> m_bodyLength;
         }
-        builder.pushSDFObj<SDFCapsuleY>(m_radius, m_bodyLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCapsuleY>(m_radius, m_bodyLength, m_color);
     } },
     { "SDFCapsuleZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
         double m_bodyLength{ DEF::OBJLength };
 
@@ -342,37 +279,25 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_bodyLength") ss >> m_bodyLength;
         }
-        builder.pushSDFObj<SDFCapsuleZ>(m_radius, m_bodyLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCapsuleZ>(m_radius, m_bodyLength, m_color);
     } },
     { "SDFCrystal", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_edgeLength{ DEF::OBJLength };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_edgeLength") ss >> m_edgeLength;
         }
-        builder.pushSDFObj<SDFCrystal>(m_edgeLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCrystal>(m_edgeLength, m_color);
     } },
     { "SDFCylinderX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color col{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
         double m_radius{ DEF::OBJRadius };
 
@@ -380,19 +305,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> col.x >> col.y >> col.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFCylinderX>(m_radius, m_sideLength, col, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCylinderX>(m_radius, m_sideLength, col);
     } },
     { "SDFCylinderY", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
         double m_radius{ DEF::OBJRadius };
 
@@ -400,19 +319,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFCylinderY>(m_radius, m_sideLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCylinderY>(m_radius, m_sideLength, m_color);
     } },
     { "SDFCylinderZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
         double m_radius{ DEF::OBJRadius };
 
@@ -420,19 +333,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radius") ss >> m_radius;
         }
-        builder.pushSDFObj<SDFCylinderZ>(m_radius, m_sideLength, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCylinderZ>(m_radius, m_sideLength, m_color);
     } },
     { "SDFChainLink", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
         Vec2 m_radii{ DEF::OBJRadii };
 
@@ -440,19 +347,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radii") ss >> m_radii.x >> m_radii.y;
         }
-        builder.pushSDFObj<SDFChainLink>(m_sideLength, m_radii, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFChainLink>(m_sideLength, m_radii, m_color);
     } },
     { "SDFTube", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sideLength{ DEF::OBJLength };
         Vec2 m_radii{ DEF::OBJRadii };
 
@@ -460,19 +361,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_sideLength") ss >> m_sideLength;
             else if (param == "m_radii") ss >> m_radii.x >> m_radii.y;
         }
-        builder.pushSDFObj<SDFTube>(m_sideLength, m_radii, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFTube>(m_sideLength, m_radii, m_color);
     } },
     { "SDFCone", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_height{ DEF::OBJLength };
         double m_ratio{ DEF::OBJRatio };
 
@@ -480,19 +375,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_height") ss >> m_height;
             else if (param == "m_ratio") ss >> m_ratio;
         }
-        builder.pushSDFObj<SDFCone>(m_height, m_ratio, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFCone>(m_height, m_ratio, m_color);
     } },
     { "SDFSolidAngle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJRadius };
         double m_sweep{ DEF::OBJSweep };
 
@@ -500,19 +389,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_sweep") ss >> m_sweep;
         }
-        builder.pushSDFObj<SDFSolidAngle>(m_radius, m_sweep, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFSolidAngle>(m_radius, m_sweep, m_color);
     } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         Vec2 m_dimensions{ DEF::OBJOP2DDimensions };
         double m_magnitude{ DEF::OBJLength };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
@@ -521,9 +404,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_dimensions") ss >> m_dimensions.x >> m_dimensions.y;
             else if (param == "m_magnitude") ss >> m_magnitude;
             else if (param == "m_operation") {
@@ -532,13 +412,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFRhombus>(m_operation, m_dimensions, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFRhombus>(m_operation, m_dimensions, m_magnitude, m_color);
     } },
     { "SDFEquilateralTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_base{ DEF::OBJLength };
         double m_magnitude{ DEF::OBJOP2DMagnitude };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
@@ -548,9 +425,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_base") ss >> m_base;
             else if (param == "m_magnitude") ss >> m_magnitude;
             else if (param == "m_operation") {
@@ -559,13 +433,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFEquilateralTriangle>(m_operation, m_base, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFEquilateralTriangle>(m_operation, m_base, m_magnitude, m_color);
     } },
     { "SDFIsoscelesTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         Vec2 m_dimensions{ DEF::OBJOP2DDimensions };
         double m_magnitude{ DEF::OBJOP2DMagnitude };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
@@ -575,9 +446,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_dimensions") ss >> m_dimensions.x >> m_dimensions.y;
             else if (param == "m_magnitude") ss >> m_magnitude;
             else if (param == "m_operation") {
@@ -586,13 +454,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFIsoscelesTriangle>(m_operation, m_dimensions, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFIsoscelesTriangle>(m_operation, m_dimensions, m_magnitude, m_color);
     } },
     { "SDFPieSlice", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_sweep{ DEF::OBJLength };
         double m_radius{ DEF::OBJLength };
         double m_magnitude{ DEF::OBJLength };
@@ -602,9 +467,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_sweep") ss >> m_sweep;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_magnitude") ss >> m_magnitude;
@@ -614,13 +476,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFPieSlice>(m_operation, m_sweep, m_radius, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFPieSlice>(m_operation, m_sweep, m_radius, m_magnitude, m_color);
     } },
     { "SDFPentagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJLength };
         double m_magnitude{ DEF::OBJLength };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
@@ -629,9 +488,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_magnitude") ss >> m_magnitude;
             else if (param == "m_operation") {
@@ -640,13 +496,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFPentagon>(m_operation, m_radius, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFPentagon>(m_operation, m_radius, m_magnitude, m_color);
     } },
     { "SDFHexagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJLength };
         double m_magnitude{ DEF::OBJLength };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
@@ -655,9 +508,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_magnitude") ss >> m_magnitude;
             else if (param == "m_operation") {
@@ -666,13 +516,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFHexagon>(m_operation, m_radius, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFHexagon>(m_operation, m_radius, m_magnitude, m_color);
     } },
     { "SDFOctagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJLength };
         double m_magnitude{ DEF::OBJLength };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
@@ -681,9 +528,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_magnitude") ss >> m_magnitude;
             else if (param == "m_operation") {
@@ -692,26 +536,20 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFOctagon>(m_operation, m_radius, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFOctagon>(m_operation, m_radius, m_magnitude, m_color);
     } },
     { "SDFStar", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
-        Vec3 m_position{ DEF::OBJPosition };
-        Vec3 m_rotationAxis{ DEF::OBJRotAxis };
-        double m_rotations{ DEF::OBJRotations };
         double m_radius{ DEF::OBJLength };
         double m_ratio{ DEF::OBJLength };
         double m_magnitude{ DEF::OBJLength };
-        size_t m_numPoints{ DEF::OBJOP2DPoints };
+        size_t m_numPoints{ DEF::OBJOP2DNumPoints };
         SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
-            else if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
-            else if (param == "m_rotationAxis") ss >> m_rotationAxis.x >> m_rotationAxis.y >> m_rotationAxis.z;
-            else if (param == "m_rotations") ss >> m_rotations;
             else if (param == "m_radius") ss >> m_radius;
             else if (param == "m_numPoints") ss >> m_numPoints;
             else if (param == "m_ratio") ss >> m_ratio;
@@ -722,7 +560,31 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 m_operation = static_cast<SDFObject::OP2D>(opID);
             }
         }
-        builder.pushSDFObj<SDFStar>(m_operation, m_numPoints, m_radius, m_ratio, m_magnitude, m_color, m_position, m_rotationAxis, m_rotations);
+        builder.pushSDFObj<SDFStar>(m_operation, m_numPoints, m_radius, m_ratio, m_magnitude, m_color);
+    } },
+    { "SDFTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        double m_magnitude{ DEF::OBJLength };
+        Vec2 m_point1{ DEF::OBJOP2DTPoint1 };
+        Vec2 m_point2{ DEF::OBJOP2DTPoint2 };
+        Vec2 m_point3{ DEF::OBJOP2DTPoint3 };
+        SDFObject::OP2D m_operation{ SDFObject::OP2D::Extrude };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_point1") ss >> m_point1.x >> m_point1.y;
+            else if (param == "m_point2") ss >> m_point2.x >> m_point2.y;
+            else if (param == "m_point3") ss >> m_point3.x >> m_point3.y;
+            else if (param == "m_magnitude") ss >> m_magnitude;
+            else if (param == "m_operation") {
+                int opID;
+                ss >> opID;
+                m_operation = static_cast<SDFObject::OP2D>(opID);
+            }
+        }
+        builder.pushSDFObj<SDFTriangle>(m_operation, m_point1, m_point2, m_point3, m_magnitude, m_color);
     } },
 
     // Mirrors
@@ -750,7 +612,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Transformations
     { "OPTranslate", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 m_translation{ DEF::OBJPosition};
+        Vec3 m_translation{ DEF::TRANSVector };
 
         while (ss.peek() != EOF) {
             std::string param;

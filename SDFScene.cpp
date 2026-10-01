@@ -44,7 +44,7 @@ const float ROOT3 = 1.732051;
 const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
-const float SHADOW_TOLERANCE = 0.1;
+const float SHADOW_TOLERANCE = 0.05;
 
 // UTILITY FUNCTIONS //
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
@@ -209,19 +209,19 @@ float crystal(vec3 p, float edgeLength) {
 
 float cylinderX(vec3 p, float bodyLength, float radius) {
     vec2 yz = vec2(p.y, p.z);
-    vec2 d = abs(vec2(length(yz), p.x )) - vec2(radius, bodyLength);
+    vec2 d = abs(vec2(length(yz), p.x )) - vec2(radius, bodyLength * 0.5);
     return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
 }
 
 float cylinderY(vec3 p, float bodyLength, float radius) {
     vec2 xz = vec2(p.x, p.z);
-    vec2 d = abs(vec2(length(xz), p.y )) - vec2(radius, bodyLength);
+    vec2 d = abs(vec2(length(xz), p.y )) - vec2(radius, bodyLength * 0.5);
     return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
 }
 
 float cylinderZ(vec3 p, float bodyLength, float radius) {
     vec2 xy = vec2(p.x, p.y);
-    vec2 d = abs(vec2(length(xy), p.z )) - vec2(radius, bodyLength);
+    vec2 d = abs(vec2(length(xy), p.z )) - vec2(radius, bodyLength * 0.5);
     return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
 }
 
@@ -333,7 +333,6 @@ float octagon(vec3 p, float radius, int operation, float magnitude) {
 
 float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 acs, vec2 ecs) {
     if (operation == 1) p = revolve2D(p, magnitude);
-
     vec2 p2D = vec2(abs(p.x), p.z);
     float bn = mod(atan(p2D.x, p2D.y), 2.0 * an) - an;
     float sinbn = sin(bn);
@@ -345,6 +344,22 @@ float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
+float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, float magnitude) {
+    if (operation == 1) p = revolve2D(p, magnitude);
+    vec2 p2D = vec2(p.x, p.z);
+    vec2 e0 = point2 - point1, e1 = point3 - point2, e2 = point1 - point3;
+    vec2 v0 = p2D - point1, v1 = p2D - point2, v2 = p2D - point3;
+    vec2 pq0 = v0 - e0 * clamp(dot(v0, e0) / dot(e0, e0), 0.0, 1.0 );
+    vec2 pq1 = v1 - e1 * clamp(dot(v1, e1) / dot(e1, e1), 0.0, 1.0 );
+    vec2 pq2 = v2 - e2 * clamp(dot(v2, e2) / dot(e2, e2), 0.0, 1.0 );
+    float s = sign(e0.x * e2.y - e0.y * e2.x);
+    vec2 d = min(min(vec2(dot(pq0, pq0), s * (v0.x * e0.y - v0.y * e0.x)),
+                     vec2(dot(pq1, pq1), s * (v1.x * e1.y - v1.y * e1.x))),
+                     vec2(dot(pq2, pq2), s * (v2.x * e2.y - v2.y * e2.x)));
+    float d2D = -sqrt(d.x) * sign(d.y);
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;    
+}
+    
 )"
 };
 
@@ -507,32 +522,14 @@ SDFScene::SDFScene(LoadOption loadOption)
     case SDFScene::Test:
         test();
         break;
-    case SDFScene::SolidAngles:
-        solidAngles();
-        break;
-    case SDFScene::RepeatCircle:
-        repeatCircle();
-        break;
-    case SDFScene::Cubes:
+    case SDFScene::WalkingCubes:
         cubesDemo();
         break;
     case SDFScene::Elongate:
         elongateDemo();
         break;
-    case SDFScene::Frame:
-        frameDemo();
-        break;
-    case SDFScene::Oxygen:
-        oxygenDemo();
-        break;
-    case SDFScene::PropMod:
-        propModDemo();
-        break;
     case SDFScene::Torus:
         torusDemo();
-        break;
-    default:
-        propModTests();
         break;
     }
 }
@@ -589,125 +586,78 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 
 void SDFScene::test()
 {
-    add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFStar>(SDFObject::Extrude, 8, 2.0, 0.25)()
-        .pushOp<OPOnion>(0.1)
-        .pushOp<COMBSubtractSmooth, SDFBox>(Vec3{ 6.0 }, Color::White, Vec3::Up * 3.0)()
-        .addLightSource(Vec3{ 5.0, 3.0, -5.0 }, 25.0, Color::White)
-    );
-}
+    Vec3 skinCol{ 234.0 / 255.0, 191.0 / 255.0, 4.0 / 255.0 };
 
-void SDFScene::solidAngles()
-{
-    double offset = 2.0;
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 1.5 }, 0.1, Color::White)()
-        .pushOp<COMBAddSmooth, SDFObject>()(2.0, 0.25)
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.237)
-        .pushOp<OPRotateContinuous>(Vec3::Right, 0.173)
-        .pushOp<OPRotateContinuous>(Vec3::Forward, 0.138)
-        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
-        .stepBack()
-        .pushOp<OPRotate>(Vec3::Forward, 0.25)
-        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
-        .stepBack()
-        .pushOp<OPRotate>(Vec3::Forward, 0.5)
-        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
-        .stepBack()
-        .pushOp<OPRotate>(Vec3::Forward, 0.75)
-        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
-        .stepBack()
-        .pushOp<OPRotate>(Vec3::Right, 0.25)
-        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
-        .stepBack()
-        .pushOp<OPRotate>(Vec3::Right, 0.5)
-        .pushOp<COMBAdd, SDFSolidAngle>(2.0, 0.25, Color::White, Vec3::Up * offset)()
-        .stepBack()
-        .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 50.0, Color::Blue)
-        .addLightSource(Vec3{ -5.0, 2.0, 0.0 }, 50.0, Color::Red)
-        .addLightSource(Vec3{ 0.0 }, 5.0, Color::Green)
-    );
-}
+        // Head
+        .pushOp<COMBAdd, SDFObject>()()
 
-void SDFScene::repeatCircle()
-{
-    add(SDFBuilder{}
+        // Skull
+        .pushOp<COMBAdd, SDFCylinderY>(0.5, 1.2, skinCol)()
+
+        // Hair
         .pushOp<OPMirrorXZ>()
-        .pushOp<OPRotate>(Vec3::Up, -4.0 / 32.0)
+        .pushOp<OPRotate>(Vec3::Up, -8.0 / 64.0)
         .pushOp<OPMirrorX>()
-        .pushOp<OPRotate>(Vec3::Up, -2.0 / 32.0)
+        .pushOp<OPRotate>(Vec3::Up, -4.0 / 64.0)
         .pushOp<OPMirrorX>()
-        .pushOp<OPRotate>(Vec3::Up, -1.0 / 32.0)
-        .pushOp<OPTranslate>(Vec3::Forward * 3.0)
-        .pushOp<OPRotate>(Vec3::Right, -0.02)
-        .pushOp<COMBAdd, SDFCone>(2.0, 0.035, Color::Green)()
+        .pushOp<OPRotate>(Vec3::Up, -2.0 / 64.0)
+        .pushOp<OPMirrorX>()
+        .pushOp<OPRotate>(Vec3::Up, -1.0 / 64.0)
+        .pushOp<OPTranslate>(Vec3::Forward * 0.51)
+        .pushOp<OPTranslate>(Vec3::Up * 0.75)
+        .pushOp<OPRotate>(Vec3::Right, -0.06)
+        .pushOp<COMBAddSmooth, SDFCone>(0.155, 0.045, skinCol)(0.01)
+        .pushOp<OPRoundOff>(0.01)
+        .stepBack(2)
+
+        // Upper lip contour
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.6, -0.07 })
+        .pushOp<COMBAddSmooth, SDFCylinderY>(0.375, 0.0, skinCol)(0.15)
         .pushOp<OPRoundOff>(0.1)
-        .addLightSource(Vec3{ 5.0, 2.0, 0.0 }, 150.0, Color::White)
+        .stepBack()
+
+        // Lower lip
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.15 })
+        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.2, 0.065 }, skinCol)()
+        .stepBack()
+
+        // Neck
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.2 })
+        .pushOp<OPRotate>(Vec3::Right, 0.04)
+        .pushOp<COMBAddSmooth, SDFCylinderY>(0.25, 0.4, skinCol)(0.15)
+        .stepBack()
+
+        // Nose
+        .pushOp<OPTranslate>(Vec3{ 0.0, 0.8, -0.6 })
+        .pushOp<COMBAddSmooth, SDFCapsuleZ>(0.1, 0.2, skinCol)(0.05)
+        .stepBack()
+
+        // Eye brows
+        .pushOp<OPMirrorX>()
+        .pushOp<OPTranslate>(Vec3{ 0.18, 0.25, 0.24})
+        .pushOp<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
+        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 0.20, 0.015 }, skinCol)(0.1)
+        .stepBack(2)
+
+        // Eyes
+        .pushOp<OPMirrorX>()
+        .pushOp<OPTranslate>(Vec3{ 0.21, -0.1, -0.4 })
+        .pushOp<COMBAdd, SDFSphere>(0.23)()
+
+        // Pupils
+        .pushOp<OPTranslate>(Vec3{ 0.0, -0.05, -0.13 })
+        .pushOp<COMBAdd, SDFSphere>(0.1, Color::Black)()
+        .stepBack(2)
+
+        //// Ears
+        .pushOp<OPTranslate>(Vec3{ 0.29, -0.2, 0.3 })
+        .pushOp<OPRotate>(Vec3::Down, 0.12)
+        .pushOp<OPRotate>(Vec3::Forward, 0.25)
+        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ .075, 0.02 }, skinCol)(0.05)
+
+        .addLightSource(Vec3{ 10.0, 5.0, -10.0 }, 300.0, Color::White)
     );
-}
-
-void SDFScene::frameDemo()
-{
-    add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFCylinderY>(15.0, 0.01, Color::SkyBlue, Vec3::Down * 4.0)()
-            .stepBack()
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.1)
-        .pushOp<OPRotateContinuous>(Vec3::Right, 0.1)
-        .pushOp<OPRotateContinuous>(Vec3::Forward, 0.1)
-        .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 2.0 }, 0.1, Color::Gold)()
-            .pushOp<OPTranslateSine>(Vec3::Up, 3.0, 2.0)
-            .pushOp<OPRotateContinuous>(Vec3::Down, 0.1)
-            .pushOp<OPRotateContinuous>(Vec3::Left, 0.1)
-            .pushOp<OPRotateContinuous>(Vec3::Backward, 0.1)
-                .pushOp<COMBAdd, SDFObject>()()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Red, Vec3{ 0.5, 0.5, 0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Orange, Vec3{ 0.5, 0.5, -0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Magenta, Vec3{ 0.5, -0.5, 0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::MediumGray, Vec3{ 0.5, -0.5, -0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Green, Vec3{ -0.5, 0.5, 0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Yellow, Vec3{ -0.5, 0.5, -0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Blue, Vec3{ -0.5, -0.5, 0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBox>(Vec3::One, Color::Violet, Vec3{ -0.5, -0.5, -0.5 })().stepBack()
-                    .pushOp<COMBAdd, SDFBoxFrame>(Vec3{ 1.25 }, 0.1, Color::White)()
-        .addLightSource(Vec3{ 1.0, 8.0, -1.0 }, 150.0, Color::White)
-    );
-}
-
-void SDFScene::oxygenDemo()
-{
-    auto builder = SDFBuilder{};
-    
-    size_t numElectrons = 64;
-
-    for (size_t i{}; i < numElectrons; ++i) {
-        double phase{ i * MF::TAU };
-        double dist = static_cast<double>(i) / static_cast<double>(numElectrons);
-        dist *= dist * dist;
-        dist = 1.5 + dist;
-        double rotPerSec = i % 2 ? 0.5 : -0.5 ;
-        builder
-            .pushOp<COMBAdd, SDFObject>()()
-                .pushOp<OPRotateContinuous>(Vec3::One, 0.01, phase)
-                .pushOp<OPRotateContinuous>(Vec3::Up, rotPerSec, phase)
-                .pushOp<OPTranslate>(Vec3::Right * dist)
-                .pushOp<COMBAdd, SDFSphere>(0.1, Color::Yellow)()
-                    .stepBack(2);
-    }
-
-    builder
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.25)
-            .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ 0.224, 0.2468, -0.18 })
-                .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ -0.1287, -0.14864, .167 })
-                    .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ 0.187, -0.0458, 0.2 })
-                        .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ -0.054, -0.217, -0.17 })
-                            .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -.1, -.2256, .076 })
-                                .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.0, 0.26, 0.0 })
-                                    .pushOp<COMBAdd, SDFSphere>(0.25, Color::Red)().pushOp<OPTranslate>(Vec3{ -0.2, 0.01, 0.0 })
-                                        .pushOp<COMBAdd, SDFSphere>(0.25, Color::Blue)().pushOp<OPTranslate>(Vec3{ 0.19, -0.084, -0.02 })
-        .addLightSource(Vec3{ 1.0, 6.0, -2.0 }, 100.0, Color::White)
-    ;
-
-    add(std::move(builder));
 }
 
 void SDFScene::cubesDemo()
@@ -753,19 +703,6 @@ void SDFScene::cubesDemo()
     m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 6.0, -2.0 }, 100.0));
 }
 
-void SDFScene::propModDemo()
-{
-    add(SDFBuilder()
-        .pushOp<COMBAdd, SDFSphere>(1.0, Color::Blue)()
-            .pushOp<OPTranslate>(Vec3::Left)
-            .pushOp<COMBAddSmooth, SDFSphere>(1.0, Color::Red)()
-                .bindPropMod<PMOscillateSine>("colorBlending", 1.0, 2.0)
-                .pushOp<OPTranslate>(Vec3::Right)
-    );
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 1.0, 4.0, -1.0 }, 0.5));
-}
-
 void SDFScene::elongateDemo()
 {
     add(SDFBuilder{}
@@ -805,15 +742,5 @@ void SDFScene::torusDemo()
         .addLightSource({ lightDist, 0.0, -lightDist }, lightPower, Color::Green)
         .addLightSource({ -0.5 * lightDist, lightDist, -lightDist }, lightPower, Color::Magenta)
         .addLightSource({ -0.5 * lightDist, 0.0, lightDist }, lightPower, Color::Yellow)
-    );
-}
-
-void SDFScene::propModTests()
-{
-    add(SDFBuilder{}
-        .pushOp<OPElongateXYZ>()
-        .bindPropMod<PMOscillateSineV3>("lengths", Vec3{1.54,2.14,3.12}, Vec3{0.64, 0.75, 0.48})
-        .pushOp<COMBAdd, SDFCrystal>()()
-        .addLightSource(Vec3{ 3.0, 3.0, -3.0 }, 150.0, Color::White)
     );
 }
