@@ -9,6 +9,7 @@ Required:
 - consts wherever sensical
 - fix constructor accessibilities on abstracts
 - instructions for custom scene files
+- add ability to add comment to SDFs for output to files
 
 Optional:
 - improve names of obj/op defaults
@@ -21,6 +22,7 @@ Optional:
 - transparency/reflection
 - object chain copying/merging
 - error handling on file loading
+- ability to reuse SDF branches
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers

@@ -463,6 +463,23 @@ double SDFSolidAngle::signedDistanceInner(Vec3 p) const
     return std::max(l, m * ((m_sincos.y * q.x - m_sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
 }
 
+void SDFEllipsoid::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_radii " << m_radii.x << ' ' << m_radii.y << ' ' << m_radii.z;
+}
+
+void SDFEllipsoid::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "d" << level << " = ellipsoid(p" << level << ", " << m_radii.getShader() << ");\n\n";
+}
+
+double SDFEllipsoid::signedDistanceInner(Vec3 p) const
+{
+    double k0 = (p / m_radii).length();
+    double k1 = (p / (m_radii * m_radii)).length();
+    return k0 * (k0 - 1.0) / k1;
+}
+
 void SDFRhombus::serializeInner(std::stringstream& ss) const
 {
     ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y;

@@ -12,6 +12,7 @@ namespace DEF
 	inline static double	OBJFrameThickness{ 0.1 };
 	inline static double	OBJRadius{ 0.5 };
 	inline static Vec2		OBJRadii{ 1.0, 0.25 };
+	inline static Vec3		OBJRadiiV3{ 1.0, 0.5, 0.25 };
 	inline static double	OBJLength{ 1.0 };
 	inline static double	OBJRatio{ 0.125 };
 	inline static Vec3		OBJNormal{ 0.0, 1.0, 0.0 };

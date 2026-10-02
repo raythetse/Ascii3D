@@ -348,7 +348,21 @@ protected:
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFSolidAngle(double radius = DEF::OBJRadius, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
-		: SDFObject(color), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
+		: SDFObject(color), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFEllipsoid : public SDFObject
+{
+private:
+	Vec3 m_radii;
+protected:
+	std::string getClassName() const override { return "SDFEllipsoid"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFEllipsoid(Vec3 radii = DEF::OBJRadiiV3, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

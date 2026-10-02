@@ -394,6 +394,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFSolidAngle>(m_radius, m_sweep, m_color);
     } },
+    { "SDFEllipsoid", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        Vec3 m_radii{ DEF::OBJRadiiV3 };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_radii") ss >> m_radii.x >> m_radii.y >> m_radii.z;
+        }
+        builder.pushSDFObj<SDFEllipsoid>(m_radii, m_color);
+    } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec2 m_dimensions{ DEF::OBJOP2DDimensions };
