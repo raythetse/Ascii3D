@@ -1,5 +1,6 @@
 #pragma once
 #include "SDFBuilder.h"
+#include "SDFDefaults.h"
 #include "SDFObject.h"
 #include "SDFScene.h"
 
@@ -17,9 +18,9 @@ std::vector<std::unique_ptr<LightSource>> SDFBuilder::getLights()
     return std::move(m_lights);
 }
 
-SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance, Color color)
+SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance, Color color, double ambientPower)
 {
-    m_lights.push_back(std::make_unique<LightSource>(position, luminance, color));
+    m_lights.push_back(std::make_unique<LightSource>(position, luminance, color, ambientPower));
     return *this;
 }
 
@@ -990,6 +991,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     { "LightSource", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 m_position{ DEF::LSPosition };
         double m_luminance{ DEF::LSLuminance };
+        double m_ambientPower{ DEF::LSAmbientPower };
         Color m_color;
 
         while (ss.peek() != EOF) {
@@ -997,9 +999,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "m_position") ss >> m_position.x >> m_position.y >> m_position.z;
             else if (param == "m_luminance") ss >> m_luminance;
+            else if (param == "m_ambientPower") ss >> m_ambientPower;
             else if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
         }
-        builder.addLightSource(m_position, m_luminance, m_color);
+        builder.addLightSource(m_position, m_luminance, m_color, m_ambientPower);
     } },
 
 };

@@ -70,7 +70,7 @@ bool GameEngine::handleInput()
     if (InputManager::keyJustPushed('M') && InputManager::keyDown(VK_CONTROL)) {
         std::vector<std::string> strVec{};
         m_scene.serialize(strVec);
-        FileHandler::saveScene(strVec, "CustomScenes/MyFile.txt");
+        FileHandler::saveScene(strVec, "CustomScenes/CustomScene.scn");
     }
 
     return true;

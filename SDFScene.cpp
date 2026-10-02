@@ -45,9 +45,10 @@ const float FLOAT_MAX = 3.402823466e38;
 const float NORM_CHECK_OFFSET = 0.001;
 const float AMB_LIGHT_POW = 0.15;
 const float SHADOW_TOLERANCE = 0.01;
-const int AMB_OCC_SAMPLES = 10;
-const float AMB_OCC_ATTEN = 0.75;
-const float AMB_OCC_REACH = 0.2;
+const int AMB_OCC_SAMPLES = 5;
+const float AMB_OCC_ATTEN = 0.5;
+const float AMB_OCC_REACH = 0.12;
+const float AMB_OCC_MIN = 0.2;
 
 // UTILITY FUNCTIONS //
 vec3 rotateVec3(vec3 p, vec3 axis, float rotations) {
@@ -470,12 +471,12 @@ const std::string SDFScene::m_shaderMainEnd = {
         }
     
         // Clamp the final factor to prevent negative light values
-        occ = clamp(1.0 - 3.0 * occ, 0.0, 1.0);   
+        occ = clamp(1.0 - 3.0 * occ, AMB_OCC_MIN, 1.0);   
 
         pixels[outIndex].r *= occ;
         pixels[outIndex].g *= occ;
         pixels[outIndex].b *= occ;
-        //pixels[outIndex].l *= occ;
+        pixels[outIndex].l *= occ;
     )"
 };
 
@@ -532,7 +533,7 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
         ss << "\t\t\tif (d0 < push.surfTolerance || rayLength >= lightDist) {\n";
         ss << "\t\t\t\tfloat attenuation = 1.0 / (lightDist * lightDist);\n";
         ss << "\t\t\t\tfloat directLight = (rayLength >= lightDist) ? attenuation * " << m_lights[i]->luminance() << " : 0.0;\n";
-        ss << "\t\t\t\tfloat ambLight = " << m_lights[i]->luminance() << " * AMB_LIGHT_POW * attenuation;\n";
+        ss << "\t\t\t\tfloat ambLight = " << m_lights[i]->luminance() << " * " << m_lights[i]->ambientPower() << " * attenuation;\n";
         ss << "\t\t\t\tfloat dot = max(0.0, dot(rayDir, normal));\n";
         ss << "\t\t\t\tdirectLight *= dot;\n";
         ss << "\t\t\t\tfloat lightPower = directLight + ambLight;\n";
@@ -625,7 +626,7 @@ void SDFScene::test()
     Vec3 shortsCol = Vec3{ 0.0, 157.0, 220.0 } / 255.0;
 
     add(SDFBuilder{}
-
+        .pushOp<COMBAdd, SDFPlaneXZ>(-4.0, Color::LightGreen)()
         // Head
         .pushOp<COMBAdd, SDFObject>()() // L1
 
@@ -776,7 +777,7 @@ void SDFScene::test()
         .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.02, 0.1, 0.1 })()
 
 
-        .addLightSource(Vec3{ 10.0, 5.0, -10.0 }, 400.0, Color::White)
+        .addLightSource(Vec3{ 1000.0, 500.0, -1000.0 }, 2000000.0, Color::White, 0.8)
     );
 }
 

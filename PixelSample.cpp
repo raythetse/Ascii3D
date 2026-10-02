@@ -8,7 +8,6 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 {
 	Vec3 lightColor{ 0.0 };
 	double totalLight{ 0.0 };
-	double ambPower = 0.15;
 
 	if (object) {
 		for (size_t i{}; i < lights.size(); ++i) {
@@ -19,7 +18,7 @@ void PixelSample::buildRenderParams(const SDFObject* object, Color color, Vec3 p
 
 			double attenuation = 1.0 / (lightDist * lightDist);
 			double directLight = directLighting[i] ? light->luminance() * attenuation : 0.0;
-			double ambLight = light->luminance() * ambPower * attenuation;
+			double ambLight = light->luminance() * light->ambientPower() * attenuation;
 
 			double dot = lightDir.dot(normal);
 			dot = std::max(0.0, dot);
