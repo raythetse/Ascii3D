@@ -37,7 +37,7 @@ const float AMB_LIGHT_POW = 0.15;
 const float SHADOW_TOLERANCE = 0.01;
 const int AMB_OCC_SAMPLES = 5;
 const float AMB_OCC_ATTEN = 0.5;
-const float AMB_OCC_REACH = 0.12;
+const float AMB_OCC_REACH = 0.2;
 const float AMB_OCC_MIN = 0.2;
 
 // UTILITY FUNCTIONS //
@@ -391,7 +391,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = FLOAT_MAX;
 	color1 = vec3(0.5000000, 1.0000000, 0.5000000);
 	// SDFPlaneXZ //
-	d1 = p1.y - -4;
+	d1 = p1.y - -3.8;
 
 
 	// COMBAdd //
@@ -411,7 +411,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	vec3 color2;
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
 	d2 = cylinderY(p2, 1.2, 0.46);
 
@@ -469,7 +469,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	vec3 color3;
 	p3 = p2;
 	d3 = FLOAT_MAX;
-	color3 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color3 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCone //
 	d3 = cone(p3, 0.155, 0.282743);
 
@@ -498,7 +498,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
 	d2 = cylinderY(p2, 0, 0.35);
 
@@ -516,14 +516,14 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = mix(d2, d1, blend) - pmFloat0 * blend * (1.0 - blend);
 
 	// OPTranslate //
-	p1 -= vec3(0.0000000, -0.0750000, 0.2000000); 
+	p1 -= vec3(0.0000000, -0.0750000, 0.1700000); 
 
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
-	d2 = cylinderY(p2, 0.05, 0.18);
+	d2 = cylinderY(p2, 0.05, 0.25);
 
 
 	// OPRoundOff //
@@ -552,7 +552,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	// SDFObject //
 	p3 = p2;
 	d3 = FLOAT_MAX;
-	color3 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color3 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
 	d3 = cylinderY(p3, 0.5, 0.25);
 
@@ -577,7 +577,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCapsuleZ //
 	d2 = capsuleZ(p2, 0.2, 0.1);
 
@@ -597,14 +597,14 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 -= vec3(0.1800000, 0.3500000, 0.2000000); 
 
 	// OPRotate //
-	pmVec30 = vec3(0.8944270, 0.0000000, 0.4472140);
+	pmVec30 = vec3(0.8944272, 0.0000000, 0.4472136);
 	pmFloat0 = 0.350000;
 	p1 = rotateVec3(p1, pmVec30, pmFloat0);
 
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFTorus //
 	d2 = torus(p2, vec2(0.2000000, 0.0150000));
 
@@ -695,10 +695,29 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFTorus //
 	d2 = torus(p2, vec2(0.0750000, 0.0200000));
 
+
+	// OPTranslate //
+	p2 -= vec3(0.0000000, -0.0200000, 0.0000000); 
+
+	// SDFObject //
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = vec3(0.9176471, 0.7490196, 0.0156863);
+	// SDFCylinderY //
+	d3 = cylinderY(p3, 0.01, 0.06);
+
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.020000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d3 - d2) / pmFloat0, 0.0, 1.0);
+	color2 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color2, color3, pmFloat2);
+	d2 = mix(d3, d2, blend) - pmFloat0 * blend * (1.0 - blend);
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -725,7 +744,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9450980, 0.3058820, 0.1568630);
+	color2 = vec3(0.9450980, 0.3058824, 0.1568628);
 	// SDFCone //
 	d2 = cone(p2, 1.4, 0.345575);
 
@@ -750,7 +769,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	// SDFObject //
 	p3 = p2;
 	d3 = FLOAT_MAX;
-	color3 = vec3(0.9450980, 0.3058820, 0.1568630);
+	color3 = vec3(0.9450980, 0.3058824, 0.1568628);
 	// SDFSphere //
 	d3 = sphere(p3, 0.7);
 
@@ -781,7 +800,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p4 -= vec3(0.4500000, 1.3000000, 0.0000000); 
 
 	// OPRotate //
-	pmVec30 = vec3(-0.5547000, 0.0000000, -0.8320500);
+	pmVec30 = vec3(-0.5547002, 0.0000000, -0.8320503);
 	pmFloat0 = oscillateSine(0.2500000, 1.0000000, 0.0350000, 0.0000000, time);
 	p4 = rotateVec3(p4, pmVec30, pmFloat0);
 
@@ -794,7 +813,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	vec3 color5;
 	p5 = p4;
 	d5 = FLOAT_MAX;
-	color5 = vec3(0.9450980, 0.3058820, 0.1568630);
+	color5 = vec3(0.9450980, 0.3058824, 0.1568628);
 d5 = ellipsoid(p5, vec3(0.2500000, 0.4000000, 0.2500000));
 
 
@@ -836,7 +855,7 @@ d5 = ellipsoid(p5, vec3(0.2500000, 0.4000000, 0.2500000));
 	// SDFObject //
 	p5 = p4;
 	d5 = FLOAT_MAX;
-	color5 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color5 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCapsuleY //
 	d5 = capsuleY(p5, 0.5, 0.17);
 
@@ -855,9 +874,281 @@ d5 = ellipsoid(p5, vec3(0.2500000, 0.4000000, 0.2500000));
 	// SDFObject //
 	p6 = p5;
 	d6 = FLOAT_MAX;
-	color6 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color6 = vec3(0.9176471, 0.7490196, 0.0156863);
 d6 = taperedCapsule(p6, vec2(0.1500000, 0.1000000), 0.5); 
 
+
+	// OPTranslate //
+	p6 -= vec3(0.0000000, 0.6000000, 0.0000000); 
+
+	// SDFObject //
+	vec3 p7;
+	float d7 = FLOAT_MAX;
+	vec3 color7;
+	p7 = p6;
+	d7 = FLOAT_MAX;
+	color7 = vec3(0.9176471, 0.7490196, 0.0156863);
+d7 = ellipsoid(p7, vec3(0.1300000, 0.1300000, 0.0500000));
+
+
+	// OPTranslate //
+	p7 -= vec3(0.0000000, 0.1200000, 0.0000000); 
+
+	// SDFObject //
+	vec3 p8;
+	float d8 = FLOAT_MAX;
+	vec3 color8;
+	p8 = p7;
+	d8 = FLOAT_MAX;
+	color8 = vec3(0.9176471, 0.7490196, 0.0156863);
+d8 = taperedCapsule(p8, vec2(0.0350000, 0.0300000), 0.14); 
+
+
+	// OPMirrorX //
+	p8.x = abs(p8.x);
+
+	// OPTranslate //
+	p8 -= vec3(0.1000000, -0.0200000, 0.0000000); 
+
+	// SDFObject //
+	vec3 p9;
+	float d9 = FLOAT_MAX;
+	vec3 color9;
+	p9 = p8;
+	d9 = FLOAT_MAX;
+	color9 = vec3(0.9176471, 0.7490196, 0.0156863);
+d9 = taperedCapsule(p9, vec2(0.0350000, 0.0300000), 0.125); 
+
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d9 - d8) / pmFloat0, 0.0, 1.0);
+	color8 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color8, color9, pmFloat2);
+	d8 = mix(d9, d8, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d8 - d7) / pmFloat0, 0.0, 1.0);
+	color7 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color7, color8, pmFloat2);
+	d7 = mix(d8, d7, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d7 - d6) / pmFloat0, 0.0, 1.0);
+	color6 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color6, color7, pmFloat2);
+	d6 = mix(d7, d6, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// OPTranslate //
+	p6 -= vec3(-0.2000000, 0.0300000, 0.0000000); 
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.300000;
+	p6 = rotateVec3(p6, pmVec30, pmFloat0);
+
+	// SDFObject //
+	p7 = p6;
+	d7 = FLOAT_MAX;
+	color7 = vec3(0.9176471, 0.7490196, 0.0156863);
+d7 = taperedCapsule(p7, vec2(0.0350000, 0.0300000), 0.15); 
+
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d7 - d6) / pmFloat0, 0.0, 1.0);
+	color6 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color6, color7, pmFloat2);
+	d6 = mix(d7, d6, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d6 - d5) / pmFloat0, 0.0, 1.0);
+	color5 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color5, color6, pmFloat2);
+	d5 = mix(d6, d5, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// COMBAdd //
+	if (d5 < d4) {
+		d4 = d5;
+		color4 = color5; 
+	}
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.010000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d4 - d3) / pmFloat0, 0.0, 1.0);
+	color3 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color3, color4, pmFloat2);
+	d3 = mix(d4, d3, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// SDFObject //
+	p4 = p3;
+	d4 = FLOAT_MAX;
+	color4 = vec3(1.0000000, 1.0000000, 1.0000000);
+
+	// OPTranslate //
+	p4 -= vec3(-0.4500000, 1.3000000, 0.0000000); 
+
+	// OPRotate //
+	pmVec30 = vec3(0.2425356, 0.0000000, 0.9701425);
+	pmFloat0 = 0.060000;
+	p4 = rotateVec3(p4, pmVec30, pmFloat0);
+
+	// OPTranslate //
+	p4 -= vec3(0.0000000, -0.2000000, 0.0000000); 
+
+	// SDFObject //
+	p5 = p4;
+	d5 = FLOAT_MAX;
+	color5 = vec3(0.9450980, 0.3058824, 0.1568628);
+d5 = ellipsoid(p5, vec3(0.2500000, 0.4000000, 0.2500000));
+
+
+	// OPTranslate //
+	p5 -= vec3(0.0000000, -0.2500000, 0.0000000); 
+
+	// OPOnion //
+	pmFloat0 = 0.010000;
+	d5 = abs(d5) - pmFloat0; 
+
+	// SDFObject //
+	p6 = p5;
+	d6 = FLOAT_MAX;
+	color6 = vec3(1.0000000, 1.0000000, 1.0000000);
+	// SDFBox //
+	d6 = box(p6, vec3(1.0000000, 0.4250000, 1.0000000));
+
+
+	// COMBSubtract //
+	if (d5 < -d6) d5 = -d6;
+
+	// COMBAdd //
+	if (d5 < d4) {
+		d4 = d5;
+		color4 = color5; 
+	}
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, -1.0000000, 0.0000000);
+	pmFloat0 = 0.125000;
+	p4 = rotateVec3(p4, pmVec30, pmFloat0);
+
+	// OPTranslate //
+	p4 -= vec3(0.0000000, -0.2500000, 0.0000000); 
+
+	// SDFObject //
+	p5 = p4;
+	d5 = FLOAT_MAX;
+	color5 = vec3(0.9176471, 0.7490196, 0.0156863);
+	// SDFCapsuleY //
+	d5 = capsuleY(p5, 0.5, 0.17);
+
+
+	// OPTranslate //
+	p5 -= vec3(0.0000000, -0.2500000, 0.0000000); 
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.450000;
+	p5 = rotateVec3(p5, pmVec30, pmFloat0);
+
+	// OPTranslate //
+	p5 -= vec3(0.0000000, 0.1000000, 0.0000000); 
+
+	// SDFObject //
+	p6 = p5;
+	d6 = FLOAT_MAX;
+	color6 = vec3(0.9176471, 0.7490196, 0.0156863);
+d6 = taperedCapsule(p6, vec2(0.1500000, 0.1000000), 0.5); 
+
+
+	// OPTranslate //
+	p6 -= vec3(0.0000000, 0.6000000, 0.0000000); 
+
+	// SDFObject //
+	p7 = p6;
+	d7 = FLOAT_MAX;
+	color7 = vec3(0.9176471, 0.7490196, 0.0156863);
+d7 = ellipsoid(p7, vec3(0.1300000, 0.1300000, 0.0500000));
+
+
+	// OPTranslate //
+	p7 -= vec3(0.0000000, 0.1200000, 0.0000000); 
+
+	// SDFObject //
+	p8 = p7;
+	d8 = FLOAT_MAX;
+	color8 = vec3(0.9176471, 0.7490196, 0.0156863);
+d8 = taperedCapsule(p8, vec2(0.0350000, 0.0300000), 0.14); 
+
+
+	// OPMirrorX //
+	p8.x = abs(p8.x);
+
+	// OPTranslate //
+	p8 -= vec3(0.1000000, -0.0200000, 0.0000000); 
+
+	// SDFObject //
+	p9 = p8;
+	d9 = FLOAT_MAX;
+	color9 = vec3(0.9176471, 0.7490196, 0.0156863);
+d9 = taperedCapsule(p9, vec2(0.0350000, 0.0300000), 0.125); 
+
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d9 - d8) / pmFloat0, 0.0, 1.0);
+	color8 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color8, color9, pmFloat2);
+	d8 = mix(d9, d8, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d8 - d7) / pmFloat0, 0.0, 1.0);
+	color7 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color7, color8, pmFloat2);
+	d7 = mix(d8, d7, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d7 - d6) / pmFloat0, 0.0, 1.0);
+	color6 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color6, color7, pmFloat2);
+	d6 = mix(d7, d6, blend) - pmFloat0 * blend * (1.0 - blend);
+
+	// OPTranslate //
+	p6 -= vec3(-0.2000000, 0.0300000, 0.0000000); 
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.300000;
+	p6 = rotateVec3(p6, pmVec30, pmFloat0);
+
+	// SDFObject //
+	p7 = p6;
+	d7 = FLOAT_MAX;
+	color7 = vec3(0.9176471, 0.7490196, 0.0156863);
+d7 = taperedCapsule(p7, vec2(0.0350000, 0.0300000), 0.15); 
+
+
+	// COMBAddSmooth //
+	pmFloat0 = 0.050000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d7 - d6) / pmFloat0, 0.0, 1.0);
+	color6 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color6, color7, pmFloat2);
+	d6 = mix(d7, d6, blend) - pmFloat0 * blend * (1.0 - blend);
 
 	// COMBAddSmooth //
 	pmFloat0 = 0.050000;
@@ -912,7 +1203,7 @@ d6 = taperedCapsule(p6, vec2(0.1500000, 0.1000000), 0.5);
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.0000000, 0.6156860, 0.8627450);
+	color2 = vec3(0.0000000, 0.6156863, 0.8627451);
 	// SDFSphere //
 	d2 = sphere(p2, 0.68);
 
@@ -940,7 +1231,7 @@ d6 = taperedCapsule(p6, vec2(0.1500000, 0.1000000), 0.5);
 	// SDFObject //
 	p3 = p2;
 	d3 = FLOAT_MAX;
-	color3 = vec3(0.0000000, 0.6156860, 0.8627450);
+	color3 = vec3(0.0000000, 0.6156863, 0.8627451);
 	// SDFCylinderY //
 	d3 = cylinderY(p3, 0.8, 0.3);
 
@@ -997,7 +1288,7 @@ d6 = taperedCapsule(p6, vec2(0.1500000, 0.1000000), 0.5);
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.9176470, 0.7490200, 0.0156863);
+	color2 = vec3(0.9176471, 0.7490196, 0.0156863);
 	// SDFCylinderY //
 	d2 = cylinderY(p2, 1, 0.15);
 
@@ -1028,7 +1319,7 @@ d6 = taperedCapsule(p6, vec2(0.1500000, 0.1000000), 0.5);
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.0000000, 0.6156860, 0.8627450);
+	color2 = vec3(0.0000000, 0.6156863, 0.8627451);
 d2 = ellipsoid(p2, vec3(0.2750000, 0.4200000, 0.7000000));
 
 
@@ -1247,7 +1538,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(1000.0000000, 500.0000000, -1000.0000000) - p0;
+		rayDir = vec3(500.0000000, 500.0000000, -1000.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -1259,8 +1550,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 2e+06 : 0.0;
-				float ambLight = 2e+06 * 0.8 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 1.5e+06 : 0.0;
+				float ambLight = 1.5e+06 * 0.8 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
