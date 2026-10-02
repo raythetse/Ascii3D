@@ -102,9 +102,9 @@ void COMBSubtract::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 double COMBIntersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
-		if (colorOut) *colorOut = colorIn;
 		return distanceB;
 	}
+	if (colorOut) *colorOut = colorIn;
 	return distanceA;
 }
 

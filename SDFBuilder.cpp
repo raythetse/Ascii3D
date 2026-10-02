@@ -407,6 +407,20 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFEllipsoid>(m_radii, m_color);
     } },
+    { "SDFTaperedCapsule", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color m_color{ DEF::OBJColor };
+        double m_height{ DEF::OBJLength };
+        Vec2 m_radii{ DEF::OBJRadii };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_color") ss >> m_color.x >> m_color.y >> m_color.z;
+            else if (param == "m_height") ss >> m_height;
+            else if (param == "m_radii") ss >> m_radii.x >> m_radii.y;
+        }
+        builder.pushSDFObj<SDFTaperedCapsule>(m_radii, m_height, m_color);
+    } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color m_color{ DEF::OBJColor };
         Vec2 m_dimensions{ DEF::OBJOP2DDimensions };

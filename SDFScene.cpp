@@ -265,6 +265,17 @@ float ellipsoid(vec3 p, vec3 radii) {
     return k0 * (k0 - 1.0) / k1;
 }
 
+float taperedCapsule(vec3 p, vec2 radii, float height) {
+    float b = (radii.x - radii.y) / height;
+    float a = sqrt(1.0 - b * b);
+
+    vec2 q = vec2(length(p.xz), p.y);
+    float k = dot(q, vec2(-b, a));
+    if(k < 0.0) return length(q) - radii.x;
+    if(k > a * height) return length(q - vec2(0.0, height)) - radii.y;
+    return dot(q, vec2(a, b)) - radii.x;
+}
+
 float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude) // if not extrude, then revolve 
 {
     if (operation == 1) p = revolve2D(p, magnitude);
@@ -623,10 +634,11 @@ void SDFScene::test()
 {
     Vec3 skinCol = Vec3{ 234.0, 191.0, 4.0 } / 255.0;
     Vec3 shirtCol = Vec3{ 241.0, 78.0, 40.0 } / 255.0;
-    Vec3 shortsCol = Vec3{ 0.0, 157.0, 220.0 } / 255.0;
+    Vec3 shortsCol = Vec3{ 0.0, 157.0, 220.0 } / 255.0;        
 
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFPlaneXZ>(-4.0, Color::LightGreen)()
+        .pushOp<COMBAdd, SDFPlaneXZ>(-4.0, Color::LightGreen)() // L1
+            .stepBack() // L0
         // Head
         .pushOp<COMBAdd, SDFObject>()() // L1
 
@@ -679,7 +691,7 @@ void SDFScene::test()
             .pushOp<OPTranslate>(Vec3{ 0.18, 0.35, 0.2})
             .pushOp<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
             .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
-            .stepBack(2) // L0
+            .stepBack(0) // L0
 
             // Eyes
             .pushOp<COMBAdd, SDFObject>()() //L1
@@ -690,7 +702,7 @@ void SDFScene::test()
             // Pupils
             .pushOp<OPTranslate>(Vec3{ 0.0, -0.05, -0.13 })
             .pushOp<COMBAdd, SDFSphere>(0.1, Color::Black)() // L3
-            .stepBack(3) // L0
+            .stepBack(0) // L0
 
             //// Ears
             .pushOp<COMBAddSmooth, SDFObject>()(0.05) //L1
@@ -703,8 +715,6 @@ void SDFScene::test()
 
         // Shirt
         .pushOp<COMBAdd, SDFObject>()() //L1
-
-            // Body
             .pushOp<OPTranslate>(Vec3{ 0.0, -0.2, 0.33 })
             .pushOp<COMBAdd, SDFCone>(1.4, 0.055, shirtCol)() // L2
             .pushOp<OPTranslate>(Vec3{ 0.0, -0.4, -0.1 })
@@ -714,18 +724,30 @@ void SDFScene::test()
             .pushOp<COMBAddSmooth, SDFSphere>(0.7, shirtCol)(0.02) //L3
             .pushOp<OPTranslate>(Vec3::Down * 0.5)
             .pushOp<COMBSubtract, SDFBox>(Vec3{ 2.0, 1.0, 2.0 })() // L4
-            .stepBack(3) // L1
-
-            // Sleeves
-            .pushOp<COMBAdd, SDFObject>()() // L2
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.5, -1.25, 0.1 })
-            .pushOp<OPRotate>(Vec3::Backward, 0.05)
-            .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.25, 0.4, 0.25 }, shirtCol)() // L3
+            .stepBack() // L3
+        
+            // Left sleeve
+            .pushOp<COMBAddSmooth, SDFObject>()(0.01) // L4
+            .pushOp<OPTranslate>(Vec3{ 0.45, 1.3, 0.0 })
+            .pushOp<OPRotate>(Vec3{ -0.5, 0.0, -0.75 }.getNormal(), 0.25)
+            .bindPropMod<PMOscillateSine>("rotations", 1.0, 0.035)
+            .pushOp<OPTranslate>(Vec3::Down * 0.2)
+            .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.25, 0.4, 0.25 }, shirtCol)() // L5
             .pushOp<OPTranslate>(Vec3::Down * 0.25)
             .pushOp<OPOnion>()
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 1.0, 0.425, 1.0 })() // L4
-            .stepBack(4) // L0
+            .pushOp<COMBSubtract, SDFBox>(Vec3{ 1.0, 0.425, 1.0 })() // L6
+            .stepBack(2) // L4
+
+            // Arm
+            .pushOp<OPRotate>(Vec3::Down, 0.125)
+            .pushOp<OPTranslate>(Vec3::Down * 0.25)
+            .pushOp<COMBAdd, SDFCapsuleY>(0.17, 0.5, skinCol)()
+            .pushOp<OPTranslate>(Vec3::Down * 0.25)
+            .pushOp<OPRotate>(Vec3::Forward, 0.375)
+            .bindPropMod<PMOscillateSine>("rotations", 1.0, 0.1, 0.3)
+            .pushOp<OPTranslate>(Vec3::Up * 0.1)
+            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05)
+            .stepBack(0)
 
         // My Shorts (Eat Them)
         .pushOp<COMBAdd, SDFObject>()() // L1
@@ -744,14 +766,14 @@ void SDFScene::test()
             .pushOp<OPTranslate>(Vec3::Down * 0.55)
             .pushOp<OPOnion>()
             .pushOp<COMBSubtract, SDFBox>(Vec3{ 2.0, 0.5, 2.0})() // L4
-            .stepBack(4) // L0
+            .stepBack(0) // L0
 
         // Legs
         .pushOp<COMBAdd, SDFObject>()() // L1
         .pushOp<OPMirrorX>()
         .pushOp<OPTranslate>(Vec3{ 0.28, -3.0, 0.3 })
         .pushOp<COMBAdd, SDFCylinderY>(0.15, 1.0, skinCol)() // L2
-        .stepBack(2) // L0
+        .stepBack(0) // L0
 
         // Shoes
         .pushOp<COMBAdd, SDFObject>()() // L1
@@ -771,13 +793,13 @@ void SDFScene::test()
         .pushOp<COMBIntersect, SDFSphere>(0.6)() // L3
         .stepBack() // L2
         .pushOp<OPTranslate>(Vec3{ 0.0, 0.425, 0.2 })
-        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.17, .055 })()
+        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.17, .055 })() //L3
         .pushOp<OPTranslate>(Vec3{ -0.22, -0.2, -0.1 })
         .pushOp<OPRotate>(Vec3::Forward, 0.06)
-        .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.02, 0.1, 0.1 })()
+        .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.02, 0.1, 0.1 })() // L4
+        .stepBack(0)
 
-
-        .addLightSource(Vec3{ 1000.0, 500.0, -1000.0 }, 2000000.0, Color::White, 0.8)
+        .addLightSource(Vec3{ 1000.0, 500.0, -1000.0 }, 2000000.0, Color{1.0, 1.0, 0.9}, 0.8)
     );
 }
 

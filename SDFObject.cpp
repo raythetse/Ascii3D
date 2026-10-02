@@ -480,6 +480,29 @@ double SDFEllipsoid::signedDistanceInner(Vec3 p) const
     return k0 * (k0 - 1.0) / k1;
 }
 
+void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
+{
+    ss << " m_height " << m_height;
+    ss << " m_radii " << m_radii.x << ' ' << m_radii.y;
+}
+
+void SDFTaperedCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "d" << level << " = taperedCapsule(p" << level << ", " << m_radii.getShader() << ", " << m_height << "); \n\n";
+}
+
+double SDFTaperedCapsule::signedDistanceInner(Vec3 p) const
+{
+    double b = (m_radii.x - m_radii.y) / m_height;
+    double a = sqrt(1.0 - b * b);
+
+    Vec2 q{ Vec2{ p.x, p.z }.length(), p.y };
+    double k = q.dot(Vec2{ -b, a });
+    if (k < 0.0) return q.length() - m_radii.x;
+    if (k > a * m_height) return (q - Vec2{ 0.0, m_height }).length() - m_radii.y;
+    return q.dot(Vec2{ a, b }) - m_radii.x;
+}
+
 void SDFRhombus::serializeInner(std::stringstream& ss) const
 {
     ss << " m_dimensions " << m_dimensions.x << ' ' << m_dimensions.y;

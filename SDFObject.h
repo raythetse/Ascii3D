@@ -366,6 +366,21 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
+class SDFTaperedCapsule : public SDFObject
+{
+private:
+	double m_height;
+	Vec2 m_radii;
+protected:
+	std::string getClassName() const override { return "SDFTaperedCapsule"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTaperedCapsule(Vec2 radii = DEF::OBJRadii, double height = DEF::OBJLength, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii), m_height(height) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
 // Following SDFs are 2D shapes projected into 3D either with exrusion or revolution
 // SDFs are adapted from https://iquilezles.org/articles/distfunctions2d/
 // Extrusion/Revolution Ops are adapted from article linked near the top of this file
