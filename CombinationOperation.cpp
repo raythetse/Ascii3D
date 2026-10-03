@@ -63,9 +63,9 @@ void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << " m_smoothing " << m_smoothing;
-	ss << " m_colorBlending " << m_colorBlending;
-	ss << " m_colorShifting " << m_colorShifting;
+	ss << " smoothing " << m_smoothing;
+	ss << " colorBlending " << m_colorBlending;
+	ss << " colorShifting " << m_colorShifting;
 	strVec.push_back(ss.str());
 }
 
@@ -166,7 +166,18 @@ void COMBExclude::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 		break;
 	}
 	ss << "\td" << level << " = pmFloat0;\n\n";
+}
 
+void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level) const
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
+	ss << " smoothing " << m_smoothing;
+	ss << " colorBlending " << m_colorBlending;
+	ss << " colorShifting " << m_colorShifting;
+	ss << " colorMode " << m_colorMode;
+	strVec.push_back(ss.str());
 }
 
 double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

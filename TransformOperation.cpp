@@ -99,7 +99,7 @@ void OPTranslate::transform(Vec3& p) const
 
 void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
+	ss << " translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
 }
 
 void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -127,10 +127,10 @@ void OPTranslateSine::transform(Vec3& p) const
 
 void OPTranslateSine::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
-	ss << " m_amplitude " << m_amplitude;
-	ss << " m_period " << m_period;
-	ss << " m_phase " << m_phase;
+	ss << " axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " amplitude " << m_amplitude;
+	ss << " period " << m_period;
+	ss << " phase " << m_phase;
 }
 
 void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -193,10 +193,10 @@ void OPTranslateLinear::transform(Vec3& p) const
 
 void OPTranslateLinear::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_vector " << m_vector.x << ' ' << m_vector.y << ' ' << m_vector.z;
-	ss << " m_transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
-	ss << " m_endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
-	ss << " m_phase " << m_phase;
+	ss << " vector " << m_vector.x << ' ' << m_vector.y << ' ' << m_vector.z;
+	ss << " transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
+	ss << " endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
+	ss << " phase " << m_phase;
 }
 
 void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -243,9 +243,9 @@ void OPCubeRollHeight::transform(Vec3& p) const
 
 void OPCubeRollHeight::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_cubeHeight " << m_cubeHeight;
-	ss << " m_period " << m_period;
-	ss << " m_phase " << m_phase;
+	ss << " cubeHeight " << m_cubeHeight;
+	ss << " period " << m_period;
+	ss << " phase " << m_phase;
 }
 
 void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -292,8 +292,8 @@ void OPRotate::transform(Vec3& p) const
 
 void OPRotate::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
-	ss << " m_rotations " << m_rotations;
+	ss << " axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " rotations " << m_rotations;
 }
 
 void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -331,9 +331,9 @@ void OPRotateContinuous::transform(Vec3& p) const
 
 void OPRotateContinuous::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
-	ss << " m_rotationsPerSecond " << m_rotationsPerSecond;
-	ss << " m_phase " << m_phase;
+	ss << " axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " rotationsPerSecond " << m_rotationsPerSecond;
+	ss << " phase " << m_phase;
 }
 
 void OPRotateContinuous::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -390,11 +390,11 @@ void OPRotateScan::transform(Vec3& p) const
 
 void OPRotateScan::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
-	ss << " m_rotations " << m_rotations;
-	ss << " m_transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
-	ss << " m_endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
-	ss << " m_phase " << m_phase;
+	ss << " axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " rotations " << m_rotations;
+	ss << " transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
+	ss << " endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
+	ss << " phase " << m_phase;
 }
 
 void OPRotateScan::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -448,11 +448,11 @@ void OPRotateDelay::transform(Vec3& p) const
 
 void OPRotateDelay::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
-	ss << " m_rotations " << m_rotations;
-	ss << " m_rotateTime " << m_rotateTime;
-	ss << " m_delayTime " << m_delayTime;
-	ss << " m_phase " << m_phase;
+	ss << " axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " rotations " << m_rotations;
+	ss << " rotateTime " << m_rotateTime;
+	ss << " delayTime " << m_delayTime;
+	ss << " phase " << m_phase;
 }
 
 void OPRotateDelay::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -506,12 +506,12 @@ void OPCubeRoller::transform(Vec3& p) const
 
 void OPCubeRoller::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_axes " << m_axes.size();
+	ss << " axes " << m_axes.size();
 	for (size_t i{}; i < m_axes.size(); ++i) {
 		ss << ' ' << m_axes[i].x << ' ' << m_axes[i].y << ' ' << m_axes[i].z;
 	}
-	ss << " m_quarterTurnTime " << m_quarterTurnTime;
-	ss << " m_phase " << m_phase;
+	ss << " quarterTurnTime " << m_quarterTurnTime;
+	ss << " phase " << m_phase;
 }
 
 void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
@@ -557,8 +557,8 @@ void Elongate::innerUpdate() {
 
 void Elongate::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_length " << m_length;
-	ss << " m_offset " << m_offset;
+	ss << " length " << m_length;
+	ss << " offset " << m_offset;
 }
 
 void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -628,8 +628,8 @@ void OPElongateXYZ::transform(Vec3& p) const
 
 void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " m_lengths " << m_lengths.x << ' ' << m_lengths.y << ' ' << m_lengths.z;
-	ss << " m_offsets " << m_offsets.x << ' ' << m_offsets.y << ' ' << m_offsets.z;
+	ss << " lengths " << m_lengths.x << ' ' << m_lengths.y << ' ' << m_lengths.z;
+	ss << " offsets " << m_offsets.x << ' ' << m_offsets.y << ' ' << m_offsets.z;
 }
 
 void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const

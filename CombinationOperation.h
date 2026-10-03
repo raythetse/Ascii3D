@@ -75,6 +75,7 @@ protected:
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBExclude"; }
 	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	COMBExclude(std::unique_ptr<SDFObject> combineObj = nullptr, ColorMode colorMode = Double) : CombinationOperation(std::move(combineObj)), m_colorMode(colorMode) {}
 };

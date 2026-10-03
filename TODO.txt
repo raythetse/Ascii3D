@@ -10,6 +10,7 @@ Required:
 - fix constructor accessibilities on abstracts
 - instructions for custom scene files
 - add ability to add comment to SDFs for output to files
+- refactor combo ops for smoothed subclass
 
 Optional:
 - improve names of obj/op defaults

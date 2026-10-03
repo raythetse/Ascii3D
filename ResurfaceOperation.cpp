@@ -14,7 +14,7 @@ void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << " m_magnitude " << m_magnitude;
+	ss << " magnitude " << m_magnitude;
 
 	strVec.push_back(ss.str());
 }

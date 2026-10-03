@@ -630,7 +630,7 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     return false;
 }
 
-void SDFScene::test()
+void SDFScene::buildBart()
 {
     Vec2 dim{ 1.0, 0.4 };
     double dist{ 0.25 };
@@ -654,7 +654,7 @@ void SDFScene::test()
     );
 }
 
-void SDFScene::buildBart()
+void SDFScene::test()
 {
     Vec3 skinCol = Vec3{ 234.0, 191.0, 4.0 } / 255.0;
     Vec3 shirtCol = Vec3{ 241.0, 78.0, 40.0 } / 255.0;
