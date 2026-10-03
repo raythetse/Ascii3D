@@ -136,6 +136,27 @@ void InputManager::checkActive()
 	if (!m_isActiveWindow) m_holdMouse = false;
 }
 
+void InputManager::resetInstance()
+{
+	m_keyMap.clear();
+
+	m_keyMap.insert({ VK_ESCAPE, {} });
+	m_keyMap.insert({ VK_CONTROL, {} });
+	m_keyMap.insert({ VK_LSHIFT, {} });
+	m_keyMap.insert({ VK_SPACE, {} });
+	m_keyMap.insert({ 'P', {} });
+	m_keyMap.insert({ 'M', {} });
+	m_keyMap.insert({ 'W', {} });
+	m_keyMap.insert({ 'A', {} });
+	m_keyMap.insert({ 'S', {} });
+	m_keyMap.insert({ 'D', {} });
+}
+
+void InputManager::reset()
+{
+	instance().resetInstance();
+}
+
 void InputManager::update()
 {
 	instance().acquireCentre();

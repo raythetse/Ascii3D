@@ -389,10 +389,28 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	vec3 color1;
 	p1 = p0;
 	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	color1 = vec3(0.5000000, 0.5000000, 0.5000000);
+	// SDFBox //
+	d1 = box(p1, vec3(50.0000000, 50.0000000, 50.0000000));
+
+
+	// OPInsideOut //
+	d1 = -d1;
 
 	// OPTranslate //
-	p1 -= vec3(-0.2500000, 0.0000000, -0.2500000); 
+	p1 -= vec3(-2.0000000, 1.0000000, 1.0000000); 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.242000;
+	pmFloat1 = 0.000000;
+	p1 = rotateVec3(p1, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.143000;
+	pmFloat1 = 0.000000;
+	p1 = rotateVec3(p1, pmVec30, time * pmFloat0 + pmFloat1);
 
 	// SDFObject //
 	vec3 p2;
@@ -400,31 +418,10 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	vec3 color2;
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(0.0000000, 0.0000000, 1.0000000);
+	color2 = vec3(1.0000000, 1.0000000, 1.0000000);
 	// SDFTorus //
-	d2 = torus(p2, vec2(1.0000000, 0.4000000));
+	d2 = torus(p2, vec2(6.0000000, 1.0000000));
 
-
-	// OPTranslate //
-	p2 -= vec3(0.5000000, 0.0000000, 0.0000000); 
-
-	// SDFObject //
-	vec3 p3;
-	float d3 = FLOAT_MAX;
-	vec3 color3;
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = vec3(0.0000000, 1.0000000, 0.0000000);
-	// SDFTorus //
-	d3 = torus(p3, vec2(1.0000000, 0.4000000));
-
-
-	// COMBExclude - Double //
-	pmFloat0 = max(min(d2, d3), min(-d2, -d3));
-	if (d2 > d3) {
-		color2 = color3; 
-	}
-	d2 = pmFloat0;
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -432,75 +429,42 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 		color1 = color2; 
 	}
 
+	// OPTranslate //
+	p1 -= vec3(-2.0000000, 1.0000000, 1.0000000); 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.187000;
+	pmFloat1 = 0.000000;
+	p1 = rotateVec3(p1, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.231000;
+	pmFloat1 = 0.000000;
+	p1 = rotateVec3(p1, pmVec30, time * pmFloat0 + pmFloat1);
+
 	// SDFObject //
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = vec3(1.0000000, 1.0000000, 1.0000000);
-
-	// OPTranslate //
-	p2 -= vec3(0.0000000, 0.0000000, -0.5000000); 
-
-	// SDFObject //
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = vec3(1.0000000, 0.0000000, 0.0000000);
 	// SDFTorus //
-	d3 = torus(p3, vec2(1.0000000, 0.4000000));
+	d2 = torus(p2, vec2(5.0000000, 1.2500000));
 
 
-	// OPTranslate //
-	p3 -= vec3(0.5000000, 0.0000000, 0.0000000); 
-
-	// SDFObject //
-	vec3 p4;
-	float d4 = FLOAT_MAX;
-	vec3 color4;
-	p4 = p3;
-	d4 = FLOAT_MAX;
-	color4 = vec3(1.0000000, 0.8700000, 0.0000000);
-	// SDFTorus //
-	d4 = torus(p4, vec2(1.0000000, 0.4000000));
-
-
-	// COMBExclude - Double //
-	pmFloat0 = max(min(d3, d4), min(-d3, -d4));
-	if (d3 > d4) {
-		color3 = color4; 
-	}
-	d3 = pmFloat0;
-
-	// COMBAdd //
-	if (d3 < d2) {
-		d2 = d3;
-		color2 = color3; 
-	}
-
-	// COMBExclude - Double //
-	pmFloat0 = max(min(d1, d2), min(-d1, -d2));
-	if (d1 > d2) {
-		color1 = color2; 
-	}
-	d1 = pmFloat0;
+	// COMBAddSmooth //
+	pmFloat0 = 3.000000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = clamp(0.5 + 0.5 * (d2 - d1) / pmFloat0, 0.0, 1.0);
+	color1 = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color1, color2, pmFloat2);
+	d1 = mix(d2, d1, blend) - pmFloat0 * blend * (1.0 - blend);
 
 	// COMBAdd //
 	if (d1 < d0) {
 		d0 = d1;
 		color0 = color1; 
 	}
-
-	// OPTranslate //
-	p0 -= vec3(0.0000000, 0.5000000, 0.0000000); 
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	// SDFBox //
-	d1 = box(p1, vec3(10.0000000, 1.0000000, 10.0000000));
-
-
-	// COMBSubtract //
-	if (d0 < -d1) d0 = -d1;
 
 }
 
@@ -593,7 +557,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(0.5000000, 2.0000000, 0.0000000) - p0;
+		rayDir = vec3(-16.0000000, -16.0000000, -16.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -605,12 +569,104 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 5 : 0.0;
-				float ambLight = 5 * 0.5 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
+				float ambLight = 200 * 0.15 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeColor += vec3(1.0000000, 1.0000000, 1.0000000) * lightPower;
+				cumulativeColor += vec3(1.0000000, 0.0000000, 0.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [1] //
+		rayDir = vec3(16.0000000, 16.0000000, 16.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
+				float ambLight = 200 * 0.15 * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(0.0000000, 0.0000000, 1.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [2] //
+		rayDir = vec3(16.0000000, 0.0000000, -16.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
+				float ambLight = 200 * 0.15 * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(0.0000000, 1.0000000, 0.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [3] //
+		rayDir = vec3(-8.0000000, 16.0000000, -16.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
+				float ambLight = 200 * 0.15 * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(1.0000000, 0.0000000, 1.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [4] //
+		rayDir = vec3(-8.0000000, 0.0000000, 16.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+		while (true) {
+			np = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
+				float ambLight = 200 * 0.15 * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(1.0000000, 1.0000000, 0.0000000) * lightPower;
 				break;
 			}
 		}

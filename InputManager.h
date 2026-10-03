@@ -37,6 +37,7 @@ private:
 	void processMouseMovement();
 	void acquireCentre();
 	void checkActive();
+	void resetInstance();
 
 public:
 	InputManager(const InputManager&) = delete;
@@ -44,6 +45,7 @@ public:
 	InputManager(InputManager&&) = delete;
 	InputManager& operator=(InputManager&&) = delete;
 
+	static void reset();
 	static void update();
 	static bool keyJustPushed(unsigned short key);
 	static bool keyJustReleased(unsigned short key);

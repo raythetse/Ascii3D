@@ -49,6 +49,7 @@ void GameEngine::run()
         }
         GameTimer::reset();
         m_camera.reset();
+        InputManager::reset();
         while (true) {
             GameTimer::tick();
             if (!handleInput()) break;
