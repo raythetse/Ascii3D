@@ -41,20 +41,23 @@ public:
     VulkanRaymarcher(const VulkanRaymarcher&) = delete;
     VulkanRaymarcher& operator=(const VulkanRaymarcher&) = delete;
 
-    bool selectDevice();
+    const std::vector<VkPhysicalDeviceProperties>& enumerateDevices();
+    bool selectDevice(size_t selection);
     void setShaderSource(std::string& shaderCode);
     void setCanvasSize(uint32_t width, uint32_t height);
     const PixelOutput* renderFrame(const ShaderInputs& pushData);
 
 private:
+    std::vector<VkPhysicalDevice> m_physicalDevices{};
+    std::vector<VkPhysicalDeviceProperties> m_pysicalDeviceProps{};
+    size_t m_deviceIndex{};
+
     // Core persistent objects (Never touched on resize)
     VkInstance m_Instance = VK_NULL_HANDLE;
-    VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
     VkDevice m_LogicalDevice = VK_NULL_HANDLE;
     VkQueue m_ComputeQueue = VK_NULL_HANDLE;
     uint32_t m_QueueFamilyIndex = UINT32_MAX;
     VkFence m_RenderFence = VK_NULL_HANDLE;
-
     VkDescriptorSetLayout m_DescriptorSetLayout = VK_NULL_HANDLE;
     VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
     VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
@@ -80,6 +83,7 @@ private:
     // Helper functions
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     void cleanupResolutionResources();
+    void cleanupGeneralResources();
     void cleanup();
     std::vector<uint32_t> compileDynamicGlslToSpirV(const std::string& sourceCode);
 };

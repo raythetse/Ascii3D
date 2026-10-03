@@ -32,12 +32,13 @@ private:
 	size_t m_updatePM{};
 	size_t m_marchPM{};
 	size_t m_renderPM{};
-	VulkanRaymarcher m_vrm{};
+	std::unique_ptr<VulkanRaymarcher> m_vrm;
 	MarchingMode m_marchMode{ Software };
 	PixelOutput* m_hardwareRenderResult = nullptr;
 
 	void resizeCallback(size_t width, size_t height);
-	bool selectScene();
+	bool selectRenderer();
+	bool selectSceneType();
 	void selectBuiltInScene(bool noCustom);
 	bool selectCustomScene();
 	void marchHardware();

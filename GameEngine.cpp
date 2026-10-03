@@ -27,38 +27,39 @@ GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double to
         m_pixelField.setSize(m_dimensions.first, m_dimensions.second);
         m_viewportSize = m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
 
-        if (m_marchMode == Hardware) m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+        if (m_marchMode == Hardware && m_vrm) m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     });
     GameTimer::reset();
 }
 
 void GameEngine::run()
 {
-    //m_scene = SDFScene("MyFile.txt");
-
-    m_marchMode = m_vrm.selectDevice() ? Hardware : Software;
-    m_scene = SDFScene::LoadOption::Test;
-
     while (true) {
-        if (!selectScene()) break;
-        if (m_marchMode == Hardware) {
-            std::string shaderCode = m_scene.buildComputeShader();
-            FileHandler::saveShader(shaderCode, "ShaderSource.glsl");
-            m_vrm.setShaderSource(shaderCode);
-            m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
-        }
-        GameTimer::reset();
-        m_camera.reset();
-        InputManager::reset();
+        m_vrm = std::make_unique<VulkanRaymarcher>();
+
+        if (!selectRenderer()) break;
+
         while (true) {
-            GameTimer::tick();
-            if (!handleInput()) break;
-            m_perfMonitor.sample(m_framePM, [this]() {
-                update();
-                march();
-                render();
-            });
-            m_perfMonitor.printMonitors();
+            if (!selectSceneType()) break;
+            if (m_marchMode == Hardware) {
+                std::string shaderCode = m_scene.buildComputeShader();
+                FileHandler::saveShader(shaderCode, "ShaderSource.glsl");
+                m_vrm->setShaderSource(shaderCode);
+                m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+            }
+            GameTimer::reset();
+            m_camera.reset();
+            InputManager::reset();
+            while (true) {
+                GameTimer::tick();
+                if (!handleInput()) break;
+                m_perfMonitor.sample(m_framePM, [this]() {
+                    update();
+                    march();
+                    render();
+                });
+                m_perfMonitor.printMonitors();
+            }
         }
     }
 }
@@ -100,11 +101,49 @@ void GameEngine::march()
     });
 }
 
-bool GameEngine::selectScene()
+bool GameEngine::selectRenderer()
+{
+    auto& deviceProps = m_vrm->enumerateDevices();
+    int selection{ -1 };
+
+    std::function<void()> prompt = [&selection, &deviceProps]() {
+        std::cout << "\033[2J\033[1;1H";
+        std::cout << "===========================================\n";
+        std::cout << "      ASCII Raymarcher 3D - Ray Young\n";
+        std::cout << "===========================================\n\n";
+        std::cout << "      Rendering Devices\n\n";
+        std::cout << "[1] - CPU (Multi-threaded)\n";
+
+        for (size_t i{}; i < deviceProps.size(); ++i) {
+            std::cout << "[" << (i + 2) << "] - " << deviceProps[i].deviceName << '\n';
+        }
+        std::cout << "[" << (deviceProps.size() + 2) << "] - Exit\n";
+
+        std::cout << "\nChoose Your Rendering Device\n\n";
+    };
+
+    do prompt(); while (!(std::cin >> selection && selection >= 1 && selection <= 4));    
+
+    if (selection == deviceProps.size() + 2) return false;
+
+    if (selection == 1) {
+        m_marchMode = Software;
+    } else if (m_vrm->selectDevice(selection - 2)) {
+        m_marchMode = Hardware;
+    }
+    else {
+        std::cout << "\n!!! Error configuring selected device. Falling back to Software mode !!!\n";
+        m_marchMode = Software;
+    }
+
+    return true;
+}
+
+bool GameEngine::selectSceneType()
 {
     std::cout << "\033[2J\033[1;1H"; // clear console
     std::cout << "Select a scene-type (WARNING: Custom scenes may run very poorly on CPU Renderer)\n\n";
-    std::cout << "[1] Built-In (Hardcoded in SDFScene.cpp source file)\n[2] Custom (Defined in the \\CustomScenes folder)\n[3] Exit\n";
+    std::cout << "[1] Built-In (Hardcoded in SDFScene.cpp source file)\n[2] Custom (Defined in the \\CustomScenes folder)\n[3] Back to device selection\n";
 
     int selection{};
 
@@ -198,7 +237,7 @@ bool GameEngine::selectCustomScene()
 
 void GameEngine::marchHardware()
 {
-    m_vrm.setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+    m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     Vec3 camPos = m_camera.getPosition();
     Vec3 camForward = m_camera.getForward();
     Vec3 camRight = m_camera.getRight();
@@ -231,7 +270,7 @@ void GameEngine::marchHardware()
     inputs.viewportSize[0]  = static_cast<float>(m_viewportSize.x);
     inputs.viewportSize[1]  = static_cast<float>(m_viewportSize.y);
 
-    auto result = m_vrm.renderFrame(inputs);
+    auto result = m_vrm->renderFrame(inputs);
     m_pixelField.fromHardware(result);
 }
 

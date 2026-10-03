@@ -25,67 +25,46 @@ VulkanRaymarcher::VulkanRaymarcher()
 }
 
 VulkanRaymarcher::~VulkanRaymarcher() {
-    cleanupResolutionResources();
-    if (m_RenderFence != VK_NULL_HANDLE) vkDestroyFence(m_LogicalDevice, m_RenderFence, nullptr);
-    if (m_CommandPool != VK_NULL_HANDLE) vkDestroyCommandPool(m_LogicalDevice, m_CommandPool, nullptr);
-    if (m_ComputePipeline != VK_NULL_HANDLE) vkDestroyPipeline(m_LogicalDevice, m_ComputePipeline, nullptr);
-    if (m_ComputeShaderModule != VK_NULL_HANDLE) vkDestroyShaderModule(m_LogicalDevice, m_ComputeShaderModule, nullptr);
-    if (m_PipelineLayout != VK_NULL_HANDLE) vkDestroyPipelineLayout(m_LogicalDevice, m_PipelineLayout, nullptr);
-    if (m_DescriptorPool != VK_NULL_HANDLE) vkDestroyDescriptorPool(m_LogicalDevice, m_DescriptorPool, nullptr);
-    if (m_DescriptorSetLayout != VK_NULL_HANDLE) vkDestroyDescriptorSetLayout(m_LogicalDevice, m_DescriptorSetLayout, nullptr);
-    if (m_LogicalDevice != VK_NULL_HANDLE) vkDestroyDevice(m_LogicalDevice, nullptr);
-    if (m_Instance != VK_NULL_HANDLE) vkDestroyInstance(m_Instance, nullptr);
+    cleanup();
+    if (m_Instance) {
+        vkDestroyInstance(m_Instance, nullptr);
+        m_Instance = VK_NULL_HANDLE;
+    }
 }
 
-bool VulkanRaymarcher::selectDevice() {
-    // 2. Select GPU supporting Vulkan 1.3
-    uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
-    std::vector<VkPhysicalDevice> devices{ deviceCount };
-    vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+const std::vector<VkPhysicalDeviceProperties>& VulkanRaymarcher::enumerateDevices()
+{
+    if (m_pysicalDeviceProps.size() == 0) {
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+        std::vector<VkPhysicalDevice> devices{ deviceCount };
+        vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 
-    std::vector<VkPhysicalDevice> candidateDevices{};
-    std::vector<VkPhysicalDeviceProperties> candidateDeviceProps{};
-    for (size_t i{}; i < deviceCount; ++i) {
-        VkPhysicalDeviceProperties props;
-        vkGetPhysicalDeviceProperties(devices[i], &props);
-        if (props.apiVersion >= VK_API_VERSION_1_3) {
-            candidateDevices.push_back(devices[i]);
-            candidateDeviceProps.push_back(props);
+        for (size_t i{}; i < deviceCount; ++i) {
+            VkPhysicalDeviceProperties props;
+            vkGetPhysicalDeviceProperties(devices[i], &props);
+            if (props.apiVersion >= VK_API_VERSION_1_3) {
+                m_physicalDevices.push_back(devices[i]);
+                m_pysicalDeviceProps.push_back(props);
+            }
         }
     }
 
-    int selection{ -1 };
-    std::cout << "===========================================\n";
-    std::cout << "      ASCII Raymarcher 3D - Ray Young\n";
-    std::cout << "===========================================\n\n";
-    std::cout << "      Rendering Devices\n\n";
-    std::cout << "[1] - CPU (Multi-threaded)\n";
+    return m_pysicalDeviceProps;
+}
 
-    for (size_t i{}; i < candidateDevices.size(); ++i) {
-        std::cout << "[" << (i + 2) << "] - " << candidateDeviceProps[i].deviceName << '\n';
-    }
+bool VulkanRaymarcher::selectDevice(size_t selection) {
+    cleanup();
 
-    while (true) {
-        std::cout << "\nChoose Your Rendering Device: [1-" << candidateDevices.size() + 1 << "]\n\n";
-        std::cin >> selection;
+    if (selection >= m_physicalDevices.size()) return false;
 
-        if (selection == 1) return false;
-        if (selection > 1 && selection <= candidateDevices.size() + 1) {
-            break;
-        }
-    }
-
-    m_PhysicalDevice = candidateDevices[selection - 2];
-
-    VkPhysicalDeviceProperties props;
-    vkGetPhysicalDeviceProperties(m_PhysicalDevice, &props);
+    m_deviceIndex = selection;
 
     // 3. Find Compute Queue Family
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queueFamilyCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[m_deviceIndex], &queueFamilyCount, nullptr);
     std::vector<VkQueueFamilyProperties> queueFamilies{ queueFamilyCount };
-    vkGetPhysicalDeviceQueueFamilyProperties(m_PhysicalDevice, &queueFamilyCount, queueFamilies.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[m_deviceIndex], &queueFamilyCount, queueFamilies.data());
 
     for (uint32_t i = 0; i < queueFamilyCount; i++) {
         if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
@@ -115,7 +94,7 @@ bool VulkanRaymarcher::selectDevice() {
     deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
     deviceCreateInfo.pNext = &deviceFeatures2;
 
-    if (vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, nullptr, &m_LogicalDevice) != VK_SUCCESS) {
+    if (vkCreateDevice(m_physicalDevices[m_deviceIndex], &deviceCreateInfo, nullptr, &m_LogicalDevice) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create logical device!");
     }
 
@@ -300,7 +279,7 @@ void VulkanRaymarcher::setCanvasSize(uint32_t width, uint32_t height) {
 
 uint32_t VulkanRaymarcher::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
     VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
+    vkGetPhysicalDeviceMemoryProperties(m_physicalDevices[m_deviceIndex], &memProperties);
 
     for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
         if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
@@ -438,8 +417,12 @@ void VulkanRaymarcher::cleanupResolutionResources() {
     m_MappedStagingData = nullptr;
 }
 
-void VulkanRaymarcher::cleanup() {
-    cleanupResolutionResources();
+void VulkanRaymarcher::cleanupGeneralResources()
+{
+    if (m_RenderFence != VK_NULL_HANDLE) {
+        vkDestroyFence(m_LogicalDevice, m_RenderFence, nullptr);
+        m_RenderFence = VK_NULL_HANDLE;
+    }
     if (m_CommandPool) {
         vkDestroyCommandPool(m_LogicalDevice, m_CommandPool, nullptr);
         m_CommandPool = VK_NULL_HANDLE;
@@ -468,8 +451,9 @@ void VulkanRaymarcher::cleanup() {
         vkDestroyDevice(m_LogicalDevice, nullptr);
         m_LogicalDevice = VK_NULL_HANDLE;
     }
-    if (m_Instance) {
-        vkDestroyInstance(m_Instance, nullptr);
-        m_Instance = VK_NULL_HANDLE;
-    }
+}
+
+void VulkanRaymarcher::cleanup() {
+    cleanupResolutionResources();
+    cleanupGeneralResources();
 }
