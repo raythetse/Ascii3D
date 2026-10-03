@@ -114,6 +114,61 @@ void COMBIntersect::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tif (d" << level << " <= d" << (level + 1) << ") d" << level << " = d" << (level + 1) << ";\n\n";
 }
 
+double COMBExclude::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut)
+{
+	double distanceB = m_combineObj->signedDistance(p, colorOut);
+	double h = std::max(std::min(distanceA, distanceB), std::min(-distanceA, -distanceB));
+	if (colorOut) {
+		switch (m_colorMode)
+		{
+		case COMBExclude::Double:
+			if (distanceA <= distanceB) *colorOut = colorIn;
+			break;
+		case COMBExclude::Single:
+			*colorOut = colorIn;
+			break;
+		case COMBExclude::Internal:
+			if (h >= 0.0) *colorOut = colorIn;
+			break;
+		case COMBExclude::InternalDouble:
+			if ((h >= 0.0) != (distanceA > distanceB)) *colorOut = colorIn;
+			break;
+		default:
+			break;
+		}
+	}
+	return h;
+}
+
+void COMBExclude::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+{
+	std::string modeMap[]{ "Double", "Single", "Internal", "InternalDouble" };
+	ss << "\t// COMBExclude - " << modeMap[m_colorMode] << " //\n";
+	ss << "\tpmFloat0 = max(min(d" << level << ", d" << (level + 1) << "), min(-d" << level << ", -d" << (level + 1) << "));\n";
+	switch (m_colorMode)
+	{
+	case COMBExclude::Double:
+		ss << "\tif (d" << level << " > d" << (level + 1) << ") {\n";
+		ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
+		ss << "\t}\n";
+		break;
+	case COMBExclude::Internal:
+		ss << "\tif (pmFloat0 < 0.0) {\n";
+		ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
+		ss << "\t}\n";
+		break;
+	case COMBExclude::InternalDouble:
+		ss << "\tif ((pmFloat0 >= 0.0) != (d" << level << " <= d" << (level + 1) << ")) {\n";
+		ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
+		ss << "\t}\n";
+		break;
+	default:
+		break;
+	}
+	ss << "\td" << level << " = pmFloat0;\n\n";
+
+}
+
 double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 + 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);

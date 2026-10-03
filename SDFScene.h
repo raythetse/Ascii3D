@@ -32,6 +32,7 @@ private:
 	void cubesDemo();
 	void elongateDemo();
 	void torusDemo();
+	void buildBart();
 	void buildSampleFunction(std::stringstream& ss) const;
 	void buildLightPasses(std::stringstream& ss) const;
 public:

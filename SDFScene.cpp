@@ -632,6 +632,30 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
 
 void SDFScene::test()
 {
+    Vec2 dim{ 1.0, 0.4 };
+    double dist{ 0.25 };
+    add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFObject>()()
+        .pushOp<OPTranslate>(Vec3{ -dist, 0.0, -dist })
+        .pushOp<COMBAdd, SDFTorus>(dim, Color::Blue)()
+        .pushOp<OPTranslate>(Vec3 { 2.0 * dist, 0.0, 0.0 })
+        .pushOp<COMBExclude, SDFTorus>(dim, Color::Green)(COMBExclude::Double)
+        .stepBack(2)
+        .pushOp<COMBExclude, SDFObject>()(COMBExclude::Double)
+        .pushOp<OPTranslate>(Vec3{ 0.0, 0.0, -dist * 2.0 })
+        .pushOp<COMBAdd, SDFTorus>(dim, Color::Red)()
+        .pushOp<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
+        .pushOp<COMBExclude, SDFTorus>(dim, Color::Gold)(COMBExclude::Double)
+        .stepBack(0)
+        .pushOp<OPTranslate>(Vec3::Up * 0.5)
+        .pushOp<COMBSubtract, SDFBox>(Vec3{ 10.0, 1.0, 10.0 })()
+                    
+        .addLightSource(Vec3{ 0.5, 2.0, 0.0 }, 5.0, Color::White, 0.5)
+    );
+}
+
+void SDFScene::buildBart()
+{
     Vec3 skinCol = Vec3{ 234.0, 191.0, 4.0 } / 255.0;
     Vec3 shirtCol = Vec3{ 241.0, 78.0, 40.0 } / 255.0;
     Vec3 shortsCol = Vec3{ 0.0, 157.0, 220.0 } / 255.0;        
@@ -903,7 +927,7 @@ void SDFScene::elongateDemo()
         .pushOp<OPTranslateSine>(Vec3::Up, 0.1, 2.0)
         .pushOp<OPRotateContinuous>(Vec3::Up, 0.125)
         .pushOp<OPElongateXYZ>(Vec3{ 0.5, 1.0, 0.75 })
-        .bindPropMod<PMOscillateSineV3>("lengths", Vec3{ 1.0, 0.849, 0.731 }, Vec3{ 0.5, 0.5, 0.5 })
+        .bindPropMod<PMOscillateSineV3>("lengths", Vec3{ 3.0, 2.47, 1.731 }, Vec3{ 0.5, 0.5, 0.5 })
         .pushOp<COMBAdd, SDFCrystal>(1.25)().color(Color::Blue)
             .pushOp<COMBSubtractSmooth, SDFBox>(1.5, Color::Red)(0.5, 25.0, 0.25)
                 .stepBack()

@@ -59,6 +59,26 @@ public:
 	COMBIntersect(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
 };
 
+class COMBExclude : public CombinationOperation
+{
+public:
+	enum ColorMode {
+		Double,
+		Single,
+		Internal,
+		InternalDouble
+
+	};
+private:
+	ColorMode m_colorMode;
+protected:
+	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
+	std::string getClassName() const override { return "COMBExclude"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+public:
+	COMBExclude(std::unique_ptr<SDFObject> combineObj = nullptr, ColorMode colorMode = Double) : CombinationOperation(std::move(combineObj)), m_colorMode(colorMode) {}
+};
+
 class COMBAddSmooth : public CombinationOperation
 {
 protected:

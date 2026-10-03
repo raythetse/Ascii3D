@@ -75,6 +75,23 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     { "COMBIntersect", [](SDFBuilder& builder, std::stringstream& ss) {
         builder.pushOp<COMBIntersect>();
     }},
+    { "COMBIntersect", [](SDFBuilder& builder, std::stringstream& ss) {
+        builder.pushOp<COMBIntersect>();
+    }},
+    { "COMBExclude", [](SDFBuilder& builder, std::stringstream& ss) {
+        COMBExclude::ColorMode m_colorMode{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "m_colorMode") {
+                int colorMode;
+                ss >> colorMode;
+                m_colorMode = static_cast<COMBExclude::ColorMode>(colorMode);
+            }
+        }
+        builder.pushOp<COMBExclude>(nullptr, m_colorMode);
+    }},
     { "COMBAddSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         double m_smoothing{ DEF::COMBSmooth };
         double m_colorBlending{ DEF::COMBColBlend };
