@@ -177,7 +177,7 @@ float torus(vec3 p, vec2 radii) {
 
 float torusSegment(vec3 p, vec2 radii, vec2 sincos) {
     p.x = abs(p.x);
-    float k = (sincos.y * p.x > sincos.x * p.y) ? dot(p.xy, sincos) : length(p.xy);
+    float k = (sincos.y * p.x > sincos.x * p.z) ? dot(p.xz, sincos) : length(p.xz);
     return sqrt(dot(p, p) + radii.x * radii.x - 2.0 * radii.x * k) - radii.y;
 }
 
@@ -390,123 +390,15 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	// SDFTorusSegmentYZ //
+	d1 = torusSegment(p1.yxz, vec2(1.0000000, 0.2500000), vec2(1.0000000, 0.0000000));
 
-	// OPTranslate //
-	pmVec30 = oscillateSineV3(vec3(-0.1250000, -0.1250000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(-1.0000000, 0.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
-	p1 -= pmVec30; 
-
-	// SDFObject //
-	vec3 p2;
-	float d2 = FLOAT_MAX;
-	vec3 color2;
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = vec3(0.0000000, 0.0000000, 1.0000000);
-	// SDFTorusXY //
-	d2 = torus(p2.xzy, vec2(0.5000000, 0.2000000));
-
-
-	// OPTranslate //
-	pmVec30 = oscillateSineV3(vec3(0.2500000, 0.0000000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(1.0000000, 1.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
-	p2 -= pmVec30; 
-
-	// SDFObject //
-	vec3 p3;
-	float d3 = FLOAT_MAX;
-	vec3 color3;
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = vec3(0.0000000, 1.0000000, 0.0000000);
-	// SDFTorusXY //
-	d3 = torus(p3.xzy, vec2(0.5000000, 0.2000000));
-
-
-	// COMBExclude - InternalDouble //
-	pmFloat0 = max(min(d2, d3), min(-d2, -d3));
-	if ((pmFloat0 >= 0.0) != (d2 <= d3)) {
-		color2 = color3; 
-	}
-	d2 = pmFloat0;
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
 
 	// COMBAdd //
 	if (d1 < d0) {
 		d0 = d1;
 		color0 = color1; 
 	}
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, -0.2500000, 0.0000000);
-	p1 -= pmVec30; 
-
-	// OPTranslate //
-	pmVec30 = oscillateSineV3(vec3(-0.1250000, -0.1250000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(0.0000000, -1.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
-	p1 -= pmVec30; 
-
-	// SDFObject //
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = vec3(1.0000000, 0.0000000, 0.0000000);
-	// SDFTorusXY //
-	d2 = torus(p2.xzy, vec2(0.5000000, 0.2000000));
-
-
-	// OPTranslate //
-	pmVec30 = oscillateSineV3(vec3(0.2500000, 0.0000000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(1.0000000, 1.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
-	p2 -= pmVec30; 
-
-	// SDFObject //
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = vec3(1.0000000, 1.0000000, 0.0000000);
-	// SDFTorusXY //
-	d3 = torus(p3.xzy, vec2(0.5000000, 0.2000000));
-
-
-	// COMBExclude - InternalDouble //
-	pmFloat0 = max(min(d2, d3), min(-d2, -d3));
-	if ((pmFloat0 >= 0.0) != (d2 <= d3)) {
-		color2 = color3; 
-	}
-	d2 = pmFloat0;
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-
-	// COMBExclude - InternalDouble //
-	pmFloat0 = max(min(d0, d1), min(-d0, -d1));
-	if ((pmFloat0 >= 0.0) != (d0 <= d1)) {
-		color0 = color1; 
-	}
-	d0 = pmFloat0;
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.0000000, -0.5000000);
-	p0 -= pmVec30; 
-
-	// SDFObject //
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
-	// SDFBox //
-	d1 = box(p1, vec3(100.0000000, 100.0000000, 1.0000000));
-
-
-	// COMBSubtract //
-	if (d0 < -d1) d0 = -d1;
 
 }
 
@@ -611,8 +503,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 250 : 0.0;
-				float ambLight = 250 * 0.3 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 100 : 0.0;
+				float ambLight = 100 * 0.5 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;

@@ -270,7 +270,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFTorusXY>(radii, color);
     } },
-    { "SDFTorusSegment", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFTorusSegmentXY", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ DEF::OBJColor };
         Vec2 radii{ DEF::OBJRadii };
         double sweep{ DEF::OBJSweep };
@@ -282,7 +282,35 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radii") ss >> radii.x >> radii.y;
             else if (param == "sweep") ss >> sweep;
         }
-        builder.pushSDFObj<SDFTorusSegment>(radii, sweep, color);
+        builder.pushSDFObj<SDFTorusSegmentXY>(radii, sweep, color);
+    } },
+    { "SDFTorusSegmentXZ", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ DEF::OBJColor };
+        Vec2 radii{ DEF::OBJRadii };
+        double sweep{ DEF::OBJSweep };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "radii") ss >> radii.x >> radii.y;
+            else if (param == "sweep") ss >> sweep;
+        }
+        builder.pushSDFObj<SDFTorusSegmentXZ>(radii, sweep, color);
+    } },
+    { "SDFTorusSegmentYZ", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ DEF::OBJColor };
+        Vec2 radii{ DEF::OBJRadii };
+        double sweep{ DEF::OBJSweep };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "radii") ss >> radii.x >> radii.y;
+            else if (param == "sweep") ss >> sweep;
+        }
+        builder.pushSDFObj<SDFTorusSegmentYZ>(radii, sweep, color);
     } },
     { "SDFCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ DEF::OBJColor };
@@ -379,20 +407,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radius") ss >> radius;
         }
         builder.pushSDFObj<SDFCylinderZ>(radius, sideLength, color);
-    } },
-    { "SDFChainLink", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ DEF::OBJColor };
-        double sideLength{ DEF::OBJLength };
-        Vec2 radii{ DEF::OBJRadii };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "sideLength") ss >> sideLength;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-        }
-        builder.pushSDFObj<SDFChainLink>(sideLength, radii, color);
     } },
     { "SDFTube", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ DEF::OBJColor };

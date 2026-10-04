@@ -187,7 +187,7 @@ float torus(vec3 p, vec2 radii) {
 
 float torusSegment(vec3 p, vec2 radii, vec2 sincos) {
     p.x = abs(p.x);
-    float k = (sincos.y * p.x > sincos.x * p.y) ? dot(p.xy, sincos) : length(p.xy);
+    float k = (sincos.y * p.x > sincos.x * p.z) ? dot(p.xz, sincos) : length(p.xz);
     return sqrt(dot(p, p) + radii.x * radii.x - 2.0 * radii.x * k) - radii.y;
 }
 
@@ -628,6 +628,14 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     }
     strVec.push_back("end");
     return false;
+}
+
+void SDFScene::test()
+{
+    add(SDFBuilder{}
+        .pushOp<COMBAdd, SDFTorusSegmentYZ>(DEF::OBJRadii, 0.5)()
+        .addLightSource(Vec3{ 5.0, 5.0, -10.0 }, 100.0, Color::White, 0.5)
+    );
 }
 
 void SDFScene::excludeDemo()

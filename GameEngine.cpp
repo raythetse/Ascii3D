@@ -192,7 +192,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                     m_scene = SDFScene{ SDFScene::Elongate };
                     return;
                 case 3:
-                    m_scene = SDFScene{ SDFScene::Torus };
+                    m_scene = SDFScene{ SDFScene::Exclusion };
                     return;
                 case 123:
                     m_scene = SDFScene{ SDFScene::Test };

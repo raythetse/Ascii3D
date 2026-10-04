@@ -267,23 +267,63 @@ double SDFTorusYZ::signedDistanceInner(Vec3 p) const
     return Vec2{ Vec2{p.y, p.z}.length() - m_radii.x, p.x }.length() - m_radii.y;
 }
 
-void SDFTorusSegment::serializeInner(std::stringstream& ss) const
+void SDFTorusSegmentXY::serializeInner(std::stringstream& ss) const
 {
     ss << " radii " << m_radii.x << ' ' << m_radii.y;
     ss << " sweep " << m_sweep;
 }
 
-void SDFTorusSegment::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFTorusSegmentXY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "\t// SDFTorus //\n";
-    ss << "\td" << level << " = torusSegment(p" << level << ", " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
+    ss << "\t// SDFTorusSegmentXY //\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ".xzy, " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
 }
 
-double SDFTorusSegment::signedDistanceInner(Vec3 p) const
+double SDFTorusSegmentXY::signedDistanceInner(Vec3 p) const
 {
     p.x = abs(p.x);
     Vec2 pXY{ p.x, p.y };
     double k = (m_sincos.y * p.x > m_sincos.x * p.y) ? pXY.dot(m_sincos) : pXY.length();
+    return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
+}
+
+void SDFTorusSegmentXZ::serializeInner(std::stringstream& ss) const
+{
+    ss << " radii " << m_radii.x << ' ' << m_radii.y;
+    ss << " sweep " << m_sweep;
+}
+
+void SDFTorusSegmentXZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFTorusSegmentXZ //\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ", " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
+}
+
+double SDFTorusSegmentXZ::signedDistanceInner(Vec3 p) const
+{
+    p.x = abs(p.x);
+    Vec2 pXZ{ p.x, p.z };
+    double k = (m_sincos.y * p.x > m_sincos.x * p.z) ? pXZ.dot(m_sincos) : pXZ.length();
+    return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
+}
+
+void SDFTorusSegmentYZ::serializeInner(std::stringstream& ss) const
+{
+    ss << " radii " << m_radii.x << ' ' << m_radii.y;
+    ss << " sweep " << m_sweep;
+}
+
+void SDFTorusSegmentYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFTorusSegmentYZ //\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ".yxz, " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
+}
+
+double SDFTorusSegmentYZ::signedDistanceInner(Vec3 p) const
+{
+    p.y = abs(p.y);
+    Vec2 pYZ{ p.y, p.z };
+    double k = (m_sincos.y * p.y > m_sincos.x * p.z) ? pYZ.dot(m_sincos) : pYZ.length();
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
@@ -413,24 +453,6 @@ double SDFCylinderZ::signedDistanceInner(Vec3 p) const
     Vec2 xy{ p.x, p.y };
     Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
-}
-
-void SDFChainLink::serializeInner(std::stringstream& ss) const
-{
-    ss << " sideLength " << m_sideLength;
-    ss << " radii " << m_radii.x << ' ' << m_radii.y;
-}
-
-void SDFChainLink::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
-{
-    ss << "\t// SDFChainLink //\n";
-    ss << "\td" << level << " = chainLink(p" << level << ", " << m_sideLength << ", " << m_radii.getShader() << ");\n\n";
-}
-
-double SDFChainLink::signedDistanceInner(Vec3 p) const
-{
-    p.x = p.x > 0.0 ? std::max(0.0, p.x - m_sideLength * 0.5) : std::min(0.0, p.x + m_sideLength * 0.5);
-    return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
 void SDFTube::serializeInner(std::stringstream& ss) const

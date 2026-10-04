@@ -198,19 +198,51 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class SDFTorusSegment : public SDFObject
+class SDFTorusSegmentXY : public SDFObject
 {
 private:
 	Vec2 m_radii;
 	double m_sweep;
 	Vec2 m_sincos;
 protected:
-	std::string getClassName() const override { return "SDFTorusSegment"; }
+	std::string getClassName() const override { return "SDFTorusSegmentXY"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusSegment(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
+	SDFTorusSegmentXY(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFTorusSegmentXZ : public SDFObject
+{
+private:
+	Vec2 m_radii;
+	double m_sweep;
+	Vec2 m_sincos;
+protected:
+	std::string getClassName() const override { return "SDFTorusSegmentXZ"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTorusSegmentXZ(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFTorusSegmentYZ : public SDFObject
+{
+private:
+	Vec2 m_radii;
+	double m_sweep;
+	Vec2 m_sincos;
+protected:
+	std::string getClassName() const override { return "SDFTorusSegmentYZ"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTorusSegmentYZ(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -315,21 +347,6 @@ protected:
 public:
 	SDFCylinderZ(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor)
 		: SDFObject(color), m_sideLength(sideLength), m_radius(radius) {}
-	double signedDistanceInner(Vec3 p) const override;
-};
-
-class SDFChainLink : public SDFObject
-{
-private:
-	double m_sideLength;
-	Vec2 m_radii;
-protected:
-	std::string getClassName() const override { return "SDFChainLink"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFChainLink(double sideLength = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
-		: SDFObject(color), m_sideLength(sideLength), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 

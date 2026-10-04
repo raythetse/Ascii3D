@@ -1,39 +1,7 @@
 SDFObject color 1 1 1
 	COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-	SDFObject color 1 1 1
-		COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-		SDFObject color 1 1 1
-			OPTranslate translation -0.125 -0.125 0
-			COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-			SDFTorusXY color 0 0 1 radii 0.5 0.2
-				stepBack
-			stepBack
-		COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-		SDFObject color 1 1 1
-			OPTranslate translation 0.125 -0.125 0
-			COMBExclude smoothing 0.5 colorBlending 1 colorShifting 0 colorMode 0
-			SDFTorusXY color 0 1 0 radii 0.5 0.2
-				stepBack
-			stepBack
-		COMBExclude smoothing 0.5 colorBlending 1 colorShifting 0 colorMode 0
-		SDFObject color 1 1 1
-			OPTranslate translation -0.125 0.125 0
-			COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-			SDFTorusXY color 1 0 0 radii 0.5 0.2
-				stepBack
-			stepBack
-		COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-		SDFObject color 1 1 1
-			OPTranslate translation 0.125 0.125 0
-			COMBExclude smoothing 0.5 colorBlending 1 colorShifting 0 colorMode 0
-			SDFTorusXY color 1 0.87 0 radii 0.5 0.2
-				stepBack
-			stepBack
-		stepBack
-	OPTranslate translation 0 0 -0.5
-	COMBSubtract smoothing 0.5 colorBlending 1 colorShifting 0
-	SDFBox color 1 1 1 dimensions 100 100 1
+	SDFTorusSegmentYZ color 1 1 1 radii 1 0.25 sweep 0.5
 		stepBack
 	stepBack
-LightSource position 5 5 -10 luminance 250 color 1 1 1 ambientPower 0.3
+LightSource position 5 5 -10 luminance 100 color 1 1 1 ambientPower 0.5
 end
