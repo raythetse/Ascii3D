@@ -156,16 +156,44 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 };
 
-class SDFTorus : public SDFObject
+class SDFTorusXY : public SDFObject
 {
 private:
 	Vec2 m_radii;
 protected:
-	std::string getClassName() const override { return "SDFTorus"; }
+	std::string getClassName() const override { return "SDFTorusXY"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorus(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
+	SDFTorusXY(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFTorusXZ : public SDFObject
+{
+private:
+	Vec2 m_radii;
+protected:
+	std::string getClassName() const override { return "SDFTorusXZ"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTorusXZ(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
+		: SDFObject(color), m_radii(radii) {}
+	double signedDistanceInner(Vec3 p) const override;
+};
+
+class SDFTorusYZ : public SDFObject
+{
+private:
+	Vec2 m_radii;
+protected:
+	std::string getClassName() const override { return "SDFTorusYZ"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTorusYZ(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };

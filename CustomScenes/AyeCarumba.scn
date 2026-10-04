@@ -49,7 +49,7 @@ SDFObject color 1 1 1
 		OPTranslate translation 0.18 0.35 0.2
 		OPRotate axis 0.894427 0 0.447214 rotations 0.35
 		COMBAddSmooth smoothing 0.1 colorBlending 1 colorShifting 0
-		SDFTorus color 0.917647 0.74902 0.0156863 radii 0.2 0.015
+		SDFTorusXZ color 0.917647 0.74902 0.0156863 radii 0.2 0.015
 			stepBack
 		stepBack
 	COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
@@ -71,7 +71,7 @@ SDFObject color 1 1 1
 		OPRotate axis 0 -1 0 rotations 0.12
 		OPRotate axis 0 0 1 rotations 0.25
 		COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-		SDFTorus color 0.917647 0.74902 0.0156863 radii 0.075 0.02
+		SDFTorusXZ color 0.917647 0.74902 0.0156863 radii 0.075 0.02
 			OPTranslate translation 0 -0.02 0
 			COMBAddSmooth smoothing 0.02 colorBlending 1 colorShifting 0
 			SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 0.01 radius 0.06
@@ -240,7 +240,7 @@ SDFObject color 1 1 1
 					stepBack
 				OPTranslate translation 0 0.425 0.2
 				COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-				SDFTorus color 1 1 1 radii 0.17 0.055
+				SDFTorusXZ color 1 1 1 radii 0.17 0.055
 					OPTranslate translation -0.22 -0.2 -0.1
 					OPRotate axis 0 0 1 rotations 0.06
 					COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0

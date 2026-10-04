@@ -42,7 +42,7 @@ namespace DEF
 	inline static double	RESURFOnionMagnitude{ 0.01 };
 
 	// Transform defaults
-	inline static Vec3		TRANSVector{ Vec3::Up };
+	inline static Vec3		TRANSVector{ 0.0, 1.0, 0.0 };
 	inline static double	TRANSAmplitude{ 1.0 };
 	inline static double	TRANSPeriod{ 1.0 };
 	inline static double	TRANSPhase{ 0.0 };

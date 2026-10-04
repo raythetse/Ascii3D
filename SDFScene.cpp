@@ -574,8 +574,8 @@ SDFScene::SDFScene(LoadOption loadOption)
     case SDFScene::Elongate:
         elongateDemo();
         break;
-    case SDFScene::Torus:
-        torusDemo();
+    case SDFScene::Exclusion:
+        excludeDemo();
         break;
     }
 }
@@ -630,31 +630,41 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     return false;
 }
 
-void SDFScene::buildBart()
+void SDFScene::excludeDemo()
 {
-    Vec2 dim{ 1.0, 0.4 };
-    double dist{ 0.25 };
+    Vec2 dim{ 0.5, 0.2 };
+    double dist{ dim.x * 0.25 };
+    double oscillation = 8.0;
+    double period = 32.0;
+    COMBExclude::ColorMode cMode = COMBExclude::InternalDouble;
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFObject>()()
-        .pushOp<OPTranslate>(Vec3{ -dist, 0.0, -dist })
-        .pushOp<COMBAdd, SDFTorus>(dim, Color::Blue)()
-        .pushOp<OPTranslate>(Vec3 { 2.0 * dist, 0.0, 0.0 })
-        .pushOp<COMBExclude, SDFTorus>(dim, Color::Green)(COMBExclude::Double)
-        .stepBack(2)
-        .pushOp<COMBExclude, SDFObject>()(COMBExclude::Double)
-        .pushOp<OPTranslate>(Vec3{ 0.0, 0.0, -dist * 2.0 })
-        .pushOp<COMBAdd, SDFTorus>(dim, Color::Red)()
-        .pushOp<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
-        .pushOp<COMBExclude, SDFTorus>(dim, Color::Gold)(COMBExclude::Double)
-        .stepBack(0)
-        .pushOp<OPTranslate>(Vec3::Up * 0.5)
-        .pushOp<COMBSubtract, SDFBox>(Vec3{ 10.0, 1.0, 10.0 })()
+        .pushOp<COMBAdd, SDFObject>()() // L1
+            .pushOp<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
+            .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Left * dist * oscillation)
+            .pushOp<COMBAdd, SDFTorusXY>(dim, Color::Blue)() // L2
+                .pushOp<OPTranslate>(Vec3 { dist * 2.0, 0.0, 0.0 })
+        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
+                .pushOp<COMBExclude, SDFTorusXY>(dim, Color::Green)(cMode) // L3
+        .stepBack(0) // L0
+        .pushOp<COMBExclude, SDFObject>()(cMode) // L1
+            .pushOp<OPTranslate>(Vec3::Down * dist * 2.0)
+            .pushOp<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
+        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Down * dist * oscillation)
+            .pushOp<COMBAdd, SDFTorusXY>(dim, Color::Red)() // L2
+                .pushOp<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
+        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
+                .pushOp<COMBExclude, SDFTorusXY>(dim, Color::Yellow)(cMode) // L4
+        .stepBack(0) // L0
+        .pushOp<OPTranslate>(Vec3::Backward * 0.5)
+            .pushOp<COMBSubtract, SDFBox>(Vec3{ 100.0, 100.0, 1.0 })() // L1
+
+
                     
-        .addLightSource(Vec3{ 0.5, 2.0, 0.0 }, 5.0, Color::White, 0.5)
+        .addLightSource(Vec3{ 5.0, 5.0, -10.0 }, 250.0, Color::White, 0.3)
     );
 }
 
-void SDFScene::test()
+void SDFScene::buildBart()
 {
     Vec3 skinCol = Vec3{ 234.0, 191.0, 4.0 } / 255.0;
     Vec3 shirtCol = Vec3{ 241.0, 78.0, 40.0 } / 255.0;
@@ -714,7 +724,7 @@ void SDFScene::test()
             .pushOp<OPMirrorX>()
             .pushOp<OPTranslate>(Vec3{ 0.18, 0.35, 0.2})
             .pushOp<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
-            .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
+            .pushOp<COMBAddSmooth, SDFTorusXZ>(Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
             .stepBack(0) // L0
 
             // Eyes
@@ -734,7 +744,7 @@ void SDFScene::test()
             .pushOp<OPTranslate>(Vec3{ 0.55, -0.35, 0.0 })
             .pushOp<OPRotate>(Vec3::Down, 0.12)
             .pushOp<OPRotate>(Vec3::Forward, 0.25)
-            .pushOp<COMBAdd, SDFTorus>(Vec2{ .075, 0.02 }, skinCol)() // L2
+            .pushOp<COMBAdd, SDFTorusXZ>(Vec2{ .075, 0.02 }, skinCol)() // L2
             .pushOp<OPTranslate>(Vec3::Down * 0.02)
             .pushOp<COMBAddSmooth, SDFCylinderY>(0.06, 0.01, skinCol)(0.02)
             .stepBack(0) // L0
@@ -868,7 +878,7 @@ void SDFScene::test()
         .pushOp<COMBIntersect, SDFSphere>(0.6)() // L3
         .stepBack() // L2
         .pushOp<OPTranslate>(Vec3{ 0.0, 0.425, 0.2 })
-        .pushOp<COMBAdd, SDFTorus>(Vec2{ 0.17, .055 })() //L3
+        .pushOp<COMBAdd, SDFTorusXZ>(Vec2{ 0.17, .055 })() //L3
         .pushOp<OPTranslate>(Vec3{ -0.22, -0.2, -0.1 })
         .pushOp<OPRotate>(Vec3::Forward, 0.06)
         .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.02, 0.1, 0.1 })() // L4
@@ -916,9 +926,8 @@ void SDFScene::cubesDemo()
             .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
             .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
                 .stepBack(2)
+        .addLightSource(Vec3{ 2.0, 6.0, -2.0 }, 100.0, Color::White)
     );
-
-    m_lights.push_back(std::make_unique<LightSource>(Vec3{ 2.0, 6.0, -2.0 }, 100.0));
 }
 
 void SDFScene::elongateDemo()
@@ -935,30 +944,5 @@ void SDFScene::elongateDemo()
                 .stepBack()
             .pushOp<COMBAdd, SDFCrystal>(0.1, Color::Yellow)()
         .addLightSource(Vec3{ 3.0, 3.0, -3.0 }, 150.0, Color::White)
-    );
-}
-
-void SDFScene::torusDemo()
-{
-    double lightPower{ 200.0 };
-    double lightDist{ 16.0 };
-
-    add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFBox>(50.0, Color::MediumGray)()
-        .pushOp<OPInsideOut>()
-        .pushOp<OPTranslate>(Vec3{ -2.0, 1.0, 1.0 })
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.242)
-        .pushOp<OPRotateContinuous>(Vec3::Right, 0.143)
-        .pushOp<COMBAdd, SDFTorus>(Vec2{ 6.0, 1.0 }, Color::White)()
-        .stepBack()
-        .pushOp<OPTranslate>(Vec3{ -2.0, 1.0, 1.0 })
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.187)
-        .pushOp<OPRotateContinuous>(Vec3::Right, 0.231)
-        .pushOp<COMBAddSmooth, SDFTorus>(Vec2{ 5.0, 1.25 }, Color::White)(3.0)
-        .addLightSource({ -lightDist }, lightPower, Color::Red)
-        .addLightSource({ lightDist }, lightPower, Color::Blue)
-        .addLightSource({ lightDist, 0.0, -lightDist }, lightPower, Color::Green)
-        .addLightSource({ -0.5 * lightDist, lightDist, -lightDist }, lightPower, Color::Magenta)
-        .addLightSource({ -0.5 * lightDist, 0.0, lightDist }, lightPower, Color::Yellow)
     );
 }

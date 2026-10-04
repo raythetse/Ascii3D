@@ -234,7 +234,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFSphere>(radius, color);
     } },
-    { "SDFTorus", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFTorusXZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ DEF::OBJColor };
         Vec2 radii{ DEF::OBJRadii };
 
@@ -244,7 +244,31 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radii") ss >> radii.x >> radii.y;
         }
-        builder.pushSDFObj<SDFTorus>(radii, color);
+        builder.pushSDFObj<SDFTorusXZ>(radii, color);
+    } },
+    { "SDFTorusYZ", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ DEF::OBJColor };
+        Vec2 radii{ DEF::OBJRadii };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "radii") ss >> radii.x >> radii.y;
+        }
+        builder.pushSDFObj<SDFTorusYZ>(radii, color);
+    } },
+    { "SDFTorusXY", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ DEF::OBJColor };
+        Vec2 radii{ DEF::OBJRadii };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "radii") ss >> radii.x >> radii.y;
+        }
+        builder.pushSDFObj<SDFTorusXY>(radii, color);
     } },
     { "SDFTorusSegment", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ DEF::OBJColor };

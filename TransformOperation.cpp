@@ -104,8 +104,10 @@ void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
 
 void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
 {
+	std::string propName{ "" };
 	ss << "\t// OPTranslate //\n";
-	ss << "\tp" << level << " -= " << m_translation.getShader() << "; \n\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "translation") ? propName : m_translation.getShader()) << ";\n";
+	ss << "\tp" << level << " -= pmVec30; \n\n";
 }
 
 void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
