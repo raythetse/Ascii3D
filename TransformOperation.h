@@ -1,5 +1,4 @@
 #pragma once
-#include "SDFDefaults.h"
 #include "SDFOperation.h"
 
 class TransformOperation : public SDFOperation
@@ -87,6 +86,8 @@ public:
 
 class OPTranslate : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_TRANSLATION{ 0.0, 1.0, 0.0 };
 private:
 	Vec3 m_translation;
 protected:
@@ -95,14 +96,19 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPTranslate(Vec3 translation = DEF::TRANSVector) : m_translation(translation) {}
+	OPTranslate(Vec3 translation = DFLT_TRANSLATION) : m_translation(translation) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPTranslateSine : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_TRANSLATION{ 0.0, 1.0, 0.0 };
+	inline static const double DFLT_AMPLITUDE{ 1.0 };
+	inline static const double DFLT_PERIOD{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
-	Vec3 m_axis;
+	Vec3 m_translation;
 	double m_amplitude;
 	double m_period;
 	double m_phase;
@@ -114,15 +120,20 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPTranslateSine(Vec3 axis = DEF::TRANSVector, double amplitude = DEF::TRANSAmplitude, double period = DEF::TRANSPeriod, double phase = DEF::TRANSPhase)
-		: m_axis(axis), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
+	OPTranslateSine(Vec3 translation = DFLT_TRANSLATION, double amplitude = DFLT_AMPLITUDE, double period = DFLT_PERIOD, double phase = DFLT_PHASE)
+		: m_translation(translation), m_amplitude(amplitude), m_period(period), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPTranslateLinear : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_TRANSLATION{ 0.0, 1.0, 0.0 };
+	inline static const Vec2 DFLT_TRANSITTIMES{ 1.0 };
+	inline static const Vec2 DFLT_ENDDELAYS{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
-	Vec3 m_vector;
+	Vec3 m_translation;
 	Vec2 m_transitTimes;
 	Vec2 m_endDelays;
 	double m_phase;
@@ -134,13 +145,17 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPTranslateLinear(Vec3 vector = DEF::TRANSVector, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
-		: m_vector(vector), m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase) {}
+	OPTranslateLinear(Vec3 translation = DFLT_TRANSLATION, Vec2 transitTimes = DFLT_TRANSITTIMES, Vec2 endDelays = DFLT_ENDDELAYS, double phase = DFLT_PHASE)
+		: m_translation(translation), m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPCubeRollHeight : public TransformOperation
 {
+public:
+	inline static const double DFLT_CUBEHEIGHT{ 1.0 };
+	inline static const double DFLT_PERIOD{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
 	double m_cubeHeight;
 	double m_period;
@@ -153,13 +168,16 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPCubeRollHeight(double cubeHeight = DEF::TRANSCubeHeight, double period = DEF::TRANSPeriod, double phase = DEF::TRANSPhase)
+	OPCubeRollHeight(double cubeHeight = DFLT_CUBEHEIGHT, double period = DFLT_PERIOD, double phase = DFLT_PHASE)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPRotate : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_AXIS{ 0.0, 1.0, 0.0 };
+	inline static const double DFLT_ROTATIONS{ 0.5 };
 private:
 	Vec3 m_axis;
 	double m_rotations;
@@ -171,13 +189,17 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRotate(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations)
+	OPRotate(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS)
 		: m_axis(axis), m_rotations(rotations) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPRotateContinuous : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_AXIS{ 0.0, 1.0, 0.0 };
+	inline static const double DFLT_ROTATIONSPERSECOND{ 0.25 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
 	Vec3 m_axis;
 	double m_rotationsPerSecond;
@@ -190,13 +212,19 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRotateContinuous(Vec3 axis = DEF::TRANSVector, double rotationsPerSecond = DEF::TRANSRotsPerSec, double phase = DEF::TRANSPhase)
+	OPRotateContinuous(Vec3 axis = DFLT_AXIS, double rotationsPerSecond = DFLT_ROTATIONSPERSECOND, double phase = DFLT_PHASE)
 		: m_axis(axis), m_rotationsPerSecond(rotationsPerSecond), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPRotateScan : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_AXIS{ 0.0, 1.0, 0.0 };
+	inline static const double DFLT_ROTATIONS{ 0.5 };
+	inline static const Vec2 DFLT_TRANSTIMES{ 1.0 };
+	inline static const Vec2 DFLT_ENDDELAYS{ 0.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
 	Vec3 m_axis;
 	double m_rotations;
@@ -211,13 +239,19 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRotateScan(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations, Vec2 transitTimes = DEF::TRANSTransTimes, Vec2 endDelays = DEF::TRANSEndDelays, double phase = DEF::TRANSPhase)
+	OPRotateScan(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS, Vec2 transitTimes = DFLT_TRANSTIMES, Vec2 endDelays = DFLT_ENDDELAYS, double phase = DFLT_PHASE)
 		: m_axis(axis), m_rotations(rotations), m_transitTimes(transitTimes), m_endDelays(endDelays), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPRotateDelay : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_AXIS{ 0.0, 1.0, 0.0 };
+	inline static const double DFLT_ROTATIONS{ 0.5 };
+	inline static const double DFLT_ROTATETIME{ 1.0 };
+	inline static const double DFLT_DELAYTIME{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
 	Vec3 m_axis;
 	double m_rotations;
@@ -232,13 +266,17 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRotateDelay(Vec3 axis = DEF::TRANSVector, double rotations = DEF::TRANSRotations, double rotateTime = DEF::TRANSRotateTime, double delayTime = DEF::TRANSDelayTime, double phase = DEF::TRANSPhase)
+	OPRotateDelay(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS, double rotateTime = DFLT_ROTATETIME, double delayTime = DFLT_DELAYTIME, double phase = DFLT_PHASE)
 		: m_axis(axis), m_rotations(rotations), m_rotateTime(rotateTime), m_delayTime(delayTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class OPCubeRoller : public TransformOperation
 {
+public:
+	inline static std::vector<Vec3>	DFLT_AXES{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left };
+	inline static const double DFLT_QUARTERTURNTIME{ 0.5 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
 	std::vector<Vec3> m_axes;
 	double m_quarterTurnTime;
@@ -251,13 +289,16 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPCubeRoller(std::vector<Vec3> axes = DEF::TRANSCubeRotAxes, double quarterTurnTime = DEF::TRANSQuarterTurnTime, double phase = DEF::TRANSPhase)
+	OPCubeRoller(std::vector<Vec3> axes = DFLT_AXES, double quarterTurnTime = DFLT_QUARTERTURNTIME, double phase = DFLT_PHASE)
 		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
 class Elongate : public TransformOperation
 {
+public:
+	inline static const double DFLT_LENGTH{ 1.0 };
+	inline static const double DFLT_OFFSET{ 0.0 };
 protected:
 	double m_length;
 	double m_offset;
@@ -268,7 +309,7 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
 public:
-	Elongate(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
+	Elongate(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: m_length(length), m_offset(offset) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -280,7 +321,7 @@ protected:
 	std::string getClassName() const { return "OPElongateX"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPElongateX(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
+	OPElongateX(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: Elongate(length, offset) {}
 };
 
@@ -291,7 +332,7 @@ protected:
 	std::string getClassName() const { return "OPElongateY"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPElongateY(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
+	OPElongateY(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: Elongate(length, offset) {}
 };
 
@@ -302,12 +343,16 @@ protected:
 	std::string getClassName() const { return "OPElongateZ"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPElongateZ(double length = DEF::TRANSElongateLength, double offset = DEF::TRANSElongateOffset)
+	OPElongateZ(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: Elongate(length, offset) {}
 };
 
 class OPElongateXYZ : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_LENGTHS{ 1.0 };
+	inline static const Vec3 DFLT_OFFSETS{ 0.0 };
+private:
 	Vec3 m_lengths;
 	Vec3 m_offsets;
 	Vec3 m_halfLens{};
@@ -319,7 +364,7 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPElongateXYZ(Vec3 lengths = DEF::TRANSElongateLength, Vec3 offsets = DEF::TRANSElongateOffset)
+	OPElongateXYZ(Vec3 lengths = DFLT_LENGTHS, Vec3 offsets = DFLT_OFFSETS)
 		: m_lengths(lengths), m_offsets(offsets) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };

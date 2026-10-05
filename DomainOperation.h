@@ -1,16 +1,17 @@
 #pragma once
-#include "SDFDefaults.h"
 #include "TransformOperation.h"
 
 class DomainOperation : public TransformOperation
 {
+public:
+	inline static const Vec3 DFLT_SPACING{ 1.0 };
 protected:
 	Vec3 m_spacing;
 	virtual std::string getClassName() const = 0;
 	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const = 0;
 public:
-	DomainOperation(Vec3 spacing = DEF::DOMSpacing) : m_spacing(spacing) {};
+	DomainOperation(Vec3 spacing = DFLT_SPACING) : m_spacing(spacing) {};
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
@@ -22,7 +23,7 @@ protected:
 	std::string getClassName() const override { return "OPRepeatX"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatX(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatX(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatY : public DomainOperation
@@ -32,7 +33,7 @@ protected:
 	std::string getClassName() const override { return "OPRepeatY"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatY(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatY(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatZ : public DomainOperation
@@ -42,7 +43,7 @@ protected:
 	std::string getClassName() const override { return "OPRepeatZ"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatZ(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatZ(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatXY : public DomainOperation
@@ -52,7 +53,7 @@ protected:
 	std::string getClassName() const override { return "OPRepeatXY"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatXY(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatXY(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatXZ : public DomainOperation
@@ -62,7 +63,7 @@ protected:
 	std::string getClassName() const override { return "OPRepeatXZ"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatXZ(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatXZ(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatYZ : public DomainOperation
@@ -72,7 +73,7 @@ protected:
 	std::string getClassName() const override { return "OPRepeatYZ"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatYZ(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatYZ(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatXYZ : public DomainOperation
@@ -82,11 +83,13 @@ protected:
 	std::string getClassName() const override { return "OPRepeatXYZ"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatXYZ(Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing) {}
+	OPRepeatXYZ(Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing) {}
 };
 
 class OPRepeatLimited : public DomainOperation
 {
+public:
+	inline static const Vec3 DFLT_LIMITS{ 1.0 };
 private:
 	Vec3 m_limits;
 protected:
@@ -95,6 +98,6 @@ protected:
 	std::string getClassName() const override { return "OPRepeatLimited"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRepeatLimited(Vec3 limits = DEF::DOMLimits, Vec3 spacing = DEF::DOMSpacing) : DomainOperation(spacing), m_limits(limits) {}
+	OPRepeatLimited(Vec3 limits = DFLT_LIMITS, Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing), m_limits(limits) {}
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };

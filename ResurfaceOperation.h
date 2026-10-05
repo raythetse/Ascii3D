@@ -1,9 +1,10 @@
 #pragma once
-#include "SDFDefaults.h"
 #include "SDFOperation.h"
 
 class ResurfaceOperation : public SDFOperation
 {
+public:
+	inline static const double DFLT_MAGNITUDE{ 0.01 };
 protected:
 	double m_magnitude{};
 	void innerUpdate() override {};
@@ -22,7 +23,7 @@ protected:
 	std::string getClassName() const { return "OPRoundOff"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPRoundOff(double magnitude = DEF::RESURFRoundMagnitude) : ResurfaceOperation(magnitude) {}
+	OPRoundOff(double magnitude = DFLT_MAGNITUDE) : ResurfaceOperation(magnitude) {}
 };
 
 class OPOnion : public ResurfaceOperation
@@ -32,7 +33,7 @@ protected:
 	std::string getClassName() const { return "OPOnion"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	OPOnion(double magnitude = DEF::RESURFOnionMagnitude) : ResurfaceOperation(magnitude) {}
+	OPOnion(double magnitude = DFLT_MAGNITUDE) : ResurfaceOperation(magnitude) {}
 };
 
 class OPInsideOut : public ResurfaceOperation

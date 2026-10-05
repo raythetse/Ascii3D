@@ -2,14 +2,6 @@
 #include <algorithm>
 #include <sstream>
 
-void CombinationOperation::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
-{
-	alpha *= m_colorBlending;
-	alpha -= 0.5 * (m_colorBlending - 1.0);
-	alpha = std::clamp(alpha, 0.0, 1.0);
-	*colorOut = colorIn.lerp(*colorOut, alpha);
-}
-
 void CombinationOperation::setCombineObject(std::unique_ptr<SDFObject> combineObj)
 {
 	m_combineObj = std::move(combineObj);
@@ -22,22 +14,6 @@ void CombinationOperation::update()
 	}
 	innerUpdate();
 	m_combineObj->update();
-}
-
-void CombinationOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
-{
-	if (propMod->propName() == "smoothing") { 
-		propMod->BindToProp(&m_smoothing);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "colorBlending") {
-		propMod->BindToProp(&m_colorBlending);
-		m_propMods.push_back(std::move(propMod));
-	}
-	else if (propMod->propName() == "colorShifting") {
-		propMod->BindToProp(&m_colorShifting);
-		m_propMods.push_back(std::move(propMod));
-	}
 }
 
 void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t level) const
@@ -63,9 +39,6 @@ void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
-	ss << " smoothing " << m_smoothing;
-	ss << " colorBlending " << m_colorBlending;
-	ss << " colorShifting " << m_colorShifting;
 	strVec.push_back(ss.str());
 }
 
@@ -173,11 +146,43 @@ void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level)
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
+	ss << " colorMode " << m_colorMode;
+	strVec.push_back(ss.str());
+}
+
+void SmoothCombination::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+	if (propMod->propName() == "smoothing") {
+		propMod->BindToProp(&m_smoothing);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "colorBlending") {
+		propMod->BindToProp(&m_colorBlending);
+		m_propMods.push_back(std::move(propMod));
+	}
+	else if (propMod->propName() == "colorShifting") {
+		propMod->BindToProp(&m_colorShifting);
+		m_propMods.push_back(std::move(propMod));
+	}
+}
+
+void SmoothCombination::innerSerialize(std::vector<std::string>& strVec, size_t level) const
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
 	ss << " smoothing " << m_smoothing;
 	ss << " colorBlending " << m_colorBlending;
 	ss << " colorShifting " << m_colorShifting;
-	ss << " colorMode " << m_colorMode;
 	strVec.push_back(ss.str());
+}
+
+void SmoothCombination::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
+{
+	alpha *= m_colorBlending;
+	alpha -= 0.5 * (m_colorBlending - 1.0);
+	alpha = std::clamp(alpha, 0.0, 1.0);
+	*colorOut = colorIn.lerp(*colorOut, alpha);
 }
 
 double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {

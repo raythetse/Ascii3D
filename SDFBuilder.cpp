@@ -1,6 +1,5 @@
 #pragma once
 #include "SDFBuilder.h"
-#include "SDFDefaults.h"
 #include "SDFObject.h"
 #include "SDFScene.h"
 
@@ -93,9 +92,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<COMBExclude>(nullptr, colorMode);
     }},
     { "COMBAddSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
-        double smoothing{ DEF::COMBSmooth };
-        double colorBlending{ DEF::COMBColBlend };
-        double colorShifting{ DEF::COMBColShift };
+        double smoothing{ SmoothCombination::DFLT_SMOOTHING };
+        double colorBlending{ SmoothCombination::DFLT_COLORBLENDING };
+        double colorShifting{ SmoothCombination::DFLT_COLORSHIFTING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -107,9 +106,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<COMBAddSmooth>(nullptr, smoothing, colorBlending, colorShifting);
     }},
     { "COMBSubtractSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
-        double smoothing{ DEF::COMBSmooth };
-        double colorBlending{ DEF::COMBColBlend };
-        double colorShifting{ DEF::COMBColShift };
+        double smoothing{ SmoothCombination::DFLT_SMOOTHING };
+        double colorBlending{ SmoothCombination::DFLT_COLORBLENDING };
+        double colorShifting{ SmoothCombination::DFLT_COLORSHIFTING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -121,9 +120,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<COMBSubtractSmooth>(nullptr, smoothing, colorBlending, colorShifting);
     }},
     { "COMBIntersectSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
-        double smoothing{ DEF::COMBSmooth };
-        double colorBlending{ DEF::COMBColBlend };
-        double colorShifting{ DEF::COMBColShift };
+        double smoothing{ SmoothCombination::DFLT_SMOOTHING };
+        double colorBlending{ SmoothCombination::DFLT_COLORBLENDING };
+        double colorShifting{ SmoothCombination::DFLT_COLORSHIFTING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -644,7 +643,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Transformations
     { "OPTranslate", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 translation{ DEF::TRANSVector };
+        Vec3 translation{ OPTranslate::DFLT_TRANSLATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -654,41 +653,41 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPTranslate>(translation);
     } },
     { "OPTranslateSine", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ DEF::TRANSVector };
-        double amplitude{ DEF::TRANSAmplitude };
-        double period{ DEF::TRANSPeriod };
-        double phase{ DEF::TRANSPhase };
+        Vec3 translation{ OPTranslateSine::DFLT_TRANSLATION };
+        double amplitude{ OPTranslateSine::DFLT_AMPLITUDE };
+        double period{ OPTranslateSine::DFLT_PERIOD };
+        double phase{ OPTranslateSine::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "axis") ss >> axis.x >> axis.y >> axis.z;
+            if (param == "translation") ss >> translation.x >> translation.y >> translation.z;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "period") ss >> period;
             else if (param == "phase") ss >> phase;
         }
-        builder.pushOp<OPTranslateSine>(axis, amplitude, period, phase);
+        builder.pushOp<OPTranslateSine>(translation, amplitude, period, phase);
     } },
     { "OPTranslateLinear", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 vector{ DEF::TRANSVector };
-        Vec2 transitTimes{ DEF::TRANSTransTimes };
-        Vec2 endDelays{ DEF::TRANSEndDelays };
-        double phase{ DEF::TRANSPhase };
+        Vec3 translation{ OPTranslateLinear::DFLT_TRANSLATION };
+        Vec2 transitTimes{ OPTranslateLinear::DFLT_TRANSITTIMES };
+        Vec2 endDelays{ OPTranslateLinear::DFLT_ENDDELAYS };
+        double phase{ OPTranslateLinear::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "vector") ss >> vector.x >> vector.y >> vector.z;
+            if (param == "translation") ss >> translation.x >> translation.y >> translation.z;
             else if (param == "transitTimes") ss >> transitTimes.x >> transitTimes.y;
             else if (param == "endDelays") ss >> endDelays.x >> endDelays.y;
             else if (param == "phase") ss >> phase;
         }
-        builder.pushOp<OPTranslateLinear>(vector, transitTimes, endDelays, phase);
+        builder.pushOp<OPTranslateLinear>(translation, transitTimes, endDelays, phase);
     } },
     { "OPCubeRollHeight", [](SDFBuilder& builder, std::stringstream& ss) {
-        double cubeHeight{ DEF::TRANSCubeHeight };
-        double period{ DEF::TRANSPeriod };
-        double phase{ DEF::TRANSPhase };
+        double cubeHeight{ OPCubeRollHeight::DFLT_CUBEHEIGHT };
+        double period{ OPCubeRollHeight::DFLT_PERIOD };
+        double phase{ OPCubeRollHeight::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -700,8 +699,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPCubeRollHeight>(cubeHeight, period, phase);
     } },
     { "OPRotate", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ DEF::TRANSVector };
-        double rotations{ DEF::TRANSRotations };
+        Vec3 axis{ OPRotate::DFLT_AXIS };
+        double rotations{ OPRotate::DFLT_ROTATIONS };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -712,9 +711,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRotate>(axis, rotations);
     } },
     { "OPRotateContinuous", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ DEF::TRANSVector };
-        double rotationsPerSecond{ DEF::TRANSRotsPerSec };
-        double phase{ DEF::TRANSPhase };
+        Vec3 axis{ OPRotateContinuous::DFLT_AXIS };
+        double rotationsPerSecond{ OPRotateContinuous::DFLT_ROTATIONSPERSECOND };
+        double phase{ OPRotateContinuous::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -726,11 +725,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRotateContinuous>(axis, rotationsPerSecond, phase);
     } },
     { "OPRotateScan", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ DEF::TRANSVector };
-        double rotations{ DEF::TRANSRotations };
-        Vec2 transitTimes{ DEF::TRANSTransTimes };
-        Vec2 endDelays{ DEF::TRANSEndDelays };
-        double phase{ DEF::TRANSPhase };
+        Vec3 axis{ OPRotateScan::DFLT_AXIS };
+        double rotations{ OPRotateScan::DFLT_ROTATIONS };
+        Vec2 transitTimes{ OPRotateScan::DFLT_TRANSTIMES };
+        Vec2 endDelays{ OPRotateScan::DFLT_ENDDELAYS };
+        double phase{ OPRotateScan::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -744,11 +743,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRotateScan>(axis, rotations, transitTimes, endDelays, phase);
     } },
     { "OPRotateDelay", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ DEF::TRANSVector };
-        double rotations{ DEF::TRANSRotations };
-        double rotateTime{ DEF::TRANSRotateTime };
-        double delayTime{ DEF::TRANSDelayTime };
-        double phase{ DEF::TRANSPhase };
+        Vec3 axis{ OPRotateDelay::DFLT_AXIS };
+        double rotations{ OPRotateDelay::DFLT_ROTATIONS };
+        double rotateTime{ OPRotateDelay::DFLT_ROTATETIME };
+        double delayTime{ OPRotateDelay::DFLT_DELAYTIME };
+        double phase{ OPRotateDelay::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -762,9 +761,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRotateDelay>(axis, rotations, rotateTime, delayTime, phase);
     } },
     { "OPCubeRoller", [](SDFBuilder& builder, std::stringstream& ss) {
-        std::vector<Vec3> axes{ DEF::TRANSCubeRotAxes };
-        double quarterTurnTime{ DEF::TRANSQuarterTurnTime };
-        double phase{ DEF::TRANSPhase };
+        std::vector<Vec3> axes{ OPCubeRoller::DFLT_AXES };
+        double quarterTurnTime{ OPCubeRoller::DFLT_QUARTERTURNTIME };
+        double phase{ OPCubeRoller::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -785,8 +784,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPCubeRoller>(axes, quarterTurnTime, phase);
     } },
     { "OPElongateX", [](SDFBuilder& builder, std::stringstream& ss) {
-        double length{ DEF::TRANSElongateLength };
-        double offset{ DEF::TRANSElongateOffset };
+        double length{ OPElongateX::DFLT_LENGTH };
+        double offset{ OPElongateX::DFLT_OFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -797,8 +796,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPElongateX>(length, offset);
     } },
     { "OPElongateY", [](SDFBuilder& builder, std::stringstream& ss) {
-        double length{ DEF::TRANSElongateLength };
-        double offset{ DEF::TRANSElongateOffset };
+        double length{ OPElongateY::DFLT_LENGTH };
+        double offset{ OPElongateY::DFLT_OFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -809,8 +808,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPElongateY>(length, offset);
     } },
     { "OPElongateZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        double length{ DEF::TRANSElongateLength };
-        double offset{ DEF::TRANSElongateOffset };
+        double length{ OPElongateZ::DFLT_LENGTH };
+        double offset{ OPElongateZ::DFLT_OFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -821,8 +820,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPElongateZ>(length, offset);
     } },
     { "OPElongateXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 lengths{ DEF::TRANSElongateLength };
-        Vec3 offsets{ DEF::TRANSElongateOffset };
+        Vec3 lengths{ OPElongateXYZ::DFLT_LENGTHS };
+        Vec3 offsets{ OPElongateXYZ::DFLT_OFFSETS };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -835,7 +834,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Resurface Ops
     { "OPRoundOff", [](SDFBuilder& builder, std::stringstream& ss) {
-        double magnitude{ DEF::RESURFRoundMagnitude };
+        double magnitude{ OPRoundOff::DFLT_MAGNITUDE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -845,7 +844,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRoundOff>(magnitude);
     } },
     { "OPOnion", [](SDFBuilder& builder, std::stringstream& ss) {
-        double magnitude{ DEF::RESURFOnionMagnitude };
+        double magnitude{ OPOnion::DFLT_MAGNITUDE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -860,7 +859,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Domain Ops
     { "OPRepeatX", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -870,7 +869,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatX>(spacing);
     } },
     { "OPRepeatY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -880,7 +879,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatY>(spacing);
     } },
     { "OPRepeatZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -890,7 +889,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatZ>(spacing);
     } },
     { "OPRepeatXY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -900,7 +899,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatXY>(spacing);
     } },
     { "OPRepeatXZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -910,7 +909,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatXZ>(spacing);
     } },
     { "OPRepeatYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -920,7 +919,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatYZ>(spacing);
     } },
     { "OPRepeatXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -930,8 +929,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushOp<OPRepeatXYZ>(spacing);
     } },
     { "OPRepeatLimited", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DEF::DOMSpacing };
-        Vec3 limits{ DEF::DOMLimits };
+        Vec3 spacing{ DomainOperation::DFLT_SPACING };
+        Vec3 limits{ OPRepeatLimited::DFLT_LIMITS };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -945,9 +944,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     // Property Modifiers
     { "PMOscillateSine", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ DEF::PMPeriod };
-        double amplitude{ DEF::PMAmplitude };
-        double phase{ DEF::PMPhase };
+        double period{ PropertyModifierBase::DFLT_PERIOD };
+        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
+        double phase{ PropertyModifierBase::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -961,9 +960,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateSineV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ DEF::PMPeriod };
-        Vec3 amplitudes{ DEF::PMAmplitude };
-        Vec3 phases{ DEF::PMPhase };
+        Vec3 periods{ PropertyModifierBase::DFLT_PERIOD };
+        Vec3 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
+        Vec3 phases{ PropertyModifierBase::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -977,9 +976,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateLinear", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ DEF::PMPeriod };
-        double amplitude{ DEF::PMAmplitude };
-        double phase{ DEF::PMPhase };
+        double period{ PropertyModifierBase::DFLT_PERIOD };
+        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
+        double phase{ PropertyModifierBase::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -993,9 +992,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateLinearV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ DEF::PMPeriod };
-        Vec3 amplitudes{ DEF::PMAmplitude };
-        Vec3 phases{ DEF::PMPhase };
+        Vec3 periods{ PropertyModifierBase::DFLT_PERIOD };
+        Vec3 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
+        Vec3 phases{ PropertyModifierBase::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -1008,10 +1007,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.bindPropMod<PMOscillateLinearV3>(propName, periods, amplitudes, phases);
     } },
     { "LightSource", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 position{ DEF::LSPosition };
-        double luminance{ DEF::LSLuminance };
-        double ambientPower{ DEF::LSAmbientPower };
-        Color color;
+        Vec3 position{ LightSource::DFLT_POSITION };
+        double luminance{ LightSource::DFLT_LUMINANCE };
+        double ambientPower{ LightSource::DFLT_AMBIENTPOWER };
+        Color color{ LightSource::DFLT_COLOR };
 
         while (ss.peek() != EOF) {
             std::string param;

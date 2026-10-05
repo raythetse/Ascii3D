@@ -119,7 +119,7 @@ void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> pro
 }
 
 void OPTranslateSine::innerUpdate() {
-	m_updateVal = m_axis * m_amplitude * sin(MF::TAU * (GameTimer::gameTime() / m_period + m_phase));
+	m_updateVal = m_translation * m_amplitude * sin(MF::TAU * (GameTimer::gameTime() / m_period + m_phase));
 }
 
 void OPTranslateSine::transform(Vec3& p) const
@@ -129,7 +129,7 @@ void OPTranslateSine::transform(Vec3& p) const
 
 void OPTranslateSine::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " axis " << m_axis.x << ' ' << m_axis.y << ' ' << m_axis.z;
+	ss << " translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
 	ss << " amplitude " << m_amplitude;
 	ss << " period " << m_period;
 	ss << " phase " << m_phase;
@@ -142,7 +142,7 @@ void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size
 	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "amplitude") ? propName : std::to_string(m_amplitude)) << ";\n";
 	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
 	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "period") ? propName : std::to_string(m_period)) << ";\n";
-	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "axis") ? propName : m_axis.getShader()) << ";\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "translation") ? propName : m_translation.getShader()) << ";\n";
 	ss << "\tp" << level << " -= pmVec30 * pmFloat0 * sin(TAU * (pmFloat1 + time / pmFloat2));\n\n";
 }
 
@@ -152,8 +152,8 @@ void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase>
 		propMod->BindToProp(&m_amplitude);
 		m_propMods.push_back(std::move(propMod));
 	}
-	else if (propMod->propName() == "axis") {
-		propMod->BindToProp(&m_axis);
+	else if (propMod->propName() == "translation") {
+		propMod->BindToProp(&m_translation);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "period") {
@@ -169,7 +169,7 @@ void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase>
 void OPTranslateLinear::innerUpdate() {
 	double cycleTime = m_transitTimes.x + m_transitTimes.y + m_endDelays.x + m_endDelays.y;
 	double progress{ std::fmod(GameTimer::gameTime() + m_phase + m_transitTimes.x * 0.5, cycleTime) };
-	Vec3 start{ m_vector * -0.5 };
+	Vec3 start{ m_translation * -0.5 };
 	if (progress <= m_transitTimes.x) {
 		progress /= m_transitTimes.x;
 		m_updateVal = start.lerp(-start, progress);
@@ -195,7 +195,7 @@ void OPTranslateLinear::transform(Vec3& p) const
 
 void OPTranslateLinear::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << " vector " << m_vector.x << ' ' << m_vector.y << ' ' << m_vector.z;
+	ss << " translation " << m_translation.x << ' ' << m_translation.y << ' ' << m_translation.z;
 	ss << " transitTimes " << m_transitTimes.x << ' ' << m_transitTimes.y;
 	ss << " endDelays " << m_endDelays.x << ' ' << m_endDelays.y;
 	ss << " phase " << m_phase;
@@ -208,14 +208,14 @@ void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, si
 	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "phase") ? propName : std::to_string(m_phase)) << ";\n";
 	ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "transitTimes") ? propName : m_transitTimes.getShader()) << ";\n";
 	ss << "\tpmVec21 = " << (getShaderPropModCalls(propName = "endDelays") ? propName : m_endDelays.getShader()) << ";\n";
-	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "vector") ? propName : m_vector.getShader()) << ";\n";
+	ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "translation") ? propName : m_translation.getShader()) << ";\n";
 	ss << "\tp" << level << " -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);\n\n";
 }
 
 void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
 {
-	if (propMod->propName() == "vector") {
-		propMod->BindToProp(&m_vector);
+	if (propMod->propName() == "translation") {
+		propMod->BindToProp(&m_translation);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "endDelays") {

@@ -205,7 +205,6 @@
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="PropertyModifier.h" />
-    <ClInclude Include="SDFDefaults.h" />
     <ClInclude Include="SDFOperationInc.h" />
     <ClInclude Include="ResurfaceOperation.h" />
     <ClInclude Include="SDFOperation.h" />
@@ -227,7 +226,6 @@
     <ClInclude Include="WalkingCubesScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ObjectTypes.txt" />
     <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>

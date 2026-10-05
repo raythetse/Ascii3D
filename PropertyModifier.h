@@ -3,12 +3,15 @@
 #include <sstream>
 #include <string>
 #include "MathFunctions.h"
-#include "SDFDefaults.h"
 #include "GameTimer.h"
 #include "Vec3.h"
 
 class PropertyModifierBase
 {
+public:
+	inline static const double DFLT_PERIOD{ 1.0 };
+	inline static const double DFLT_AMPLITUDE{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 private:
 	std::string m_propName;
 protected:
@@ -58,7 +61,7 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateSine(std::string_view propName, double period = DEF::PMPeriod, double amplitude = DEF::PMAmplitude, double phase = DEF::PMPhase)
+	PMOscillateSine(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
 		*ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
@@ -75,7 +78,7 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateSineV3(std::string_view propName, Vec3 period = DEF::PMPeriod, Vec3 amplitude = DEF::PMAmplitude, Vec3 phase = DEF::PMPhase)
+	PMOscillateSineV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
@@ -92,7 +95,7 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateLinear(std::string_view propName, double period = DEF::PMPeriod, double amplitude = DEF::PMAmplitude, double phase = DEF::PMPhase)
+	PMOscillateLinear(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
 		: PropertyModifier(propName, [this](double* ptr, double initVal) -> void {
 		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
 		progress -= 0.5;
@@ -116,7 +119,7 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateLinearV3(std::string_view propName, Vec3 period = DEF::PMPeriod, Vec3 amplitude = DEF::PMAmplitude, Vec3 phase = DEF::PMPhase)
+	PMOscillateLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		double gameTime = GameTimer::gameTime();
 		Vec3 progress { 

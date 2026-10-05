@@ -3,7 +3,6 @@
 #include <memory>
 #include <sstream>
 #include <vector>
-#include "SDFDefaults.h"
 #include "Mat3.h"
 #include "Vec2.h"
 #include "Vec3.h"

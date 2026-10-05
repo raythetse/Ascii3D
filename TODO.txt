@@ -1,4 +1,5 @@
 Required:
+- separate out normal/smooth combo types
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
@@ -11,16 +12,15 @@ Required:
 - refactor combo ops for smoothed subclass
 - make sure things that should be smart pointers are
 - move glsl code building into separate class from scene
-- get rid of defaults file
 - add controls instructions to main menu screen
+- Add oscillate prop mods with end delays (remove linear/sine translates?)
+- Add missing update vals for software rendering ops
 
 Optional:
-- improve names of obj/op defaults
 - light movement
 - per-scene camera start pos/look dir
 - propMods for SDFObjects
 - bounding boxes/spheres/capsules for efficiency
-- Add oscillate prop mods with end delays
 - change repeat operations to not rely on vec3
 - transparency/reflection
 - object chain copying/merging for SDF branch reuse (shared_ptrs for SDFObjects?)

@@ -239,9 +239,6 @@
     <ClInclude Include="FileHandler.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="SDFDefaults.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanRaymarcher.h">
       <Filter>Header Files\Rendering\Vulkan</Filter>
     </ClInclude>
@@ -266,7 +263,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
-    <Text Include="ObjectTypes.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="raymacher.comp">
