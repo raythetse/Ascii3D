@@ -18,11 +18,7 @@ private:
 	bool m_swap{};
 	void rebuildBuffers();
 public:
-	PixelField(const size_t width, const size_t height)
-		: m_width(width), m_height(height)
-		, m_fieldA(std::vector<PixelSample>(width * height))
-		, m_fieldB(std::vector<PixelSample>(width * height))
-		, m_pixelRange{ std::views::iota(size_t(0), width * height) } {}
+	PixelField() = default;
 	PixelSample& operator()(std::size_t row, std::size_t col);
 	size_t width() const { return m_width; }
 	size_t height() const { return m_height; }

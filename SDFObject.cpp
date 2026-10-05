@@ -98,54 +98,6 @@ double SDFObject::signedDistanceInner(Vec3 p) const
     return std::numeric_limits<double>::max();
 }
 
-void SDFPlaneXZ::serializeInner(std::stringstream& ss) const
-{
-    ss << " yPos " << m_yPos;
-}
-
-void SDFPlaneXZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
-{
-    ss << "\t// SDFPlaneXZ //\n";
-    ss << "\td" << level << " = p" << level << ".y - " << m_yPos << ";\n\n";
-}
-
-double SDFPlaneXZ::signedDistanceInner(Vec3 p) const
-{
-    return p.y - m_yPos;
-}
-
-void SDFPlaneYZ::serializeInner(std::stringstream& ss) const
-{
-    ss << " xPos " << m_xPos;
-}
-
-void SDFPlaneYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
-{
-    ss << "\t// SDFPlaneYZ //\n";
-    ss << "\td" << level << " = p" << level << ".x - " << m_xPos << ";\n\n";
-}
-
-double SDFPlaneYZ::signedDistanceInner(Vec3 p) const
-{
-    return p.x - m_xPos;
-}
-
-void SDFPlaneXY::serializeInner(std::stringstream& ss) const
-{
-    ss << " zPos " << m_zPos;
-}
-
-void SDFPlaneXY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
-{
-    ss << "\t// SDFPlaneXY //\n";
-    ss << "\td" << level << " = p" << level << ".z - " << m_zPos << ";\n\n";
-}
-
-double SDFPlaneXY::signedDistanceInner(Vec3 p) const
-{
-    return p.z - m_zPos;
-}
-
 void SDFPlane::serializeInner(std::stringstream& ss) const
 {
     ss << " normal " << m_normal.x << ' ' << m_normal.y << ' ' << m_normal.z;
@@ -154,13 +106,13 @@ void SDFPlane::serializeInner(std::stringstream& ss) const
 
 void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "\t// SDFPlaneXY //\n";
-    ss << "\td" << level << " = dot(p" << level << ", " << m_normal.getShader() << ") + " << m_offset << ";\n\n";
+    ss << "\t// SDFPlane //\n";
+    ss << "\td" << level << " = dot(p" << level << ", " << m_normal.getShader() << ") - " << m_offset << ";\n\n";
 }
 
 double SDFPlane::signedDistanceInner(Vec3 p) const
 {
-    return p.dot(m_normal) + m_offset;
+    return p.dot(m_normal) - m_offset;
 }
 
 void SDFBox::serializeInner(std::stringstream& ss) const
@@ -195,8 +147,9 @@ void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size
 
 double SDFBoxFrame::signedDistanceInner(Vec3 p) const
 {
-    p = p.abs() - m_dimensions;
-    Vec3 q = (p + m_edgeThickness).abs() - m_edgeThickness;
+    p = p.abs() - m_dimensions * 0.5;
+    double halfThick = m_edgeThickness * 0.5;
+    Vec3 q = (p + halfThick).abs() - halfThick;
     return std::min(std::min(
         Vec3(p.x, q.y, q.z).maximum(0.0).length() + std::min(std::max(p.x, std::max(q.y, q.z)), 0.0),
         Vec3(q.x, p.y, q.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(p.y, q.z)), 0.0)),
@@ -336,7 +289,7 @@ void SDFCapsuleX::serializeInner(std::stringstream& ss) const
 void SDFCapsuleX::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCapsuleX //\n";
-    ss << "\td" << level << " = capsuleX(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
+    ss << "\td" << level << " = capsule(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCapsuleX::signedDistanceInner(Vec3 p) const
@@ -354,7 +307,7 @@ void SDFCapsuleY::serializeInner(std::stringstream& ss) const
 void SDFCapsuleY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCapsuleY //\n";
-    ss << "\td" << level << " = capsuleY(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
+    ss << "\td" << level << " = capsule(p" << level << ".yxz, " << m_bodyLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCapsuleY::signedDistanceInner(Vec3 p) const
@@ -372,7 +325,7 @@ void SDFCapsuleZ::serializeInner(std::stringstream& ss) const
 void SDFCapsuleZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCapsuleZ //\n";
-    ss << "\td" << level << " = capsuleZ(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
+    ss << "\td" << level << " = capsule(p" << level << ".zyx, " << m_bodyLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCapsuleZ::signedDistanceInner(Vec3 p) const
@@ -407,7 +360,7 @@ void SDFCylinderX::serializeInner(std::stringstream& ss) const
 void SDFCylinderX::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCylinderX //\n";
-    ss << "\td" << level << " = cylinderX(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
+    ss << "\td" << level << " = cylinder(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCylinderX::signedDistanceInner(Vec3 p) const
@@ -426,7 +379,7 @@ void SDFCylinderY::serializeInner(std::stringstream& ss) const
 void SDFCylinderY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCylinderY //\n";
-    ss << "\td" << level << " = cylinderY(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
+    ss << "\td" << level << " = cylinder(p" << level << ".yxz, " << m_sideLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCylinderY::signedDistanceInner(Vec3 p) const
@@ -445,7 +398,7 @@ void SDFCylinderZ::serializeInner(std::stringstream& ss) const
 void SDFCylinderZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCylinderZ //\n";
-    ss << "\td" << level << " = cylinderZ(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
+    ss << "\td" << level << " = cylinder(p" << level << ".zyx, " << m_sideLength << ", " << m_radius << ");\n\n";
 }
 
 double SDFCylinderZ::signedDistanceInner(Vec3 p) const
@@ -455,34 +408,16 @@ double SDFCylinderZ::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
-void SDFTube::serializeInner(std::stringstream& ss) const
-{
-    ss << " height " << m_height;
-    ss << " radii " << m_radii.x << ' ' << m_radii.y;
-}
-
-void SDFTube::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
-{
-    ss << "\t// SDFTube //\n";
-    ss << "\td" << level << " = tube(p" << level << ", " << m_height << ", " << m_radii.getShader() << ");\n\n";
-}
-
-double SDFTube::signedDistanceInner(Vec3 p) const
-{
-    p.y = p.y > 0.0 ? std::max(0.0, p.y - m_height * 0.5) : std::min(0.0, p.y + m_height * 0.5);
-    return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
-}
-
 void SDFCone::serializeInner(std::stringstream& ss) const
 {
     ss << " height " << m_height;
-    ss << " ratio " << m_ratio;
+    ss << " sweep " << m_sweep;
 }
 
 void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCone //\n";
-    ss << "\td" << level << " = cone(p" << level << ", " << m_height << ", " << (m_ratio * MF::TAU) << ");\n\n";
+    ss << "\td" << level << " = cone(p" << level << ", " << m_height << ", " << (m_sweep * MF::HALFPI) << ");\n\n";
 }
 
 double SDFCone::signedDistanceInner(Vec3 p) const
@@ -536,24 +471,24 @@ double SDFEllipsoid::signedDistanceInner(Vec3 p) const
 
 void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
 {
-    ss << " height " << m_height;
+    ss << " bodyLength " << m_bodyLength;
     ss << " radii " << m_radii.x << ' ' << m_radii.y;
 }
 
 void SDFTaperedCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "d" << level << " = taperedCapsule(p" << level << ", " << m_radii.getShader() << ", " << m_height << "); \n\n";
+    ss << "d" << level << " = taperedCapsule(p" << level << ", " << m_radii.getShader() << ", " << m_bodyLength << "); \n\n";
 }
 
 double SDFTaperedCapsule::signedDistanceInner(Vec3 p) const
 {
-    double b = (m_radii.x - m_radii.y) / m_height;
+    double b = (m_radii.x - m_radii.y) / m_bodyLength;
     double a = sqrt(1.0 - b * b);
 
     Vec2 q{ Vec2{ p.x, p.z }.length(), p.y };
     double k = q.dot(Vec2{ -b, a });
     if (k < 0.0) return q.length() - m_radii.x;
-    if (k > a * m_height) return (q - Vec2{ 0.0, m_height }).length() - m_radii.y;
+    if (k > a * m_bodyLength) return (q - Vec2{ 0.0, m_bodyLength }).length() - m_radii.y;
     return q.dot(Vec2{ a, b }) - m_radii.x;
 }
 

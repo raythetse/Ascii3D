@@ -23,6 +23,6 @@ public:
 	RayMarcher(const double maxDistance, const double tolerance = 0.001)
 		: m_maxDistance(maxDistance)
 		, m_tolerance(tolerance) {}
-	void march(SDFScene& scene, PixelField& field, const Camera& camera);
+	void march(SDFScene* scene, PixelField& field, const Camera& camera);
 };
 

@@ -1,5 +1,4 @@
 Required:
-- ensure all sdf dimensions correct
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
@@ -11,6 +10,9 @@ Required:
 - add ability to add comment to SDFs for output to files
 - refactor combo ops for smoothed subclass
 - make sure things that should be smart pointers are
+- move glsl code building into separate class from scene
+- get rid of defaults file
+- add controls instructions to main menu screen
 
 Optional:
 - improve names of obj/op defaults
@@ -23,6 +25,9 @@ Optional:
 - transparency/reflection
 - object chain copying/merging for SDF branch reuse (shared_ptrs for SDFObjects?)
 - error handling on file loading
+- Input controls for prop mods?
+- improve ambient light, occlusion, and shadow functions
+- investigate rhombus axis issue
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers

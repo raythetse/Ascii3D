@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Rendering\Vulkan">
       <UniqueIdentifier>{e12536cc-cda6-4f99-9b0d-1c863be8fa78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SDF\DemoScenes">
+      <UniqueIdentifier>{65f5d854-52dc-49b5-ab79-06ee02e8bf16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SDF\DemoScenes">
+      <UniqueIdentifier>{e7eead28-42cd-47c5-b795-df0c68924546}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -132,6 +138,24 @@
     <ClCompile Include="VulkanRaymarcher.cpp">
       <Filter>Source Files\Rendering\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="WormsScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="WormsScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="BartScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ExclusionScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkingCubesScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -203,9 +227,6 @@
     <ClInclude Include="SDFOperation.h">
       <Filter>Header Files\Operations</Filter>
     </ClInclude>
-    <ClInclude Include="SDFScene.h">
-      <Filter>Header Files\SDF</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleFunctions.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -223,6 +244,24 @@
     </ClInclude>
     <ClInclude Include="VulkanRaymarcher.h">
       <Filter>Header Files\Rendering\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoScenesInc.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="BartScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ExclusionScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkingCubesScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFScene.h">
+      <Filter>Header Files\SDF</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,26 +5,6 @@
 
 namespace DEF
 {
-	// SDFObject defaults
-	inline static Color		OBJColor{ 1.0 };
-	inline static double	OBJPlanePos{ 0.0 };
-	inline static Vec3		OBJBoxDimensions{ 1.0 };
-	inline static double	OBJFrameThickness{ 0.1 };
-	inline static double	OBJRadius{ 0.5 };
-	inline static Vec2		OBJRadii{ 1.0, 0.25 };
-	inline static Vec3		OBJRadiiV3{ 1.0, 0.5, 0.25 };
-	inline static double	OBJLength{ 1.0 };
-	inline static double	OBJRatio{ 0.125 };
-	inline static Vec3		OBJNormal{ 0.0, 1.0, 0.0 };
-	inline static double	OBJOffset{ 0.0 };
-	inline static double	OBJSweep{ 0.25 };
-	inline static Vec2		OBJOP2DDimensions{ 1.0, 0.5 };
-	inline static double	OBJOP2DMagnitude{ 2.0 };
-	inline static size_t	OBJOP2DNumPoints{ 5 };
-	inline static Vec2		OBJOP2DTPoint1{ -1.0, 0.0 };
-	inline static Vec2		OBJOP2DTPoint2{ 0.0, 1.0 };
-	inline static Vec2		OBJOP2DTPoint3{ 1.0, 0.0 };
-
 	// Combo defaults
 	inline static double	COMBSmooth{ 0.5 };
 	inline static double	COMBColBlend{ 1.0 };

@@ -1,7 +1,5 @@
 #include "SDFScene.h"
 #include "FileHandler.h"
-#include "SDFOperationInc.h"
-#include "SDFBuilder.h"
 
 const std::string SDFScene::m_shaderLayout{ 
     R"( 
@@ -169,12 +167,13 @@ float box(vec3 p, vec3 dimensions) {
 }
 
 float boxFrame(vec3 p, vec3 dimensions, float edgeThickness) {
-    p = abs(p)-dimensions;
-    vec3 q = abs(p+edgeThickness)-edgeThickness;
+    p = abs(p) - dimensions * 0.5;
+    float halfThick = edgeThickness * 0.5;
+    vec3 q = abs(p + halfThick) - halfThick;
     return min(min(
-        length(max(vec3(p.x,q.y,q.z),0.0))+min(max(p.x,max(q.y,q.z)),0.0),
-        length(max(vec3(q.x,p.y,q.z),0.0))+min(max(q.x,max(p.y,q.z)),0.0)),
-        length(max(vec3(q.x,q.y,p.z),0.0))+min(max(q.x,max(q.y,p.z)),0.0));
+        length(max(vec3(p.x, q.y, q.z), 0.0)) + min(max(p.x, max(q.y, q.z)), 0.0),
+        length(max(vec3(q.x, p.y, q.z), 0.0)) + min(max(q.x, max(p.y, q.z)), 0.0)),
+        length(max(vec3(q.x, q.y, p.z), 0.0)) + min(max(q.x, max(q.y, p.z)), 0.0));
 }
 
 float sphere(vec3 p, float radius) {
@@ -191,18 +190,8 @@ float torusSegment(vec3 p, vec2 radii, vec2 sincos) {
     return sqrt(dot(p, p) + radii.x * radii.x - 2.0 * radii.x * k) - radii.y;
 }
 
-float capsuleX(vec3 p, float bodyLength, float radius) {
+float capsule(vec3 p, float bodyLength, float radius) {
     p.x = p.x > 0.0 ? max(0.0, p.x - 0.5 * bodyLength) : min(0.0, p.x + 0.5 * bodyLength);
-    return length(p) - radius;
-}
-
-float capsuleY(vec3 p, float bodyLength, float radius) {
-    p.y = p.y > 0.0 ? max(0.0, p.y - 0.5 * bodyLength) : min(0.0, p.y + 0.5 * bodyLength);
-    return length(p) - radius;
-}
-
-float capsuleZ(vec3 p, float bodyLength, float radius) {
-    p.z = p.z > 0.0 ? max(0.0, p.z - 0.5 * bodyLength) : min(0.0, p.z + 0.5 * bodyLength);
     return length(p) - radius;
 }
 
@@ -211,31 +200,14 @@ float crystal(vec3 p, float edgeLength) {
     return (p.x + p.y + p.z - edgeLength) * 0.57735027;
 }
 
-float cylinderX(vec3 p, float bodyLength, float radius) {
+float cylinder(vec3 p, float bodyLength, float radius) {
     vec2 yz = vec2(p.y, p.z);
     vec2 d = abs(vec2(length(yz), p.x )) - vec2(radius, bodyLength * 0.5);
     return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
 }
 
-float cylinderY(vec3 p, float bodyLength, float radius) {
-    vec2 xz = vec2(p.x, p.z);
-    vec2 d = abs(vec2(length(xz), p.y )) - vec2(radius, bodyLength * 0.5);
-    return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
-}
-
-float cylinderZ(vec3 p, float bodyLength, float radius) {
-    vec2 xy = vec2(p.x, p.y);
-    vec2 d = abs(vec2(length(xy), p.z )) - vec2(radius, bodyLength * 0.5);
-    return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
-}
-
 float chainLink(vec3 p, float sideLength, vec2 radii) {
     p.x = p.x > 0.0 ? max(0.0, p.x - sideLength * 0.5) : min(0.0, p.x + sideLength * 0.5);
-    return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
-}
-
-float tube(vec3 p, float height, vec2 radii) {
-    p.y = p.y > 0.0 ? max(0.0, p.y - height * 0.5) : min(0.0, p.y + height * 0.5);
     return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
 }
 
@@ -437,28 +409,26 @@ void main() {
 	}
 
     [[branch]] if (hit) {
-        vec3 np = p0 - rayDir * push.surfTolerance;
-        vec3 offsetX = vec3(NORM_CHECK_OFFSET, 0.0, 0.0);
-        vec3 offsetY = vec3(0.0, NORM_CHECK_OFFSET, 0.0);
-        vec3 offsetZ = vec3(0.0, 0.0, NORM_CHECK_OFFSET);
+        vec3 np = p0 - rayDir * min(d0, push.surfTolerance);
+        const vec2 offset = vec2(NORM_CHECK_OFFSET, 0.0);
 
         float d1 = push.maxDistance;
         float d2 = push.maxDistance;
         vec3 colorSample;
 
         vec3 normal;
-        sampleScene(np + offsetX, push.maxDistance, d1, colorSample, push.time);
-        sampleScene(np - offsetX, push.maxDistance, d2, colorSample, push.time);
+        sampleScene(np + offset.xyy, push.maxDistance, d1, colorSample, push.time);
+        sampleScene(np - offset.xyy, push.maxDistance, d2, colorSample, push.time);
         normal.x = d1 - d2;
         d1 = push.maxDistance;
         d2 = push.maxDistance;
-        sampleScene(np + offsetY, push.maxDistance, d1, colorSample, push.time);
-        sampleScene(np - offsetY, push.maxDistance, d2, colorSample, push.time);
+        sampleScene(np + offset.yxy, push.maxDistance, d1, colorSample, push.time);
+        sampleScene(np - offset.yxy, push.maxDistance, d2, colorSample, push.time);
         normal.y = d1 - d2;
         d1 = push.maxDistance;
         d2 = push.maxDistance;
-        sampleScene(np + offsetZ, push.maxDistance, d1, colorSample, push.time);
-        sampleScene(np - offsetZ, push.maxDistance, d2, colorSample, push.time);
+        sampleScene(np + offset.yyx, push.maxDistance, d1, colorSample, push.time);
+        sampleScene(np - offset.yyx, push.maxDistance, d2, colorSample, push.time);
         normal.z = d1 - d2;
 
         normal = normalize(normal);
@@ -534,12 +504,10 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
         ss << "\t\tlightDist = length(rayDir);\n";
         ss << "\t\trayDir = normalize(rayDir);\n";
         ss << "\t\trayLength = push.surfTolerance+0.001;\n";
-        ss << "\t\td0 = push.maxDistance;\n";
-
+        ss << "\t\td0 = push.maxDistance;\n\n";
         ss << "\t\twhile (true) {\n";
-        ss << "\t\t\tnp = p0 + rayDir * SHADOW_TOLERANCE + rayLength * rayDir;\n\n";
+        ss << "\t\t\tnp = p0 + rayDir * (SHADOW_TOLERANCE + rayLength);\n\n";
         ss << "\t\t\tsampleScene(np, lightDist, d0, colorSample, push.time);\n";
-
         ss << "\t\t\trayLength += d0;\n";
         ss << "\t\t\tif (d0 < push.surfTolerance || rayLength >= lightDist) {\n";
         ss << "\t\t\t\tfloat attenuation = 1.0 / (lightDist * lightDist);\n";
@@ -561,25 +529,6 @@ void SDFScene::buildLightPasses(std::stringstream& ss) const
     ss << "\t\tpixels[outIndex].l = min(1.0, length(cumulativeColor));\n";
 }
 
-SDFScene::SDFScene(LoadOption loadOption)
-{
-    switch (loadOption)
-    {
-    case SDFScene::Test:
-        test();
-        break;
-    case SDFScene::WalkingCubes:
-        cubesDemo();
-        break;
-    case SDFScene::Elongate:
-        elongateDemo();
-        break;
-    case SDFScene::Exclusion:
-        excludeDemo();
-        break;
-    }
-}
-
 SDFScene::SDFScene(std::string fileName)
 {
     std::vector<std::string> strVec;
@@ -589,18 +538,6 @@ SDFScene::SDFScene(std::string fileName)
     builder.loadSerialized(strVec);
 
     add(builder);
-}
-
-SDFScene::SDFScene(SDFBuilder& builder)
-{
-    m_baseObject = std::move(builder.getBaseObject());
-    m_lights = std::move(builder.getLights());
-}
-
-SDFScene::SDFScene(SDFBuilder&& builder)
-{
-    m_baseObject = std::move(builder.getBaseObject());
-    m_lights = std::move(builder.getLights());
 }
 
 void SDFScene::add(SDFBuilder& builder)
@@ -628,329 +565,4 @@ bool SDFScene::serialize(std::vector<std::string>& strVec) const
     }
     strVec.push_back("end");
     return false;
-}
-
-void SDFScene::test()
-{
-    add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFTorusSegmentYZ>(DEF::OBJRadii, 0.5)()
-        .addLightSource(Vec3{ 5.0, 5.0, -10.0 }, 100.0, Color::White, 0.5)
-    );
-}
-
-void SDFScene::excludeDemo()
-{
-    Vec2 dim{ 0.5, 0.2 };
-    double dist{ dim.x * 0.25 };
-    double oscillation = 8.0;
-    double period = 32.0;
-    COMBExclude::ColorMode cMode = COMBExclude::InternalDouble;
-    add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFObject>()() // L1
-            .pushOp<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
-            .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Left * dist * oscillation)
-            .pushOp<COMBAdd, SDFTorusXY>(dim, Color::Blue)() // L2
-                .pushOp<OPTranslate>(Vec3 { dist * 2.0, 0.0, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
-                .pushOp<COMBExclude, SDFTorusXY>(dim, Color::Green)(cMode) // L3
-        .stepBack(0) // L0
-        .pushOp<COMBExclude, SDFObject>()(cMode) // L1
-            .pushOp<OPTranslate>(Vec3::Down * dist * 2.0)
-            .pushOp<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Down * dist * oscillation)
-            .pushOp<COMBAdd, SDFTorusXY>(dim, Color::Red)() // L2
-                .pushOp<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
-                .pushOp<COMBExclude, SDFTorusXY>(dim, Color::Yellow)(cMode) // L4
-        .stepBack(0) // L0
-        .pushOp<OPTranslate>(Vec3::Backward * 0.5)
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 100.0, 100.0, 1.0 })() // L1
-
-
-                    
-        .addLightSource(Vec3{ 5.0, 5.0, -10.0 }, 250.0, Color::White, 0.3)
-    );
-}
-
-void SDFScene::buildBart()
-{
-    Vec3 skinCol = Vec3{ 234.0, 191.0, 4.0 } / 255.0;
-    Vec3 shirtCol = Vec3{ 241.0, 78.0, 40.0 } / 255.0;
-    Vec3 shortsCol = Vec3{ 0.0, 157.0, 220.0 } / 255.0;        
-
-    add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFPlaneXZ>(-3.8, Color::LightGreen)() // L1
-            .stepBack() // L0
-        // Head
-        .pushOp<COMBAdd, SDFObject>()() // L1
-
-            // Skull
-            .pushOp<COMBAdd, SDFCylinderY>(0.46, 1.2, skinCol)() // L2
-            .pushOp<OPRoundOff>(0.05)
-
-            // Hair
-            .pushOp<OPMirrorXZ>()
-            .pushOp<OPRotate>(Vec3::Up, -8.0 / 64.0)
-            .pushOp<OPMirrorX>()
-            .pushOp<OPRotate>(Vec3::Up, -4.0 / 64.0)
-            .pushOp<OPMirrorX>()
-            .pushOp<OPRotate>(Vec3::Up, -2.0 / 64.0)
-            .pushOp<OPMirrorX>()
-            .pushOp<OPRotate>(Vec3::Up, -1.0 / 64.0)
-            .pushOp<OPTranslate>(Vec3::Forward * 0.51)
-            .pushOp<OPTranslate>(Vec3::Up * 0.75)
-            .pushOp<OPRotate>(Vec3::Right, -0.06)
-            .pushOp<COMBAddSmooth, SDFCone>(0.155, 0.045, skinCol)(0.01) // L3
-            .pushOp<OPRoundOff>(0.01)
-            .stepBack(2) // L1
-
-            // Upper lip contour
-            .pushOp<OPTranslate>(Vec3{ 0.0, -0.6, -0.12 })
-            .pushOp<COMBAddSmooth, SDFCylinderY>(0.35, 0.0, skinCol)(0.15) // L2
-            .pushOp<OPRoundOff>(0.05)
-            .stepBack() // L1
-
-            // Lower lip
-            .pushOp<OPTranslate>(Vec3{ 0.0, -0.075, 0.17 })
-            .pushOp<COMBAdd, SDFCylinderY>(0.25, 0.05, skinCol)() // L2
-            .pushOp<OPRoundOff>(0.1)
-            .stepBack() // L1
-
-            // Neck
-            .pushOp<COMBAddSmooth, SDFObject>()(0.15) // L2
-            .pushOp<OPTranslate>(Vec3{ 0.0, -0.15, 0.2 })
-            .pushOp<OPRotate>(Vec3::Right, 0.04)
-            .pushOp<COMBAdd, SDFCylinderY>(0.25, 0.5, skinCol)() // L3
-            .stepBack(2) // L1
-
-            // Nose
-            .pushOp<OPTranslate>(Vec3{ 0.0, 0.4, -0.6 })
-            .pushOp<COMBAddSmooth, SDFCapsuleZ>(0.1, 0.2, skinCol)(0.05) // L2
-            .stepBack() // L1
-
-            // Eye ridges
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.18, 0.35, 0.2})
-            .pushOp<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
-            .pushOp<COMBAddSmooth, SDFTorusXZ>(Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
-            .stepBack(0) // L0
-
-            // Eyes
-            .pushOp<COMBAdd, SDFObject>()() //L1
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.21, -0.05, -0.4 })
-            .pushOp<COMBAdd, SDFSphere>(0.23)() // L2
-
-            // Pupils
-            .pushOp<OPTranslate>(Vec3{ 0.0, -0.05, -0.13 })
-            .pushOp<COMBAdd, SDFSphere>(0.1, Color::Black)() // L3
-            .stepBack(0) // L0
-
-            //// Ears
-            .pushOp<COMBAddSmooth, SDFObject>()(0.05) //L1
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.55, -0.35, 0.0 })
-            .pushOp<OPRotate>(Vec3::Down, 0.12)
-            .pushOp<OPRotate>(Vec3::Forward, 0.25)
-            .pushOp<COMBAdd, SDFTorusXZ>(Vec2{ .075, 0.02 }, skinCol)() // L2
-            .pushOp<OPTranslate>(Vec3::Down * 0.02)
-            .pushOp<COMBAddSmooth, SDFCylinderY>(0.06, 0.01, skinCol)(0.02)
-            .stepBack(0) // L0
-
-        // Shirt
-        .pushOp<COMBAdd, SDFObject>()() //L1
-            .pushOp<OPTranslate>(Vec3{ 0.0, -0.2, 0.33 })
-            .pushOp<COMBAdd, SDFCone>(1.4, 0.055, shirtCol)() // L2
-            .pushOp<OPTranslate>(Vec3{ 0.0, -0.4, -0.1 })
-            .pushOp<COMBSubtract, SDFSphere>()() // L2
-            .stepBack() // L2
-            .pushOp<OPTranslate>(Vec3{ 0.0, -1.45, 0.1 })
-            .pushOp<COMBAddSmooth, SDFSphere>(0.7, shirtCol)(0.02) //L3
-            .pushOp<OPTranslate>(Vec3::Down * 0.5)
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 2.0, 1.0, 2.0 })() // L4
-            .stepBack() // L3
-        
-            // Left sleeve
-            .pushOp<COMBAddSmooth, SDFObject>()(0.01) // L4
-            .pushOp<OPTranslate>(Vec3{ 0.45, 1.3, 0.0 })
-            .pushOp<OPRotate>(Vec3{ -0.5, 0.0, -0.75 }.getNormal(), 0.25)
-            .bindPropMod<PMOscillateSine>("rotations", 1.0, 0.035)
-            .pushOp<OPTranslate>(Vec3::Down * 0.2)
-            .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.25, 0.4, 0.25 }, shirtCol)() // L5
-            .pushOp<OPTranslate>(Vec3::Down * 0.25)
-            .pushOp<OPOnion>()
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 1.0, 0.425, 1.0 })() // L6
-            .stepBack(2) // L4
-
-            // Left Arm
-            .pushOp<OPRotate>(Vec3::Down, 0.125)
-            .pushOp<OPTranslate>(Vec3::Down * 0.25)
-            .pushOp<COMBAdd, SDFCapsuleY>(0.17, 0.5, skinCol)() // L5
-            .pushOp<OPTranslate>(Vec3::Down * 0.25)
-            .pushOp<OPRotate>(Vec3::Forward, 0.375)
-            .bindPropMod<PMOscillateSine>("rotations", 1.0, 0.1, 0.3)
-            .pushOp<OPTranslate>(Vec3::Up * 0.1)
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05) // L6
-            // Left hand
-            .pushOp<OPTranslate>(Vec3{ 0.0, 0.6, 0.0 })
-            .pushOp<COMBAddSmooth, SDFEllipsoid>(Vec3{ 0.13, 0.13, 0.05 }, skinCol)(0.05) // L7
-            // Left fingers
-            .pushOp<OPTranslate>(Vec3{ 0.0, 0.12, 0.0 })
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05) // L8
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.1, -0.02, 0.0 })
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05) // L9
-            .stepBack(3) // L6
-            // Left thumb
-            .pushOp<OPTranslate>(Vec3{ -0.2, 0.03, 0.0 })
-            .pushOp<OPRotate>(Vec3::Forward, 0.3)
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.15, skinCol)(0.05) // L7
-            .stepBack(4) // L3
-
-            // Right sleeve
-            .pushOp<COMBAddSmooth, SDFObject>()(0.01) // L4
-            .pushOp<OPTranslate>(Vec3{ -0.45, 1.3, 0.0 })
-            .pushOp<OPRotate>(Vec3{ 0.25, 0.0, 1.0 }.getNormal(), 0.06)
-            .pushOp<OPTranslate>(Vec3::Down * 0.2)
-            .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.25, 0.4, 0.25 }, shirtCol)() // L5
-            .pushOp<OPTranslate>(Vec3::Down * 0.25)
-            .pushOp<OPOnion>()
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 1.0, 0.425, 1.0 })() // L6
-            .stepBack(2) // L4
-
-            // Right Arm
-            .pushOp<OPRotate>(Vec3::Down, 0.125)
-            .pushOp<OPTranslate>(Vec3::Down * 0.25)
-            .pushOp<COMBAdd, SDFCapsuleY>(0.17, 0.5, skinCol)()
-            .pushOp<OPTranslate>(Vec3::Down * 0.25)
-            .pushOp<OPRotate>(Vec3::Forward, 0.45)
-            .pushOp<OPTranslate>(Vec3::Up * 0.1)
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05)
-            // Right hand
-            .pushOp<OPTranslate>(Vec3{ 0.0, 0.6, 0.0 })
-            .pushOp<COMBAddSmooth, SDFEllipsoid>(Vec3{ 0.13, 0.13, 0.05 }, skinCol)(0.05)
-            // Right fingers
-            .pushOp<OPTranslate>(Vec3{ 0.0, 0.12, 0.0 })
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05)
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.1, -0.02, 0.0 })
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05)
-            .stepBack(3)
-            // Right thumb
-            .pushOp<OPTranslate>(Vec3{ -0.2, 0.03, 0.0 })
-            .pushOp<OPRotate>(Vec3::Forward, 0.3)
-            .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.15, skinCol)(0.05)
-            .stepBack(0)
-
-        // My Shorts (Eat Them)
-        .pushOp<COMBAdd, SDFObject>()() // L1
-
-            // Body
-            .pushOp<OPTranslate>(Vec3{ 0.0, -1.95, 0.35 })
-            .pushOp<COMBAdd, SDFSphere>(0.68, shortsCol)() // L2
-            .pushOp<OPTranslate>(Vec3::Up * 0.9)
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 2.0 })() // L3
-            .stepBack() // L2
-
-            // Pants
-            .pushOp<OPMirrorX>()
-            .pushOp<OPTranslate>(Vec3{ 0.28, -1.4, 0.0 })
-            .pushOp<COMBAddSmooth, SDFCylinderY>(0.3, 0.8, shortsCol)(0.1) // L3
-            .pushOp<OPTranslate>(Vec3::Down * 0.55)
-            .pushOp<OPOnion>()
-            .pushOp<COMBSubtract, SDFBox>(Vec3{ 2.0, 0.5, 2.0})() // L4
-            .stepBack(0) // L0
-
-        // Legs
-        .pushOp<COMBAdd, SDFObject>()() // L1
-        .pushOp<OPMirrorX>()
-        .pushOp<OPTranslate>(Vec3{ 0.28, -3.0, 0.3 })
-        .pushOp<COMBAdd, SDFCylinderY>(0.15, 1.0, skinCol)() // L2
-        .stepBack(0) // L0
-
-        // Shoes
-        .pushOp<COMBAdd, SDFObject>()() // L1
-        .pushOp<OPMirrorX>()
-        .pushOp<OPTranslate>(Vec3{ .28, -3.75, 0.35 })
-        .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.275, 0.42, 0.7 }, shortsCol)() // L2
-        .pushOp<OPTranslate>(Vec3::Backward * 0.2)
-        .pushOp<COMBIntersect, SDFSphere>()() // L3
-        .pushOp<OPTranslate>(Vec3::Down * 0.25)
-        .pushOp<COMBSubtract, SDFBox>(Vec3{ 2.0, 0.5, 2.0 })() // L4
-        .stepBack(2) // L2
-        .pushOp<OPTranslate>(Vec3::Forward * 0.2)
-        .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.323, 0.423, 0.73 })() // L2
-        .pushOp<COMBIntersectSmooth, SDFBox>(Vec3{ 2.0, 0.1, 2.0})(0.0) // L3
-        .stepBack() // L2
-        .pushOp<OPTranslate>(Vec3::Backward * 0.25)
-        .pushOp<COMBIntersect, SDFSphere>(0.6)() // L3
-        .stepBack() // L2
-        .pushOp<OPTranslate>(Vec3{ 0.0, 0.425, 0.2 })
-        .pushOp<COMBAdd, SDFTorusXZ>(Vec2{ 0.17, .055 })() //L3
-        .pushOp<OPTranslate>(Vec3{ -0.22, -0.2, -0.1 })
-        .pushOp<OPRotate>(Vec3::Forward, 0.06)
-        .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.02, 0.1, 0.1 })() // L4
-        .stepBack(0)
-
-        .addLightSource(Vec3{ 500.0, 500.0, -1000.0 }, 1500000.0, Color{1.0, 1.0, 0.9}, 0.8)
-    );
-}
-
-void SDFScene::cubesDemo()
-{
-    double smoothing{ 0.15 };
-    double colorBlending{ 0.95 };
-
-    add(SDFBuilder()
-        .pushOp<COMBAdd, SDFObject>()()
-            .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
-            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-            .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
-            .pushOp<COMBAdd, SDFBox>()().color(Color::Red)
-                .stepBack(2)
-        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-            .pushOp<OPTranslate>()
-            .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
-            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-            .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
-            .pushOp<COMBAdd, SDFBox>()().color(Color::Yellow)
-                .stepBack(2)
-        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-            .pushOp<OPRotate>()
-            .pushOp<OPCubeRollHeight>(1.0, 1.0, 0.5)
-            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-            .pushOp<OPCubeRoller>(std::vector{ Vec3::Forward, Vec3::Right, Vec3::Backward, Vec3::Left }, 1.0, 0.5)
-            .pushOp<COMBAdd, SDFBox>()().color(Color::Blue)
-                .stepBack(2)
-        .pushOp<COMBAddSmooth, SDFObject>()(smoothing, colorBlending)
-            .pushOp<OPTranslate>()
-            .pushOp<OPRotate>()
-            .pushOp<OPCubeRollHeight>(3.0, 1.0, 0.5)
-            .pushOp<OPTranslateLinear>(Vec3::Right * 1.0, 1.0, 1.0)
-            .pushOp<OPTranslateLinear>(Vec3::Forward * 1.0, 1.0, 1.0, 1.0)
-            .pushOp<OPCubeRoller>(std::vector{ Vec3::Backward, Vec3::Left, Vec3::Forward, Vec3::Right }, 1.0, 0.5)
-            .pushOp<COMBAdd, SDFBox>()().color(Color::Green)
-                .stepBack(2)
-        .addLightSource(Vec3{ 2.0, 6.0, -2.0 }, 100.0, Color::White)
-    );
-}
-
-void SDFScene::elongateDemo()
-{
-    add(SDFBuilder{}
-        .pushOp<OPTranslateSine>(Vec3::Up, 0.1, 2.0)
-        .pushOp<OPRotateContinuous>(Vec3::Up, 0.125)
-        .pushOp<OPElongateXYZ>(Vec3{ 0.5, 1.0, 0.75 })
-        .bindPropMod<PMOscillateSineV3>("lengths", Vec3{ 3.0, 2.47, 1.731 }, Vec3{ 0.5, 0.5, 0.5 })
-        .pushOp<COMBAdd, SDFCrystal>(1.25)().color(Color::Blue)
-            .pushOp<COMBSubtractSmooth, SDFBox>(1.5, Color::Red)(0.5, 25.0, 0.25)
-                .stepBack()
-            .pushOp<COMBSubtractSmooth, SDFBox>(1.0, Color::Green)(0.1, 50.0, 0.4925)
-                .stepBack()
-            .pushOp<COMBAdd, SDFCrystal>(0.1, Color::Yellow)()
-        .addLightSource(Vec3{ 3.0, 3.0, -3.0 }, 150.0, Color::White)
-    );
 }

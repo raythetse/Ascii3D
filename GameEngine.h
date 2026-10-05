@@ -25,7 +25,7 @@ private:
 	RayMarcher m_rayMarcher;
 	Renderer m_renderer{};
 	Camera m_camera;
-	SDFScene m_scene;
+	std::unique_ptr<SDFScene> m_scene;
 	bool m_pausePressed{};
 	PerfMonitor m_perfMonitor{};
 	size_t m_framePM{};
@@ -44,7 +44,7 @@ private:
 	void marchHardware();
 
 public:
-	GameEngine(size_t width, size_t height, double maxSceneDepth, double tolerance);
+	GameEngine(double maxSceneDepth, double tolerance);
 	void run();
 	bool handleInput();
 	void update();

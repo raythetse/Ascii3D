@@ -34,7 +34,7 @@ protected:
 	double extrude2D(double pDotY, double d2D, double magnitude) const;
 	Vec3 revolve2D(Vec3 p, double radius) const;
 public:
-	SDFObject(Color color = DEF::OBJColor)
+	SDFObject(Color color = Color::White)
 		: m_color{ color } {}
 	~SDFObject();
 	void update();
@@ -56,50 +56,11 @@ SDFOperation* SDFObject::pushOperation(Args&&... args) {
 	return m_operations.back().get();
 }
 
-class SDFPlaneXZ : public SDFObject
-{
-private:
-	double m_yPos;
-protected:
-	std::string getClassName() const override { return "SDFPlaneXZ"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFPlaneXZ(double yPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
-		: SDFObject{ color }, m_yPos{ yPos } {}
-	double signedDistanceInner(Vec3 p) const override;
-};
-
-class SDFPlaneYZ : public SDFObject
-{
-private:
-	double m_xPos;
-protected:
-	std::string getClassName() const override { return "SDFPlaneYZ"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFPlaneYZ(double xPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
-		: SDFObject{ color }, m_xPos(xPos) {}
-	double signedDistanceInner(Vec3 p) const override;
-};
-
-class SDFPlaneXY : public SDFObject
-{
-private:
-	double m_zPos;
-protected:
-	std::string getClassName() const override { return "SDFPlaneXY"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFPlaneXY(double zPos = DEF::OBJPlanePos, Color color = DEF::OBJColor)
-		: SDFObject{ color }, m_zPos(zPos) {}
-	double signedDistanceInner(Vec3 p) const override;
-};
-
 class SDFPlane : public SDFObject
 {
+public:
+	inline const static Vec3 DFLT_NORMAL{ Vec3::Up };
+	inline const static double DFLT_OFFSET{ 0.0 };
 private:
 	Vec3 m_normal{};
 	double m_offset{};
@@ -108,13 +69,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFPlane(Vec3 normal = DEF::OBJNormal, double offset = DEF::OBJOffset, Color color = DEF::OBJColor)
+	SDFPlane(Vec3 normal = DFLT_NORMAL, double offset = DFLT_OFFSET, Color color = Color::White)
 		: SDFObject{ color }, m_normal(normal), m_offset(offset) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFBox : public SDFObject
 {
+public:
+	inline const static Vec3 DFLT_DIMENSIONS{ 1.0 };
 private:
 	Vec3 m_dimensions;
 protected:
@@ -122,13 +85,16 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFBox(Vec3 dimensions = DEF::OBJBoxDimensions, Color color = DEF::OBJColor)
+	SDFBox(Vec3 dimensions = DFLT_DIMENSIONS, Color color = Color::White)
 		: SDFObject(color), m_dimensions(dimensions) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFBoxFrame : public SDFObject
 {
+public:
+	inline const static Vec3 DFLT_DIMENSIONS{ 1.0 };
+	inline const static double DFLT_EDGETHICKNESS{ 0.1 };
 private:
 	Vec3 m_dimensions;
 	double m_edgeThickness;
@@ -137,13 +103,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFBoxFrame(Vec3 dimensions = DEF::OBJBoxDimensions, double edgeThickness = DEF::OBJFrameThickness, Color color = DEF::OBJColor)
+	SDFBoxFrame(Vec3 dimensions = DFLT_DIMENSIONS, double edgeThickness = DFLT_EDGETHICKNESS, Color color = Color::White)
 		: SDFObject(color), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFSphere : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.5 };
 private:
 	double m_radius;
 protected:
@@ -151,13 +119,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFSphere(double radius = DEF::OBJRadius, Color color = DEF::OBJColor)
+	SDFSphere(double radius = DFLT_RADIUS, Color color = Color::White)
 		: SDFObject(color), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTorusXY : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
 private:
 	Vec2 m_radii;
 protected:
@@ -165,13 +135,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusXY(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
+	SDFTorusXY(Vec2 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTorusXZ : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
 private:
 	Vec2 m_radii;
 protected:
@@ -179,13 +151,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusXZ(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
+	SDFTorusXZ(Vec2 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTorusYZ : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
 private:
 	Vec2 m_radii;
 protected:
@@ -193,29 +167,35 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusYZ(Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
+	SDFTorusYZ(Vec2 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTorusSegmentXY : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
+	inline const static double DFLT_SWEEP{ 0.25 };
 private:
-	Vec2 m_radii;
 	double m_sweep;
+	Vec2 m_radii;
 	Vec2 m_sincos;
 protected:
 	std::string getClassName() const override { return "SDFTorusSegmentXY"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusSegmentXY(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
+	SDFTorusSegmentXY(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTorusSegmentXZ : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
+	inline const static double DFLT_SWEEP{ 0.25 };
 private:
 	Vec2 m_radii;
 	double m_sweep;
@@ -225,13 +205,16 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusSegmentXZ(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
+	SDFTorusSegmentXZ(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTorusSegmentYZ : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
+	inline const static double DFLT_SWEEP{ 0.25 };
 private:
 	Vec2 m_radii;
 	double m_sweep;
@@ -241,13 +224,16 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusSegmentYZ(Vec2 radii = DEF::OBJRadii, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
+	SDFTorusSegmentYZ(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCapsuleX : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.25 };
+	inline const static double DFLT_BODYLENGTH{ 1.0 };
 private:
 	double m_radius;
 	double m_bodyLength;
@@ -256,13 +242,16 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCapsuleX(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCapsuleX(double radius = DFLT_RADIUS, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFObject(color), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCapsuleY : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.25 };
+	inline const static double DFLT_BODYLENGTH{ 1.0 };
 private:
 	double m_radius;
 	double m_bodyLength;
@@ -271,13 +260,16 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCapsuleY(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCapsuleY(double radius = DFLT_RADIUS, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFObject(color), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCapsuleZ : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.25 };
+	inline const static double DFLT_BODYLENGTH{ 1.0 };
 private:
 	double m_radius;
 	double m_bodyLength;
@@ -286,13 +278,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCapsuleZ(double radius = DEF::OBJRadius, double bodyLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCapsuleZ(double radius = DFLT_RADIUS, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFObject(color), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCrystal : public SDFObject
 {
+public:
+	inline const static double DFLT_EDGELENGTH{ 1.0 };
 private:
 	double m_edgeLength;
 protected:
@@ -300,89 +294,89 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCrystal(double edgeLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCrystal(double edgeLength = DFLT_EDGELENGTH, Color color = Color::White)
 		: SDFObject(color), m_edgeLength(edgeLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCylinderX : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_SIDELENGTH{ 1.0 };
 private:
-	double m_sideLength;
 	double m_radius;
+	double m_sideLength;
 protected:
 	std::string getClassName() const override { return "SDFCylinderX"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCylinderX(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCylinderX(double radius = DFLT_RADIUS, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
 		: SDFObject(color), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCylinderY : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_SIDELENGTH{ 1.0 };
 private:
-	double m_sideLength;
 	double m_radius;
+	double m_sideLength;
 protected:
 	std::string getClassName() const override { return "SDFCylinderY"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCylinderY(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCylinderY(double radius = DFLT_RADIUS, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
 		: SDFObject(color), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCylinderZ : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_SIDELENGTH{ 1.0 };
 private:
-	double m_sideLength;
 	double m_radius;
+	double m_sideLength;
 protected:
 	std::string getClassName() const override { return "SDFCylinderZ"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCylinderZ(double radius = DEF::OBJRadius, double sideLength = DEF::OBJLength, Color color = DEF::OBJColor)
+	SDFCylinderZ(double radius = DFLT_RADIUS, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
 		: SDFObject(color), m_sideLength(sideLength), m_radius(radius) {}
-	double signedDistanceInner(Vec3 p) const override;
-};
-
-class SDFTube : public SDFObject
-{
-private:
-	double m_height;
-	Vec2 m_radii;
-protected:
-	std::string getClassName() const override { return "SDFTube"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFTube(double height = DEF::OBJLength, Vec2 radii = DEF::OBJRadii, Color color = DEF::OBJColor)
-		: SDFObject(color), m_height(height), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFCone : public SDFObject
 {
+public:
+	inline const static double DFLT_HEIGHT{ 1.0 };
+	inline const static double DFLT_SWEEP{ 0.5 };
 private:
 	double m_height{};
-	double m_ratio{};
+	double m_sweep{};
 	Vec2 m_sincos{};
 protected:
 	std::string getClassName() const override { return "SDFCone"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFCone(double height = DEF::OBJLength, double ratio = DEF::OBJRatio, Color color = DEF::OBJColor)
-		: SDFObject(color), m_height(height), m_ratio(ratio), m_sincos(MF::fast_sincos(ratio* MF::TAU)) {}
+	SDFCone(double height = DFLT_HEIGHT, double sweep = DFLT_SWEEP, Color color = Color::White)
+		: SDFObject(color), m_height(height), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::HALFPI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFSolidAngle : public SDFObject
 {
+public:
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_SWEEP{ 0.25 };
 private:
 	double m_radius{};
 	double m_sweep{};
@@ -392,13 +386,15 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFSolidAngle(double radius = DEF::OBJRadius, double sweep = DEF::OBJSweep, Color color = DEF::OBJColor)
-		: SDFObject(color), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+	SDFSolidAngle(double radius = DFLT_RADIUS, double sweep = DFLT_SWEEP, Color color = Color::White)
+		: SDFObject(color), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFEllipsoid : public SDFObject
 {
+public:
+	inline const static Vec3 DFLT_RADII{ 1.0, 0.5, 0.25 };
 private:
 	Vec3 m_radii;
 protected:
@@ -406,23 +402,26 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFEllipsoid(Vec3 radii = DEF::OBJRadiiV3, Color color = DEF::OBJColor)
+	SDFEllipsoid(Vec3 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFTaperedCapsule : public SDFObject
 {
+public:
+	inline const static Vec2 DFLT_RADII{ 0.5, 0.25 };
+	inline const static double DFLT_BODYLENGTH{ 1.0 };
 private:
-	double m_height;
+	double m_bodyLength;
 	Vec2 m_radii;
 protected:
 	std::string getClassName() const override { return "SDFTaperedCapsule"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTaperedCapsule(Vec2 radii = DEF::OBJRadii, double height = DEF::OBJLength, Color color = DEF::OBJColor)
-		: SDFObject(color), m_radii(radii), m_height(height) {}
+	SDFTaperedCapsule(Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
+		: SDFObject(color), m_radii(radii), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
@@ -431,6 +430,10 @@ public:
 // Extrusion/Revolution Ops are adapted from article linked near the top of this file
 class SDFRhombus : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static Vec2 DFLT_DIMENSIONS{ 1.0, 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	Vec2 m_dimensions{};
@@ -440,13 +443,17 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFRhombus(OP2D operation = Extrude, Vec2 dimensions = DEF::OBJOP2DDimensions, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFRhombus(OP2D operation = DFLT_OPERATION, Vec2 dimensions = DFLT_DIMENSIONS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_dimensions(dimensions), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFEquilateralTriangle : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static double DFLT_BASE{ 1.0 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	double m_base;
@@ -456,13 +463,17 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFEquilateralTriangle(OP2D operation = Extrude, double base = DEF::OBJLength, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFEquilateralTriangle(OP2D operation = DFLT_OPERATION, double base = DFLT_BASE, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_base(base), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFIsoscelesTriangle : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static Vec2 DFLT_DIMENSIONS{ 1.0, 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	Vec2 m_dimensions;
@@ -472,13 +483,18 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFIsoscelesTriangle(OP2D operation = Extrude, Vec2 dimensions = DEF::OBJOP2DDimensions, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFIsoscelesTriangle(OP2D operation = DFLT_OPERATION, Vec2 dimensions = DFLT_DIMENSIONS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_dimensions(dimensions), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFPieSlice : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static double DFLT_SWEEP{ 0.25 };
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	double m_sweep;
@@ -490,13 +506,17 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFPieSlice(OP2D operation = Extrude, double sweep = DEF::OBJSweep, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
-		: SDFObject(color), m_operation(operation), m_sweep(sweep), m_radius(radius), m_magnitude(magnitude), m_sincos(MF::fast_sincos(m_sweep * MF::PI)) {}
+	SDFPieSlice(OP2D operation = DFLT_OPERATION, double sweep = DFLT_SWEEP, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
+		: SDFObject(color), m_operation(operation), m_sweep(sweep), m_radius(radius), m_magnitude(magnitude), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFPentagon : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	double m_radius;
@@ -506,13 +526,17 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFPentagon(OP2D operation = Extrude, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFPentagon(OP2D operation = DFLT_OPERATION, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_radius(radius), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFHexagon : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	double m_radius;
@@ -522,13 +546,17 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFHexagon(OP2D operation = Extrude, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFHexagon(OP2D operation = DFLT_OPERATION, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_radius(radius), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFOctagon : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	double m_radius;
@@ -538,13 +566,19 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFOctagon(OP2D operation = Extrude, double radius = DEF::OBJRadius, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFOctagon(OP2D operation = DFLT_OPERATION, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_radius(radius), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };
 
 class SDFStar : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static size_t DFLT_NUMPOINT{ 5 };
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_RATIO{ 0.5 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
 	size_t m_numPoints;
@@ -560,7 +594,7 @@ protected:
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFStar(OP2D operation = Extrude, size_t numPoints = DEF::OBJOP2DNumPoints, double radius = DEF::OBJRadius, double ratio = DEF::OBJRatio, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFStar(OP2D operation = DFLT_OPERATION, size_t numPoints = DFLT_NUMPOINT, double radius = DFLT_RADIUS, double ratio = DFLT_RATIO, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio), m_magnitude(magnitude) , m_an(MF::PI / static_cast<double>(numPoints))
 		,m_en(MF::PI / m_ratio), m_asincos(MF::fast_sincos(MF::PI / static_cast<double>(numPoints))), m_esincos(MF::fast_sincos(MF::PI / std::lerp(2.0, static_cast<double>(numPoints), ratio))) {}
 	double signedDistanceInner(Vec3 p) const override;
@@ -568,18 +602,24 @@ public:
 
 class SDFTriangle : public SDFObject
 {
+public:
+	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static Vec2 DFLT_POINT1{ -0.5, -0.5 };
+	inline const static Vec2 DFLT_POINT2{ 0.0, 0.5 };
+	inline const static Vec2 DFLT_POINT3{ 0.5, 0.0 };
+	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	OP2D m_operation;
-	double m_magnitude;
 	Vec2 m_point1;
 	Vec2 m_point2;
 	Vec2 m_point3;
+	double m_magnitude;
 protected:
 	std::string getClassName() const override { return "SDFTriangle"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTriangle(OP2D operation = Extrude, Vec2 point1 = DEF::OBJOP2DTPoint1, Vec2 point2 = DEF::OBJOP2DTPoint2, Vec2 point3 = DEF::OBJOP2DTPoint3, double magnitude = DEF::OBJOP2DMagnitude, Color color = DEF::OBJColor)
+	SDFTriangle(OP2D operation = DFLT_OPERATION, Vec2 point1 = DFLT_POINT1, Vec2 point2 = DFLT_POINT2, Vec2 point3 = DFLT_POINT3, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
 		: SDFObject(color), m_operation(operation), m_point1(point1), m_point2(point2), m_point3(point3), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 };

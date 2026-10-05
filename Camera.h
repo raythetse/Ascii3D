@@ -6,20 +6,18 @@
 class Camera
 {
 private:
-	Vec3 m_position{};
-	Vec3 m_initialPosition{};
+	Vec3 m_position{ 0.0, 1.8, -5.0 };
+	Vec3 m_initialPosition{ 0.0, 1.8, -5.0 };
 	Vec3 m_rotation{};
 	Vec3 m_forward{ 0.0, 0.0, 1.0 };
 	Vec3 m_up{ 0.0, 1.0, 0.0 };
 	Vec3 m_right{ 1.0, 0.0, 0.0 };
 	Vec2 m_viewportSize{};
-	double m_lookSpeed;
-	double m_moveSpeed;
+	double m_lookSpeed{ .0035 };
+	double m_moveSpeed{ 3.0 };
 
 public:
-	Camera(const double viewportWidth, const double viewportHeight, const Vec3 position = { 0.0, 0.0, -5.0 }, const double lookSpeed = 3.5, const double moveSpeed = 3.0)
-		: m_viewportSize(viewportWidth, viewportHeight), m_position(position)
-		, m_initialPosition(position), m_lookSpeed(lookSpeed * 0.001), m_moveSpeed(moveSpeed) {}
+	Camera() = default;
 	void update();
 	void reset();
 	Vec3 getViewportRay(const double x, const double y) const;

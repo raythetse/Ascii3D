@@ -16,7 +16,7 @@ int main()
     ConsoleFunctions::DisableConsoleQuickEdit();
     SetProcessDPIAware();
     //ConsoleFunctions::goFullscreen();
-    GameEngine{ 120, 40, 100.0, 0.001 }.run();
+    GameEngine{ 100.0, 0.001 }.run();
     ConsoleFunctions::restoreTerminal();
 
     return 0;

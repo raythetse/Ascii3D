@@ -4,6 +4,7 @@
 #include <ranges>
 
 #include "ConsoleFunctions.h"
+#include "DemoScenesInc.h"
 #include "FileHandler.h"
 #include "GameTimer.h"
 #include "InputManager.h"
@@ -12,15 +13,19 @@
 #include "SDFBuilder.h"
 #include "SDFOperationInc.h"
 
-GameEngine::GameEngine(size_t width, size_t height, double sceneDepth, double tolerance)
-	: m_dimensions{ width, height } , m_sceneDepth{ sceneDepth }, m_surTolerance(tolerance), m_pixelField{ width, height }
-    , m_rayMarcher{ sceneDepth, tolerance }, m_camera{ width * .005, height * .01 }
+GameEngine::GameEngine(double sceneDepth, double tolerance)
+	: m_sceneDepth{ sceneDepth }, m_surTolerance(tolerance), m_rayMarcher{ sceneDepth, tolerance }
 {
     m_framePM = m_perfMonitor.add("FPS", PerfMonitor::FPS);
     m_updatePM = m_perfMonitor.add("Update", PerfMonitor::Micro);
     m_marchPM = m_perfMonitor.add("March");
     m_renderPM = m_perfMonitor.add("Render");
+
+    m_dimensions = ConsoleFunctions::getCharacterGridSize();
+
+    m_pixelField.setSize(m_dimensions.first, m_dimensions.second);
     m_viewportSize = m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
+
     InputManager::registerResizeCallback([this](size_t width, size_t height) {
         m_dimensions.first = width;
         m_dimensions.second = height;
@@ -42,7 +47,7 @@ void GameEngine::run()
         while (true) {
             if (!selectSceneType()) break;
             if (m_marchMode == Hardware) {
-                std::string shaderCode = m_scene.buildComputeShader();
+                std::string shaderCode = m_scene->buildComputeShader();
                 FileHandler::saveShader(shaderCode, "ShaderSource.glsl");
                 m_vrm->setShaderSource(shaderCode);
                 m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
@@ -71,7 +76,7 @@ bool GameEngine::handleInput()
     if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
     if (InputManager::keyJustPushed('M') && InputManager::keyDown(VK_CONTROL)) {
         std::vector<std::string> strVec{};
-        m_scene.serialize(strVec);
+        m_scene->serialize(strVec);
         FileHandler::saveScene(strVec, "CustomScenes/CustomScene.scn");
     }
 
@@ -82,7 +87,7 @@ void GameEngine::update()
 {
     m_perfMonitor.sample(m_updatePM, [this]() {
         m_camera.update();
-        if (m_marchMode == Software) m_scene.update();
+        if (m_marchMode == Software) m_scene->update();
     });
 }
 
@@ -92,7 +97,7 @@ void GameEngine::march()
         switch (m_marchMode)
         {
         case GameEngine::Software:
-            m_rayMarcher.march(m_scene, m_pixelField, m_camera);
+            m_rayMarcher.march(m_scene.get(), m_pixelField, m_camera);
             break;
         case GameEngine::Hardware:
             marchHardware();
@@ -171,36 +176,35 @@ bool GameEngine::selectSceneType()
 
 void GameEngine::selectBuiltInScene(bool noCustom)
 {
-    int selection{0};
-    bool inputFailed{};
+    int selection{};
 
     while (true) {
         std::cout << "\033[2J\033[1;1H";
         if (noCustom) std::cout << "No Custom Scenes found\n\n";
-        if (inputFailed) std::cout << "- INVALID SELECTION -\n";
         std::cout << "Choose a Built-In Scene\n\n";
-        std::cout << "[1] WalkingCubes\n[2] Elongatiions\n[3] Torus\n";
+        std::cout << "[1] WalkingCubes - Classic cube rolling\n";
+        std::cout << "[2] Exclusion - Removing overlapping spaces, coloring interior spaces\n";
+        std::cout << "[3] Worms - Combining partial toruses into continuous moving worms\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
             if (ss >> selection) {
                 switch (selection) {
                 case 1:
-                    m_scene = SDFScene{ SDFScene::WalkingCubes };
+                    m_scene = std::make_unique<WalkingCubesScene>();
                     return;
                 case 2:
-                    m_scene = SDFScene{ SDFScene::Elongate };
+                    m_scene = std::make_unique<ExclusionScene>();
                     return;
                 case 3:
-                    m_scene = SDFScene{ SDFScene::Exclusion };
+                    m_scene = std::make_unique<WormsScene>();
                     return;
                 case 123:
-                    m_scene = SDFScene{ SDFScene::Test };
+                    m_scene = std::make_unique<TestScene>();
                     return;
                 }
             }
         }
-        inputFailed = true;
     }
 }
 
@@ -227,7 +231,7 @@ bool GameEngine::selectCustomScene()
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
             if (ss >> selection && selection >= 1 && selection <= scenes.size()) {
-                m_scene = SDFScene(scenes[selection - 1]);
+                m_scene = std::make_unique<SDFScene>(scenes[selection - 1]);
                 return true;
             }
         }

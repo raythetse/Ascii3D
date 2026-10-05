@@ -156,12 +156,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp" />
+    <ClCompile Include="BartScene.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CombinationOperation.cpp" />
     <ClCompile Include="DomainOperation.cpp" />
+    <ClCompile Include="ExclusionScene.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
+    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="VulkanRaymarcher.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LightSource.cpp" />
@@ -182,14 +185,21 @@
     <ClCompile Include="RayMarcher.cpp" />
     <ClCompile Include="SDFObject.cpp" />
     <ClCompile Include="PixelSample.cpp" />
+    <ClCompile Include="WalkingCubesScene.cpp" />
+    <ClCompile Include="WormsScene.cpp" />
+    <ClCompile Include="WormsScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BartScene.h" />
     <ClInclude Include="CombinationOperation.h" />
     <ClInclude Include="ConsoleFunctions.h" />
+    <ClInclude Include="DemoScenesInc.h" />
     <ClInclude Include="DomainOperation.h" />
+    <ClInclude Include="ExclusionScene.h" />
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="VulkanRaymarcher.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
@@ -214,6 +224,7 @@
     <ClInclude Include="RayMarcher.h" />
     <ClInclude Include="SDFObject.h" />
     <ClInclude Include="PixelSample.h" />
+    <ClInclude Include="WalkingCubesScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ObjectTypes.txt" />
