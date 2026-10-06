@@ -30,12 +30,12 @@ public:
     SDFBuilder& addLightSource(Vec3 position = LightSource::DFLT_POSITION, double luminance = LightSource::DFLT_LUMINANCE, Color color = LightSource::DFLT_COLOR, double ambientPower = LightSource::DFLT_AMBIENTPOWER);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
-    template <typename T>
-        requires (!std::is_base_of_v<PropertyModifierBase, T>)
-    SDFBuilder& bindPropMod(std::unique_ptr<PropertyModifier<T>> propMod);
     template <typename T, typename... Args>
         requires (std::is_base_of_v<PropertyModifierBase, T>)
-    SDFBuilder& bindPropMod(Args&&... args);
+    SDFBuilder& modOp(Args&&... args);
+    template <typename T, typename... Args>
+        requires (std::is_base_of_v<PropertyModifierBase, T>)
+    SDFBuilder& modObj(Args&&... args);
     void loadSerialized(std::vector<std::string>& strVec);
 };
 
@@ -69,21 +69,18 @@ auto SDFBuilder::pushOp(ArgsT&&... argst) {
     };
 }
 
-template <typename T>
-    requires (!std::is_base_of_v<PropertyModifierBase, T>)
-SDFBuilder& SDFBuilder::bindPropMod(std::unique_ptr<PropertyModifier<T>> propMod)
-{
+template <typename T, typename... Args>
+    requires (std::is_base_of_v<PropertyModifierBase, T>)
+SDFBuilder& SDFBuilder::modOp(Args&&... args) {
     if (m_lastOp) {
-        m_lastOp->bindPropertyModifier(std::move(propMod));
+        m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
     return *this;
 }
 
 template <typename T, typename... Args>
     requires (std::is_base_of_v<PropertyModifierBase, T>)
-SDFBuilder& SDFBuilder::bindPropMod(Args&&... args) {
-    if (m_lastOp) {
-        m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
-    }
+SDFBuilder& SDFBuilder::modObj(Args&&... args) {
+    m_objChain.back()->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     return *this;
 }

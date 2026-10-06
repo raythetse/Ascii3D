@@ -11,19 +11,19 @@ ExclusionScene::ExclusionScene()
     add(SDFBuilder{}
         .pushOp<COMBAdd, SDFObject>()() // L1
         .pushOp<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Left * dist * oscillation)
+        .modOp<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Left * dist * oscillation)
         .pushOp<COMBAdd, SDFTorusXY>(dim, Color::Blue)() // L2
         .pushOp<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
+        .modOp<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
         .pushOp<COMBExclude, SDFTorusXY>(dim, Color::Green)(cMode) // L3
         .stepBack(0) // L0
         .pushOp<COMBExclude, SDFObject>()(cMode) // L1
         .pushOp<OPTranslate>(Vec3::Down * dist * 2.0)
         .pushOp<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Down * dist * oscillation)
+        .modOp<PMOscillateSineV3>("translation", Vec3{ period }, Vec3::Down * dist * oscillation)
         .pushOp<COMBAdd, SDFTorusXY>(dim, Color::Red)() // L2
         .pushOp<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
-        .bindPropMod<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
+        .modOp<PMOscillateSineV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
         .pushOp<COMBExclude, SDFTorusXY>(dim, Color::Yellow)(cMode) // L4
         .stepBack(0) // L0
         .pushOp<OPTranslate>(Vec3::Backward * 0.5)

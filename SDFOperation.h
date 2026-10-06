@@ -21,7 +21,7 @@ protected:
 	std::vector<std::unique_ptr<PropertyModifierBase>> m_propMods{};
 	SDFOperation(SDFOperationType opType) : m_opType(opType) {}
 	virtual void innerUpdate() = 0;
-	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return { distanceA }; }
+	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return distanceA; }
 	virtual double resurface(double distance) { return distance; };
 	virtual void transform(Vec3& p) const {};
 	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const = 0;

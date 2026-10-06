@@ -103,7 +103,7 @@ BartScene::BartScene()
         .pushOp<COMBAddSmooth, SDFObject>()(0.01) // L4
         .pushOp<OPTranslate>(Vec3{ 0.45, 1.3, 0.0 })
         .pushOp<OPRotate>(Vec3{ -0.5, 0.0, -0.75 }.getNormal(), 0.25)
-        .bindPropMod<PMOscillateSine>("rotations", 1.0, 0.035)
+        .modOp<PMOscillateSine>("rotations", 1.0, 0.035)
         .pushOp<OPTranslate>(Vec3::Down * 0.2)
         .pushOp<COMBAdd, SDFEllipsoid>(Vec3{ 0.25, 0.4, 0.25 }, shirtCol)() // L5
         .pushOp<OPTranslate>(Vec3::Down * 0.25)
@@ -117,7 +117,7 @@ BartScene::BartScene()
         .pushOp<COMBAdd, SDFCapsuleY>(0.17, 0.5, skinCol)() // L5
         .pushOp<OPTranslate>(Vec3::Down * 0.25)
         .pushOp<OPRotate>(Vec3::Forward, 0.375)
-        .bindPropMod<PMOscillateSine>("rotations", 1.0, 0.1, 0.3)
+        .modOp<PMOscillateSine>("rotations", 1.0, 0.1, 0.3)
         .pushOp<OPTranslate>(Vec3::Up * 0.1)
         .pushOp<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05) // L6
         // Left hand
