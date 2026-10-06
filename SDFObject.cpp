@@ -1215,7 +1215,8 @@ void SDFStar::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t 
     ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
     ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
     ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "ratio") ? propName : std::to_string(m_ratio)) << ";\n";
-    ss << "\td" << level << " = star(p" << level << ", " << m_numPoints << ", pmFloat1, pmFloat2, " << m_operation << ", pmFloat0);\n\n";
+    ss << "\tpmVec20.x = " << (getShaderPropModCalls(propName = "numPoints") ? propName : std::to_string(m_numPoints)) << ";\n";
+    ss << "\td" << level << " = star(p" << level << ", int(pmVec20.x), pmFloat1, pmFloat2, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFStar::signedDistanceInner(Vec3 p) const

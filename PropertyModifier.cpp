@@ -92,3 +92,27 @@ void PMOscillateSineV2::getShaderModCall(std::string & call) const
 {
     call = std::format("oscillateSineV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
+
+void PMOscillateSineST::getShaderModCall(std::string& call) const
+{
+    call = std::format("round(oscillateSine({}, {:.7f}, {:.7f}, {:.7f}, time))", m_initVal, m_period, m_amplitude, m_phase);
+}
+
+void PMOscillateSineST::serializeInner(std::stringstream& ss) const
+{
+    ss << " period " << m_period;
+    ss << " amplitude " << m_amplitude;
+    ss << " phase " << m_phase;
+}
+
+void PMOscillateLinearST::getShaderModCall(std::string& call) const
+{
+    call = std::format("round(oscillateLinear({}, {:.7f}, {:.7f}, {:.7f}, time))", m_initVal, m_period, m_amplitude, m_phase);
+}
+
+void PMOscillateLinearST::serializeInner(std::stringstream& ss) const
+{
+    ss << " period " << m_period;
+    ss << " amplitude " << m_amplitude;
+    ss << " phase " << m_phase;
+}

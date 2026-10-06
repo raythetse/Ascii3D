@@ -960,6 +960,42 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         boundOnObj ? builder.modOp<PMOscillateSine>(propName, period, amplitude, phase) : builder.modOp<PMOscillateSine>(propName, period, amplitude, phase);
     } },
+    { "PMOscillateSineST", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        double period{ PropertyModifierBase::DFLT_PERIOD };
+        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
+        double phase{ PropertyModifierBase::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "period") ss >> period;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
+        }
+        boundOnObj ? builder.modOp<PMOscillateSineST>(propName, period, amplitude, phase) : builder.modOp<PMOscillateSineST>(propName, period, amplitude, phase);
+    } },
+    { "PMOscillateLinearST", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        double period{ PropertyModifierBase::DFLT_PERIOD };
+        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
+        double phase{ PropertyModifierBase::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "period") ss >> period;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
+        }
+        boundOnObj ? builder.modOp<PMOscillateLinearST>(propName, period, amplitude, phase) : builder.modOp<PMOscillateLinearST>(propName, period, amplitude, phase);
+    } },
     { "PMOscillateSineV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec2 periods{ PropertyModifierBase::DFLT_PERIOD };
