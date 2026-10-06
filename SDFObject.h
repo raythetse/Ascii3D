@@ -33,6 +33,7 @@ protected:
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const {};
 	double extrude2D(double pDotY, double d2D, double magnitude) const;
 	Vec3 revolve2D(Vec3 p, double radius) const;
+	bool getShaderPropModCalls(std::string& propName) const;
 public:
 	SDFObject(Color color = Color::White)
 		: m_color{ color } {}
@@ -188,14 +189,13 @@ public:
 private:
 	double m_sweep;
 	Vec2 m_radii;
-	Vec2 m_sincos;
 protected:
 	std::string getClassName() const override { return "SDFTorusSegmentXY"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFTorusSegmentXY(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+		: SDFObject(color), m_radii(radii), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -208,14 +208,13 @@ public:
 private:
 	Vec2 m_radii;
 	double m_sweep;
-	Vec2 m_sincos;
 protected:
 	std::string getClassName() const override { return "SDFTorusSegmentXZ"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFTorusSegmentXZ(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+		: SDFObject(color), m_radii(radii), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -228,14 +227,13 @@ public:
 private:
 	Vec2 m_radii;
 	double m_sweep;
-	Vec2 m_sincos;
 protected:
 	std::string getClassName() const override { return "SDFTorusSegmentYZ"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFTorusSegmentYZ(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep* MF::PI)) {}
+		: SDFObject(color), m_radii(radii), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -379,14 +377,13 @@ public:
 private:
 	double m_height{};
 	double m_sweep{};
-	Vec2 m_sincos{};
 protected:
 	std::string getClassName() const override { return "SDFCone"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFCone(double height = DFLT_HEIGHT, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_height(height), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::HALFPI)) {}
+		: SDFObject(color), m_height(height), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -399,14 +396,13 @@ public:
 private:
 	double m_radius{};
 	double m_sweep{};
-	Vec2 m_sincos{};
 protected:
 	std::string getClassName() const override { return "SDFSolidAngle"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFSolidAngle(double radius = DFLT_RADIUS, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radius(radius), m_sweep(sweep), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
+		: SDFObject(color), m_radius(radius), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -525,14 +521,13 @@ private:
 	double m_sweep;
 	double m_radius;
 	double m_magnitude;
-	Vec2 m_sincos;
 protected:
 	std::string getClassName() const override { return "SDFPieSlice"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFPieSlice(OP2D operation = DFLT_OPERATION, double sweep = DFLT_SWEEP, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
-		: SDFObject(color), m_operation(operation), m_sweep(sweep), m_radius(radius), m_magnitude(magnitude), m_sincos(MF::fast_sincos(sweep * MF::PI)) {}
+		: SDFObject(color), m_operation(operation), m_sweep(sweep), m_radius(radius), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -614,18 +609,13 @@ private:
 	double m_radius;
 	double m_ratio;
 	double m_magnitude;
-	double m_an;
-	double m_en;
-	Vec2 m_asincos;
-	Vec2 m_esincos;
 protected:
 	std::string getClassName() const override { return "SDFStar"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
 	SDFStar(OP2D operation = DFLT_OPERATION, size_t numPoints = DFLT_NUMPOINT, double radius = DFLT_RADIUS, double ratio = DFLT_RATIO, double magnitude = DFLT_MAGNITUDE, Color color = Color::White)
-		: SDFObject(color), m_operation(operation), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio), m_magnitude(magnitude) , m_an(MF::PI / static_cast<double>(numPoints))
-		,m_en(MF::PI / m_ratio), m_asincos(MF::fast_sincos(MF::PI / static_cast<double>(numPoints))), m_esincos(MF::fast_sincos(MF::PI / std::lerp(2.0, static_cast<double>(numPoints), ratio))) {}
+		: SDFObject(color), m_operation(operation), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio), m_magnitude(magnitude) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };

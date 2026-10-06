@@ -25,6 +25,8 @@ public:
 	Vec2 maximum(const Vec2 m);
 	Vec2 minimum(const Vec2 m);
 	Vec2 cross(const Vec2& p);
+	Vec2 sin() const;
+	Vec2 cos() const;
 	Vec2 abs();
 	void normalize();
 	Vec2 rotate(const double rads) const ;

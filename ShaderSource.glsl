@@ -79,6 +79,14 @@ float oscillateSine(float initVal, float period, float amplitude, float phase, f
     return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
 }
 
+vec2 oscillateSineV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
+    return initVal + sin(TAU * (vec2(time) + (phase * period)) / period) * amplitude;
+}
+
+vec3 oscillateSineV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+    return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
+}
+
 float oscillateLinear(float initVal, float period, float amplitude, float phase, float time) {
     float progress = mod(0.25 * period + time + phase * period, period) / period;
 	progress -= 0.5;
@@ -89,8 +97,18 @@ float oscillateLinear(float initVal, float period, float amplitude, float phase,
     return initVal + progress * amplitude;
 }
 
-vec3 oscillateSineV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-    return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
+vec2 oscillateLinearV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
+    vec2 progress = vec2(
+        mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
+        mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y
+	);
+	progress -= 0.5;
+	progress *= 2.0;
+	progress = abs(progress);
+	progress -= 0.5;
+	progress *= 2.0;
+
+	return initVal + progress * amplitude;
 }
 
 vec3 oscillateLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
@@ -176,9 +194,12 @@ float torus(vec3 p, vec2 radii) {
     return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
 }
 
-float torusSegment(vec3 p, vec2 radii, vec2 sincos) {
+float torusSegment(vec3 p, vec2 radii, float sweep) {
+    float angle = PI * sweep;
+    float sin = sin(angle);
+    float cos = cos(angle);
     p.x = abs(p.x);
-    float k = (sincos.y * p.x > sincos.x * p.z) ? dot(p.xz, sincos) : length(p.xz);
+    float k = (cos * p.x > sin * p.z) ? dot(p.xz, vec2(sin, cos)) : length(p.xz);
     return sqrt(dot(p, p) + radii.x * radii.x - 2.0 * radii.x * k) - radii.y;
 }
 
@@ -203,7 +224,8 @@ float chainLink(vec3 p, float sideLength, vec2 radii) {
     return length(vec2(length(vec2(p.x, p.z)) - radii.x, p.y)) - radii.y;
 }
 
-float cone(vec3 p, float height, float angle) {
+float cone(vec3 p, float height, float sweep) {
+    float angle = sweep * HALFPI;
     float c = cos(angle);
     float s = sin(angle);
     vec2 q = height * vec2(s / c, -1.0);
@@ -216,11 +238,13 @@ float cone(vec3 p, float height, float angle) {
     return sqrt(d) * sign(t);
 }
 
-float solidAngle(vec3 p, vec2 c, float r) {
+float solidAngle(vec3 p, float sweep, float radius) {
+    float angle = sweep * PI;
+    vec2 sincos = vec2(sin(angle), cos(angle));
     vec2 q = vec2(length(p.xz), p.y);
-    float l = length(q) - r;
-    float m = length(q - c*clamp(dot(q, c), 0.0, r));
-    return max(l, m * sign(c.y * q.x - c.x * q.y));
+    float l = length(q) - radius;
+    float m = length(q - sincos * clamp(dot(q, sincos), 0.0, radius));
+    return max(l, m * sign(sincos.y * q.x - sincos.x * q.y));
 }
 
 float ellipsoid(vec3 p, vec3 radii) {
@@ -274,8 +298,10 @@ float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude)
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float pieSlice(vec3 p, vec2 sincos, float radius, int operation, float magnitude) {
+float pieSlice(vec3 p, float sweep, float radius, int operation, float magnitude) {
     if (operation == 1) p = revolve2D(p, magnitude);
+    float angle = sweep * PI;
+    vec2 sincos = vec2(sin(angle), cos(angle));
     vec2 p2D = vec2(p.x, p.z);
     p2D.x = abs(p2D.x);
     float l = length(p2D) - radius;
@@ -316,8 +342,15 @@ float octagon(vec3 p, float radius, int operation, float magnitude) {
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float star(vec3 p, float radius, int operation, float magnitude, float an, vec2 acs, vec2 ecs) {
+float star(vec3 p, int numPoints, float radius, float ratio, int operation, float magnitude) {
     if (operation == 1) p = revolve2D(p, magnitude);
+    float a = PI / numPoints;
+    vec2 asincos = vec2(sin(a), cos(a));
+    vec2 acs = vec2(asincos.y, asincos.x);
+    float e = PI / mix(2.0, numPoints, ratio);
+    vec2 esincos = vec2(sin(e), cos(e));
+    vec2 ecs = vec2(esincos.y, esincos.x);
+    float an = PI / numPoints;
     vec2 p2D = vec2(abs(p.x), p.z);
     float bn = mod(atan(p2D.x, p2D.y), 2.0 * an) - an;
     float sinbn = sin(bn);
@@ -355,50 +388,40 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	vec3 pmVec30, pmVec31, pmVec32;
 
 	// SDFObject //
-	color0 = vec3(0.5000000, 0.5000000, 0.5000000);
+	pmVec30 = vec3(0.5000000, 0.5000000, 0.5000000);
+	color0 = pmVec30;
 
 	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	vec3 p1;
 	float d1 = FLOAT_MAX;
 	vec3 color1;
 	p1 = p0;
 	d1 = FLOAT_MAX;
-	color1 = vec3(1.0000000, 1.0000000, 1.0000000);
+	color1 = pmVec30;
 	// SDFPlane //
-	d1 = dot(p1, vec3(0.0000000, 1.0000000, 0.0000000)) - -0.5;
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	d1 = dot(p1, pmVec30) - -0.5;
 
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.5000000, 0.0000000);
+	p1 -= pmVec30; 
 
 	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	vec3 p2;
 	float d2 = FLOAT_MAX;
 	vec3 color2;
 	p2 = p1;
 	d2 = FLOAT_MAX;
-	color2 = vec3(1.0000000, 1.0000000, 1.0000000);
-	// SDFBoxFrame //
-	d2 = boxFrame(p2, vec3(2.0000000, 1.0000000, 2.0000000), 0.1);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.5000000, 0.0000000);
-	p2 -= pmVec30; 
-
-	// SDFObject //
-	vec3 p3;
-	float d3 = FLOAT_MAX;
-	vec3 color3;
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = vec3(1.0000000, 1.0000000, 1.0000000);
+	color2 = pmVec30;
 	// SDFStar //
-	d3 = star(p3, 0.25, 1, 2, 0.523599, vec2(0.8660254, 0.5000000), vec2(0.7071068, 0.7071068));
+	pmFloat0 = 1.000000;
+	pmFloat1 = 0.500000;
+	pmFloat2 = oscillateSine(0.5000000, 2.0000000, 0.2500000, 0.0000000, time);
+	d2 = star(p2, 5, pmFloat1, pmFloat2, 0, pmFloat0);
 
-
-	// COMBAdd //
-	if (d3 < d2) {
-		d2 = d3;
-		color2 = color3; 
-	}
 
 	// COMBAdd //
 	if (d2 < d1) {

@@ -960,6 +960,24 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         boundOnObj ? builder.modOp<PMOscillateSine>(propName, period, amplitude, phase) : builder.modOp<PMOscillateSine>(propName, period, amplitude, phase);
     } },
+    { "PMOscillateSineV2", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        Vec2 periods{ PropertyModifierBase::DFLT_PERIOD };
+        Vec2 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
+        Vec2 phases{ PropertyModifierBase::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "period") ss >> periods.x >> periods.y;
+            else if (param == "amplitude") ss >> amplitudes.x >> amplitudes.y;
+            else if (param == "phase") ss >> phases.x >> phases.y;
+        }
+        boundOnObj ? builder.modObj<PMOscillateSineV2>(propName, periods, amplitudes, phases) : builder.modOp<PMOscillateSineV2>(propName, periods, amplitudes, phases);
+    } },
     { "PMOscillateSineV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec3 periods{ PropertyModifierBase::DFLT_PERIOD };
@@ -995,6 +1013,24 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "phase") ss >> phase;
         }
         boundOnObj ? builder.modObj<PMOscillateLinear>(propName, period, amplitude, phase) : builder.modOp<PMOscillateLinear>(propName, period, amplitude, phase);
+    } },
+    { "PMOscillateLinearV2", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        Vec2 periods{ PropertyModifierBase::DFLT_PERIOD };
+        Vec2 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
+        Vec2 phases{ PropertyModifierBase::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "period") ss >> periods.x >> periods.y;
+            else if (param == "amplitude") ss >> amplitudes.x >> amplitudes.y;
+            else if (param == "phase") ss >> phases.x >> phases.y;
+        }
+        boundOnObj ? builder.modObj<PMOscillateLinearV2>(propName, periods, amplitudes, phases) : builder.modOp<PMOscillateLinearV2>(propName, periods, amplitudes, phases);
     } },
     { "PMOscillateLinearV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;

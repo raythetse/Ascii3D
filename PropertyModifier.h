@@ -67,6 +67,23 @@ public:
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };
 
+class PMOscillateSineV2 : public PropertyModifier<Vec2>
+{
+private:
+	Vec2 m_period{};
+	Vec2 m_amplitude{};
+	Vec2 m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateSineV2"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	PMOscillateSineV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
+		: PropertyModifier(propName, [this](Vec2* ptr, Vec2 initVal) -> void {
+		*ptr = m_initVal + ((Vec2{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};
+
 class PMOscillateSineV3 : public PropertyModifier<Vec3>
 {
 private:
@@ -122,10 +139,38 @@ public:
 	PMOscillateLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
 		: PropertyModifier(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		double gameTime = GameTimer::gameTime();
-		Vec3 progress { 
+		Vec3 progress{
 			fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
 			fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y,
 			fmod(0.25 * m_period.z + (gameTime + (m_phase.z * m_period.z)), m_period.z) / m_period.z
+		};
+		progress -= 0.5;
+		progress *= 2.0;
+		progress = progress.abs();
+		progress -= 0.5;
+		progress *= 2.0;
+
+		*ptr = m_initVal + progress * m_amplitude;
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};
+
+class PMOscillateLinearV2 : public PropertyModifier<Vec2>
+{
+private:
+	Vec2 m_period{};
+	Vec2 m_amplitude{};
+	Vec2 m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateLinearV2"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	PMOscillateLinearV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
+		: PropertyModifier(propName, [this](Vec2* ptr, Vec2 initVal) -> void {
+		double gameTime = GameTimer::gameTime();
+		Vec2 progress{
+			fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
+			fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y
 		};
 		progress -= 0.5;
 		progress *= 2.0;

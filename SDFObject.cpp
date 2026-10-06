@@ -45,6 +45,14 @@ Color SDFObject::getColor()
     return m_color;
 }
 
+bool SDFObject::getShaderPropModCalls(std::string& propName) const
+{
+    for (auto& propMod : m_propMods) {
+        if (propMod->getShaderCall(propName)) return true;
+    }
+    return false;
+}
+
 void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
 {
     std::stringstream ss{};
@@ -80,6 +88,8 @@ double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
 void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel)
 {
     ss << "\t// SDFObject //\n";
+    std::string propName{ "" };
+    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "color") ? propName : m_color.getShader()) << ";\n";
     if (level > maxLevel) {
         ss << "\tvec3 p" << level << ";\n";
         ss << "\tfloat d" << level << " = FLOAT_MAX;\n";
@@ -90,7 +100,7 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
         ss << "\tp" << level << " = p" << (level - 1) << ";\n";
         ss << "\td" << level << " = FLOAT_MAX;\n";
     }
-    ss << "\tcolor" << level << " = " << m_color.getShader() << ";\n";
+    ss << "\tcolor" << level << " = pmVec30;\n";
     getShaderObjectCalls(ss, level, maxLevel);
     ss << "\n";
 
@@ -121,7 +131,9 @@ void SDFPlane::serializeInner(std::stringstream& ss) const
 void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPlane //\n";
-    ss << "\td" << level << " = dot(p" << level << ", " << m_normal.getShader() << ") - " << m_offset << ";\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "normal") ? "normalize(" + propName + ")" : m_normal.getShader()) << ";\n";
+    ss << "\td" << level << " = dot(p" << level << ", pmVec30) - " << m_offset << ";\n\n";
 }
 
 double SDFPlane::signedDistanceInner(Vec3 p) const
@@ -153,7 +165,9 @@ void SDFBox::serializeInner(std::stringstream& ss) const
 void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFBox //\n";
-    ss << "\td" << level << " = box(p" << level << ", " << m_dimensions.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\td" << level << " = box(p" << level << ", pmVec30);\n\n";
 }
 
 double SDFBox::signedDistanceInner(Vec3 p) const
@@ -184,7 +198,10 @@ void SDFBoxFrame::serializeInner(std::stringstream& ss) const
 void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFBoxFrame //\n";
-    ss << "\td" << level << " = boxFrame(p" << level << ", " << m_dimensions.getShader() << ", " << m_edgeThickness << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "edgeThickness") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\td" << level << " = boxFrame(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
 double SDFBoxFrame::signedDistanceInner(Vec3 p) const
@@ -222,7 +239,9 @@ void SDFSphere::serializeInner(std::stringstream& ss) const
 void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFSphere //\n";
-    ss << "\td" << level << " = sphere(p" << level << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = sphere(p" << level << ", pmFloat0);\n\n";
 }
 
 double SDFSphere::signedDistanceInner(Vec3 p) const
@@ -250,7 +269,9 @@ void SDFTorusXY::serializeInner(std::stringstream& ss) const
 void SDFTorusXY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorusXY //\n";
-    ss << "\td" << level << " = torus(p" << level << ".xzy, " << m_radii.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = torus(p" << level << ".xzy, pmVec20);\n\n";
 }
 
 double SDFTorusXY::signedDistanceInner(Vec3 p) const
@@ -278,7 +299,9 @@ void SDFTorusXZ::serializeInner(std::stringstream& ss) const
 void SDFTorusXZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorusXZ //\n";
-    ss << "\td" << level << " = torus(p" << level << ", " << m_radii.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = torus(p" << level << ", pmVec20);\n\n";
 }
 
 double SDFTorusXZ::signedDistanceInner(Vec3 p) const
@@ -306,7 +329,9 @@ void SDFTorusYZ::serializeInner(std::stringstream& ss) const
 void SDFTorusYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorusYZ //\n";
-    ss << "\td" << level << " = torus(p" << level << ".yxz, " << m_radii.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = torus(p" << level << ".yxz, pmVec20);\n\n";
 }
 
 double SDFTorusYZ::signedDistanceInner(Vec3 p) const
@@ -335,14 +360,18 @@ void SDFTorusSegmentXY::serializeInner(std::stringstream& ss) const
 void SDFTorusSegmentXY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorusSegmentXY //\n";
-    ss << "\td" << level << " = torusSegment(p" << level << ".xzy, " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ".xzy, pmVec20, pmFloat0);\n\n";
 }
 
 double SDFTorusSegmentXY::signedDistanceInner(Vec3 p) const
 {
     p.x = abs(p.x);
     Vec2 pXY{ p.x, p.y };
-    double k = (m_sincos.y * p.x > m_sincos.x * p.y) ? pXY.dot(m_sincos) : pXY.length();
+    Vec2 sincos = MF::fast_sincos(m_sweep * MF::PI);
+    double k = (sincos.y * p.x > sincos.x * p.y) ? pXY.dot(sincos) : pXY.length();
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
@@ -371,14 +400,18 @@ void SDFTorusSegmentXZ::serializeInner(std::stringstream& ss) const
 void SDFTorusSegmentXZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorusSegmentXZ //\n";
-    ss << "\td" << level << " = torusSegment(p" << level << ", " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ", pmVec20, pmFloat0);\n\n";
 }
 
 double SDFTorusSegmentXZ::signedDistanceInner(Vec3 p) const
 {
     p.x = abs(p.x);
     Vec2 pXZ{ p.x, p.z };
-    double k = (m_sincos.y * p.x > m_sincos.x * p.z) ? pXZ.dot(m_sincos) : pXZ.length();
+    Vec2 sincos = MF::fast_sincos(m_sweep * MF::PI);
+    double k = (sincos.y * p.x > sincos.x * p.z) ? pXZ.dot(sincos) : pXZ.length();
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
@@ -407,14 +440,18 @@ void SDFTorusSegmentYZ::serializeInner(std::stringstream& ss) const
 void SDFTorusSegmentYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTorusSegmentYZ //\n";
-    ss << "\td" << level << " = torusSegment(p" << level << ".yxz, " << m_radii.getShader() << ", " << m_sincos.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = torusSegment(p" << level << ".yxz, pmVec20, pmFloat0);\n\n";
 }
 
 double SDFTorusSegmentYZ::signedDistanceInner(Vec3 p) const
 {
     p.y = abs(p.y);
     Vec2 pYZ{ p.y, p.z };
-    double k = (m_sincos.y * p.y > m_sincos.x * p.z) ? pYZ.dot(m_sincos) : pYZ.length();
+    Vec2 sincos = MF::fast_sincos(m_sweep * MF::PI);
+    double k = (sincos.y * p.y > sincos.x * p.z) ? pYZ.dot(sincos) : pYZ.length();
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
@@ -443,7 +480,10 @@ void SDFCapsuleX::serializeInner(std::stringstream& ss) const
 void SDFCapsuleX::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCapsuleX //\n";
-    ss << "\td" << level << " = capsule(p" << level << ", " << m_bodyLength << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = capsule(p" << level << ", pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCapsuleX::signedDistanceInner(Vec3 p) const
@@ -477,7 +517,10 @@ void SDFCapsuleY::serializeInner(std::stringstream& ss) const
 void SDFCapsuleY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCapsuleY //\n";
-    ss << "\td" << level << " = capsule(p" << level << ".yxz, " << m_bodyLength << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = capsule(p" << level << ".yxz, pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCapsuleY::signedDistanceInner(Vec3 p) const
@@ -511,7 +554,10 @@ void SDFCapsuleZ::serializeInner(std::stringstream& ss) const
 void SDFCapsuleZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCapsuleZ //\n";
-    ss << "\td" << level << " = capsule(p" << level << ".zyx, " << m_bodyLength << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = capsule(p" << level << ".zyx, pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCapsuleZ::signedDistanceInner(Vec3 p) const
@@ -544,7 +590,9 @@ void SDFCrystal::serializeInner(std::stringstream& ss) const
 void SDFCrystal::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCrystal //\n";
-    ss << "\td" << level << " = crystal(p" << level << ", " << m_edgeLength << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "edgeLength") ? propName : std::to_string(m_edgeLength)) << ";\n";
+    ss << "\td" << level << " = crystal(p" << level << ", pmFloat0);\n\n";
 }
 
 double SDFCrystal::signedDistanceInner(Vec3 p) const
@@ -574,7 +622,10 @@ void SDFCylinderX::serializeInner(std::stringstream& ss) const
 void SDFCylinderX::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCylinderX //\n";
-    ss << "\td" << level << " = cylinder(p" << level << ", " << m_sideLength << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sideLength") ? propName : std::to_string(m_sideLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = cylinder(p" << level << ", pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCylinderX::signedDistanceInner(Vec3 p) const
@@ -609,7 +660,10 @@ void SDFCylinderY::serializeInner(std::stringstream& ss) const
 void SDFCylinderY::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCylinderY //\n";
-    ss << "\td" << level << " = cylinder(p" << level << ".yxz, " << m_sideLength << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sideLength") ? propName : std::to_string(m_sideLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = cylinder(p" << level << ".yxz, pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCylinderY::signedDistanceInner(Vec3 p) const
@@ -644,7 +698,10 @@ void SDFCylinderZ::serializeInner(std::stringstream& ss) const
 void SDFCylinderZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCylinderZ //\n";
-    ss << "\td" << level << " = cylinder(p" << level << ".zyx, " << m_sideLength << ", " << m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sideLength") ? propName : std::to_string(m_sideLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = cylinder(p" << level << ".zyx, pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCylinderZ::signedDistanceInner(Vec3 p) const
@@ -679,12 +736,16 @@ void SDFCone::serializeInner(std::stringstream& ss) const
 void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFCone //\n";
-    ss << "\td" << level << " = cone(p" << level << ", " << m_height << ", " << (m_sweep * MF::HALFPI) << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "height") ? propName : std::to_string(m_height)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\td" << level << " = cone(p" << level << ", pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFCone::signedDistanceInner(Vec3 p) const
 {
-    Vec2 q = Vec2{ m_sincos.x / m_sincos.y, -1.0 } * m_height;
+    Vec2 sincos = MF::fast_sincos(m_sweep * MF::HALFPI);
+    Vec2 q = Vec2{ sincos.x / sincos.y, -1.0 } * m_height;
     Vec2 w = Vec2{ Vec2{ p.x, p.z }.length(), p.y };
     Vec2 a = w - q * std::clamp(w.dot(q) / q.dot(q), 0.0, 1.0);
     Vec2 b = w - q * Vec2{ std::clamp(w.x / q.x, 0.0, 1.0), 1.0 };
@@ -719,15 +780,19 @@ void SDFSolidAngle::serializeInner(std::stringstream& ss) const
 void SDFSolidAngle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFSolidAngle //\n";
-    ss << "\td" << level << " = solidAngle(p" << level << ", " << m_sincos.getShader() <<", " <<m_radius << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = solidAngle(p" << level << ", pmFloat0, pmFloat1);\n\n";
 }
 
 double SDFSolidAngle::signedDistanceInner(Vec3 p) const
 {
     Vec2 q = Vec2{ Vec2{ p.x, p.z }.length(), p.y };
     double l = q.length() - m_radius;
-    double m = (q - m_sincos * std::clamp(q.dot(m_sincos), 0.0, m_radius)).length();
-    return std::max(l, m * ((m_sincos.y * q.x - m_sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
+    Vec2 sincos = MF::fast_sincos(m_sweep * MF::PI);
+    double m = (q - sincos * std::clamp(q.dot(sincos), 0.0, m_radius)).length();
+    return std::max(l, m * ((sincos.y * q.x - sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
 }
 
 void SDFSolidAngle::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
@@ -753,7 +818,10 @@ void SDFEllipsoid::serializeInner(std::stringstream& ss) const
 
 void SDFEllipsoid::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "d" << level << " = ellipsoid(p" << level << ", " << m_radii.getShader() << ");\n\n";
+    ss << "\t// SDFEllipsoid //\n";
+    std::string propName{ "" };
+    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = ellipsoid(p" << level << ", pmVec30);\n\n";
 }
 
 double SDFEllipsoid::signedDistanceInner(Vec3 p) const
@@ -783,7 +851,11 @@ void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
 
 void SDFTaperedCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
-    ss << "d" << level << " = taperedCapsule(p" << level << ", " << m_radii.getShader() << ", " << m_bodyLength << "); \n\n";
+    ss << "\t// SDFTaperedCapsule //\n";
+    std::string propName{ "" };
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
+    ss << "d" << level << " = taperedCapsule(p" << level << ", pmVec20, pmFloat0); \n\n";
 }
 
 double SDFTaperedCapsule::signedDistanceInner(Vec3 p) const
@@ -824,7 +896,10 @@ void SDFRhombus::serializeInner(std::stringstream& ss) const
 void SDFRhombus::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFRhombus //\n";
-    ss << "\td" << level << " = rhombus(p" << level << ", " << m_dimensions.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\td" << level << " = rhombus(p" << level << ", pmVec20, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFRhombus::signedDistanceInner(Vec3 p) const
@@ -865,7 +940,10 @@ void SDFEquilateralTriangle::serializeInner(std::stringstream& ss) const
 void SDFEquilateralTriangle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFEquilateralTriangle //\n";
-    ss << "\td" << level << " = equilateralTriangle(p" << level << ", " << m_base << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "base") ? propName : std::to_string(m_base)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\td" << level << " = equilateralTriangle(p" << level << ", pmFloat0, " << m_operation << ", pmFloat1);\n\n";
 }
 
 double SDFEquilateralTriangle::signedDistanceInner(Vec3 p) const
@@ -906,7 +984,10 @@ void SDFIsoscelesTriangle::serializeInner(std::stringstream& ss) const
 void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFIsoscelesTriangle //\n";
-    ss << "\td" << level << " = isoscelesTriangle(p" << level << ", " << m_dimensions.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\td" << level << " = isoscelesTriangle(p" << level << ", pmVec20, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFIsoscelesTriangle::signedDistanceInner(Vec3 p) const
@@ -948,7 +1029,11 @@ void SDFPieSlice::serializeInner(std::stringstream& ss) const
 void SDFPieSlice::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPieSlice //\n";
-    ss << "\td" << level << " = pieSlice(p" << level << ", " << m_sincos.getShader() << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = pieSlice(p" << level << ", pmFloat1, pmFloat2, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFPieSlice::signedDistanceInner(Vec3 p) const
@@ -957,8 +1042,9 @@ double SDFPieSlice::signedDistanceInner(Vec3 p) const
     Vec2 p2D{ p.x, p.z };
     p2D.x = std::abs(p2D.x);
     double l = p2D.length() - m_radius;
-    double m = (p2D - m_sincos * std::clamp(p2D.dot(m_sincos), 0.0, m_radius)).length(); // c=sin/cos of aperture
-    double d2D = std::max(l, m * (m_sincos.y * p2D.x - m_sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
+    Vec2 sincos = MF::fast_sincos(m_sweep * MF::PI);
+    double m = (p2D - sincos * std::clamp(p2D.dot(sincos), 0.0, m_radius)).length(); // c=sin/cos of aperture
+    double d2D = std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
 
@@ -992,7 +1078,10 @@ void SDFPentagon::serializeInner(std::stringstream& ss) const
 void SDFPentagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFPentagon //\n";
-    ss << "\td" << level << " = pentagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = pentagon(p" << level << ", pmFloat1, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFPentagon::signedDistanceInner(Vec3 p) const
@@ -1033,7 +1122,10 @@ void SDFHexagon::serializeInner(std::stringstream& ss) const
 void SDFHexagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFHexagon //\n";
-    ss << "\td" << level << " = hexagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = hexagon(p" << level << ", pmFloat1, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFHexagon::signedDistanceInner(Vec3 p) const
@@ -1073,7 +1165,10 @@ void SDFOctagon::serializeInner(std::stringstream& ss) const
 void SDFOctagon::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFOctagon //\n";
-    ss << "\td" << level << " = octagon(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\td" << level << " = octagon(p" << level << ", pmFloat1, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFOctagon::signedDistanceInner(Vec3 p) const
@@ -1116,18 +1211,24 @@ void SDFStar::serializeInner(std::stringstream& ss) const
 void SDFStar::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFStar //\n";
-    ss << "\td" << level << " = star(p" << level << ", " << m_radius << ", " << m_operation << ", " << m_magnitude << ", " << m_an;
-    ss << ", " << Vec2{ m_asincos.y, m_asincos.x }.getShader() << ", " << Vec2{ m_esincos.y, m_esincos.x }.getShader() << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "ratio") ? propName : std::to_string(m_ratio)) << ";\n";
+    ss << "\td" << level << " = star(p" << level << ", " << m_numPoints << ", pmFloat1, pmFloat2, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFStar::signedDistanceInner(Vec3 p) const
 {
     if (m_operation == Revolve) p = revolve2D(p, m_magnitude);
-    Vec2 acs{ m_asincos.y, m_asincos.x };
-    Vec2 ecs{ m_esincos.y, m_esincos.x }; // ecs=vec2(0,1) for regular polygon
+    Vec2 asincos = MF::fast_sincos(MF::PI / static_cast<double>(m_numPoints));
+    Vec2 acs{ asincos.y, asincos.x };
+    Vec2 esincos{ MF::fast_sincos(MF::PI / std::lerp(2.0, static_cast<double>(m_numPoints), m_ratio)) };
+    Vec2 ecs{ esincos.y, esincos.x };
+    double an{ MF::PI / static_cast<double>(m_numPoints) };
 
     Vec2 p2D{ abs(p.x), p.z };
-    double bn = std::fmod(std::atan2(p2D.x, p2D.y), 2.0 * m_an) - m_an;
+    double bn = std::fmod(std::atan2(p2D.x, p2D.y), 2.0 * an) - an;
     Vec2 bnsincos = MF::fast_sincos(bn);
     p2D = Vec2{ bnsincos.y, std::abs(bnsincos.x) } * p2D.length();
     p2D -= acs * m_radius;
@@ -1172,7 +1273,12 @@ void SDFTriangle::serializeInner(std::stringstream& ss) const
 void SDFTriangle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
 {
     ss << "\t// SDFTriangle //\n";
-    ss << "\td" << level << " = triangle(p" << level << ", " << m_point1.getShader() << ", " << m_point2.getShader() << ", " << m_point3.getShader() << ", " << m_operation << ", " << m_magnitude << ");\n\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "point1") ? propName : m_point1.getShader()) << ";\n";
+    ss << "\tpmVec21 = " << (getShaderPropModCalls(propName = "point2") ? propName : m_point2.getShader()) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "point3") ? propName : m_point3.getShader()) << ";\n";
+    ss << "\td" << level << " = triangle(p" << level << ", pmVec20, pmVec21, pmVec22, " << m_operation << ", pmFloat0);\n\n";
 }
 
 double SDFTriangle::signedDistanceInner(Vec3 p) const

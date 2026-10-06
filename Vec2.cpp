@@ -52,6 +52,16 @@ Vec2 Vec2::cross(const Vec2& p)
     return (x * p.y - y * p.x);
 }
 
+Vec2 Vec2::sin() const
+{
+    return { std::sin(x), std::sin(y) };
+}
+
+Vec2 Vec2::cos() const
+{
+    return { std::cos(x), std::cos(y) };
+}
+
 Vec2 Vec2::abs()
 {
     return { std::abs(x), std::abs(y) };
