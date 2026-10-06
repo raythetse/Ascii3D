@@ -37,7 +37,7 @@ const float AMB_LIGHT_POW = 0.15;
 const float SHADOW_TOLERANCE = 0.01;
 const int AMB_OCC_SAMPLES = 5;
 const float AMB_OCC_ATTEN = 0.5;
-const float AMB_OCC_REACH = 0.2;
+const float AMB_OCC_REACH = 0.1;
 const float AMB_OCC_MIN = 0.2;
 
 // UTILITY FUNCTIONS //

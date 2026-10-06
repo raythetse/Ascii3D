@@ -1,7 +1,0 @@
-SDFObject color 1 1 1
-	COMBAdd smoothing 0.5 colorBlending 1 colorShifting 0
-	SDFTorusSegmentYZ color 1 1 1 radii 1 0.25 sweep 0.5
-		stepBack
-	stepBack
-LightSource position 5 5 -10 luminance 100 color 1 1 1 ambientPower 0.5
-end

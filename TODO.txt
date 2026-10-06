@@ -1,9 +1,7 @@
 Required:
-- separate out normal/smooth combo types
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
-- fix screen params detection on start
 - comment everything
 - consts wherever sensical
 - fix constructor accessibilities on abstracts
