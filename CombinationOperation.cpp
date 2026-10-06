@@ -23,7 +23,7 @@ void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t le
 	}
 	innerSerialize(strVec, level);
 	for (auto& propMod : m_propMods) {
-		propMod->serialize(strVec, level);
+		propMod->serialize(strVec, level, false);
 	}
 	m_combineObj->serialize(strVec, level);
 }

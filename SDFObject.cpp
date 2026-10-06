@@ -20,6 +20,9 @@ SDFObject::~SDFObject() {}
 
 void SDFObject::update()
 {
+    for (auto& propMod : m_propMods) {
+        propMod->update();
+    }
     for (auto& op : m_operations) {
         op->update();
     }
@@ -53,6 +56,9 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     ++level;
     for (auto& op : m_operations) {
         op->serialize(strVec, level);
+    }
+    for (auto& mod : m_propMods) {
+        mod->serialize(strVec, level, true);
     }
     strVec.push_back(std::string(level, '\t') + "stepBack");
 }
@@ -93,6 +99,14 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
     }
 }
 
+void SDFObject::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 double SDFObject::signedDistanceInner(Vec3 p) const
 {
     return std::numeric_limits<double>::max();
@@ -115,6 +129,22 @@ double SDFPlane::signedDistanceInner(Vec3 p) const
     return p.dot(m_normal) - m_offset;
 }
 
+void SDFPlane::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "normal") {
+        propMod->BindToProp(&m_normal);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "offset") {
+        propMod->BindToProp(&m_offset);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFBox::serializeInner(std::stringstream& ss) const
 {
     ss << " dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
@@ -131,6 +161,18 @@ double SDFBox::signedDistanceInner(Vec3 p) const
     p = p.abs();
     p -= Vec3(m_dimensions) * 0.5;
     return p.maximum(0.0).length() + std::min(std::max(p.x, std::max(p.y, p.z)), 0.0);
+}
+
+void SDFBox::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "dimensions") {
+        propMod->BindToProp(&m_dimensions);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFBoxFrame::serializeInner(std::stringstream& ss) const
@@ -156,6 +198,22 @@ double SDFBoxFrame::signedDistanceInner(Vec3 p) const
         Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
 }
 
+void SDFBoxFrame::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "dimensions") {
+        propMod->BindToProp(&m_dimensions);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "edgeThickness") {
+        propMod->BindToProp(&m_edgeThickness);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFSphere::serializeInner(std::stringstream& ss) const
 {
     ss << " radius " << m_radius;
@@ -170,6 +228,18 @@ void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t
 double SDFSphere::signedDistanceInner(Vec3 p) const
 {
     return p.length() - m_radius;
+}
+
+void SDFSphere::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFTorusXY::serializeInner(std::stringstream& ss) const
@@ -188,6 +258,18 @@ double SDFTorusXY::signedDistanceInner(Vec3 p) const
     return Vec2{ Vec2{p.x, p.y}.length() - m_radii.x, p.z }.length() - m_radii.y;
 }
 
+void SDFTorusXY::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFTorusXZ::serializeInner(std::stringstream& ss) const
 {
     ss << " radii " << m_radii.x << ' ' << m_radii.y;
@@ -204,6 +286,18 @@ double SDFTorusXZ::signedDistanceInner(Vec3 p) const
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
+void SDFTorusXZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFTorusYZ::serializeInner(std::stringstream& ss) const
 {
     ss << " radii " << m_radii.x << ' ' << m_radii.y;
@@ -218,6 +312,18 @@ void SDFTorusYZ::getShaderObjectCalls(std::stringstream& ss, size_t level, size_
 double SDFTorusYZ::signedDistanceInner(Vec3 p) const
 {
     return Vec2{ Vec2{p.y, p.z}.length() - m_radii.x, p.x }.length() - m_radii.y;
+}
+
+void SDFTorusYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFTorusSegmentXY::serializeInner(std::stringstream& ss) const
@@ -240,6 +346,22 @@ double SDFTorusSegmentXY::signedDistanceInner(Vec3 p) const
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
+void SDFTorusSegmentXY::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sweep") {
+        propMod->BindToProp(&m_sweep);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFTorusSegmentXZ::serializeInner(std::stringstream& ss) const
 {
     ss << " radii " << m_radii.x << ' ' << m_radii.y;
@@ -258,6 +380,22 @@ double SDFTorusSegmentXZ::signedDistanceInner(Vec3 p) const
     Vec2 pXZ{ p.x, p.z };
     double k = (m_sincos.y * p.x > m_sincos.x * p.z) ? pXZ.dot(m_sincos) : pXZ.length();
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
+}
+
+void SDFTorusSegmentXZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sweep") {
+        propMod->BindToProp(&m_sweep);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFTorusSegmentYZ::serializeInner(std::stringstream& ss) const
@@ -280,6 +418,22 @@ double SDFTorusSegmentYZ::signedDistanceInner(Vec3 p) const
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
+void SDFTorusSegmentYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sweep") {
+        propMod->BindToProp(&m_sweep);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFCapsuleX::serializeInner(std::stringstream& ss) const
 {
     ss << " radius " << m_radius;
@@ -296,6 +450,22 @@ double SDFCapsuleX::signedDistanceInner(Vec3 p) const
 {
     p.x = p.x > 0.0 ? std::max(0.0, p.x - 0.5 * m_bodyLength) : std::min(0.0, p.x + 0.5 * m_bodyLength);
     return p.length() - m_radius;
+}
+
+void SDFCapsuleX::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "bodyLength") {
+        propMod->BindToProp(&m_bodyLength);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFCapsuleY::serializeInner(std::stringstream& ss) const
@@ -316,6 +486,22 @@ double SDFCapsuleY::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
+void SDFCapsuleY::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "bodyLength") {
+        propMod->BindToProp(&m_bodyLength);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFCapsuleZ::serializeInner(std::stringstream& ss) const
 {
     ss << " radius " << m_radius;
@@ -334,6 +520,22 @@ double SDFCapsuleZ::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
+void SDFCapsuleZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "bodyLength") {
+        propMod->BindToProp(&m_bodyLength);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFCrystal::serializeInner(std::stringstream& ss) const
 {
     ss << " edgeLength " << m_edgeLength;
@@ -349,6 +551,18 @@ double SDFCrystal::signedDistanceInner(Vec3 p) const
 {
     p = p.abs();
     return (p.x + p.y + p.z - m_edgeLength) * 0.57735027;
+}
+
+void SDFCrystal::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "edgeLength") {
+        propMod->BindToProp(&m_edgeLength);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFCylinderX::serializeInner(std::stringstream& ss) const
@@ -370,6 +584,22 @@ double SDFCylinderX::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
+void SDFCylinderX::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sideLength") {
+        propMod->BindToProp(&m_sideLength);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFCylinderY::serializeInner(std::stringstream& ss) const
 {
     ss << " sideLength " << m_sideLength;
@@ -389,6 +619,22 @@ double SDFCylinderY::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
+void SDFCylinderY::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sideLength") {
+        propMod->BindToProp(&m_sideLength);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFCylinderZ::serializeInner(std::stringstream& ss) const
 {
     ss << " sideLength " << m_sideLength;
@@ -406,6 +652,22 @@ double SDFCylinderZ::signedDistanceInner(Vec3 p) const
     Vec2 xy{ p.x, p.y };
     Vec2 d = Vec2{ xy.length(), p.z }.abs() - Vec2(m_radius, m_sideLength * 0.5);
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
+}
+
+void SDFCylinderZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sideLength") {
+        propMod->BindToProp(&m_sideLength);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFCone::serializeInner(std::stringstream& ss) const
@@ -432,6 +694,22 @@ double SDFCone::signedDistanceInner(Vec3 p) const
     return std::sqrt(d) * (s >= 0.0 ? 1.0 : -1.0);
 }
 
+void SDFCone::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "height") {
+        propMod->BindToProp(&m_height);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sweep") {
+        propMod->BindToProp(&m_sweep);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFSolidAngle::serializeInner(std::stringstream& ss) const
 {
     ss << " radius " << m_radius;
@@ -452,6 +730,22 @@ double SDFSolidAngle::signedDistanceInner(Vec3 p) const
     return std::max(l, m * ((m_sincos.y * q.x - m_sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
 }
 
+void SDFSolidAngle::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sweep") {
+        propMod->BindToProp(&m_sweep);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFEllipsoid::serializeInner(std::stringstream& ss) const
 {
     ss << " radii " << m_radii.x << ' ' << m_radii.y << ' ' << m_radii.z;
@@ -467,6 +761,18 @@ double SDFEllipsoid::signedDistanceInner(Vec3 p) const
     double k0 = (p / m_radii).length();
     double k1 = (p / (m_radii * m_radii)).length();
     return k0 * (k0 - 1.0) / k1;
+}
+
+void SDFEllipsoid::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
@@ -490,6 +796,22 @@ double SDFTaperedCapsule::signedDistanceInner(Vec3 p) const
     if (k < 0.0) return q.length() - m_radii.x;
     if (k > a * m_bodyLength) return (q - Vec2{ 0.0, m_bodyLength }).length() - m_radii.y;
     return q.dot(Vec2{ a, b }) - m_radii.x;
+}
+
+void SDFTaperedCapsule::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "bodyLength") {
+        propMod->BindToProp(&m_bodyLength);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radii") {
+        propMod->BindToProp(&m_radii);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFRhombus::serializeInner(std::stringstream& ss) const
@@ -517,6 +839,22 @@ double SDFRhombus::signedDistanceInner(Vec3 p) const
     return m_operation == Revolve ? d2D : extrude2D(p.y, d2D, m_magnitude);
 }
 
+void SDFRhombus::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "dimensions") {
+        propMod->BindToProp(&m_dimensions);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFEquilateralTriangle::serializeInner(std::stringstream& ss) const
 {
     ss << " base " << m_base;
@@ -540,6 +878,22 @@ double SDFEquilateralTriangle::signedDistanceInner(Vec3 p) const
     p2D -= Vec2{ std::clamp(p2D.x, -halfBase, halfBase), -halfBase / MF::ROOT3 };
     double d2D = p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFEquilateralTriangle::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "base") {
+        propMod->BindToProp(&m_base);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFIsoscelesTriangle::serializeInner(std::stringstream& ss) const
@@ -567,6 +921,22 @@ double SDFIsoscelesTriangle::signedDistanceInner(Vec3 p) const
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
 
+void SDFIsoscelesTriangle::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "dimensions") {
+        propMod->BindToProp(&m_dimensions);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFPieSlice::serializeInner(std::stringstream& ss) const
 {
     ss << " sweep " << m_sweep;
@@ -590,6 +960,26 @@ double SDFPieSlice::signedDistanceInner(Vec3 p) const
     double m = (p2D - m_sincos * std::clamp(p2D.dot(m_sincos), 0.0, m_radius)).length(); // c=sin/cos of aperture
     double d2D = std::max(l, m * (m_sincos.y * p2D.x - m_sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFPieSlice::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "sweep") {
+        propMod->BindToProp(&m_sweep);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFPentagon::serializeInner(std::stringstream& ss) const
@@ -617,6 +1007,22 @@ double SDFPentagon::signedDistanceInner(Vec3 p) const
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
 }
 
+void SDFPentagon::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
+}
+
 void SDFHexagon::serializeInner(std::stringstream& ss) const
 {
     ss << " radius " << m_radius;
@@ -639,6 +1045,22 @@ double SDFHexagon::signedDistanceInner(Vec3 p) const
     p2D -= Vec2{ std::clamp(p2D.x, -k.z * m_radius, k.z * m_radius), m_radius };
     double d2D = p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFHexagon::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFOctagon::serializeInner(std::stringstream& ss) const
@@ -664,6 +1086,22 @@ double SDFOctagon::signedDistanceInner(Vec3 p) const
     p2D -= Vec2{ std::clamp(p2D.x, -k.z * m_radius, k.z * m_radius), m_radius };
     double d2D = p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFOctagon::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFStar::serializeInner(std::stringstream& ss) const
@@ -696,6 +1134,30 @@ double SDFStar::signedDistanceInner(Vec3 p) const
     p2D += ecs * std::clamp(-(p2D.dot(ecs)), 0.0, m_radius * acs.y / ecs.y);
     double d2D = p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFStar::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "numPoints") {
+        propMod->BindToProp(&m_numPoints);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "radius") {
+        propMod->BindToProp(&m_radius);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "ratio") {
+        propMod->BindToProp(&m_ratio);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
 }
 
 void SDFTriangle::serializeInner(std::stringstream& ss) const
@@ -732,4 +1194,28 @@ double SDFTriangle::signedDistanceInner(Vec3 p) const
         .minimum(Vec2{ pq2.dot(pq2), s * (v2.x * e2.y - v2.y * e2.x) });
     double d2D = -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
     return m_operation == Extrude ? extrude2D(p.y, d2D, m_magnitude * 0.5) : d2D;
+}
+
+void SDFTriangle::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+{
+    if (propMod->propName() == "color") {
+        propMod->BindToProp(&m_color);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "point1") {
+        propMod->BindToProp(&m_point1);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "point2") {
+        propMod->BindToProp(&m_point2);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "point3") {
+        propMod->BindToProp(&m_point3);
+        m_propMods.push_back(std::move(propMod));
+    }
+    else if (propMod->propName() == "magnitude") {
+        propMod->BindToProp(&m_magnitude);
+        m_propMods.push_back(std::move(propMod));
+    }
 }

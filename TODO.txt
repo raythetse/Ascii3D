@@ -1,4 +1,6 @@
 Required:
+- propMods for SDFObjects
+- option for child objects to inherit parent color
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
@@ -17,7 +19,6 @@ Required:
 Optional:
 - light movement
 - per-scene camera start pos/look dir
-- propMods for SDFObjects
 - bounding boxes/spheres/capsules for efficiency
 - change repeat operations to not rely on vec3
 - transparency/reflection

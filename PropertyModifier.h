@@ -24,7 +24,7 @@ public:
 	virtual void BindToProp(void* ref) = 0;
 	virtual void update() = 0;
 	virtual void resetProperty() const = 0;
-	void serialize(std::vector<std::string>& strVec, size_t level);
+	void serialize(std::vector<std::string>& strVec, size_t level, bool boundOnObj);
 	bool getShaderCall(std::string& propName) const;
 };
 
