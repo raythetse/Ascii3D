@@ -944,9 +944,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     // Property Modifiers
     { "PMOscillateSine", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ PropertyModifierBase::DFLT_PERIOD };
-        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
-        double phase{ PropertyModifierBase::DFLT_PHASE };
+        double period{ PMOscillateSine::DFLT_PERIOD };
+        double amplitude{ PMOscillateSine::DFLT_AMPLITUDE };
+        double phase{ PMOscillateSine::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -962,9 +962,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateSineST", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ PropertyModifierBase::DFLT_PERIOD };
-        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
-        double phase{ PropertyModifierBase::DFLT_PHASE };
+        double period{ PMOscillateSineST::DFLT_PERIOD };
+        double amplitude{ PMOscillateSineST::DFLT_AMPLITUDE };
+        double phase{ PMOscillateSineST::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -980,9 +980,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateLinearST", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ PropertyModifierBase::DFLT_PERIOD };
-        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
-        double phase{ PropertyModifierBase::DFLT_PHASE };
+        double period{ PMOscillateLinearST::DFLT_PERIOD };
+        double amplitude{ PMOscillateLinearST::DFLT_AMPLITUDE };
+        double phase{ PMOscillateLinearST::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -998,9 +998,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateSineV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 periods{ PropertyModifierBase::DFLT_PERIOD };
-        Vec2 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
-        Vec2 phases{ PropertyModifierBase::DFLT_PHASE };
+        Vec2 periods{ PMOscillateSineV2::DFLT_PERIOD };
+        Vec2 amplitudes{ PMOscillateSineV2::DFLT_AMPLITUDE };
+        Vec2 phases{ PMOscillateSineV2::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -1016,9 +1016,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateSineV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ PropertyModifierBase::DFLT_PERIOD };
-        Vec3 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
-        Vec3 phases{ PropertyModifierBase::DFLT_PHASE };
+        Vec3 periods{ PMOscillateSineV3::DFLT_PERIOD };
+        Vec3 amplitudes{ PMOscillateSineV3::DFLT_AMPLITUDE };
+        Vec3 phases{ PMOscillateSineV3::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -1034,9 +1034,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateLinear", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ PropertyModifierBase::DFLT_PERIOD };
-        double amplitude{ PropertyModifierBase::DFLT_AMPLITUDE };
-        double phase{ PropertyModifierBase::DFLT_PHASE };
+        double period{ PMOscillateLinear::DFLT_PERIOD };
+        double amplitude{ PMOscillateLinear::DFLT_AMPLITUDE };
+        double phase{ PMOscillateLinear::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -1052,9 +1052,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateLinearV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 periods{ PropertyModifierBase::DFLT_PERIOD };
-        Vec2 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
-        Vec2 phases{ PropertyModifierBase::DFLT_PHASE };
+        Vec2 periods{ PMOscillateLinearV2::DFLT_PERIOD };
+        Vec2 amplitudes{ PMOscillateLinearV2::DFLT_AMPLITUDE };
+        Vec2 phases{ PMOscillateLinearV2::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -1070,9 +1070,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "PMOscillateLinearV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ PropertyModifierBase::DFLT_PERIOD };
-        Vec3 amplitudes{ PropertyModifierBase::DFLT_AMPLITUDE };
-        Vec3 phases{ PropertyModifierBase::DFLT_PHASE };
+        Vec3 periods{ PMOscillateLinearV3::DFLT_PERIOD };
+        Vec3 amplitudes{ PMOscillateLinearV3::DFLT_AMPLITUDE };
+        Vec3 phases{ PMOscillateLinearV3::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -1086,6 +1086,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         boundOnObj ? builder.modObj<PMOscillateLinearV3>(propName, periods, amplitudes, phases) : builder.modOp<PMOscillateLinearV3>(propName, periods, amplitudes, phases);
     } },
+
+    // LightSources
     { "LightSource", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 position{ LightSource::DFLT_POSITION };
         double luminance{ LightSource::DFLT_LUMINANCE };

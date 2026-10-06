@@ -291,5 +291,5 @@ std::string Vec3::getShader() const
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p)
 {
-    return os << "Point3D[" << p.x << ", " << p.y << ", " << p.z << "]";
+    return os << p.x << ' ' << p.y << ' ' << p.z ;
 }

@@ -1,13 +1,10 @@
 SDFObject color 0.5 0.5 0.5
 	COMBAdd
 	SDFPlane color 1 1 1 normal 0 1 0 offset -0.5
+		OPTranslate translation 0 0.5 0
 		COMBAdd
-		SDFTorusXY color 1 1 1 radii 1 0.25
-			OPTranslate translation 0 0.5 0
-			COMBAdd
-			SDFStar color 1 1 1 numPoints 6 radius 0.25 ratio 0.5 magnitude 2 operation 1
-				stepBack
-			PMOscillateSineV2 boundOnObj 1 propName radii period 1 1 amplitude 1 1 phase 0 0
+		SDFStar color 1 1 1 numPoints 10 radius 5 ratio 0.2 magnitude 1 operation 0
+			PMOscillateSine boundOnObj 1 propName magnitude period 0 amplitude 0 phase 0
 			stepBack
 		stepBack
 	stepBack

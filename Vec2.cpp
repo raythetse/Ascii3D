@@ -145,7 +145,7 @@ std::string Vec2::getShader() const
 
 std::ostream& operator<<(std::ostream& os, const Vec2& p)
 {
-    return os << "Point3D[" << p.x << ", " << p.y <<"]";
+    return os << p.x << ' ' << p.y;
 }
 
 Vec2 abs(const Vec2 v)
