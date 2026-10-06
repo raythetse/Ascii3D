@@ -45,7 +45,7 @@ void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size
 double COMBAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
-		if (colorOut) *colorOut = colorIn;
+		if (colorOut && !m_overwriteColor) *colorOut = colorIn;
 		return distanceA;
 	}
 	return distanceB;
@@ -56,6 +56,9 @@ void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxL
 	ss << "\t// COMBAdd //\n";
 	ss << "\tif (d" << (level + 1) << " < d" << level << ") {\n";
 	ss << "\t\td" << level << " = d" << (level + 1) << ";\n";
+	ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
+	ss << "\t}\n";
+	ss << "\telse if (" << (m_overwriteColor ? "true" : "false") << ") {\n";
 	ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
 	ss << "\t}\n\n";
 }

@@ -24,11 +24,13 @@ public:
 class COMBAdd : public CombinationOperation
 {
 protected:
+	bool m_overwriteColor{};
 	double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) override;
 	std::string getClassName() const override { return "COMBAdd"; }
 	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
-	COMBAdd(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
+	COMBAdd(std::unique_ptr<SDFObject> combineObj = nullptr, bool overwriteColor = false)
+		: CombinationOperation(std::move(combineObj)), m_overwriteColor(overwriteColor) {}
 };
 
 class COMBSubtract : public CombinationOperation

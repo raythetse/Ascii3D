@@ -4,11 +4,12 @@ TestScene::TestScene()
 {
 	add(SDFBuilder{}
 		.color(Color::MediumGray)
-		.pushOp<COMBAdd, SDFPlane>(Vec3::Up, -0.5)()
+		.pushOp<COMBAdd, SDFPlane>(Vec3::Up, -0.5, Color::Green)(true)
 		.pushOp<OPTranslate>(Vec3::Up * 0.5)
-		.modOp<PMOscillateLinearV3>("translation", 5.0, 1.0)
-		.pushOp<COMBAdd, SDFStar>(SDFStar::Extrude, 20, 5.0, 0.2)()
-		.modObj<PMOscillateLinearST>("numPoints", 5.0, 15)
+		.pushOp<COMBAdd, SDFSphere>(1.0, Color::Red)(true)
+		.pushOp<OPTranslate>(Vec3::Up * 1.0)
+		.pushOp<COMBAdd, SDFSphere>(1.0, Color::MediumGray)(true)
+		.modObj<PMOscillateSineV3>("color", Vec3{ 3.0 }, Vec3{ 0.5 }, Vec3{ 0.0, 0.3333333, 0.6666666 })
 
 		//.modObj<PMOscillateSineST>("numPoints", 5.0, 5.0)
 		//.modObj<PMOscillateSineV3>("dimensions", Vec3{ 4.0 }, Vec3{ 0.5 }, Vec3{ 0.333333, 0.6666666, 0.0 })
