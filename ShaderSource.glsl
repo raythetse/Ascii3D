@@ -418,10 +418,48 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color2 = pmVec30;
 	// SDFStar //
 	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	pmFloat2 = oscillateSine(0.5000000, 2.0000000, 0.2500000, 0.0000000, time);
-	d2 = star(p2, 5, pmFloat1, pmFloat2, 0, pmFloat0);
+	pmFloat1 = 5.000000;
+	pmFloat2 = 0.200000;
+	pmVec20.x = 25;
+	d2 = star(p2, int(pmVec20.x), pmFloat1, pmFloat2, 0, pmFloat0);
 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	vec3 p3;
+	float d3 = FLOAT_MAX;
+	vec3 color3;
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFCylinderY //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 4.500000;
+	d3 = cylinder(p3.yxz, pmFloat0, pmFloat1);
+
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	vec3 p4;
+	float d4 = FLOAT_MAX;
+	vec3 color4;
+	p4 = p3;
+	d4 = FLOAT_MAX;
+	color4 = pmVec30;
+	// SDFCylinderY //
+	pmFloat0 = 1.000000;
+	pmFloat1 = 4.250000;
+	d4 = cylinder(p4.yxz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d4 < d3) {
+		d3 = d4;
+		color3 = color4; 
+	}
+
+	// COMBIntersect //
+	if (d2 <= d3) d2 = d3;
 
 	// COMBAdd //
 	if (d2 < d1) {

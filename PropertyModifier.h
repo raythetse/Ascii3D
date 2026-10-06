@@ -181,3 +181,48 @@ public:
 		*ptr = m_initVal + progress * m_amplitude;
 	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };
+
+class PMOscillateSineST : public PropertyModifier<size_t>
+{
+private:
+	double m_period{};
+	double m_amplitude{};
+	double m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateSineST"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	PMOscillateSineST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+		: PropertyModifier(propName, [this](size_t* ptr, size_t initVal) -> void {
+		double dVal = static_cast<double>(m_initVal) + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
+		dVal = dVal < 0.0 ? 0.0 : dVal;
+		*ptr = static_cast<size_t>(std::round(dVal));
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};
+
+class PMOscillateLinearST : public PropertyModifier<size_t>
+{
+private:
+	double m_period{};
+	double m_amplitude{};
+	double m_phase{};
+protected:
+	std::string getClassName() const override { return "PMOscillateLinearST"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	PMOscillateLinearST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+		: PropertyModifier(propName, [this](size_t* ptr, size_t initVal) -> void {
+		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
+		progress -= 0.5;
+		progress *= 2.0;
+		progress = abs(progress);
+		progress -= 0.5;
+		progress *= 2.0;
+
+		double dVal = static_cast<double>(m_initVal) + progress * m_amplitude;
+		dVal = dVal < 0.0 ? 0.0 : dVal;
+		*ptr = static_cast<size_t>(std::round(dVal));
+	}), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+};

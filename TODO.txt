@@ -1,5 +1,4 @@
 Required:
-- propMods for SDFObjects
 - more robust templating of propMods
 - option for child objects to inherit parent color
 - ensure all propmod hooks exist
@@ -15,10 +14,11 @@ Required:
 - move glsl code building into separate class from scene
 - add controls instructions to main menu screen
 - Add oscillate prop mods with end delays (remove linear/sine translates?)
+- unidirectional prop mods?
 - Add missing update vals for software rendering ops
 - Update loop functions for SDF software mode efficiency
 - Orientated TaperedCapsule.  Maybe others?  Add orientation code to reduce repeated code?
-- propmod for int props?
+- Verify cylinder length
 
 Optional:
 - light movement
