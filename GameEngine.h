@@ -5,7 +5,7 @@
 #include "PerfMonitor.h"
 #include "RayMarcher.h"
 #include "Renderer.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "Stopwatch.h"
 #include "SDFScene.h"
 #include "VulkanManager.h"

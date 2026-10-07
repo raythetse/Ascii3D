@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "SDFBuilder.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "LightSource.h"
 
 class SDFBuilder;

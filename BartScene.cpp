@@ -8,6 +8,7 @@ BartScene::BartScene()
     Vec3 shortsCol = Vec3{ 0.0, 157.0, 220.0 } / 255.0;
 
     add(SDFBuilder{}
+        .op<OPTranslate>(Vec3::Up * 3.0)
         .comb<COMBAdd, SDFPlane>(Vec3::Up, -3.8, Color::LightGreen)() // L1
         .stepBack() // L0
         // Head
@@ -29,7 +30,7 @@ BartScene::BartScene()
         .op<OPTranslate>(Vec3::Forward * 0.51)
         .op<OPTranslate>(Vec3::Up * 0.75)
         .op<OPRotate>(Vec3::Right, -0.06)
-        .comb<COMBAddSmooth, SDFCone>(0.155, 0.045, skinCol)(0.01) // L3
+        .comb<COMBAddSmooth, SDFCone>(0.155, 0.2, skinCol)(0.01) // L3
         .op<OPRoundOff>(0.01)
         .stepBack(2) // L1
 
@@ -61,7 +62,7 @@ BartScene::BartScene()
         .op<OPMirrorX>()
         .op<OPTranslate>(Vec3{ 0.18, 0.35, 0.2 })
         .op<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
-        .comb<COMBAddSmooth, SDFTorusXZ>(Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
+        .comb<COMBAddSmooth, SDFTorus>(AXIS_Y, Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
         .stepBack(0) // L0
 
         // Eyes
@@ -81,7 +82,7 @@ BartScene::BartScene()
         .op<OPTranslate>(Vec3{ 0.55, -0.35, 0.0 })
         .op<OPRotate>(Vec3::Down, 0.12)
         .op<OPRotate>(Vec3::Forward, 0.25)
-        .comb<COMBAdd, SDFTorusXZ>(Vec2{ .075, 0.02 }, skinCol)() // L2
+        .comb<COMBAdd, SDFTorus>(AXIS_Y, Vec2{ .075, 0.02 }, skinCol)() // L2
         .op<OPTranslate>(Vec3::Down * 0.02)
         .comb<COMBAddSmooth, SDFCylinderY>(0.06, 0.01, skinCol)(0.02)
         .stepBack(0) // L0
@@ -89,7 +90,7 @@ BartScene::BartScene()
         // Shirt
         .comb<COMBAdd, SDFObject>()() //L1
         .op<OPTranslate>(Vec3{ 0.0, -0.2, 0.33 })
-        .comb<COMBAdd, SDFCone>(1.4, 0.055, shirtCol)() // L2
+        .comb<COMBAdd, SDFCone>(1.4, 0.2, shirtCol)() // L2
         .op<OPTranslate>(Vec3{ 0.0, -0.4, -0.1 })
         .comb<COMBSubtract, SDFSphere>()() // L2
         .stepBack() // L2
@@ -119,21 +120,21 @@ BartScene::BartScene()
         .op<OPRotate>(Vec3::Forward, 0.375)
         .modOp<MODOscillateSine>("rotations", 1.0, 0.1, 0.3)
         .op<OPTranslate>(Vec3::Up * 0.1)
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05) // L6
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05) // L6
         // Left hand
         .op<OPTranslate>(Vec3{ 0.0, 0.6, 0.0 })
         .comb<COMBAddSmooth, SDFEllipsoid>(Vec3{ 0.13, 0.13, 0.05 }, skinCol)(0.05) // L7
         // Left fingers
         .op<OPTranslate>(Vec3{ 0.0, 0.12, 0.0 })
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05) // L8
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05) // L8
         .op<OPMirrorX>()
         .op<OPTranslate>(Vec3{ 0.1, -0.02, 0.0 })
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05) // L9
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05) // L9
         .stepBack(3) // L6
         // Left thumb
         .op<OPTranslate>(Vec3{ -0.2, 0.03, 0.0 })
         .op<OPRotate>(Vec3::Forward, 0.3)
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.15, skinCol)(0.05) // L7
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.035, 0.03 }, 0.15, skinCol)(0.05) // L7
         .stepBack(4) // L3
 
         // Right sleeve
@@ -154,21 +155,21 @@ BartScene::BartScene()
         .op<OPTranslate>(Vec3::Down * 0.25)
         .op<OPRotate>(Vec3::Forward, 0.45)
         .op<OPTranslate>(Vec3::Up * 0.1)
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05)
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05)
         // Right hand
         .op<OPTranslate>(Vec3{ 0.0, 0.6, 0.0 })
         .comb<COMBAddSmooth, SDFEllipsoid>(Vec3{ 0.13, 0.13, 0.05 }, skinCol)(0.05)
         // Right fingers
         .op<OPTranslate>(Vec3{ 0.0, 0.12, 0.0 })
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05)
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05)
         .op<OPMirrorX>()
         .op<OPTranslate>(Vec3{ 0.1, -0.02, 0.0 })
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05)
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05)
         .stepBack(3)
         // Right thumb
         .op<OPTranslate>(Vec3{ -0.2, 0.03, 0.0 })
         .op<OPRotate>(Vec3::Forward, 0.3)
-        .comb<COMBAddSmooth, SDFTaperedCapsule>(Vec2{ 0.035, 0.03 }, 0.15, skinCol)(0.05)
+        .comb<COMBAddSmooth, SDFTaperedCapsuleY>(Vec2{ 0.035, 0.03 }, 0.15, skinCol)(0.05)
         .stepBack(0)
 
         // My Shorts (Eat Them)
@@ -215,7 +216,7 @@ BartScene::BartScene()
         .comb<COMBIntersect, SDFSphere>(0.6)() // L3
         .stepBack() // L2
         .op<OPTranslate>(Vec3{ 0.0, 0.425, 0.2 })
-        .comb<COMBAdd, SDFTorusXZ>(Vec2{ 0.17, .055 })() //L3
+        .comb<COMBAdd, SDFTorus>(AXIS_Y, Vec2{ 0.17, .055 })() //L3
         .op<OPTranslate>(Vec3{ -0.22, -0.2, -0.1 })
         .op<OPRotate>(Vec3::Forward, 0.06)
         .comb<COMBAdd, SDFEllipsoid>(Vec3{ 0.02, 0.1, 0.1 })() // L4

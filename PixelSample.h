@@ -2,7 +2,7 @@
 #include "Vec3.h"
 #include <string>
 #include <vector>
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "LightSource.h"
 
 struct PixelSample

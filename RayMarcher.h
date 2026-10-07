@@ -3,7 +3,7 @@
 #include <ranges>
 #include "PixelField.h"
 #include "Vec3.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "Camera.h"
 #include "SDFScene.h"
 

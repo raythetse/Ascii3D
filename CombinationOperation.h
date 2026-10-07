@@ -1,6 +1,6 @@
 #pragma once
 #include "SDFOperation.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 
 class CombinationOperation : public SDFOperation
 {
@@ -55,13 +55,6 @@ public:
 
 class COMBExclude : public CombinationOperation
 {
-public:
-	enum ColorMode {
-		Double,
-		Single,
-		Internal,
-		InternalDouble
-	};
 private:
 	ColorMode m_colorMode;
 protected:
@@ -70,7 +63,7 @@ protected:
 	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
-	COMBExclude(std::unique_ptr<SDFObject> combineObj = nullptr, ColorMode colorMode = Double) : CombinationOperation(std::move(combineObj)), m_colorMode(colorMode) {}
+	COMBExclude(std::unique_ptr<SDFObject> combineObj = nullptr, ColorMode colorMode = COLORMODE_DOUBLE) : CombinationOperation(std::move(combineObj)), m_colorMode(colorMode) {}
 };
 
 class SmoothCombination : public CombinationOperation

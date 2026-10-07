@@ -3,7 +3,7 @@
 #include <sstream>
 #include <unordered_map>
 #include "LightSource.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "SDFOperation.h"
 #include "SDFOperationInc.h"
 

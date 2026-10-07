@@ -1,0 +1,21 @@
+#pragma once
+
+enum Axis {
+	AXIS_X,
+	AXIS_Y,
+	AXIS_Z,
+};
+
+enum OP2D
+{
+	OP2D_EXTRUDE,
+	OP2D_REVOLVE,
+	OP2D_INFINITE,
+};
+
+enum ColorMode {
+	COLORMODE_DOUBLE,
+	COLORMODE_SINGLE,
+	COLORMODE_INTERNAL,
+	COLORMODE_INTERNALDOUBLE
+};

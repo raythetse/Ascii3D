@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "LightSource.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 
 class GLSLMarcher
 {

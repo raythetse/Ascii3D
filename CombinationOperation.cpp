@@ -97,16 +97,16 @@ double COMBExclude::combine(Vec3 p, double distanceA, Color colorIn, Color* colo
 	if (colorOut) {
 		switch (m_colorMode)
 		{
-		case COMBExclude::Double:
+		case COLORMODE_DOUBLE:
 			if (distanceA <= distanceB) *colorOut = colorIn;
 			break;
-		case COMBExclude::Single:
+		case COLORMODE_SINGLE:
 			*colorOut = colorIn;
 			break;
-		case COMBExclude::Internal:
+		case COLORMODE_INTERNAL:
 			if (h >= 0.0) *colorOut = colorIn;
 			break;
-		case COMBExclude::InternalDouble:
+		case COLORMODE_INTERNALDOUBLE:
 			if ((h >= 0.0) != (distanceA > distanceB)) *colorOut = colorIn;
 			break;
 		default:
@@ -123,17 +123,17 @@ void COMBExclude::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tpmFloat0 = max(min(d" << level << ", d" << (level + 1) << "), min(-d" << level << ", -d" << (level + 1) << "));\n";
 	switch (m_colorMode)
 	{
-	case COMBExclude::Double:
+	case COLORMODE_DOUBLE:
 		ss << "\tif (d" << level << " > d" << (level + 1) << ") {\n";
 		ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
 		ss << "\t}\n";
 		break;
-	case COMBExclude::Internal:
+	case COLORMODE_INTERNAL:
 		ss << "\tif (pmFloat0 < 0.0) {\n";
 		ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
 		ss << "\t}\n";
 		break;
-	case COMBExclude::InternalDouble:
+	case COLORMODE_INTERNALDOUBLE:
 		ss << "\tif ((pmFloat0 >= 0.0) != (d" << level << " <= d" << (level + 1) << ")) {\n";
 		ss << "\t\tcolor" << level << " = color" << (level + 1) << "; \n";
 		ss << "\t}\n";

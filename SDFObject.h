@@ -3,6 +3,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include "Enumerations.h"
 #include "Mat3.h"
 #include "Vec2.h"
 #include "Vec3.h"
@@ -15,14 +16,7 @@ class SDFOperation;
 // For more information on SDFs: https://iquilezles.org/articles/distfunctions/
 // Most SDF functions are adapted from the above article.
 class SDFObject
-{
-public:
-	enum OP2D
-	{
-		Extrude,
-		Revolve,
-		None,
-	};
+{	
 protected:
 	Color m_color{};
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
@@ -39,8 +33,6 @@ public:
 		: m_color{ color } {}
 	~SDFObject();
 	void update();
-	void setPosition(Vec3 position);
-	void setRotation(Vec3 axis, double rotations);
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	SDFOperation* pushOperation(std::unique_ptr<SDFOperation> operation);
 	template <typename T, typename... Args>
@@ -130,110 +122,93 @@ public:
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class SDFTorusXY : public SDFObject
+class SDFCrystal : public SDFObject
 {
 public:
-	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
+	inline const static double DFLT_EDGELENGTH{ 1.0 };
 private:
-	Vec2 m_radii;
+	double m_edgeLength;
 protected:
-	std::string getClassName() const override { return "SDFTorusXY"; }
+	std::string getClassName() const override { return "SDFCrystal"; }
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
 public:
-	SDFTorusXY(Vec2 radii = DFLT_RADII, Color color = Color::White)
+	SDFCrystal(double edgeLength = DFLT_EDGELENGTH, Color color = Color::White)
+		: SDFObject(color), m_edgeLength(edgeLength) {}
+	double signedDistanceInner(Vec3 p) const override;
+	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+};
+
+class SDFCone : public SDFObject
+{
+public:
+	inline const static double DFLT_HEIGHT{ 1.0 };
+	inline const static double DFLT_SWEEP{ 0.5 };
+private:
+	double m_height{};
+	double m_sweep{};
+protected:
+	std::string getClassName() const override { return "SDFCone"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFCone(double height = DFLT_HEIGHT, double sweep = DFLT_SWEEP, Color color = Color::White)
+		: SDFObject(color), m_height(height), m_sweep(sweep) {}
+	double signedDistanceInner(Vec3 p) const override;
+	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+};
+
+class SDFSolidAngle : public SDFObject
+{
+public:
+	inline const static double DFLT_RADIUS{ 0.5 };
+	inline const static double DFLT_SWEEP{ 0.25 };
+private:
+	double m_radius{};
+	double m_sweep{};
+protected:
+	std::string getClassName() const override { return "SDFSolidAngle"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFSolidAngle(double radius = DFLT_RADIUS, double sweep = DFLT_SWEEP, Color color = Color::White)
+		: SDFObject(color), m_radius(radius), m_sweep(sweep) {}
+	double signedDistanceInner(Vec3 p) const override;
+	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+};
+
+class SDFEllipsoid : public SDFObject
+{
+public:
+	inline const static Vec3 DFLT_RADII{ 1.0, 0.5, 0.25 };
+private:
+	Vec3 m_radii;
+protected:
+	std::string getClassName() const override { return "SDFEllipsoid"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFEllipsoid(Vec3 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class SDFTorusXZ : public SDFObject
+// ORIENTATEDS TO MOVE
+class SDFTaperedCapsule : public SDFObject
 {
 public:
-	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
-private:
-	Vec2 m_radii;
+	inline const static Vec2 DFLT_RADII{ 0.5, 0.25 };
+	inline const static double DFLT_BODYLENGTH{ 1.0 };
 protected:
-	std::string getClassName() const override { return "SDFTorusXZ"; }
+	double m_bodyLength;
+	Vec2 m_radii;
+	virtual char getAxis() const = 0;
 	void serializeInner(std::stringstream& ss) const override;
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	SDFTaperedCapsule(Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
+		: SDFObject(color), m_radii(radii), m_bodyLength(bodyLength) {}
 public:
-	SDFTorusXZ(Vec2 radii = DFLT_RADII, Color color = Color::White)
-		: SDFObject(color), m_radii(radii) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFTorusYZ : public SDFObject
-{
-public:
-	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
-private:
-	Vec2 m_radii;
-protected:
-	std::string getClassName() const override { return "SDFTorusYZ"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFTorusYZ(Vec2 radii = DFLT_RADII, Color color = Color::White)
-		: SDFObject(color), m_radii(radii) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFTorusSegmentXY : public SDFObject
-{
-public:
-	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
-	inline const static double DFLT_SWEEP{ 0.25 };
-private:
-	double m_sweep;
-	Vec2 m_radii;
-protected:
-	std::string getClassName() const override { return "SDFTorusSegmentXY"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFTorusSegmentXY(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFTorusSegmentXZ : public SDFObject
-{
-public:
-	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
-	inline const static double DFLT_SWEEP{ 0.25 };
-private:
-	Vec2 m_radii;
-	double m_sweep;
-protected:
-	std::string getClassName() const override { return "SDFTorusSegmentXZ"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFTorusSegmentXZ(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFTorusSegmentYZ : public SDFObject
-{
-public:
-	inline const static Vec2 DFLT_RADII{ 1.0, 0.25 };
-	inline const static double DFLT_SWEEP{ 0.25 };
-private:
-	Vec2 m_radii;
-	double m_sweep;
-protected:
-	std::string getClassName() const override { return "SDFTorusSegmentYZ"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFTorusSegmentYZ(Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
@@ -295,21 +270,34 @@ public:
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class SDFCrystal : public SDFObject
+class SDFTaperedCapsuleX : public SDFTaperedCapsule
 {
-public:
-	inline const static double DFLT_EDGELENGTH{ 1.0 };
-private:
-	double m_edgeLength;
 protected:
-	std::string getClassName() const override { return "SDFCrystal"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	std::string getClassName() const override { return "SDFTaperedCapsuleX"; }
+	virtual char getAxis() const override;
 public:
-	SDFCrystal(double edgeLength = DFLT_EDGELENGTH, Color color = Color::White)
-		: SDFObject(color), m_edgeLength(edgeLength) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	SDFTaperedCapsuleX(Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
+		: SDFTaperedCapsule(radii, bodyLength, color) {}
+};
+
+class SDFTaperedCapsuleY : public SDFTaperedCapsule
+{
+protected:
+	std::string getClassName() const override { return "SDFTaperedCapsuleY"; }
+	virtual char getAxis() const override;
+public:
+	SDFTaperedCapsuleY(Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
+		: SDFTaperedCapsule(radii, bodyLength, color) {}
+};
+
+class SDFTaperedCapsuleZ : public SDFTaperedCapsule
+{
+protected:
+	std::string getClassName() const override { return "SDFTaperedCapsuleZ"; }
+	virtual char getAxis() const override;
+public:
+	SDFTaperedCapsuleZ(Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
+		: SDFTaperedCapsule(radii, bodyLength, color) {}
 };
 
 class SDFCylinderX : public SDFObject
@@ -369,87 +357,13 @@ public:
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
 };
 
-class SDFCone : public SDFObject
-{
-public:
-	inline const static double DFLT_HEIGHT{ 1.0 };
-	inline const static double DFLT_SWEEP{ 0.5 };
-private:
-	double m_height{};
-	double m_sweep{};
-protected:
-	std::string getClassName() const override { return "SDFCone"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFCone(double height = DFLT_HEIGHT, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_height(height), m_sweep(sweep) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFSolidAngle : public SDFObject
-{
-public:
-	inline const static double DFLT_RADIUS{ 0.5 };
-	inline const static double DFLT_SWEEP{ 0.25 };
-private:
-	double m_radius{};
-	double m_sweep{};
-protected:
-	std::string getClassName() const override { return "SDFSolidAngle"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFSolidAngle(double radius = DFLT_RADIUS, double sweep = DFLT_SWEEP, Color color = Color::White)
-		: SDFObject(color), m_radius(radius), m_sweep(sweep) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFEllipsoid : public SDFObject
-{
-public:
-	inline const static Vec3 DFLT_RADII{ 1.0, 0.5, 0.25 };
-private:
-	Vec3 m_radii;
-protected:
-	std::string getClassName() const override { return "SDFEllipsoid"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFEllipsoid(Vec3 radii = DFLT_RADII, Color color = Color::White)
-		: SDFObject(color), m_radii(radii) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
-class SDFTaperedCapsule : public SDFObject
-{
-public:
-	inline const static Vec2 DFLT_RADII{ 0.5, 0.25 };
-	inline const static double DFLT_BODYLENGTH{ 1.0 };
-private:
-	double m_bodyLength;
-	Vec2 m_radii;
-protected:
-	std::string getClassName() const override { return "SDFTaperedCapsule"; }
-	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
-public:
-	SDFTaperedCapsule(Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
-		: SDFObject(color), m_radii(radii), m_bodyLength(bodyLength) {}
-	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
-};
-
 // Following SDFs are 2D shapes projected into 3D either with exrusion or revolution
 // SDFs are adapted from https://iquilezles.org/articles/distfunctions2d/
 // Extrusion/Revolution Ops are adapted from article linked near the top of this file
 class SDFRhombus : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static Vec2 DFLT_DIMENSIONS{ 1.0, 0.5 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
@@ -470,7 +384,7 @@ public:
 class SDFEquilateralTriangle : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static double DFLT_BASE{ 1.0 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
@@ -491,7 +405,7 @@ public:
 class SDFIsoscelesTriangle : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static Vec2 DFLT_DIMENSIONS{ 1.0, 0.5 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
@@ -512,7 +426,7 @@ public:
 class SDFPieSlice : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static double DFLT_SWEEP{ 0.25 };
 	inline const static double DFLT_RADIUS{ 0.5 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
@@ -535,7 +449,7 @@ public:
 class SDFPentagon : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static double DFLT_RADIUS{ 0.5 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
@@ -556,7 +470,7 @@ public:
 class SDFHexagon : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static double DFLT_RADIUS{ 0.5 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
@@ -577,7 +491,7 @@ public:
 class SDFOctagon : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static double DFLT_RADIUS{ 0.5 };
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
@@ -598,7 +512,7 @@ public:
 class SDFStar : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static size_t DFLT_NUMPOINT{ 5 };
 	inline const static double DFLT_RADIUS{ 0.5 };
 	inline const static double DFLT_RATIO{ 0.5 };
@@ -623,7 +537,7 @@ public:
 class SDFTriangle : public SDFObject
 {
 public:
-	inline const static OP2D DFLT_OPERATION{ OP2D::Extrude };
+	inline const static OP2D DFLT_OPERATION{ OP2D::OP2D_EXTRUDE };
 	inline const static Vec2 DFLT_POINT1{ -0.5, -0.5 };
 	inline const static Vec2 DFLT_POINT2{ 0.0, 0.5 };
 	inline const static Vec2 DFLT_POINT3{ 0.5, 0.0 };

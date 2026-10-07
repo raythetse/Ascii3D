@@ -1,6 +1,6 @@
 #pragma once
 #include "SDFBuilder.h"
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "SDFScene.h"
 
 SDFBuilder::SDFBuilder() {
@@ -78,18 +78,14 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.op<COMBIntersect>();
     }},
     { "COMBExclude", [](SDFBuilder& builder, std::stringstream& ss) {
-        COMBExclude::ColorMode colorMode{};
+        int colorMode{ColorMode::COLORMODE_DOUBLE};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "colorMode") {
-                int colorMode;
-                ss >> colorMode;
-                colorMode = static_cast<COMBExclude::ColorMode>(colorMode);
-            }
+            if (param == "colorMode") ss >> colorMode;
         }
-        builder.op<COMBExclude>(nullptr, colorMode);
+        builder.op<COMBExclude>(nullptr, static_cast<ColorMode>(colorMode));
     }},
     { "COMBAddSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         double smoothing{ SmoothCombination::DFLT_SMOOTHING };
@@ -197,46 +193,25 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFSphere>(radius, color);
     } },
-    { "SDFTorusXZ", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFTorus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
-        Vec2 radii{ SDFTorusXZ::DFLT_RADII };
+        Vec2 radii{ SDFTorus::DFLT_RADII };
+        int axis{ Axis::AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radii") ss >> radii.x >> radii.y;
+            else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTorusXZ>(radii, color);
+        builder.pushSDFObj<SDFTorus>(static_cast<Axis>(axis), radii, color);
     } },
-    { "SDFTorusYZ", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFTorusSegment", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
-        Vec2 radii{ SDFTorusYZ::DFLT_RADII };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-        }
-        builder.pushSDFObj<SDFTorusYZ>(radii, color);
-    } },
-    { "SDFTorusXY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        Vec2 radii{ SDFTorusXY::DFLT_RADII };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-        }
-        builder.pushSDFObj<SDFTorusXY>(radii, color);
-    } },
-    { "SDFTorusSegmentXY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        Vec2 radii{ SDFTorusSegmentXY::DFLT_RADII };
-        double sweep{ SDFTorusSegmentXY::DFLT_SWEEP };
+        Vec2 radii{ SDFTorusSegment::DFLT_RADII };
+        double sweep{ SDFTorusSegment::DFLT_SWEEP };
+        int axis{ Axis::AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -244,36 +219,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radii") ss >> radii.x >> radii.y;
             else if (param == "sweep") ss >> sweep;
+            else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTorusSegmentXY>(radii, sweep, color);
-    } },
-    { "SDFTorusSegmentXZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        Vec2 radii{ SDFTorusSegmentXZ::DFLT_RADII };
-        double sweep{ SDFTorusSegmentXZ::DFLT_SWEEP };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-            else if (param == "sweep") ss >> sweep;
-        }
-        builder.pushSDFObj<SDFTorusSegmentXZ>(radii, sweep, color);
-    } },
-    { "SDFTorusSegmentYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        Vec2 radii{ SDFTorusSegmentYZ::DFLT_RADII };
-        double sweep{ SDFTorusSegmentYZ::DFLT_SWEEP };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-            else if (param == "sweep") ss >> sweep;
-        }
-        builder.pushSDFObj<SDFTorusSegmentYZ>(radii, sweep, color);
+        builder.pushSDFObj<SDFTorusSegment>(static_cast<Axis>(axis), radii, sweep, color);
     } },
     { "SDFCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -411,7 +359,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFEllipsoid>(radii, color);
     } },
-    { "SDFTaperedCapsule", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFTaperedCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double bodyLength{ SDFTaperedCapsule::DFLT_BODYLENGTH };
         Vec2 radii{ SDFTaperedCapsule::DFLT_RADII };
@@ -423,13 +371,41 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "bodyLength") ss >> bodyLength;
             else if (param == "radii") ss >> radii.x >> radii.y;
         }
-        builder.pushSDFObj<SDFTaperedCapsule>(radii, bodyLength, color);
+        builder.pushSDFObj<SDFTaperedCapsuleX>(radii, bodyLength, color);
+    } },
+    { "SDFTaperedCapsuleY", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ Color::White };
+        double bodyLength{ SDFTaperedCapsule::DFLT_BODYLENGTH };
+        Vec2 radii{ SDFTaperedCapsule::DFLT_RADII };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "bodyLength") ss >> bodyLength;
+            else if (param == "radii") ss >> radii.x >> radii.y;
+        }
+        builder.pushSDFObj<SDFTaperedCapsuleY>(radii, bodyLength, color);
+    } },
+    { "SDFTaperedCapsuleZ", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ Color::White };
+        double bodyLength{ SDFTaperedCapsule::DFLT_BODYLENGTH };
+        Vec2 radii{ SDFTaperedCapsule::DFLT_RADII };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "bodyLength") ss >> bodyLength;
+            else if (param == "radii") ss >> radii.x >> radii.y;
+        }
+        builder.pushSDFObj<SDFTaperedCapsuleZ>(radii, bodyLength, color);
     } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         Vec2 dimensions{ SDFRhombus::DFLT_DIMENSIONS };
         double magnitude{ SDFRhombus::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFObject::OP2D::Extrude };
+        int operation{ SDFRhombus::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -437,20 +413,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "dimensions") ss >> dimensions.x >> dimensions.y;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFRhombus>(operation, dimensions, magnitude, color);
+        builder.pushSDFObj<SDFRhombus>(static_cast<OP2D>(operation), dimensions, magnitude, color);
     } },
     { "SDFEquilateralTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double base{ SDFEquilateralTriangle::DFLT_BASE };
         double magnitude{ SDFEquilateralTriangle::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFEquilateralTriangle::DFLT_OPERATION };
-
+        int operation{ SDFEquilateralTriangle::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -458,20 +429,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "base") ss >> base;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFEquilateralTriangle>(operation, base, magnitude, color);
+        builder.pushSDFObj<SDFEquilateralTriangle>(static_cast<OP2D>(operation), base, magnitude, color);
     } },
     { "SDFIsoscelesTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         Vec2 dimensions{ SDFIsoscelesTriangle::DFLT_DIMENSIONS };
         double magnitude{ SDFIsoscelesTriangle::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFIsoscelesTriangle::DFLT_OPERATION };
-
+        int operation{ SDFIsoscelesTriangle::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -479,20 +445,16 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "dimensions") ss >> dimensions.x >> dimensions.y;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFIsoscelesTriangle>(operation, dimensions, magnitude, color);
+        builder.pushSDFObj<SDFIsoscelesTriangle>(static_cast<OP2D>(operation), dimensions, magnitude, color);
     } },
     { "SDFPieSlice", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double sweep{ SDFPieSlice::DFLT_SWEEP };
         double radius{ SDFPieSlice::DFLT_RADIUS };
         double magnitude{ SDFPieSlice::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFPieSlice::DFLT_OPERATION };
+        int operation{ SDFPieSlice::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -501,19 +463,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "sweep") ss >> sweep;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFPieSlice>(operation, sweep, radius, magnitude, color);
+        builder.pushSDFObj<SDFPieSlice>(static_cast<OP2D>(operation), sweep, radius, magnitude, color);
     } },
     { "SDFPentagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFPentagon::DFLT_RADIUS };
         double magnitude{ SDFPentagon::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFPentagon::DFLT_OPERATION };
+        int operation{ SDFPentagon::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -521,19 +479,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFPentagon>(operation, radius, magnitude, color);
+        builder.pushSDFObj<SDFPentagon>(static_cast<OP2D>(operation), radius, magnitude, color);
     } },
     { "SDFHexagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFHexagon::DFLT_RADIUS };
         double magnitude{ SDFHexagon::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFObject::OP2D::Extrude };
+        int operation{ SDFHexagon::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -541,19 +495,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFHexagon>(operation, radius, magnitude, color);
+        builder.pushSDFObj<SDFHexagon>(static_cast<OP2D>(operation), radius, magnitude, color);
     } },
     { "SDFOctagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFOctagon::DFLT_RADIUS };
         double magnitude{ SDFOctagon::DFLT_MAGNITUDE };
-        SDFObject::OP2D operation{ SDFObject::OP2D::Extrude };
+        int operation{ SDFOctagon::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -561,13 +511,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFOctagon>(operation, radius, magnitude, color);
+        builder.pushSDFObj<SDFOctagon>(static_cast<OP2D>(operation), radius, magnitude, color);
     } },
     { "SDFStar", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -575,7 +521,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         double ratio{ SDFStar::DFLT_RATIO };
         double magnitude{ SDFStar::DFLT_MAGNITUDE };
         size_t numPoints{ SDFStar::DFLT_NUMPOINT };
-        SDFObject::OP2D operation{ SDFObject::OP2D::Extrude };
+        int operation{ SDFStar::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -585,13 +531,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "numPoints") ss >> numPoints;
             else if (param == "ratio") ss >> ratio;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFStar>(operation, numPoints, radius, ratio, magnitude, color);
+        builder.pushSDFObj<SDFStar>(static_cast<OP2D>(operation), numPoints, radius, ratio, magnitude, color);
     } },
     { "SDFTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -599,7 +541,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         Vec2 point1{ SDFTriangle::DFLT_POINT1 };
         Vec2 point2{ SDFTriangle::DFLT_POINT2 };
         Vec2 point3{ SDFTriangle::DFLT_POINT3 };
-        SDFObject::OP2D operation{ SDFObject::OP2D::Extrude };
+        int operation{ SDFTriangle::DFLT_OPERATION };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -609,13 +551,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "point2") ss >> point2.x >> point2.y;
             else if (param == "point3") ss >> point3.x >> point3.y;
             else if (param == "magnitude") ss >> magnitude;
-            else if (param == "operation") {
-                int opID;
-                ss >> opID;
-                operation = static_cast<SDFObject::OP2D>(opID);
-            }
+            else if (param == "operation") ss >> operation;
         }
-        builder.pushSDFObj<SDFTriangle>(operation, point1, point2, point3, magnitude, color);
+        builder.pushSDFObj<SDFTriangle>(static_cast<OP2D>(operation), point1, point2, point3, magnitude, color);
     } },
 
     // Mirrors

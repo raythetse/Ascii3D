@@ -1,7 +1,7 @@
 #pragma once
 #include <ranges>
 #include <vector>
-#include "SDFObject.h"
+#include "SDFObjectInc.h"
 #include "PixelSample.h"
 #include "VulkanManager.h"
 

@@ -55,6 +55,12 @@
     <Filter Include="Source Files\Rendering\Hardware">
       <UniqueIdentifier>{e12536cc-cda6-4f99-9b0d-1c863be8fa78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SDF\Objects">
+      <UniqueIdentifier>{1eedd385-d658-4b4e-8d95-1b5faa980692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SDF\Objects">
+      <UniqueIdentifier>{1efbf0df-5e89-4916-90af-43e34d6c7cf4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -62,9 +68,6 @@
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="SDFObject.cpp">
-      <Filter>Source Files\SDF</Filter>
     </ClCompile>
     <ClCompile Include="PixelField.cpp">
       <Filter>Source Files\Rendering</Filter>
@@ -159,6 +162,12 @@
     <ClCompile Include="GLSLMarcher.cpp">
       <Filter>Source Files\Rendering\Hardware</Filter>
     </ClCompile>
+    <ClCompile Include="SDFObject.cpp">
+      <Filter>Source Files\SDF\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFAxisObject.cpp">
+      <Filter>Source Files\SDF\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -169,9 +178,6 @@
     </ClInclude>
     <ClInclude Include="PixelSample.h">
       <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="SDFObject.h">
-      <Filter>Header Files\SDF</Filter>
     </ClInclude>
     <ClInclude Include="PixelField.h">
       <Filter>Header Files\Rendering</Filter>
@@ -265,6 +271,18 @@
     </ClInclude>
     <ClInclude Include="GLSLMarcher.h">
       <Filter>Header Files\Rendering\Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFObject.h">
+      <Filter>Header Files\SDF\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFAxisObject.h">
+      <Filter>Header Files\SDF\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFObjectInc.h">
+      <Filter>Header Files\SDF\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Enumerations.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
