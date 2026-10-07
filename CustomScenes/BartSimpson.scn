@@ -6,7 +6,7 @@ SDFObject color 1 1 1
 	COMBAdd
 	SDFObject color 1 1 1
 		COMBAdd
-		SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 1.2 radius 0.46
+		SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 1.2 radius 0.46 axis 1
 			OPRoundOff magnitude 0.05
 			OPMirrorXZ
 			OPRotate axis 0 1 0 rotations -0.125
@@ -26,12 +26,12 @@ SDFObject color 1 1 1
 			stepBack
 		OPTranslate translation 0 -0.6 -0.12
 		COMBAddSmooth smoothing 0.15 colorBlending 1 colorShifting 0
-		SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 0 radius 0.35
+		SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 0 radius 0.35 axis 1
 			OPRoundOff magnitude 0.05
 			stepBack
 		OPTranslate translation 0 -0.075 0.17
 		COMBAdd
-		SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 0.05 radius 0.25
+		SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 0.05 radius 0.25 axis 1
 			OPRoundOff magnitude 0.1
 			stepBack
 		COMBAddSmooth smoothing 0.15 colorBlending 1 colorShifting 0
@@ -39,12 +39,12 @@ SDFObject color 1 1 1
 			OPTranslate translation 0 -0.15 0.2
 			OPRotate axis 1 0 0 rotations 0.04
 			COMBAdd
-			SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 0.5 radius 0.25
+			SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 0.5 radius 0.25 axis 1
 				stepBack
 			stepBack
 		OPTranslate translation 0 0.4 -0.6
 		COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-		SDFCapsuleZ color 0.917647 0.74902 0.0156863 radius 0.1 bodyLength 0.2
+		SDFCapsule color 0.917647 0.74902 0.0156863 radius 0.1 bodyLength 0.2 axis 2
 			stepBack
 		OPMirrorX
 		OPTranslate translation 0.18 0.35 0.2
@@ -75,7 +75,7 @@ SDFObject color 1 1 1
 		SDFTorus color 0.917647 0.74902 0.0156863 radii 0.075 0.02 axis 1
 			OPTranslate translation 0 -0.02 0
 			COMBAddSmooth smoothing 0.02 colorBlending 1 colorShifting 0
-			SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 0.01 radius 0.06
+			SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 0.01 radius 0.06 axis 1
 				stepBack
 			stepBack
 		stepBack
@@ -112,30 +112,30 @@ SDFObject color 1 1 1
 					OPRotate axis 0 -1 0 rotations 0.125
 					OPTranslate translation 0 -0.25 0
 					COMBAdd
-					SDFCapsuleY color 0.917647 0.74902 0.0156863 radius 0.17 bodyLength 0.5
+					SDFCapsule color 0.917647 0.74902 0.0156863 radius 0.17 bodyLength 0.5 axis 1
 						OPTranslate translation 0 -0.25 0
 						OPRotate axis 0 0 1 rotations 0.375
 						PMOscillateSine boundOnObj 0 propName rotations period 1 amplitude 0.1 phase 0.3
 						OPTranslate translation 0 0.1 0
 						COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-						SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.5 radii 0.15 0.1
+						SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.5 radii 0.15 0.1 axis 1
 							OPTranslate translation 0 0.6 0
 							COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
 							SDFEllipsoid color 0.917647 0.74902 0.0156863 radii 0.13 0.13 0.05
 								OPTranslate translation 0 0.12 0
 								COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-								SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.14 radii 0.035 0.03
+								SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.14 radii 0.035 0.03 axis 1
 									OPMirrorX
 									OPTranslate translation 0.1 -0.02 0
 									COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-									SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.125 radii 0.035 0.03
+									SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.125 radii 0.035 0.03 axis 1
 										stepBack
 									stepBack
 								stepBack
 							OPTranslate translation -0.2 0.03 0
 							OPRotate axis 0 0 1 rotations 0.3
 							COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-							SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.15 radii 0.035 0.03
+							SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.15 radii 0.035 0.03 axis 1
 								stepBack
 							stepBack
 						stepBack
@@ -156,29 +156,29 @@ SDFObject color 1 1 1
 					OPRotate axis 0 -1 0 rotations 0.125
 					OPTranslate translation 0 -0.25 0
 					COMBAdd
-					SDFCapsuleY color 0.917647 0.74902 0.0156863 radius 0.17 bodyLength 0.5
+					SDFCapsule color 0.917647 0.74902 0.0156863 radius 0.17 bodyLength 0.5 axis 1
 						OPTranslate translation 0 -0.25 0
 						OPRotate axis 0 0 1 rotations 0.45
 						OPTranslate translation 0 0.1 0
 						COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-						SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.5 radii 0.15 0.1
+						SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.5 radii 0.15 0.1 axis 1
 							OPTranslate translation 0 0.6 0
 							COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
 							SDFEllipsoid color 0.917647 0.74902 0.0156863 radii 0.13 0.13 0.05
 								OPTranslate translation 0 0.12 0
 								COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-								SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.14 radii 0.035 0.03
+								SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.14 radii 0.035 0.03 axis 1
 									OPMirrorX
 									OPTranslate translation 0.1 -0.02 0
 									COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-									SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.125 radii 0.035 0.03
+									SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.125 radii 0.035 0.03 axis 1
 										stepBack
 									stepBack
 								stepBack
 							OPTranslate translation -0.2 0.03 0
 							OPRotate axis 0 0 1 rotations 0.3
 							COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
-							SDFTaperedCapsuleY color 0.917647 0.74902 0.0156863 bodyLength 0.15 radii 0.035 0.03
+							SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.15 radii 0.035 0.03 axis 1
 								stepBack
 							stepBack
 						stepBack
@@ -198,7 +198,7 @@ SDFObject color 1 1 1
 			OPMirrorX
 			OPTranslate translation 0.28 -1.4 0
 			COMBAddSmooth smoothing 0.1 colorBlending 1 colorShifting 0
-			SDFCylinderY color 0 0.615686 0.862745 sideLength 0.8 radius 0.3
+			SDFCylinder color 0 0.615686 0.862745 sideLength 0.8 radius 0.3 axis 1
 				OPTranslate translation 0 -0.55 0
 				OPOnion magnitude 0.01
 				COMBSubtract
@@ -212,7 +212,7 @@ SDFObject color 1 1 1
 		OPMirrorX
 		OPTranslate translation 0.28 -3 0.3
 		COMBAdd
-		SDFCylinderY color 0.917647 0.74902 0.0156863 sideLength 1 radius 0.15
+		SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 1 radius 0.15 axis 1
 			stepBack
 		stepBack
 	COMBAdd

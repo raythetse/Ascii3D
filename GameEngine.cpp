@@ -200,7 +200,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                     m_scene = std::make_unique<WormsScene>();
                     return;
                 case 123:
-                    m_scene = std::make_unique<BartScene>();
+                    m_scene = std::make_unique<TestScene>();
                     return;
                 }
             }
@@ -281,19 +281,7 @@ void GameEngine::marchHardware()
 void GameEngine::render()
 {
     m_perfMonitor.sample(m_renderPM, [this]() {
-        switch (m_marchMode)
-        {
-        case GameEngine::Software:
-            m_renderer.render(m_pixelField);
-            m_pixelField.swap();
-            break;
-        case GameEngine::Hardware: {
-            m_renderer.render(m_pixelField);
-            m_pixelField.swap();
-        }
-            break;
-        default:
-            break;
-        }
+        m_renderer.render(m_pixelField);
+        m_pixelField.swap();
     });
 }

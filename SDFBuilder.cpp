@@ -223,10 +223,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFTorusSegment>(static_cast<Axis>(axis), radii, sweep, color);
     } },
-    { "SDFCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFCapsule", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
-        double radius{ SDFCapsuleX::DFLT_RADIUS };
-        double bodyLength{ SDFCapsuleX::DFLT_BODYLENGTH };
+        double radius{ SDFCapsule::DFLT_RADIUS };
+        double bodyLength{ SDFCapsule::DFLT_BODYLENGTH };
+        int axis{ AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -234,36 +235,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "radius") ss >> radius;
             else if (param == "bodyLength") ss >> bodyLength;
+            else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFCapsuleX>(radius, bodyLength, color);
-    } },
-    { "SDFCapsuleY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        double radius{ SDFCapsuleY::DFLT_RADIUS };
-        double bodyLength{ SDFCapsuleY::DFLT_BODYLENGTH };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radius") ss >> radius;
-            else if (param == "bodyLength") ss >> bodyLength;
-        }
-        builder.pushSDFObj<SDFCapsuleY>(radius, bodyLength, color);
-    } },
-    { "SDFCapsuleZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        double radius{ SDFCapsuleZ::DFLT_RADIUS };
-        double bodyLength{ SDFCapsuleZ::DFLT_BODYLENGTH };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radius") ss >> radius;
-            else if (param == "bodyLength") ss >> bodyLength;
-        }
-        builder.pushSDFObj<SDFCapsuleZ>(radius, bodyLength, color);
+        builder.pushSDFObj<SDFCapsule>(static_cast<Axis>(axis), radius, bodyLength, color);
     } },
     { "SDFCrystal", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -277,10 +251,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFCrystal>(edgeLength, color);
     } },
-    { "SDFCylinderX", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFCylinder", [](SDFBuilder& builder, std::stringstream& ss) {
         Color col{ Color::White };
-        double sideLength{ SDFCylinderX::DFLT_SIDELENGTH };
-        double radius{ SDFCylinderX::DFLT_RADIUS };
+        double sideLength{ SDFCylinder::DFLT_SIDELENGTH };
+        double radius{ SDFCylinder::DFLT_RADIUS };
+        int axis{ Axis::AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -288,36 +263,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> col.x >> col.y >> col.z;
             else if (param == "sideLength") ss >> sideLength;
             else if (param == "radius") ss >> radius;
+            else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFCylinderX>(radius, sideLength, col);
-    } },
-    { "SDFCylinderY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        double sideLength{ SDFCylinderY::DFLT_SIDELENGTH };
-        double radius{ SDFCylinderY::DFLT_RADIUS };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "sideLength") ss >> sideLength;
-            else if (param == "radius") ss >> radius;
-        }
-        builder.pushSDFObj<SDFCylinderY>(radius, sideLength, color);
-    } },
-    { "SDFCylinderZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        double sideLength{ SDFCylinderZ::DFLT_SIDELENGTH };
-        double radius{ SDFCylinderZ::DFLT_RADIUS };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "sideLength") ss >> sideLength;
-            else if (param == "radius") ss >> radius;
-        }
-        builder.pushSDFObj<SDFCylinderZ>(radius, sideLength, color);
+        builder.pushSDFObj<SDFCylinder>(static_cast<Axis>(axis), radius, sideLength, col);
     } },
     { "SDFCone", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -359,10 +307,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFEllipsoid>(radii, color);
     } },
-    { "SDFTaperedCapsuleX", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "SDFTaperedCapsule", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double bodyLength{ SDFTaperedCapsule::DFLT_BODYLENGTH };
         Vec2 radii{ SDFTaperedCapsule::DFLT_RADII };
+        int axis{ AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -370,36 +319,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "color") ss >> color.x >> color.y >> color.z;
             else if (param == "bodyLength") ss >> bodyLength;
             else if (param == "radii") ss >> radii.x >> radii.y;
+            else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTaperedCapsuleX>(radii, bodyLength, color);
-    } },
-    { "SDFTaperedCapsuleY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        double bodyLength{ SDFTaperedCapsule::DFLT_BODYLENGTH };
-        Vec2 radii{ SDFTaperedCapsule::DFLT_RADII };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "bodyLength") ss >> bodyLength;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-        }
-        builder.pushSDFObj<SDFTaperedCapsuleY>(radii, bodyLength, color);
-    } },
-    { "SDFTaperedCapsuleZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color color{ Color::White };
-        double bodyLength{ SDFTaperedCapsule::DFLT_BODYLENGTH };
-        Vec2 radii{ SDFTaperedCapsule::DFLT_RADII };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "bodyLength") ss >> bodyLength;
-            else if (param == "radii") ss >> radii.x >> radii.y;
-        }
-        builder.pushSDFObj<SDFTaperedCapsuleZ>(radii, bodyLength, color);
+        builder.pushSDFObj<SDFTaperedCapsule>(static_cast<Axis>(axis), radii, bodyLength, color);
     } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };

@@ -211,7 +211,8 @@ float torusSegment(vec3 p, vec2 radii, float sweep) {
 }
 
 float capsule(vec3 p, float bodyLength, float radius) {
-    p.x = p.x > 0.0 ? max(0.0, p.x - 0.5 * bodyLength) : min(0.0, p.x + 0.5 * bodyLength);
+    float halfBL = bodyLength * 0.5; 
+    p.y -= clamp( p.y, -halfBL, halfBL);
     return length(p) - radius;
 }
 
@@ -221,8 +222,8 @@ float crystal(vec3 p, float edgeLength) {
 }
 
 float cylinder(vec3 p, float bodyLength, float radius) {
-    vec2 yz = vec2(p.y, p.z);
-    vec2 d = abs(vec2(length(yz), p.x )) - vec2(radius, bodyLength * 0.5);
+    vec2 xz = vec2(p.x, p.z);
+    vec2 d = abs(vec2(length(xz), p.y )) - vec2(radius, bodyLength * 0.5);
     return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
 }
 
