@@ -32,7 +32,7 @@ GameEngine::GameEngine(double sceneDepth, double tolerance)
         m_pixelField.setSize(m_dimensions.first, m_dimensions.second);
         m_viewportSize = m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
 
-        if (m_marchMode == Hardware && m_vrm) m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+        if (m_marchMode == Hardware && m_vulkanManager) m_vulkanManager->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     });
     GameTimer::reset();
 }
@@ -40,7 +40,7 @@ GameEngine::GameEngine(double sceneDepth, double tolerance)
 void GameEngine::run()
 {
     while (true) {
-        m_vrm = std::make_unique<VulkanRaymarcher>();
+        m_vulkanManager = std::make_unique<VulkanManager>();
 
         if (!selectRenderer()) break;
 
@@ -49,8 +49,8 @@ void GameEngine::run()
             if (m_marchMode == Hardware) {
                 std::string shaderCode = m_scene->buildComputeShader();
                 FileHandler::saveShader(shaderCode, "ShaderSource.glsl");
-                m_vrm->setShaderSource(shaderCode);
-                m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+                m_vulkanManager->setShaderSource(shaderCode);
+                m_vulkanManager->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
             }
             GameTimer::reset();
             m_camera.reset();
@@ -108,7 +108,7 @@ void GameEngine::march()
 
 bool GameEngine::selectRenderer()
 {
-    auto& deviceProps = m_vrm->enumerateDevices();
+    auto& deviceProps = m_vulkanManager->enumerateDevices();
     int selection{ -1 };
 
     std::function<void()> prompt = [&selection, &deviceProps]() {
@@ -133,7 +133,7 @@ bool GameEngine::selectRenderer()
 
     if (selection == 1) {
         m_marchMode = Software;
-    } else if (m_vrm->selectDevice(selection - 2)) {
+    } else if (m_vulkanManager->selectDevice(selection - 2)) {
         m_marchMode = Hardware;
     }
     else {
@@ -241,7 +241,7 @@ bool GameEngine::selectCustomScene()
 
 void GameEngine::marchHardware()
 {
-    m_vrm->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+    m_vulkanManager->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     Vec3 camPos = m_camera.getPosition();
     Vec3 camForward = m_camera.getForward();
     Vec3 camRight = m_camera.getRight();
@@ -274,7 +274,7 @@ void GameEngine::marchHardware()
     inputs.viewportSize[0]  = static_cast<float>(m_viewportSize.x);
     inputs.viewportSize[1]  = static_cast<float>(m_viewportSize.y);
 
-    auto result = m_vrm->renderFrame(inputs);
+    auto result = m_vulkanManager->renderFrame(inputs);
     m_pixelField.fromHardware(result);
 }
 

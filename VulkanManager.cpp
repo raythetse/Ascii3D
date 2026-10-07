@@ -1,6 +1,6 @@
-#include "VulkanRaymarcher.h"
+#include "VulkanManager.h"
 
-VulkanRaymarcher::VulkanRaymarcher()
+VulkanManager::VulkanManager()
 {
     // 1. Initialize Vulkan 1.3 Instance
     VkApplicationInfo appInfo{};
@@ -24,7 +24,7 @@ VulkanRaymarcher::VulkanRaymarcher()
     }
 }
 
-VulkanRaymarcher::~VulkanRaymarcher() {
+VulkanManager::~VulkanManager() {
     cleanup();
     if (m_Instance) {
         vkDestroyInstance(m_Instance, nullptr);
@@ -32,7 +32,7 @@ VulkanRaymarcher::~VulkanRaymarcher() {
     }
 }
 
-const std::vector<VkPhysicalDeviceProperties>& VulkanRaymarcher::enumerateDevices()
+const std::vector<VkPhysicalDeviceProperties>& VulkanManager::enumerateDevices()
 {
     if (m_pysicalDeviceProps.size() == 0) {
         uint32_t deviceCount = 0;
@@ -53,7 +53,7 @@ const std::vector<VkPhysicalDeviceProperties>& VulkanRaymarcher::enumerateDevice
     return m_pysicalDeviceProps;
 }
 
-bool VulkanRaymarcher::selectDevice(size_t selection) {
+bool VulkanManager::selectDevice(size_t selection) {
     cleanup();
 
     if (selection >= m_physicalDevices.size()) return false;
@@ -157,7 +157,7 @@ bool VulkanRaymarcher::selectDevice(size_t selection) {
     return true;
 }
 
-void VulkanRaymarcher::setShaderSource(std::string& shaderCode)
+void VulkanManager::setShaderSource(std::string& shaderCode)
 {
     std::vector<uint32_t> spirvBytes = compileDynamicGlslToSpirV(shaderCode);
 
@@ -192,7 +192,7 @@ void VulkanRaymarcher::setShaderSource(std::string& shaderCode)
     vkAllocateCommandBuffers(m_LogicalDevice, &cmdAllocInfo, &m_CommandBuffer);
 }
 
-void VulkanRaymarcher::setCanvasSize(uint32_t width, uint32_t height) {
+void VulkanManager::setCanvasSize(uint32_t width, uint32_t height) {
     if (width == m_Width && height == m_Height) return;
 
     cleanupResolutionResources();
@@ -277,7 +277,7 @@ void VulkanRaymarcher::setCanvasSize(uint32_t width, uint32_t height) {
     vkUpdateDescriptorSets(m_LogicalDevice, 1, &descriptorWrite, 0, nullptr);
 }
 
-uint32_t VulkanRaymarcher::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+uint32_t VulkanManager::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
     VkPhysicalDeviceMemoryProperties memProperties;
     vkGetPhysicalDeviceMemoryProperties(m_physicalDevices[m_deviceIndex], &memProperties);
 
@@ -289,7 +289,7 @@ uint32_t VulkanRaymarcher::findMemoryType(uint32_t typeFilter, VkMemoryPropertyF
     throw std::runtime_error("Failed to find suitable memory type!");
 }
 
-const PixelOutput* VulkanRaymarcher::renderFrame(const ShaderInputs& inputs) {
+const PixelOutput* VulkanManager::renderFrame(const ShaderInputs& inputs) {
     vkResetFences(m_LogicalDevice, 1, &m_RenderFence);
 
     VkCommandBufferBeginInfo beginInfo{};
@@ -375,7 +375,7 @@ const PixelOutput* VulkanRaymarcher::renderFrame(const ShaderInputs& inputs) {
     return m_MappedStagingData;
 }
 
-std::vector<uint32_t> VulkanRaymarcher::compileDynamicGlslToSpirV(const std::string& sourceCode) {
+std::vector<uint32_t> VulkanManager::compileDynamicGlslToSpirV(const std::string& sourceCode) {
     shaderc_compiler_t compiler = shaderc_compiler_initialize();
     shaderc_compile_options_t options = shaderc_compile_options_initialize();
     shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
@@ -396,7 +396,7 @@ std::vector<uint32_t> VulkanRaymarcher::compileDynamicGlslToSpirV(const std::str
     return spirv;
 }
 
-void VulkanRaymarcher::cleanupResolutionResources() {
+void VulkanManager::cleanupResolutionResources() {
     if (m_HostStagingMemory != VK_NULL_HANDLE) {
         vkUnmapMemory(m_LogicalDevice, m_HostStagingMemory);
         vkFreeMemory(m_LogicalDevice, m_HostStagingMemory, nullptr);
@@ -417,7 +417,7 @@ void VulkanRaymarcher::cleanupResolutionResources() {
     m_MappedStagingData = nullptr;
 }
 
-void VulkanRaymarcher::cleanupGeneralResources()
+void VulkanManager::cleanupGeneralResources()
 {
     if (m_RenderFence != VK_NULL_HANDLE) {
         vkDestroyFence(m_LogicalDevice, m_RenderFence, nullptr);
@@ -453,7 +453,7 @@ void VulkanRaymarcher::cleanupGeneralResources()
     }
 }
 
-void VulkanRaymarcher::cleanup() {
+void VulkanManager::cleanup() {
     cleanupResolutionResources();
     cleanupGeneralResources();
 }

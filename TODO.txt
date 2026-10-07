@@ -5,8 +5,6 @@ Required:
 - comment everything
 - consts wherever sensical
 - instructions for custom scene files
-- add ability to add comment to SDFs for output to files
-- make sure things that should be smart pointers are
 - move glsl code building into separate class from scene
 - add controls instructions to main menu screen
 - Add oscillate prop mods with end delays (remove linear/sine translates?)

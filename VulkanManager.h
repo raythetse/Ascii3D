@@ -32,14 +32,14 @@ struct ShaderInputs {
     float pad2;
 };
 
-class VulkanRaymarcher {
+class VulkanManager {
 public:
-    VulkanRaymarcher();
-    ~VulkanRaymarcher();
+    VulkanManager();
+    ~VulkanManager();
 
     // Prevents accidental copying of hardware resources
-    VulkanRaymarcher(const VulkanRaymarcher&) = delete;
-    VulkanRaymarcher& operator=(const VulkanRaymarcher&) = delete;
+    VulkanManager(const VulkanManager&) = delete;
+    VulkanManager& operator=(const VulkanManager&) = delete;
 
     const std::vector<VkPhysicalDeviceProperties>& enumerateDevices();
     bool selectDevice(size_t selection);

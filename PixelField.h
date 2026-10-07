@@ -3,7 +3,7 @@
 #include <vector>
 #include "SDFObject.h"
 #include "PixelSample.h"
-#include "VulkanRaymarcher.h"
+#include "VulkanManager.h"
 
 class PixelField
 {

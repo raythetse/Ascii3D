@@ -8,7 +8,7 @@
 #include "SDFObject.h"
 #include "Stopwatch.h"
 #include "SDFScene.h"
-#include "VulkanRaymarcher.h"
+#include "VulkanManager.h"
 
 class GameEngine
 {
@@ -32,7 +32,7 @@ private:
 	size_t m_updatePM{};
 	size_t m_marchPM{};
 	size_t m_renderPM{};
-	std::unique_ptr<VulkanRaymarcher> m_vrm;
+	std::unique_ptr<VulkanManager> m_vulkanManager;
 	MarchingMode m_marchMode{ Software };
 	PixelOutput* m_hardwareRenderResult = nullptr;
 

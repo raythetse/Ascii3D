@@ -163,9 +163,10 @@
     <ClCompile Include="ExclusionScene.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="GLSLMarcher.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
     <ClCompile Include="TestScene.cpp" />
-    <ClCompile Include="VulkanRaymarcher.cpp" />
+    <ClCompile Include="VulkanManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Mat2.cpp" />
@@ -199,8 +200,9 @@
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="GLSLMarcher.h" />
     <ClInclude Include="TestScene.h" />
-    <ClInclude Include="VulkanRaymarcher.h" />
+    <ClInclude Include="VulkanManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
