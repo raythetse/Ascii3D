@@ -21,42 +21,42 @@ bool PropertyModifierBase::getShaderCall(std::string& propName) const
     return false;
 }
 
-void PMOscillateSine::getShaderModCall(std::string& call) const
+void MODOscillateSine::getShaderModCall(std::string& call) const
 {
     call = std::format("oscillateSine({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
 }
 
-void PMOscillateSineV3::getShaderModCall(std::string& call) const
+void MODOscillateSineV3::getShaderModCall(std::string& call) const
 {
     call = std::format("oscillateSineV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void PMOscillateLinear::getShaderModCall(std::string& call) const
+void MODOscillateLinear::getShaderModCall(std::string& call) const
 {
     call = std::format("oscillateLinear({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
 }
 
-void PMOscillateLinearV3::getShaderModCall(std::string& call) const
+void MODOscillateLinearV3::getShaderModCall(std::string& call) const
 {
     call = std::format("oscillateLinearV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void PMOscillateLinearV2::getShaderModCall(std::string& call) const
+void MODOscillateLinearV2::getShaderModCall(std::string& call) const
 {
     call = std::format("oscillateLinearV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void PMOscillateSineV2::getShaderModCall(std::string & call) const
+void MODOscillateSineV2::getShaderModCall(std::string & call) const
 {
     call = std::format("oscillateSineV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void PMOscillateSineST::getShaderModCall(std::string& call) const
+void MODOscillateSineST::getShaderModCall(std::string& call) const
 {
     call = std::format("round(oscillateSine({}, {:.7f}, {:.7f}, {:.7f}, time))", m_initVal, m_period, m_amplitude, m_phase);
 }
 
-void PMOscillateLinearST::getShaderModCall(std::string& call) const
+void MODOscillateLinearST::getShaderModCall(std::string& call) const
 {
     call = std::format("round(oscillateLinear({}, {:.7f}, {:.7f}, {:.7f}, time))", m_initVal, m_period, m_amplitude, m_phase);
 }

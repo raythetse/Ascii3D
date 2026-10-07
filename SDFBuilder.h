@@ -24,9 +24,9 @@ public:
     std::unique_ptr<SDFObject> getBaseObject();
     std::vector<std::unique_ptr<LightSource>> getLights();
 	template <std::derived_from<SDFOperation> T, typename... Args>
-    SDFBuilder& pushOp(Args&&... args);
+    SDFBuilder& op(Args&&... args);
     template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
-    auto pushOp(ArgsT&&... argst);
+    auto comb(ArgsT&&... argst);
     SDFBuilder& addLightSource(Vec3 position = LightSource::DFLT_POSITION, double luminance = LightSource::DFLT_LUMINANCE, Color color = LightSource::DFLT_COLOR, double ambientPower = LightSource::DFLT_AMBIENTPOWER);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
@@ -50,13 +50,13 @@ SDFBuilder& SDFBuilder::pushSDFObj(Args && ...args)
 }
 
 template <std::derived_from<SDFOperation> T, typename... Args>
-SDFBuilder& SDFBuilder::pushOp(Args&&... args) {
+SDFBuilder& SDFBuilder::op(Args&&... args) {
     m_lastOp = m_objChain.back()->pushOperation<T>(std::forward<Args>(args)...);
     return *this;
 }
 
 template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
-auto SDFBuilder::pushOp(ArgsT&&... argst) {
+auto SDFBuilder::comb(ArgsT&&... argst) {
     return [this, ...captured_args = std::forward<ArgsT>(argst)](auto&&... argsu) mutable -> auto& {
         auto obj = std::make_unique<U>(std::move(captured_args)...);
         auto prev = m_objChain.back();

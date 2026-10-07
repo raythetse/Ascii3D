@@ -71,25 +71,25 @@ void PMPeriodic<T, U>::serializeInner(std::stringstream& ss) const
 	ss << " phase " << m_phase;
 }
 
-class PMOscillateSine : public PMPeriodic<double, double>
+class MODOscillateSine : public PMPeriodic<double, double>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateSine"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateSine(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+	MODOscillateSine(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](double* ptr, double initVal) -> void {
 		*ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateLinear : public PMPeriodic<double, double>
+class MODOscillateLinear : public PMPeriodic<double, double>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateLinear"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateLinear(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+	MODOscillateLinear(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](double* ptr, double initVal) -> void {
 		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
 		progress -= 0.5;
@@ -102,25 +102,25 @@ public:
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateSineV2 : public PMPeriodic<Vec2, Vec2>
+class MODOscillateSineV2 : public PMPeriodic<Vec2, Vec2>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateSineV2"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateSineV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
+	MODOscillateSineV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](Vec2* ptr, Vec2 initVal) -> void {
 		*ptr = m_initVal + ((Vec2{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateLinearV2 : public PMPeriodic<Vec2, Vec2>
+class MODOscillateLinearV2 : public PMPeriodic<Vec2, Vec2>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateLinearV2"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateLinearV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
+	MODOscillateLinearV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](Vec2* ptr, Vec2 initVal) -> void {
 		double gameTime = GameTimer::gameTime();
 		Vec2 progress{
@@ -137,25 +137,25 @@ public:
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateSineV3 : public PMPeriodic<Vec3, Vec3>
+class MODOscillateSineV3 : public PMPeriodic<Vec3, Vec3>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateSineV3"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateSineV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
+	MODOscillateSineV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateLinearV3 : public PMPeriodic<Vec3, Vec3>
+class MODOscillateLinearV3 : public PMPeriodic<Vec3, Vec3>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateLinearV3"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
+	MODOscillateLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
 		double gameTime = GameTimer::gameTime();
 		Vec3 progress{
@@ -173,13 +173,13 @@ public:
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateSineST : public PMPeriodic<size_t, double>
+class MODOscillateSineST : public PMPeriodic<size_t, double>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateSineST"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateSineST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+	MODOscillateSineST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](size_t* ptr, size_t initVal) -> void {
 		double dVal = static_cast<double>(m_initVal) + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 		dVal = dVal < 0.0 ? 0.0 : dVal;
@@ -187,13 +187,13 @@ public:
 	}, period, amplitude, phase) {}
 };
 
-class PMOscillateLinearST : public PMPeriodic<size_t, double>
+class MODOscillateLinearST : public PMPeriodic<size_t, double>
 {
 protected:
 	std::string getClassName() const override { return "PMOscillateLinearST"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	PMOscillateLinearST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+	MODOscillateLinearST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
 		: PMPeriodic(propName, [this](size_t* ptr, size_t initVal) -> void {
 		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
 		progress -= 0.5;

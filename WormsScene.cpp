@@ -8,63 +8,63 @@ WormsScene::WormsScene()
     Vec2 radii = SDFTorusSegmentXY::DFLT_RADII;
 
     add(SDFBuilder{}
-        .pushOp<COMBAdd, SDFPlane>(Vec3::Up, -2.0, Color::LightBlue)() //L1
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Backward * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Forward, rps)
-        .pushOp<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFPlane>(Vec3::Up, -2.0, Color::LightBlue)() //L1
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Backward * offset)
+        .op<OPRotateContinuous>(Vec3::Forward, rps)
+        .comb<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Right * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Left, rps, .75)
-        .pushOp<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Right * offset)
+        .op<OPRotateContinuous>(Vec3::Left, rps, .75)
+        .comb<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Forward * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Backward, rps)
-        .pushOp<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Forward * offset)
+        .op<OPRotateContinuous>(Vec3::Backward, rps)
+        .comb<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Left * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Right, rps, 0.25)
-        .pushOp<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Left * offset)
+        .op<OPRotateContinuous>(Vec3::Right, rps, 0.25)
+        .comb<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<OPTranslate>(Vec3::Down)
-        .pushOp<COMBSubtract, SDFBox>(Vec3{ 8.0, 2.0, 8.0 })() //L2
+        .op<OPTranslate>(Vec3::Down)
+        .comb<COMBSubtract, SDFBox>(Vec3{ 8.0, 2.0, 8.0 })() //L2
         .stepBack(0) //L0
 
-        .pushOp<COMBAdd, SDFObject>()() //L1
-        .pushOp<OPRotate>(Vec3::Up, 0.125)
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Backward * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Backward, rps)
-        .pushOp<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L1
+        .op<OPRotate>(Vec3::Up, 0.125)
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Backward * offset)
+        .op<OPRotateContinuous>(Vec3::Backward, rps)
+        .comb<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Right * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Right, rps, .25)
-        .pushOp<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Right * offset)
+        .op<OPRotateContinuous>(Vec3::Right, rps, .25)
+        .comb<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Forward * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Forward, rps)
-        .pushOp<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Forward * offset)
+        .op<OPRotateContinuous>(Vec3::Forward, rps)
+        .comb<COMBAdd, SDFTorusSegmentXY>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<COMBAdd, SDFObject>()() //L2
-        .pushOp<OPTranslate>(Vec3::Left * offset)
-        .pushOp<OPRotateContinuous>(Vec3::Left, rps, 0.75)
-        .pushOp<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
+        .comb<COMBAdd, SDFObject>()() //L2
+        .op<OPTranslate>(Vec3::Left * offset)
+        .op<OPRotateContinuous>(Vec3::Left, rps, 0.75)
+        .comb<COMBAdd, SDFTorusSegmentYZ>(radii, 0.5)() //L3
         .stepBack(2) //L1
 
-        .pushOp<OPTranslate>(Vec3::Up)
-        .pushOp<COMBSubtract, SDFBox>(Vec3{ 8.0, 2.0, 8.0 })() //L2
+        .op<OPTranslate>(Vec3::Up)
+        .comb<COMBSubtract, SDFBox>(Vec3{ 8.0, 2.0, 8.0 })() //L2
         .stepBack(0) //L0
 
         .addLightSource(Vec3{ 3.0, 5.0, -5.0 }, 50.0, Color::LightBlue, 0.25)
