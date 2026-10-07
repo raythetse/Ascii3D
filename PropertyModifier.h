@@ -14,8 +14,8 @@ protected:
 	virtual std::string getClassName() const = 0;
 	virtual void serializeInner(std::stringstream& ss) const = 0;
 	virtual void getShaderModCall(std::string& call) const = 0;
-public:
 	PropertyModifierBase(std::string_view propName) : m_propName(propName) {}
+public:
 	std::string_view propName() { return m_propName; }
 	virtual void BindToProp(void* ref) = 0;
 	virtual void update() = 0;

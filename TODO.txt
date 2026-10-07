@@ -1,11 +1,9 @@
 Required:
-- option for child objects to inherit parent color (if possible)
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
 - comment everything
 - consts wherever sensical
-- fix constructor accessibilities on abstracts
 - instructions for custom scene files
 - add ability to add comment to SDFs for output to files
 - make sure things that should be smart pointers are

@@ -11,9 +11,9 @@ protected:
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const {};
 	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override {};
-public:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj)
 		: SDFOperation(SDFOperationType::Combine), m_combineObj(std::move(combineObj)) {}
+public:
 	void setCombineObject(std::unique_ptr<SDFObject> combineObj);
 	void update() override;
 	void serialize(std::vector<std::string>& strVec, size_t level) const override;

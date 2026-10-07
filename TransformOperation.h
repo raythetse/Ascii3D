@@ -8,8 +8,8 @@ protected:
 	virtual std::string getClassName() const = 0;
 	virtual void innerInnerSerialize(std::stringstream& ss) const {};
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
-public:
 	TransformOperation() : SDFOperation(SDFOperationType::Transform) {};
+public:
 	void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override {};
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
