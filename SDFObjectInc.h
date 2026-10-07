@@ -1,3 +1,4 @@
 #pragma once
-#include "SDFObject.h"
+#include "SDF2DObject.h"
 #include "SDFAxisObject.h"
+#include "SDFObject.h"

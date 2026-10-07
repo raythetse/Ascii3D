@@ -68,9 +68,10 @@ float extrude2D(double pDotY, float d2D, float height) {
     return min(max(w.x, w.y), 0.0) + length(max(w, 0.0));
 }
 
-vec3 revolve2D(vec3 p, float radius)
+vec3 revolve2D(vec3 p, float radius, float rotations, vec2 rotateOffset)
 {
-    return vec3(length(vec2(p.x, p.y)) - radius, p.z, p.z);
+    p = vec3(length(vec2(p.x, p.y)) - radius, p.z, p.z);
+    return rotateVec3(p, vec3(0.0, 1.0, 0.0), rotations) - vec3(rotateOffset.x, 0.0, rotateOffset.y);
 }
 
 vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
@@ -272,9 +273,9 @@ float taperedCapsule(vec3 p, vec2 radii, float height) {
     return dot(q, vec2(a, b)) - radii.x;
 }
 
-float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude) // if not extrude, then revolve 
+float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset)
 {
-    if (operation == 1) p = revolve2D(p, magnitude);
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     vec2 dim2D = vec2(dimensions.x, -dimensions.y);
     vec2 p2D = vec2(p.x, p.z);
     p2D = abs(p2D);
@@ -284,8 +285,8 @@ float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude) // if not
     return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
-float equilateralTriangle(vec3 p, float base, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float equilateralTriangle(vec3 p, float base, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     float halfBase = base * 0.5;
     vec2 p2D = vec2(p.x, p.z - base * ROOT3 / 6.0 + halfBase);
     p2D.x = abs(p2D.x);
@@ -295,8 +296,8 @@ float equilateralTriangle(vec3 p, float base, int operation, float magnitude) {
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     vec2 p2D = vec2(abs(p.x), p.z);
     vec2 a = p2D - dimensions * clamp(dot(p2D, dimensions) / dot(dimensions, dimensions), 0.0, 1.0 );
     vec2 b = p2D - dimensions * vec2(clamp(p2D.x / dimensions.x, 0.0, 1.0 ), 1.0 );
@@ -306,8 +307,8 @@ float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude)
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float pieSlice(vec3 p, float sweep, float radius, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float pieSlice(vec3 p, float sweep, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     float angle = sweep * PI;
     vec2 sincos = vec2(sin(angle), cos(angle));
     vec2 p2D = vec2(p.x, p.z);
@@ -318,8 +319,8 @@ float pieSlice(vec3 p, float sweep, float radius, int operation, float magnitude
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float pentagon(vec3 p, float radius, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float pentagon(vec3 p, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     const vec3 k = vec3(0.809016994, 0.587785252, 0.726542528);
     vec2 p2D = vec2(abs(p.x), p.z);
     p2D -= 2.0 * min(dot(vec2(-k.x, k.y), p2D), 0.0) * vec2(-k.x, k.y);
@@ -329,8 +330,8 @@ float pentagon(vec3 p, float radius, int operation, float magnitude) {
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float hexagon(vec3 p, float radius, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float hexagon(vec3 p, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     const vec3 k = vec3(-0.866025404,0.5,0.577350269);
     vec2 p2D = vec2(abs(p.x), abs(p.z));
     p2D -= 2.0 * min(dot(k.xy, p2D), 0.0) * k.xy;
@@ -339,8 +340,8 @@ float hexagon(vec3 p, float radius, int operation, float magnitude) {
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float octagon(vec3 p, float radius, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float octagon(vec3 p, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     const vec3 k = vec3(-0.9238795325, 0.3826834323, 0.4142135623);
     vec2 p2D = vec2(abs(p.x), abs(p.z));
     p2D -= 2.0 * min(dot(vec2(k.x, k.y), p2D), 0.0) * vec2(k.x, k.y);
@@ -350,8 +351,8 @@ float octagon(vec3 p, float radius, int operation, float magnitude) {
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float star(vec3 p, int numPoints, float radius, float ratio, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float star(vec3 p, int numPoints, float radius, float ratio, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     float a = PI / numPoints;
     vec2 asincos = vec2(sin(a), cos(a));
     vec2 acs = vec2(asincos.y, asincos.x);
@@ -370,8 +371,8 @@ float star(vec3 p, int numPoints, float radius, float ratio, int operation, floa
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, float magnitude) {
-    if (operation == 1) p = revolve2D(p, magnitude);
+float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+    if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     vec2 p2D = vec2(p.x, p.z);
     vec2 e0 = point2 - point1, e1 = point3 - point2, e2 = point1 - point3;
     vec2 v0 = p2D - point1, v1 = p2D - point2, v2 = p2D - point3;

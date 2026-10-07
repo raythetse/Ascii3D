@@ -328,6 +328,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         Vec2 dimensions{ SDFRhombus::DFLT_DIMENSIONS };
         double magnitude{ SDFRhombus::DFLT_MAGNITUDE };
         int operation{ SDFRhombus::DFLT_OPERATION };
+        double revolveRotations{ SDFRhombus::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFRhombus::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -336,14 +338,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "dimensions") ss >> dimensions.x >> dimensions.y;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFRhombus>(static_cast<OP2D>(operation), dimensions, magnitude, color);
+        builder.pushSDFObj<SDFRhombus>(static_cast<OP2D>(operation), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFEquilateralTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double base{ SDFEquilateralTriangle::DFLT_BASE };
         double magnitude{ SDFEquilateralTriangle::DFLT_MAGNITUDE };
         int operation{ SDFEquilateralTriangle::DFLT_OPERATION };
+        double revolveRotations{ SDFEquilateralTriangle::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFEquilateralTriangle::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -352,14 +358,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "base") ss >> base;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFEquilateralTriangle>(static_cast<OP2D>(operation), base, magnitude, color);
+        builder.pushSDFObj<SDFEquilateralTriangle>(static_cast<OP2D>(operation), base, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFIsoscelesTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         Vec2 dimensions{ SDFIsoscelesTriangle::DFLT_DIMENSIONS };
         double magnitude{ SDFIsoscelesTriangle::DFLT_MAGNITUDE };
         int operation{ SDFIsoscelesTriangle::DFLT_OPERATION };
+        double revolveRotations{ SDFIsoscelesTriangle::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFIsoscelesTriangle::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -368,8 +378,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "dimensions") ss >> dimensions.x >> dimensions.y;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFIsoscelesTriangle>(static_cast<OP2D>(operation), dimensions, magnitude, color);
+        builder.pushSDFObj<SDFIsoscelesTriangle>(static_cast<OP2D>(operation), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFPieSlice", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -377,6 +389,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         double radius{ SDFPieSlice::DFLT_RADIUS };
         double magnitude{ SDFPieSlice::DFLT_MAGNITUDE };
         int operation{ SDFPieSlice::DFLT_OPERATION };
+        double revolveRotations{ SDFPieSlice::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFPieSlice::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -386,14 +400,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFPieSlice>(static_cast<OP2D>(operation), sweep, radius, magnitude, color);
+        builder.pushSDFObj<SDFPieSlice>(static_cast<OP2D>(operation), sweep, radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFPentagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFPentagon::DFLT_RADIUS };
         double magnitude{ SDFPentagon::DFLT_MAGNITUDE };
         int operation{ SDFPentagon::DFLT_OPERATION };
+        double revolveRotations{ SDFPentagon::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFPentagon::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -402,14 +420,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFPentagon>(static_cast<OP2D>(operation), radius, magnitude, color);
+        builder.pushSDFObj<SDFPentagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFHexagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFHexagon::DFLT_RADIUS };
         double magnitude{ SDFHexagon::DFLT_MAGNITUDE };
         int operation{ SDFHexagon::DFLT_OPERATION };
+        double revolveRotations{ SDFHexagon::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFHexagon::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -418,14 +440,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFHexagon>(static_cast<OP2D>(operation), radius, magnitude, color);
+        builder.pushSDFObj<SDFHexagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFOctagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFOctagon::DFLT_RADIUS };
         double magnitude{ SDFOctagon::DFLT_MAGNITUDE };
         int operation{ SDFOctagon::DFLT_OPERATION };
+        double revolveRotations{ SDFOctagon::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFOctagon::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -434,8 +460,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFOctagon>(static_cast<OP2D>(operation), radius, magnitude, color);
+        builder.pushSDFObj<SDFOctagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFStar", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -444,6 +472,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         double magnitude{ SDFStar::DFLT_MAGNITUDE };
         size_t numPoints{ SDFStar::DFLT_NUMPOINT };
         int operation{ SDFStar::DFLT_OPERATION };
+        double revolveRotations{ SDFStar::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFStar::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -454,8 +484,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "ratio") ss >> ratio;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFStar>(static_cast<OP2D>(operation), numPoints, radius, ratio, magnitude, color);
+        builder.pushSDFObj<SDFStar>(static_cast<OP2D>(operation), numPoints, radius, ratio, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -464,6 +496,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         Vec2 point2{ SDFTriangle::DFLT_POINT2 };
         Vec2 point3{ SDFTriangle::DFLT_POINT3 };
         int operation{ SDFTriangle::DFLT_OPERATION };
+        double revolveRotations{ SDFTriangle::DFLT_REVOLVEROTATIONS };
+        Vec2 revolveRotateOffset{ SDFTriangle::DFLT_REVOLVEROTATEOFFSET };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -474,8 +508,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "point3") ss >> point3.x >> point3.y;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
+            else if (param == "revolveRotations") ss >> revolveRotations;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
         }
-        builder.pushSDFObj<SDFTriangle>(static_cast<OP2D>(operation), point1, point2, point3, magnitude, color);
+        builder.pushSDFObj<SDFTriangle>(static_cast<OP2D>(operation), point1, point2, point3, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
 
     // Mirrors
@@ -818,7 +854,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.modOp<MODOscillateSine>(propName, period, amplitude, phase) : builder.modOp<MODOscillateSine>(propName, period, amplitude, phase);
+        boundOnObj ? builder.modObj<MODOscillateSine>(propName, period, amplitude, phase) : builder.modOp<MODOscillateSine>(propName, period, amplitude, phase);
     } },
     { "PMOscillateSineST", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
@@ -836,7 +872,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.modOp<MODOscillateSineST>(propName, period, amplitude, phase) : builder.modOp<MODOscillateSineST>(propName, period, amplitude, phase);
+        boundOnObj ? builder.modObj<MODOscillateSineST>(propName, period, amplitude, phase) : builder.modOp<MODOscillateSineST>(propName, period, amplitude, phase);
     } },
     { "PMOscillateLinearST", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
@@ -854,7 +890,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.modOp<MODOscillateLinearST>(propName, period, amplitude, phase) : builder.modOp<MODOscillateLinearST>(propName, period, amplitude, phase);
+        boundOnObj ? builder.modObj<MODOscillateLinearST>(propName, period, amplitude, phase) : builder.modOp<MODOscillateLinearST>(propName, period, amplitude, phase);
     } },
     { "PMOscillateSineV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;

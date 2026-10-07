@@ -16,6 +16,7 @@ protected:
 public:
 	void setCombineObject(std::unique_ptr<SDFObject> combineObj);
 	void update() override;
+	virtual void resetMods() override;
 	void serialize(std::vector<std::string>& strVec, size_t level) const override;
 	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Vec3 colorIn, Vec3* colorOut);

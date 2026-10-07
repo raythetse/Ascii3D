@@ -3,7 +3,7 @@
 
 PerfMonitor::PerfMonitor(size_t sampleSize) : m_sampleSize(sampleSize < 1 ? 1 : sampleSize) {}
 
-size_t PerfMonitor::add(std::string monitorName, Unit unit)
+size_t PerfMonitor::add(std::string monitorName, TimeUnit unit)
 {
     m_stopwatchs.push_back({});
     m_names.push_back(monitorName);

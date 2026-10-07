@@ -168,6 +168,12 @@
     <ClCompile Include="SDFAxisObject.cpp">
       <Filter>Source Files\SDF\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="SDF2DObject.h">
+      <Filter>Header Files\SDF\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SDF2DObject.cpp">
+      <Filter>Source Files\SDF\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">

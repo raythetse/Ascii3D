@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <utility>
+#include "Enumerations.h"
 #include "PixelField.h"
 #include "PerfMonitor.h"
 #include "RayMarcher.h"
@@ -12,10 +13,6 @@
 
 class GameEngine
 {
-	enum MarchingMode {
-		Software,
-		Hardware,
-	};
 private:
 	std::pair<size_t, size_t> m_dimensions{ 120, 40 };
 	Vec2 m_viewportSize{ 2.0, 1.0 };
@@ -33,7 +30,7 @@ private:
 	size_t m_marchPM{};
 	size_t m_renderPM{};
 	std::unique_ptr<VulkanManager> m_vulkanManager;
-	MarchingMode m_marchMode{ Software };
+	MarchingMode m_marchMode{ MARCHINGMODE_SOFTWARE };
 	PixelOutput* m_hardwareRenderResult = nullptr;
 
 	void resizeCallback(size_t width, size_t height);
@@ -42,13 +39,13 @@ private:
 	void selectBuiltInScene(bool noCustom);
 	bool selectCustomScene();
 	void marchHardware();
-
-public:
-	GameEngine(double maxSceneDepth, double tolerance);
-	void run();
 	bool handleInput();
 	void update();
 	void march();
 	void render();
+
+public:
+	GameEngine(double maxSceneDepth, double tolerance);
+	void run();
 };
 

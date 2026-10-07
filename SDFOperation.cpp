@@ -32,11 +32,15 @@ void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Colo
 	}
 }
 
-void SDFOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+void SDFOperation::resetMods()
 {
 	for (auto& propMod : m_propMods) {
 		propMod->resetProperty();
 	}
+}
+
+void SDFOperation::serialize(std::vector<std::string>& strVec, size_t level) const
+{
 	innerSerialize(strVec, level);
 	for (auto& propMod : m_propMods) {
 		propMod->serialize(strVec, level, false);

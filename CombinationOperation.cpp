@@ -16,6 +16,14 @@ void CombinationOperation::update()
 	m_combineObj->update();
 }
 
+void CombinationOperation::resetMods()
+{
+	for (auto& propMod : m_propMods) {
+		propMod->resetProperty();
+	}
+	m_combineObj->resetMods();
+}
+
 void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t level) const
 {
 	for (auto& propMod : m_propMods) {

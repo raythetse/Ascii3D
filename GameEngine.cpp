@@ -32,7 +32,7 @@ GameEngine::GameEngine(double sceneDepth, double tolerance)
         m_pixelField.setSize(m_dimensions.first, m_dimensions.second);
         m_viewportSize = m_camera.setViewportSize({ static_cast<double>(m_dimensions.first), static_cast<double>(m_dimensions.second) });
 
-        if (m_marchMode == Hardware && m_vulkanManager) m_vulkanManager->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
+        if (m_marchMode == MARCHINGMODE_HARDWARE && m_vulkanManager) m_vulkanManager->setCanvasSize(static_cast<uint32_t>(m_dimensions.first), static_cast<uint32_t>(m_dimensions.second));
     });
     GameTimer::reset();
 }
@@ -46,7 +46,7 @@ void GameEngine::run()
 
         while (true) {
             if (!selectSceneType()) break;
-            if (m_marchMode == Hardware) {
+            if (m_marchMode == MARCHINGMODE_HARDWARE) {
                 std::string shaderCode = m_scene->buildComputeShader();
                 FileHandler::saveShader(shaderCode, "ShaderSource.glsl");
                 m_vulkanManager->setShaderSource(shaderCode);
@@ -87,7 +87,7 @@ void GameEngine::update()
 {
     m_perfMonitor.sample(m_updatePM, [this]() {
         m_camera.update();
-        if (m_marchMode == Software) m_scene->update();
+        if (m_marchMode == MARCHINGMODE_SOFTWARE) m_scene->update();
     });
 }
 
@@ -96,10 +96,10 @@ void GameEngine::march()
     m_perfMonitor.sample(m_marchPM, [this]() {
         switch (m_marchMode)
         {
-        case GameEngine::Software:
+        case MARCHINGMODE_SOFTWARE:
             m_rayMarcher.march(m_scene.get(), m_pixelField, m_camera);
             break;
-        case GameEngine::Hardware:
+        case MARCHINGMODE_HARDWARE:
             marchHardware();
             break;
         }
@@ -132,13 +132,13 @@ bool GameEngine::selectRenderer()
     if (selection == deviceProps.size() + 2) return false;
 
     if (selection == 1) {
-        m_marchMode = Software;
+        m_marchMode = MARCHINGMODE_SOFTWARE;
     } else if (m_vulkanManager->selectDevice(selection - 2)) {
-        m_marchMode = Hardware;
+        m_marchMode = MARCHINGMODE_HARDWARE;
     }
     else {
         std::cout << "\n!!! Error configuring selected device. Falling back to Software mode !!!\n";
-        m_marchMode = Software;
+        m_marchMode = MARCHINGMODE_SOFTWARE;
     }
 
     return true;

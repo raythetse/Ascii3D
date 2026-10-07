@@ -1,0 +1,9 @@
+SDFObject color 1 1 1
+	COMBAdd
+	SDFStar color 1 1 1 magnitude 1 operation 1 revolveRotations 0 revolveRotateOffset 00 numPoints 5 radius 0.5 ratio 0.5
+		PMOscillateSineV2 boundOnObj 1 propName revolveRotateOffset period 8 8 amplitude 1 1 phase 0 0
+		PMOscillateSine boundOnObj 1 propName revolveRotations period 13.789 amplitude 1 phase 0
+		stepBack
+	stepBack
+LightSource position 5 8 -5 luminance 100 color 1 1 1 ambientPower 0.2
+end

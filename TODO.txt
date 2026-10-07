@@ -25,6 +25,7 @@ Optional:
 - Input controls for prop mods?
 - improve ambient light, occlusion, and shadow functions
 - investigate rhombus axis issue
+- pre-revolve rotations of 2D objects?
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers
