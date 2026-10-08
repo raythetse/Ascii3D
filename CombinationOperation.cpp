@@ -161,7 +161,7 @@ void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level)
 	strVec.push_back(ss.str());
 }
 
-void SmoothCombination::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void SmoothCombination::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "smoothing") {
 		propMod->BindToProp(&m_smoothing);

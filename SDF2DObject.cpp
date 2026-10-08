@@ -20,7 +20,7 @@ double SDF2DObject::signedDistanceInner(Vec3 p) const
     return m_operation == OP2D_REVOLVE ? d2D : extrude2D(p.y, d2D, m_magnitude);
 }
 
-void SDF2DObject::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void SDF2DObject::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "magnitude") {
         propMod->BindToProp(&m_magnitude);
@@ -63,7 +63,7 @@ double SDFRhombus::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFRhombus::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFRhombus::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -101,7 +101,7 @@ double SDFEquilateralTriangle::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
 }
 
-void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -139,7 +139,7 @@ double SDFIsoscelesTriangle::signedDistanceInnerInner(Vec3 p) const
     return std::sqrt(d.x) * (d.y >= 0.0 ? -1.0 : 1.0);
 }
 
-void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -190,7 +190,7 @@ double SDFTriangle::signedDistanceInnerInner(Vec3 p) const
     return -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFTriangle::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -238,7 +238,7 @@ double SDFPieSlice::signedDistanceInnerInner(Vec3 p) const
     return std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
 }
 
-void SDFPieSlice::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFPieSlice::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -280,7 +280,7 @@ double SDFPentagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFPentagon::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFPentagon::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -317,7 +317,7 @@ double SDFHexagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFHexagon::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFHexagon::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -355,7 +355,7 @@ double SDFOctagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFOctagon::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFOctagon::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);
@@ -404,7 +404,7 @@ double SDFStar::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFStar::bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod)
+void SDFStar::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProp(&m_color);

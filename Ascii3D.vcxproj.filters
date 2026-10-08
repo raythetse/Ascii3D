@@ -61,6 +61,12 @@
     <Filter Include="Header Files\SDF\Objects">
       <UniqueIdentifier>{1efbf0df-5e89-4916-90af-43e34d6c7cf4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Modifiers">
+      <UniqueIdentifier>{9c99e063-e19d-4fa5-9c1d-53cab87b22a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Modifiers">
+      <UniqueIdentifier>{ce458252-76b0-4e43-ac82-ad9aa71ea583}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -109,9 +115,6 @@
       <Filter>Source Files\Operations</Filter>
     </ClCompile>
     <ClCompile Include="DomainOperation.cpp">
-      <Filter>Source Files\Operations</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertyModifier.cpp">
       <Filter>Source Files\Operations</Filter>
     </ClCompile>
     <ClCompile Include="ResurfaceOperation.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="SDF2DObject.cpp">
       <Filter>Source Files\SDF\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Modifier.cpp">
+      <Filter>Source Files\Modifiers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +242,6 @@
     <ClInclude Include="GameTimer.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="PropertyModifier.h">
-      <Filter>Header Files\Operations</Filter>
-    </ClInclude>
     <ClInclude Include="SDFOperation.h">
       <Filter>Header Files\Operations</Filter>
     </ClInclude>
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="Enumerations.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Modifier.h">
+      <Filter>Header Files\Modifiers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

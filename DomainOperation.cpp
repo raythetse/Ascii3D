@@ -10,7 +10,7 @@ void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t le
 	strVec.push_back(ss.str());
 }
 
-void DomainOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void DomainOperation::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "spacing") {
 		propMod->BindToProp(&m_spacing);
@@ -153,7 +153,7 @@ void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level, size
 	ss << "\tp" << level << " -= pmVec30 * clamp(round(p" << level << " / pmVec30), -pmVec31, pmVec31);\n\n";
 }
 
-void OPRepeatLimited::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRepeatLimited::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "spacing") {
 		propMod->BindToProp(&m_spacing);

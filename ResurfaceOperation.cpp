@@ -1,7 +1,7 @@
 #include "ResurfaceOperation.h"
 #include <sstream>
 
-void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "magnitude") {
 		propMod->BindToProp(&m_magnitude);

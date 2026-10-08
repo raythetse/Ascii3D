@@ -5,10 +5,11 @@
 #include <vector>
 #include "Enumerations.h"
 #include "Mat3.h"
+#include "MathFunctions.h"
+#include "Modifier.h"
+#include "SDFOperation.h"
 #include "Vec2.h"
 #include "Vec3.h"
-#include "MathFunctions.h"
-#include "SDFOperation.h"
 
 class SDFOperation;
 
@@ -20,7 +21,7 @@ class SDFObject
 protected:
 	Color m_color{};
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
-	std::vector<std::unique_ptr<PropertyModifierBase>> m_propMods{};
+	std::vector<std::unique_ptr<Modifier>> m_propMods{};
 	virtual double signedDistanceInner(Vec3 p) const;
 	virtual void serializeInner(std::stringstream& ss) const {};
 	virtual std::string getClassName() const { return "SDFObject"; }
@@ -42,7 +43,7 @@ public:
 	void resetMods();
 	virtual void serialize(std::vector<std::string> &strVec, size_t level) const;
 	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel);
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod);
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod);
 };
 
 template <typename T, typename... Args>
@@ -67,7 +68,7 @@ public:
 	SDFPlane(Vec3 normal = DFLT_NORMAL, double offset = DFLT_OFFSET, Color color = Color::White)
 		: SDFObject{ color }, m_normal(normal), m_offset(offset) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFBox : public SDFObject
@@ -84,7 +85,7 @@ public:
 	SDFBox(Vec3 dimensions = DFLT_DIMENSIONS, Color color = Color::White)
 		: SDFObject(color), m_dimensions(dimensions) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFBoxFrame : public SDFObject
@@ -103,7 +104,7 @@ public:
 	SDFBoxFrame(Vec3 dimensions = DFLT_DIMENSIONS, double edgeThickness = DFLT_EDGETHICKNESS, Color color = Color::White)
 		: SDFObject(color), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFSphere : public SDFObject
@@ -120,7 +121,7 @@ public:
 	SDFSphere(double radius = DFLT_RADIUS, Color color = Color::White)
 		: SDFObject(color), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFCrystal : public SDFObject
@@ -137,7 +138,7 @@ public:
 	SDFCrystal(double edgeLength = DFLT_EDGELENGTH, Color color = Color::White)
 		: SDFObject(color), m_edgeLength(edgeLength) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFCone : public SDFObject
@@ -156,7 +157,7 @@ public:
 	SDFCone(double height = DFLT_HEIGHT, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_height(height), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFSolidAngle : public SDFObject
@@ -175,7 +176,7 @@ public:
 	SDFSolidAngle(double radius = DFLT_RADIUS, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_radius(radius), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFEllipsoid : public SDFObject
@@ -192,5 +193,5 @@ public:
 	SDFEllipsoid(Vec3 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };

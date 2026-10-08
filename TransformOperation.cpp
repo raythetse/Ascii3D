@@ -110,7 +110,7 @@ void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << " -= pmVec30; \n\n";
 }
 
-void OPTranslate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPTranslate::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "translation") {
 		propMod->BindToProp(&m_translation);
@@ -146,7 +146,7 @@ void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size
 	ss << "\tp" << level << " -= pmVec30 * pmFloat0 * sin(TAU * (pmFloat1 + time / pmFloat2));\n\n";
 }
 
-void OPTranslateSine::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPTranslateSine::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "amplitude") {
 		propMod->BindToProp(&m_amplitude);
@@ -212,7 +212,7 @@ void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, si
 	ss << "\tp" << level << " -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);\n\n";
 }
 
-void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "translation") {
 		propMod->BindToProp(&m_translation);
@@ -266,7 +266,7 @@ void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, siz
 	ss << "\tp" << level << ".y -= pmFloat0;\n\n";
 }
 
-void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "cubeHeight") {
 		propMod->BindToProp(&m_cubeHeight);
@@ -307,7 +307,7 @@ void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& max
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
-void OPRotate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotate::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -348,7 +348,7 @@ void OPRotateContinuous::getShaderOpCalls(std::stringstream& ss, size_t level, s
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, time * pmFloat0 + pmFloat1);\n\n";
 }
 
-void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -411,7 +411,7 @@ void OPRotateScan::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 	ss << "\tp" << level << " = rotateScan(p" << level << ", pmVec30, pmVec20, pmVec21, pmFloat0, pmFloat1, time);\n\n";
 }
 
-void OPRotateScan::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotateScan::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -469,7 +469,7 @@ void OPRotateDelay::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tp" << level << " = rotateDelay(p" << level << ", pmVec30, pmFloat0, pmFloat1, pmFloat2, pmVec31.x, time);\n\n";
 }
 
-void OPRotateDelay::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPRotateDelay::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "axis") {
 		propMod->BindToProp(&m_axis);
@@ -536,7 +536,7 @@ void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 	++numRollers;
 }
 
-void OPCubeRoller::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPCubeRoller::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "axes") {
 		propMod->BindToProp(&m_axes);
@@ -563,7 +563,7 @@ void Elongate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " offset " << m_offset;
 }
 
-void Elongate::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void Elongate::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "length") {
 		propMod->BindToProp(&m_length);
@@ -643,7 +643,7 @@ void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tp" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n\n";
 }
 
-void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod)
+void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 {
 	if (propMod->propName() == "lengths") {
 		propMod->BindToProp(&m_lengths);

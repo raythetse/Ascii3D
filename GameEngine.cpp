@@ -9,7 +9,7 @@
 #include "GameTimer.h"
 #include "InputManager.h"
 #include "MathFunctions.h"
-#include "PropertyModifier.h"
+#include "Modifier.h"
 #include "SDFBuilder.h"
 #include "SDFOperationInc.h"
 
@@ -204,7 +204,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                     m_scene = std::make_unique<WormsScene>();
                     return;
                 case 123:
-                    m_scene = std::make_unique<TestScene>();
+                    m_scene = std::make_unique<BartScene>();
                     return;
                 }
             }

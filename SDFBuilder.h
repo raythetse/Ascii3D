@@ -31,10 +31,10 @@ public:
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     template <typename T, typename... Args>
-        requires (std::is_base_of_v<PropertyModifierBase, T>)
+        requires (std::is_base_of_v<Modifier, T>)
     SDFBuilder& modOp(Args&&... args);
     template <typename T, typename... Args>
-        requires (std::is_base_of_v<PropertyModifierBase, T>)
+        requires (std::is_base_of_v<Modifier, T>)
     SDFBuilder& modObj(Args&&... args);
     void loadSerialized(std::vector<std::string>& strVec);
 };
@@ -70,7 +70,7 @@ auto SDFBuilder::comb(ArgsT&&... argst) {
 }
 
 template <typename T, typename... Args>
-    requires (std::is_base_of_v<PropertyModifierBase, T>)
+    requires (std::is_base_of_v<Modifier, T>)
 SDFBuilder& SDFBuilder::modOp(Args&&... args) {
     if (m_lastOp) {
         m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
@@ -79,7 +79,7 @@ SDFBuilder& SDFBuilder::modOp(Args&&... args) {
 }
 
 template <typename T, typename... Args>
-    requires (std::is_base_of_v<PropertyModifierBase, T>)
+    requires (std::is_base_of_v<Modifier, T>)
 SDFBuilder& SDFBuilder::modObj(Args&&... args) {
     m_objChain.back()->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     return *this;

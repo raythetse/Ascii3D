@@ -21,11 +21,11 @@ protected:
 		: SDFObject(color), m_operation(operation), m_magnitude(magnitude), m_revolveRotations(revolveRotations), m_revolveRotateOffset(revolveRotateOffset) {}
 	virtual double signedDistanceInnerInner(Vec3 p) const = 0;
 	virtual void serializeInnerInner(std::stringstream& ss) const = 0;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) = 0;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) = 0;
 public:
 	void serializeInner(std::stringstream& ss) const override;
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFRhombus : public SDF2DObject
@@ -43,7 +43,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_dimensions(dimensions) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFEquilateralTriangle : public SDF2DObject
@@ -63,7 +63,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_base(base) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFIsoscelesTriangle : public SDF2DObject
@@ -83,7 +83,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_dimensions(dimensions) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFTriangle : public SDF2DObject
@@ -107,7 +107,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_point1(point1), m_point2(point2), m_point3(point3) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFPieSlice : public SDF2DObject
@@ -127,7 +127,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_sweep(sweep), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFPentagon : public SDF2DObject
@@ -147,7 +147,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFHexagon : public SDF2DObject
@@ -167,7 +167,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFOctagon : public SDF2DObject
@@ -187,7 +187,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
 
 class SDFStar : public SDF2DObject
@@ -211,5 +211,5 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindPropertyModifierInner(std::unique_ptr<PropertyModifierBase> propMod) override;
+	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };
