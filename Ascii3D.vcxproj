@@ -236,9 +236,6 @@
   <ItemGroup>
     <Text Include="TODO.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="raymacher.comp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

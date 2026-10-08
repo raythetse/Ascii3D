@@ -23,7 +23,7 @@ protected:
 public:
 	std::string_view propName() { return m_propName; }
 	virtual void BindToProp(void* ref) = 0;
-	virtual void update() = 0;
+	virtual void update() const = 0;
 	virtual void resetProperty() const = 0;
 	void resetMods();
 	void serialize(std::vector<std::string>& strVec, size_t level, bool boundOnObj);
@@ -33,16 +33,13 @@ public:
 template <typename T>
 class ModifierTemplate : public Modifier
 {
-private:
-	std::function<void(T*, T)> m_updateFunction;
 protected:
 	T* m_ptr{};
 	T m_initVal{};
 public:
-	ModifierTemplate(std::string_view propName, std::function<void(T*, T)> updateFunction)
-		: Modifier(propName), m_updateFunction(updateFunction) {}
+	ModifierTemplate(std::string_view propName)
+		: Modifier(propName) {}
 	void BindToProp(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
-	void update() override { m_updateFunction(m_ptr, m_initVal); }
 	void resetProperty() const override;
 };
 
@@ -65,8 +62,8 @@ protected:
 	U m_phase{};
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	MODWave(std::string_view propName, std::function<void(T*, T)> updateFunction, U period, U amplitude, U phase)
-		: ModifierTemplate<T>(propName, updateFunction), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+	MODWave(std::string_view propName, U period, U amplitude, U phase)
+		: ModifierTemplate<T>(propName), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };
 
 template <typename T, typename U>
@@ -84,9 +81,8 @@ protected:
 	virtual void getShaderModCall(std::string& call) const override;
 public:
 	MODWaveSmooth(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
-		: MODWave(propName, [this](double* ptr, double initVal) -> void {
-		*ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
-	}, period, amplitude, phase) {}
+		: MODWave(propName, period, amplitude, phase) {}
+	virtual void update() const override;
 };
 
 class MODWaveSmoothV2 : public MODWave<Vec2, Vec2>
@@ -96,9 +92,8 @@ protected:
 	virtual void getShaderModCall(std::string& call) const override;
 public:
 	MODWaveSmoothV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
-		: MODWave(propName, [this](Vec2* ptr, Vec2 initVal) -> void {
-		*ptr = m_initVal + ((Vec2{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
-	}, period, amplitude, phase) {}
+		: MODWave(propName, period, amplitude, phase) {}
+	virtual void update() const override;
 };
 
 class MODWaveSmoothV3 : public MODWave<Vec3, Vec3>
@@ -108,9 +103,8 @@ protected:
 	virtual void getShaderModCall(std::string& call) const override;
 public:
 	MODWaveSmoothV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
-		: MODWave(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
-		*ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
-	}, period, amplitude, phase) {}
+		: MODWave(propName, period, amplitude, phase) {}
+	virtual void update() const override;
 };
 
 class MODWaveLinear : public MODWave<double, double>
@@ -120,16 +114,8 @@ protected:
 	virtual void getShaderModCall(std::string& call) const override;
 public:
 	MODWaveLinear(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
-		: MODWave(propName, [this](double* ptr, double initVal) -> void {
-		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
-		progress -= 0.5;
-		progress *= 2.0;
-		progress = abs(progress);
-		progress -= 0.5;
-		progress *= 2.0;
-
-		*ptr = m_initVal + progress * m_amplitude;
-	}, period, amplitude, phase) {}
+		: MODWave(propName, period, amplitude, phase) {}
+	virtual void update() const override;
 };
 
 class MODWaveLinearV2 : public MODWave<Vec2, Vec2>
@@ -139,20 +125,8 @@ protected:
 	virtual void getShaderModCall(std::string& call) const override;
 public:
 	MODWaveLinearV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
-		: MODWave(propName, [this](Vec2* ptr, Vec2 initVal) -> void {
-		double gameTime = GameTimer::gameTime();
-		Vec2 progress{
-			fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
-			fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y
-		};
-		progress -= 0.5;
-		progress *= 2.0;
-		progress = progress.abs();
-		progress -= 0.5;
-		progress *= 2.0;
-
-		*ptr = m_initVal + progress * m_amplitude;
-	}, period, amplitude, phase) {}
+		: MODWave(propName, period, amplitude, phase) {}
+	virtual void update() const override;
 };
 
 class MODWaveLinearV3 : public MODWave<Vec3, Vec3>
@@ -162,19 +136,6 @@ protected:
 	virtual void getShaderModCall(std::string& call) const override;
 public:
 	MODWaveLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
-		: MODWave(propName, [this](Vec3* ptr, Vec3 initVal) -> void {
-		double gameTime = GameTimer::gameTime();
-		Vec3 progress{
-			fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
-			fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y,
-			fmod(0.25 * m_period.z + (gameTime + (m_phase.z * m_period.z)), m_period.z) / m_period.z
-		};
-		progress -= 0.5;
-		progress *= 2.0;
-		progress = progress.abs();
-		progress -= 0.5;
-		progress *= 2.0;
-
-		*ptr = m_initVal + progress * m_amplitude;
-	}, period, amplitude, phase) {}
+		: MODWave(propName, period, amplitude, phase) {}
+	virtual void update() const override;
 };

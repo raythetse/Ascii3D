@@ -300,9 +300,4 @@
   <ItemGroup>
     <Text Include="TODO.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="raymacher.comp">
-      <Filter>Source Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>
