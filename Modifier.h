@@ -178,38 +178,3 @@ public:
 		*ptr = m_initVal + progress * m_amplitude;
 	}, period, amplitude, phase) {}
 };
-
-class MODWaveSmoothST : public MODWave<size_t, double>
-{
-protected:
-	std::string getClassName() const override { return "MODWaveSmoothST"; }
-	virtual void getShaderModCall(std::string& call) const override;
-public:
-	MODWaveSmoothST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
-		: MODWave(propName, [this](size_t* ptr, size_t initVal) -> void {
-		double dVal = static_cast<double>(m_initVal) + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
-		dVal = dVal < 0.0 ? 0.0 : dVal;
-		*ptr = static_cast<size_t>(std::round(dVal));
-	}, period, amplitude, phase) {}
-};
-
-class MODWaveLinearST : public MODWave<size_t, double>
-{
-protected:
-	std::string getClassName() const override { return "MODWaveLinearST"; }
-	virtual void getShaderModCall(std::string& call) const override;
-public:
-	MODWaveLinearST(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
-		: MODWave(propName, [this](size_t* ptr, size_t initVal) -> void {
-		double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
-		progress -= 0.5;
-		progress *= 2.0;
-		progress = abs(progress);
-		progress -= 0.5;
-		progress *= 2.0;
-
-		double dVal = static_cast<double>(m_initVal) + progress * m_amplitude;
-		dVal = dVal < 0.0 ? 0.0 : dVal;
-		*ptr = static_cast<size_t>(std::round(dVal));
-	}, period, amplitude, phase) {}
-};

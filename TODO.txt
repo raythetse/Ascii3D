@@ -1,5 +1,6 @@
 Required:
 - unidirectional prop mods?
+- object chain copying/merging for SDF branch reuse (shared_ptrs for SDFObjects?)
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
@@ -18,7 +19,6 @@ Optional:
 - bounding boxes/spheres/capsules for efficiency
 - change repeat operations to not rely on vec3
 - transparency/reflection
-- object chain copying/merging for SDF branch reuse (shared_ptrs for SDFObjects?)
 - error handling on file loading
 - Input controls for prop mods?
 - improve ambient light, occlusion, and shadow functions

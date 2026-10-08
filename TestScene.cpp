@@ -9,10 +9,10 @@ TestScene::TestScene()
 	};
 
 	using in = std::string;
-	add(SDFBuilder{}.loadSerialized(serial)
-		.comb<COMBAdd, SDFTriangle>(OP2D_REVOLVE)()
-		.modObj<MODWaveSmoothV2>("revolveRotateOffset", 8.0)
-		.modObj<MODWaveSmooth>("revolveRotations", 13.789)
+	add(SDFBuilder{}
+		.op<OPMirrorX>().op<OPRotate>(Vec3::Up, 0.25).op<OPMirrorX>()
+		.comb<COMBAdd, SDFStar>(SDFStar::DFLT_OPERATION, 18)()
+		.modObj<MODWaveSmooth>("numPoints", 16.0, 16.0)
 		.addLightSource(Vec3{ 5.0, 8.0, -5.0 }, 100.0, Color::White)
 	);
 }

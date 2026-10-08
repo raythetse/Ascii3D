@@ -344,7 +344,7 @@ float octagon(vec3 p, float radius, int operation, float magnitude, float revolv
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float star(vec3 p, int numPoints, float radius, float ratio, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+float star(vec3 p, float numPoints, float radius, float ratio, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
     if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     float a = PI / numPoints;
     vec2 asincos = vec2(sin(a), cos(a));
@@ -393,45 +393,34 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	color0 = pmVec30;
 
+	// OPMirrorX //
+	p0.x = abs(p0.x);
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.250000;
+	p0 = rotateVec3(p0, pmVec30, pmFloat0);
+
+	// OPMirrorX //
+	p0.x = abs(p0.x);
+
 	// SDFObject //
-	pmVec30 = vec3(0.5000000, 1.0000000, 0.5000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	vec3 p1;
 	float d1 = FLOAT_MAX;
 	vec3 color1;
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
-	// SDFPlane //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	d1 = dot(p1, pmVec30) - 0;
-
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	vec3 p2;
-	float d2 = FLOAT_MAX;
-	vec3 color2;
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = pmVec30;
-	// SDFTriangle //
+	// SDFStar //
 	pmFloat0 = 1.000000;
-	pmVec20 = vec2(-0.5000000, -0.5000000);
-	pmVec21 = vec2(0.0000000, 0.5000000);
-	pmVec22 = vec2(0.5000000, 0.0000000);
-	pmFloat1 = oscillateSine(0.0000000, 13.7890000, 1.0000000, 0.0000000, time);
-	pmVec22 = oscillateSineV2(vec2(0.0000000, 0.0000000), vec2(8.0000000, 8.0000000), vec2(1.0000000, 1.0000000), vec2(0.0000000, 0.0000000), time);
-	d2 = triangle(p2, pmVec20, pmVec21, pmVec22, 1, pmFloat0, pmFloat1, pmVec22);
+	pmFloat1 = 0.500000;
+	pmFloat2 = 0.500000;
+	pmVec20.x = oscillateSine(18.0000000, 16.0000000, 16.0000000, 0.0000000, time);
+	pmVec20.y = 0.000000;
+	pmVec22 = vec2(0.0000000, 0.0000000);
+	d1 = star(p1, pmVec20.x, pmFloat1, pmFloat2, 0, pmFloat0, pmVec20.y, pmVec22);
 
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-	else if (false) {
-		color1 = color2; 
-	}
 
 	// COMBAdd //
 	if (d1 < d0) {

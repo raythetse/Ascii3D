@@ -50,13 +50,3 @@ void MODWaveSmoothV2::getShaderModCall(std::string & call) const
 {
     call = std::format("oscillateSineV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
-
-void MODWaveSmoothST::getShaderModCall(std::string& call) const
-{
-    call = std::format("round(oscillateSine({}, {:.7f}, {:.7f}, {:.7f}, time))", m_initVal, m_period, m_amplitude, m_phase);
-}
-
-void MODWaveLinearST::getShaderModCall(std::string& call) const
-{
-    call = std::format("round(oscillateLinear({}, {:.7f}, {:.7f}, {:.7f}, time))", m_initVal, m_period, m_amplitude, m_phase);
-}

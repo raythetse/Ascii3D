@@ -857,42 +857,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         boundOnObj ? builder.modObj<MODWaveSmooth>(propName, period, amplitude, phase) : builder.modOp<MODWaveSmooth>(propName, period, amplitude, phase);
     } },
-    { "MODWaveSmoothST", [](SDFBuilder& builder, std::stringstream& ss) {
-        std::string propName;
-        double period{ MODWaveSmoothST::DFLT_PERIOD };
-        double amplitude{ MODWaveSmoothST::DFLT_AMPLITUDE };
-        double phase{ MODWaveSmoothST::DFLT_PHASE };
-        bool boundOnObj{};
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> period;
-            else if (param == "amplitude") ss >> amplitude;
-            else if (param == "phase") ss >> phase;
-        }
-        boundOnObj ? builder.modObj<MODWaveSmoothST>(propName, period, amplitude, phase) : builder.modOp<MODWaveSmoothST>(propName, period, amplitude, phase);
-    } },
-    { "MODWaveLinearST", [](SDFBuilder& builder, std::stringstream& ss) {
-        std::string propName;
-        double period{ MODWaveLinearST::DFLT_PERIOD };
-        double amplitude{ MODWaveLinearST::DFLT_AMPLITUDE };
-        double phase{ MODWaveLinearST::DFLT_PHASE };
-        bool boundOnObj{};
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> period;
-            else if (param == "amplitude") ss >> amplitude;
-            else if (param == "phase") ss >> phase;
-        }
-        boundOnObj ? builder.modObj<MODWaveLinearST>(propName, period, amplitude, phase) : builder.modOp<MODWaveLinearST>(propName, period, amplitude, phase);
-    } },
     { "MODWaveSmoothV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec2 periods{ MODWaveSmoothV2::DFLT_PERIOD };

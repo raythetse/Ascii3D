@@ -28,9 +28,9 @@ void LightSource::serialize(std::vector<std::string>& strVec)
 {
 	std::stringstream ss{};
 	ss << "LightSource";
-	ss << " position " << m_position.x << ' ' << m_position.y << ' ' << m_position.z;
+	ss << " position " << m_position;
 	ss << " luminance " << m_luminance;
-	ss << " color " << m_color.x << ' ' << m_color.y << ' ' << m_color.z;
+	ss << " color " << m_color;
 	ss << " ambientPower " << m_ambientPower;
 	strVec.push_back(ss.str());
 }

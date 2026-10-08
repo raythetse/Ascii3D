@@ -68,7 +68,7 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     std::stringstream ss{};
     ss << std::string(level, '\t');
     ss << getClassName();
-    ss << " color " << m_color.x << ' ' << m_color.y << ' ' << m_color.z;
+    ss << " color " << m_color;
     serializeInner(ss);
     strVec.push_back(ss.str());
     ++level;
@@ -134,7 +134,7 @@ double SDFObject::signedDistanceInner(Vec3 p) const
 
 void SDFPlane::serializeInner(std::stringstream& ss) const
 {
-    ss << " normal " << m_normal.x << ' ' << m_normal.y << ' ' << m_normal.z;
+    ss << " normal " << m_normal;
     ss << " offset " << m_offset;
 }
 
@@ -169,7 +169,7 @@ void SDFPlane::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 
 void SDFBox::serializeInner(std::stringstream& ss) const
 {
-    ss << " dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
+    ss << " dimensions " << m_dimensions;
 }
 
 void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
@@ -201,7 +201,7 @@ void SDFBox::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 
 void SDFBoxFrame::serializeInner(std::stringstream& ss) const
 {
-    ss << " dimensions " << m_dimensions.x << ' ' << m_dimensions.y << ' ' << m_dimensions.z;
+    ss << " dimensions " << m_dimensions;
     ss << " edgeThickness " << m_edgeThickness;
 }
 
@@ -388,7 +388,7 @@ void SDFSolidAngle::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 
 void SDFEllipsoid::serializeInner(std::stringstream& ss) const
 {
-    ss << " radii " << m_radii.x << ' ' << m_radii.y << ' ' << m_radii.z;
+    ss << " radii " << m_radii;
 }
 
 void SDFEllipsoid::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const

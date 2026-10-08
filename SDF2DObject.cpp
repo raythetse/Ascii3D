@@ -5,7 +5,7 @@ void SDF2DObject::serializeInner(std::stringstream& ss) const
     ss << " magnitude " << m_magnitude;
     ss << " operation " << m_operation;
     ss << " revolveRotations " << m_revolveRotations;
-    ss << " revolveRotateOffset " << m_revolveRotateOffset.x << m_revolveRotateOffset.y;
+    ss << " revolveRotateOffset " << m_revolveRotateOffset;
     serializeInnerInner(ss);
 }
 
@@ -39,7 +39,7 @@ void SDF2DObject::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 
 void SDFRhombus::serializeInnerInner(std::stringstream& ss) const
 {
-    ss << " dimensions " << m_dimensions.x << ' ' << m_dimensions.y;
+    ss << " dimensions " << m_dimensions;
 }
 
 void SDFRhombus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
@@ -115,7 +115,7 @@ void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier>
 
 void SDFIsoscelesTriangle::serializeInnerInner(std::stringstream& ss) const
 {
-    ss << " dimensions " << m_dimensions.x << ' ' << m_dimensions.y;
+    ss << " dimensions " << m_dimensions;
 }
 
 void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
@@ -153,9 +153,9 @@ void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> p
 
 void SDFTriangle::serializeInnerInner(std::stringstream& ss) const
 {
-    ss << " point1 " << m_point1.x << ' ' << m_point1.y;
-    ss << " point2 " << m_point2.x << ' ' << m_point2.y;
-    ss << " point3 " << m_point3.x << ' ' << m_point3.y;
+    ss << " point1 " << m_point1;
+    ss << " point2 " << m_point2;
+    ss << " point3 " << m_point3;
 }
 
 void SDFTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
@@ -381,19 +381,19 @@ void SDFStar::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t h
     ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
     ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
     ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "ratio") ? propName : std::to_string(m_ratio)) << ";\n";
-    ss << "\tpmVec20.x = " << (getShaderPropModCalls(propName = "numPoints") ? propName : std::to_string(m_numPoints)) << ";\n";
+    ss << "\tpmVec20.x = " << (getShaderPropModCalls(propName = "numPoints") ? propName : std::to_string(m_numPointsD)) << ";\n";
     ss << "\tpmVec20.y = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
     ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
-    ss << "\td" << level << " = star(p" << level << ", int(pmVec20.x), pmFloat1, pmFloat2, " << m_operation << ", pmFloat0, pmVec20.y, pmVec22);\n\n";
+    ss << "\td" << level << " = star(p" << level << ", pmVec20.x, pmFloat1, pmFloat2, " << m_operation << ", pmFloat0, pmVec20.y, pmVec22);\n\n";
 }
 
 double SDFStar::signedDistanceInnerInner(Vec3 p) const
 {
-    Vec2 asincos = MF::fast_sincos(MF::PI / static_cast<double>(m_numPoints));
+    Vec2 asincos = MF::fast_sincos(MF::PI / m_numPointsD);
     Vec2 acs{ asincos.y, asincos.x };
-    Vec2 esincos{ MF::fast_sincos(MF::PI / std::lerp(2.0, static_cast<double>(m_numPoints), m_ratio)) };
+    Vec2 esincos{ MF::fast_sincos(MF::PI / std::lerp(2.0, m_numPointsD, m_ratio)) };
     Vec2 ecs{ esincos.y, esincos.x };
-    double an{ MF::PI / static_cast<double>(m_numPoints) };
+    double an{ MF::PI / m_numPointsD };
 
     Vec2 p2D{ abs(p.x), p.z };
     double bn = std::fmod(std::atan2(p2D.x, p2D.y), 2.0 * an) - an;
@@ -411,7 +411,7 @@ void SDFStar::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "numPoints") {
-        propMod->BindToProp(&m_numPoints);
+        propMod->BindToProp(&m_numPointsD);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {

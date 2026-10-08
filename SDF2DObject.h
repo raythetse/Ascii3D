@@ -200,6 +200,7 @@ public:
 	inline const static double DFLT_MAGNITUDE{ 1.0 };
 private:
 	size_t m_numPoints;
+	double m_numPointsD;
 	double m_radius;
 	double m_ratio;
 protected:
@@ -209,7 +210,8 @@ protected:
 public:
 	SDFStar(OP2D operation = DFLT_OPERATION, size_t numPoints = DFLT_NUMPOINT, double radius = DFLT_RADIUS, double ratio = DFLT_RATIO, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
-		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_numPoints(numPoints), m_radius(radius), m_ratio(ratio) {}
+		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_numPoints(numPoints)
+		, m_numPointsD(static_cast<double>(numPoints)), m_radius(radius), m_ratio(ratio) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
 	virtual void bindPropertyModifierInner(std::unique_ptr<Modifier> propMod) override;
 };

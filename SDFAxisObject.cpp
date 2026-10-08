@@ -30,7 +30,7 @@ std::string SDFAxisObject::getPSwizzle() const
 
 void SDFTorus::serializeInner(std::stringstream& ss) const
 {
-    ss << " radii " << m_radii.x << ' ' << m_radii.y;
+    ss << " radii " << m_radii;
     ss << " axis " << m_axis;
 }
 
@@ -62,7 +62,7 @@ void SDFTorus::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 
 void SDFTorusSegment::serializeInner(std::stringstream& ss) const
 {
-    ss << " radii " << m_radii.x << ' ' << m_radii.y;
+    ss << " radii " << m_radii;
     ss << " sweep " << m_sweep;
     ss << " axis " << m_axis;
 }
@@ -145,7 +145,7 @@ void SDFCapsule::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
 void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
 {
     ss << " bodyLength " << m_bodyLength;
-    ss << " radii " << m_radii.x << ' ' << m_radii.y;
+    ss << " radii " << m_radii;
     ss << " axis " << m_axis;
 }
 

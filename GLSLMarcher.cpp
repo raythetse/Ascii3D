@@ -351,7 +351,7 @@ float octagon(vec3 p, float radius, int operation, float magnitude, float revolv
     return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
 }
 
-float star(vec3 p, int numPoints, float radius, float ratio, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
+float star(vec3 p, float numPoints, float radius, float ratio, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
     if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);
     float a = PI / numPoints;
     vec2 asincos = vec2(sin(a), cos(a));
