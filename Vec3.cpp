@@ -291,5 +291,10 @@ std::string Vec3::getShader() const
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p)
 {
-    return os << p.x << ' ' << p.y << ' ' << p.z ;
+    return os << p.x << ' ' << p.y << ' ' << p.z;
+}
+
+std::istream& operator>>(std::istream& is, Vec3& p)
+{
+    return is >> p.x >> p.y >> p.z;
 }

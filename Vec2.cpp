@@ -148,7 +148,7 @@ std::ostream& operator<<(std::ostream& os, const Vec2& p)
     return os << p.x << ' ' << p.y;
 }
 
-Vec2 abs(const Vec2 v)
+std::istream& operator>>(std::istream& is, Vec2& p)
 {
-    return { abs(v.x), abs(v.y) };
+    return is >> p.x >> p.y;
 }

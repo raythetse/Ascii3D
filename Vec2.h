@@ -1,4 +1,5 @@
 #pragma once
+#include <istream>
 #include <ostream>
 
 class Vec2
@@ -45,4 +46,4 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, const Vec2& p);
-Vec2 abs(const Vec2 v);
+std::istream& operator>>(std::istream& os, Vec2& p);

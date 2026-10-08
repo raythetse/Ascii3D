@@ -1,4 +1,5 @@
 #pragma once
+#include <istream>
 #include <ostream>
 #include <string>
 
@@ -100,7 +101,6 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, const Vec3& p);
-
-	
+std::istream& operator>>(std::istream& os, Vec3& p);
 
 using Color = Vec3;

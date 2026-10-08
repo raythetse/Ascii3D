@@ -40,13 +40,13 @@ SDFBuilder& SDFBuilder::color(Vec3 color)
     return *this;
 }
 
-void SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
+SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
 {
     m_baseObject = std::make_unique<SDFObject>();
     m_objChain.push_back(m_baseObject.get());
 
     SDFBuilder builder{};
-    for (size_t i{1}; i < strVec.size(); ++i) {
+    for (size_t i{ 1 }; i < strVec.size(); ++i) {
         std::replace(strVec[i].begin(), strVec[i].end(), ',', ' ');
         std::stringstream ss{ strVec[i] };
         std::string opName;
@@ -56,6 +56,7 @@ void SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
             s_opMap.at(opName)(*this, ss);
         }
     }
+    return *this;
 }
 
 const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> SDFBuilder::s_opMap = {
@@ -137,7 +138,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
         }
         builder.pushSDFObj<SDFObject>(color);
     }},
@@ -149,8 +150,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "normal") ss >> normal.x >> normal.y >> normal.z;
-            else if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "normal") ss >> normal;
+            else if (param == "color") ss >> color;
             else if (param == "offset") ss >> offset;
         }
         builder.pushSDFObj<SDFPlane>(normal, offset, color);
@@ -162,8 +163,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "dimensions") ss >> dimensions.x >> dimensions.y >> dimensions.z;
-            else if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "dimensions") ss >> dimensions;
+            else if (param == "color") ss >> color;
         }
         builder.pushSDFObj<SDFBox>(dimensions, color);
     } },
@@ -175,8 +176,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "dimensions") ss >> dimensions.x >> dimensions.y >> dimensions.z;
-            else if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "dimensions") ss >> dimensions;
+            else if (param == "color") ss >> color;
             else if (param == "edgeThickness") ss >> edgeThickness;
         }
         builder.pushSDFObj<SDFBoxFrame>(dimensions, edgeThickness, color);
@@ -188,7 +189,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
         }
         builder.pushSDFObj<SDFSphere>(radius, color);
@@ -201,8 +202,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y;
+            if (param == "color") ss >> color;
+            else if (param == "radii") ss >> radii;
             else if (param == "axis") ss >> axis;
         }
         builder.pushSDFObj<SDFTorus>(static_cast<Axis>(axis), radii, color);
@@ -216,8 +217,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y;
+            if (param == "color") ss >> color;
+            else if (param == "radii") ss >> radii;
             else if (param == "sweep") ss >> sweep;
             else if (param == "axis") ss >> axis;
         }
@@ -232,7 +233,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
             else if (param == "bodyLength") ss >> bodyLength;
             else if (param == "axis") ss >> axis;
@@ -246,7 +247,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "edgeLength") ss >> edgeLength;
         }
         builder.pushSDFObj<SDFCrystal>(edgeLength, color);
@@ -260,7 +261,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> col.x >> col.y >> col.z;
+            if (param == "color") ss >> col;
             else if (param == "sideLength") ss >> sideLength;
             else if (param == "radius") ss >> radius;
             else if (param == "axis") ss >> axis;
@@ -275,7 +276,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "height") ss >> height;
             else if (param == "sweep") ss >> sweep;
         }
@@ -289,7 +290,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
             else if (param == "sweep") ss >> sweep;
         }
@@ -302,8 +303,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "radii") ss >> radii.x >> radii.y >> radii.z;
+            if (param == "color") ss >> color;
+            else if (param == "radii") ss >> radii;
         }
         builder.pushSDFObj<SDFEllipsoid>(radii, color);
     } },
@@ -316,9 +317,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "bodyLength") ss >> bodyLength;
-            else if (param == "radii") ss >> radii.x >> radii.y;
+            else if (param == "radii") ss >> radii;
             else if (param == "axis") ss >> axis;
         }
         builder.pushSDFObj<SDFTaperedCapsule>(static_cast<Axis>(axis), radii, bodyLength, color);
@@ -334,12 +335,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "dimensions") ss >> dimensions.x >> dimensions.y;
+            if (param == "color") ss >> color;
+            else if (param == "dimensions") ss >> dimensions;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFRhombus>(static_cast<OP2D>(operation), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -354,12 +355,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "base") ss >> base;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFEquilateralTriangle>(static_cast<OP2D>(operation), base, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -374,12 +375,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "dimensions") ss >> dimensions.x >> dimensions.y;
+            if (param == "color") ss >> color;
+            else if (param == "dimensions") ss >> dimensions;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFIsoscelesTriangle>(static_cast<OP2D>(operation), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -395,13 +396,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "sweep") ss >> sweep;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFPieSlice>(static_cast<OP2D>(operation), sweep, radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -416,12 +417,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFPentagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -436,12 +437,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFHexagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -456,12 +457,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFOctagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -478,14 +479,14 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
+            if (param == "color") ss >> color;
             else if (param == "radius") ss >> radius;
             else if (param == "numPoints") ss >> numPoints;
             else if (param == "ratio") ss >> ratio;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFStar>(static_cast<OP2D>(operation), numPoints, radius, ratio, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -502,14 +503,14 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> color.x >> color.y >> color.z;
-            else if (param == "point1") ss >> point1.x >> point1.y;
-            else if (param == "point2") ss >> point2.x >> point2.y;
-            else if (param == "point3") ss >> point3.x >> point3.y;
+            if (param == "color") ss >> color;
+            else if (param == "point1") ss >> point1;
+            else if (param == "point2") ss >> point2;
+            else if (param == "point3") ss >> point3;
             else if (param == "magnitude") ss >> magnitude;
             else if (param == "operation") ss >> operation;
             else if (param == "revolveRotations") ss >> revolveRotations;
-            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset.x >> revolveRotateOffset.y;
+            else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
         builder.pushSDFObj<SDFTriangle>(static_cast<OP2D>(operation), point1, point2, point3, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
@@ -544,7 +545,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "translation") ss >> translation.x >> translation.y >> translation.z;
+            if (param == "translation") ss >> translation;
         }
         builder.op<OPTranslate>(translation);
     } },
@@ -557,7 +558,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "translation") ss >> translation.x >> translation.y >> translation.z;
+            if (param == "translation") ss >> translation;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "period") ss >> period;
             else if (param == "phase") ss >> phase;
@@ -573,9 +574,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "translation") ss >> translation.x >> translation.y >> translation.z;
-            else if (param == "transitTimes") ss >> transitTimes.x >> transitTimes.y;
-            else if (param == "endDelays") ss >> endDelays.x >> endDelays.y;
+            if (param == "translation") ss >> translation;
+            else if (param == "transitTimes") ss >> transitTimes;
+            else if (param == "endDelays") ss >> endDelays;
             else if (param == "phase") ss >> phase;
         }
         builder.op<OPTranslateLinear>(translation, transitTimes, endDelays, phase);
@@ -601,7 +602,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "axis") ss >> axis.x >> axis.y >> axis.z;
+            if (param == "axis") ss >> axis;
             else if (param == "rotations") ss >> rotations;
         }
         builder.op<OPRotate>(axis, rotations);
@@ -614,7 +615,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "axis") ss >> axis.x >> axis.y >> axis.z;
+            if (param == "axis") ss >> axis;
             else if (param == "rotationsPerSecond") ss >> rotationsPerSecond;
             else if (param == "phase") ss >> phase;
         }
@@ -630,10 +631,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "axis") ss >> axis.x >> axis.y >> axis.z;
+            if (param == "axis") ss >> axis;
             else if (param == "rotations") ss >> rotations;
-            else if (param == "transitTimes") ss >> transitTimes.x >> transitTimes.y;
-            else if (param == "endDelays") ss >> endDelays.x >> endDelays.y;
+            else if (param == "transitTimes") ss >> transitTimes;
+            else if (param == "endDelays") ss >> endDelays;
             else if (param == "phase") ss >> phase;
         }
         builder.op<OPRotateScan>(axis, rotations, transitTimes, endDelays, phase);
@@ -648,7 +649,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "axis") ss >> axis.x >> axis.y >> axis.z;
+            if (param == "axis") ss >> axis;
             else if (param == "rotations") ss >> rotations;
             else if (param == "rotateTime") ss >> rotateTime;
             else if (param == "delayTime") ss >> delayTime;
@@ -722,8 +723,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "lengths") ss >> lengths.x >> lengths.y >> lengths.z;
-            else if (param == "offsets") ss >> offsets.x >> offsets.y >> offsets.z;
+            if (param == "lengths") ss >> lengths;
+            else if (param == "offsets") ss >> offsets;
         }
         builder.op<OPElongateXYZ>(lengths, offsets);
     } },
@@ -760,7 +761,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatX>(spacing);
     } },
@@ -770,7 +771,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatY>(spacing);
     } },
@@ -780,7 +781,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatZ>(spacing);
     } },
@@ -790,7 +791,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatXY>(spacing);
     } },
@@ -800,7 +801,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatXZ>(spacing);
     } },
@@ -810,7 +811,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatYZ>(spacing);
     } },
@@ -820,7 +821,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
+            if (param == "spacing") ss >> spacing;
         }
         builder.op<OPRepeatXYZ>(spacing);
     } },
@@ -831,8 +832,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "spacing") ss >> spacing.x >> spacing.y >> spacing.z;
-            else if (param == "limits") ss >> limits.x >> limits.y >> limits.z;
+            if (param == "spacing") ss >> spacing;
+            else if (param == "limits") ss >> limits;
         }
         builder.op<OPRepeatLimited>(limits, spacing);
     } },
@@ -904,9 +905,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> periods.x >> periods.y;
-            else if (param == "amplitude") ss >> amplitudes.x >> amplitudes.y;
-            else if (param == "phase") ss >> phases.x >> phases.y;
+            else if (param == "period") ss >> periods;
+            else if (param == "amplitude") ss >> amplitudes;
+            else if (param == "phase") ss >> phases;
         }
         boundOnObj ? builder.modObj<MODWaveSmoothV2>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveSmoothV2>(propName, periods, amplitudes, phases);
     } },
@@ -922,9 +923,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> periods.x >> periods.y >> periods.z;
-            else if (param == "amplitude") ss >> amplitudes.x >> amplitudes.y >> amplitudes.z;
-            else if (param == "phase") ss >> phases.x >> phases.y >> phases.z;
+            else if (param == "period") ss >> periods;
+            else if (param == "amplitude") ss >> amplitudes;
+            else if (param == "phase") ss >> phases;
         }
         boundOnObj ? builder.modObj<MODWaveSmoothV3>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveSmoothV3>(propName, periods, amplitudes, phases);
     } },
@@ -958,9 +959,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> periods.x >> periods.y;
-            else if (param == "amplitude") ss >> amplitudes.x >> amplitudes.y;
-            else if (param == "phase") ss >> phases.x >> phases.y;
+            else if (param == "period") ss >> periods;
+            else if (param == "amplitude") ss >> amplitudes;
+            else if (param == "phase") ss >> phases;
         }
         boundOnObj ? builder.modObj<MODWaveLinearV2>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveLinearV2>(propName, periods, amplitudes, phases);
     } },
@@ -976,9 +977,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> periods.x >> periods.y >> periods.z;
-            else if (param == "amplitude") ss >> amplitudes.x >> amplitudes.y >> amplitudes.z;
-            else if (param == "phase") ss >> phases.x >> phases.y >> phases.z;
+            else if (param == "period") ss >> periods;
+            else if (param == "amplitude") ss >> amplitudes;
+            else if (param == "phase") ss >> phases;
         }
         boundOnObj ? builder.modObj<MODWaveLinearV3>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveLinearV3>(propName, periods, amplitudes, phases);
     } },
@@ -993,10 +994,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "position") ss >> position.x >> position.y >> position.z;
+            if (param == "position") ss >> position;
             else if (param == "luminance") ss >> luminance;
             else if (param == "ambientPower") ss >> ambientPower;
-            else if (param == "color") ss >> color.x >> color.y >> color.z;
+            else if (param == "color") ss >> color;
         }
         builder.addLightSource(position, luminance, color, ambientPower);
     } },

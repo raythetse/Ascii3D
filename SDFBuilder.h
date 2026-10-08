@@ -36,7 +36,7 @@ public:
     template <typename T, typename... Args>
         requires (std::is_base_of_v<Modifier, T>)
     SDFBuilder& modObj(Args&&... args);
-    void loadSerialized(std::vector<std::string>& strVec);
+    SDFBuilder& loadSerialized(std::vector<std::string>& strVec);
 };
 
 template<typename T, typename ...Args>
