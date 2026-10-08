@@ -110,10 +110,10 @@ void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << " -= pmVec30; \n\n";
 }
 
-void OPTranslate::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPTranslate::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "translation") {
-		propMod->BindToProp(&m_translation);
+		propMod->BindToProperty(&m_translation);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -146,22 +146,22 @@ void OPTranslateSine::getShaderOpCalls(std::stringstream& ss, size_t level, size
 	ss << "\tp" << level << " -= pmVec30 * pmFloat0 * sin(TAU * (pmFloat1 + time / pmFloat2));\n\n";
 }
 
-void OPTranslateSine::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPTranslateSine::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "amplitude") {
-		propMod->BindToProp(&m_amplitude);
+		propMod->BindToProperty(&m_amplitude);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "translation") {
-		propMod->BindToProp(&m_translation);
+		propMod->BindToProperty(&m_translation);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "period") {
-		propMod->BindToProp(&m_period);
+		propMod->BindToProperty(&m_period);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -212,22 +212,22 @@ void OPTranslateLinear::getShaderOpCalls(std::stringstream& ss, size_t level, si
 	ss << "\tp" << level << " -= translateLinear(pmVec30, pmVec20, pmVec21, pmFloat0, time);\n\n";
 }
 
-void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPTranslateLinear::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "translation") {
-		propMod->BindToProp(&m_translation);
+		propMod->BindToProperty(&m_translation);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "endDelays") {
-		propMod->BindToProp(&m_endDelays);
+		propMod->BindToProperty(&m_endDelays);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "transitTimes") {
-		propMod->BindToProp(&m_transitTimes);
+		propMod->BindToProperty(&m_transitTimes);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -266,18 +266,18 @@ void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, siz
 	ss << "\tp" << level << ".y -= pmFloat0;\n\n";
 }
 
-void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPCubeRollHeight::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "cubeHeight") {
-		propMod->BindToProp(&m_cubeHeight);
+		propMod->BindToProperty(&m_cubeHeight);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "period") {
-		propMod->BindToProp(&m_period);
+		propMod->BindToProperty(&m_period);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -307,18 +307,18 @@ void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& max
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
-void OPRotate::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPRotate::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "axis") {
-		propMod->BindToProp(&m_axis);
+		propMod->BindToProperty(&m_axis);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "rotations") {
-		propMod->BindToProp(&m_rotations);
+		propMod->BindToProperty(&m_rotations);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "rotMat") {
-		propMod->BindToProp(&m_rotMat);
+		propMod->BindToProperty(&m_rotMat);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -348,18 +348,18 @@ void OPRotateContinuous::getShaderOpCalls(std::stringstream& ss, size_t level, s
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, time * pmFloat0 + pmFloat1);\n\n";
 }
 
-void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPRotateContinuous::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "axis") {
-		propMod->BindToProp(&m_axis);
+		propMod->BindToProperty(&m_axis);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "rotationsPerSecond") {
-		propMod->BindToProp(&m_rotationsPerSecond);
+		propMod->BindToProperty(&m_rotationsPerSecond);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -411,26 +411,26 @@ void OPRotateScan::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 	ss << "\tp" << level << " = rotateScan(p" << level << ", pmVec30, pmVec20, pmVec21, pmFloat0, pmFloat1, time);\n\n";
 }
 
-void OPRotateScan::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPRotateScan::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "axis") {
-		propMod->BindToProp(&m_axis);
+		propMod->BindToProperty(&m_axis);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "rotations") {
-		propMod->BindToProp(&m_rotations);
+		propMod->BindToProperty(&m_rotations);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "endDelays") {
-		propMod->BindToProp(&m_endDelays);
+		propMod->BindToProperty(&m_endDelays);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "transitTimes") {
-		propMod->BindToProp(&m_transitTimes);
+		propMod->BindToProperty(&m_transitTimes);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -469,26 +469,26 @@ void OPRotateDelay::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tp" << level << " = rotateDelay(p" << level << ", pmVec30, pmFloat0, pmFloat1, pmFloat2, pmVec31.x, time);\n\n";
 }
 
-void OPRotateDelay::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPRotateDelay::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "axis") {
-		propMod->BindToProp(&m_axis);
+		propMod->BindToProperty(&m_axis);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "rotateTime") {
-		propMod->BindToProp(&m_rotateTime);
+		propMod->BindToProperty(&m_rotateTime);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "rotations") {
-		propMod->BindToProp(&m_rotations);
+		propMod->BindToProperty(&m_rotations);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "delayTime") {
-		propMod->BindToProp(&m_delayTime);
+		propMod->BindToProperty(&m_delayTime);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -536,18 +536,18 @@ void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 	++numRollers;
 }
 
-void OPCubeRoller::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPCubeRoller::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "axes") {
-		propMod->BindToProp(&m_axes);
+		propMod->BindToProperty(&m_axes);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "phase") {
-		propMod->BindToProp(&m_phase);
+		propMod->BindToProperty(&m_phase);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "quarterTurnTime") {
-		propMod->BindToProp(&m_quarterTurnTime);
+		propMod->BindToProperty(&m_quarterTurnTime);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -563,14 +563,14 @@ void Elongate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " offset " << m_offset;
 }
 
-void Elongate::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void Elongate::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "length") {
-		propMod->BindToProp(&m_length);
+		propMod->BindToProperty(&m_length);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "offset") {
-		propMod->BindToProp(&m_offset);
+		propMod->BindToProperty(&m_offset);
 		m_propMods.push_back(std::move(propMod));
 	}
 }
@@ -643,14 +643,14 @@ void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tp" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n\n";
 }
 
-void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void OPElongateXYZ::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "lengths") {
-		propMod->BindToProp(&m_lengths);
+		propMod->BindToProperty(&m_lengths);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "offsets") {
-		propMod->BindToProp(&m_offsets);
+		propMod->BindToProperty(&m_offsets);
 		m_propMods.push_back(std::move(propMod));
 	}
 }

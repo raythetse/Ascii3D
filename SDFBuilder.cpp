@@ -839,11 +839,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
 
     // Property Modifiers
-    { "MODWaveSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANWaveSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ MODWaveSmooth::DFLT_PERIOD };
-        double amplitude{ MODWaveSmooth::DFLT_AMPLITUDE };
-        double phase{ MODWaveSmooth::DFLT_PHASE };
+        double period{ ANWaveSmooth::DFLT_PERIOD };
+        double amplitude{ ANWaveSmooth::DFLT_AMPLITUDE };
+        double phase{ ANWaveSmooth::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -855,13 +855,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.modObj<MODWaveSmooth>(propName, period, amplitude, phase) : builder.modOp<MODWaveSmooth>(propName, period, amplitude, phase);
+        boundOnObj ? builder.animObj<ANWaveSmooth>(propName, period, amplitude, phase) : builder.animOp<ANWaveSmooth>(propName, period, amplitude, phase);
     } },
-    { "MODWaveSmoothV2", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANWaveSmoothV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 periods{ MODWaveSmoothV2::DFLT_PERIOD };
-        Vec2 amplitudes{ MODWaveSmoothV2::DFLT_AMPLITUDE };
-        Vec2 phases{ MODWaveSmoothV2::DFLT_PHASE };
+        Vec2 periods{ ANWaveSmoothV2::DFLT_PERIOD };
+        Vec2 amplitudes{ ANWaveSmoothV2::DFLT_AMPLITUDE };
+        Vec2 phases{ ANWaveSmoothV2::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -873,13 +873,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj ? builder.modObj<MODWaveSmoothV2>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveSmoothV2>(propName, periods, amplitudes, phases);
+        boundOnObj ? builder.animObj<ANWaveSmoothV2>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveSmoothV2>(propName, periods, amplitudes, phases);
     } },
-    { "MODWaveSmoothV3", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANWaveSmoothV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ MODWaveSmoothV3::DFLT_PERIOD };
-        Vec3 amplitudes{ MODWaveSmoothV3::DFLT_AMPLITUDE };
-        Vec3 phases{ MODWaveSmoothV3::DFLT_PHASE };
+        Vec3 periods{ ANWaveSmoothV3::DFLT_PERIOD };
+        Vec3 amplitudes{ ANWaveSmoothV3::DFLT_AMPLITUDE };
+        Vec3 phases{ ANWaveSmoothV3::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -891,13 +891,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj ? builder.modObj<MODWaveSmoothV3>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveSmoothV3>(propName, periods, amplitudes, phases);
+        boundOnObj ? builder.animObj<ANWaveSmoothV3>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveSmoothV3>(propName, periods, amplitudes, phases);
     } },
-    { "MODWaveLinear", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANWaveLinear", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ MODWaveLinear::DFLT_PERIOD };
-        double amplitude{ MODWaveLinear::DFLT_AMPLITUDE };
-        double phase{ MODWaveLinear::DFLT_PHASE };
+        double period{ ANWaveLinear::DFLT_PERIOD };
+        double amplitude{ ANWaveLinear::DFLT_AMPLITUDE };
+        double phase{ ANWaveLinear::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -909,13 +909,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.modObj<MODWaveLinear>(propName, period, amplitude, phase) : builder.modOp<MODWaveLinear>(propName, period, amplitude, phase);
+        boundOnObj ? builder.animObj<ANWaveLinear>(propName, period, amplitude, phase) : builder.animOp<ANWaveLinear>(propName, period, amplitude, phase);
     } },
-    { "MODWaveLinearV2", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANWaveLinearV2", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 periods{ MODWaveLinearV2::DFLT_PERIOD };
-        Vec2 amplitudes{ MODWaveLinearV2::DFLT_AMPLITUDE };
-        Vec2 phases{ MODWaveLinearV2::DFLT_PHASE };
+        Vec2 periods{ ANWaveLinearV2::DFLT_PERIOD };
+        Vec2 amplitudes{ ANWaveLinearV2::DFLT_AMPLITUDE };
+        Vec2 phases{ ANWaveLinearV2::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -927,13 +927,13 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj ? builder.modObj<MODWaveLinearV2>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveLinearV2>(propName, periods, amplitudes, phases);
+        boundOnObj ? builder.animObj<ANWaveLinearV2>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveLinearV2>(propName, periods, amplitudes, phases);
     } },
-    { "MODWaveLinearV3", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANWaveLinearV3", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ MODWaveLinearV3::DFLT_PERIOD };
-        Vec3 amplitudes{ MODWaveLinearV3::DFLT_AMPLITUDE };
-        Vec3 phases{ MODWaveLinearV3::DFLT_PHASE };
+        Vec3 periods{ ANWaveLinearV3::DFLT_PERIOD };
+        Vec3 amplitudes{ ANWaveLinearV3::DFLT_AMPLITUDE };
+        Vec3 phases{ ANWaveLinearV3::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -945,7 +945,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj ? builder.modObj<MODWaveLinearV3>(propName, periods, amplitudes, phases) : builder.modOp<MODWaveLinearV3>(propName, periods, amplitudes, phases);
+        boundOnObj ? builder.animObj<ANWaveLinearV3>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveLinearV3>(propName, periods, amplitudes, phases);
     } },
 
     // LightSources

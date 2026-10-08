@@ -25,17 +25,17 @@ public:
     std::vector<std::unique_ptr<LightSource>> getLights();
 	template <std::derived_from<SDFOperation> T, typename... Args>
     SDFBuilder& op(Args&&... args);
-    template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
+    template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
     auto comb(ArgsT&&... argst);
     SDFBuilder& addLightSource(Vec3 position = LightSource::DFLT_POSITION, double luminance = LightSource::DFLT_LUMINANCE, Color color = LightSource::DFLT_COLOR, double ambientPower = LightSource::DFLT_AMBIENTPOWER);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     template <typename T, typename... Args>
-        requires (std::is_base_of_v<Modifier, T>)
-    SDFBuilder& modOp(Args&&... args);
+        requires (std::is_base_of_v<Animator, T>)
+    SDFBuilder& animOp(Args&&... args);
     template <typename T, typename... Args>
-        requires (std::is_base_of_v<Modifier, T>)
-    SDFBuilder& modObj(Args&&... args);
+        requires (std::is_base_of_v<Animator, T>)
+    SDFBuilder& animObj(Args&&... args);
     SDFBuilder& loadSerialized(std::vector<std::string>& strVec);
 };
 
@@ -55,7 +55,7 @@ SDFBuilder& SDFBuilder::op(Args&&... args) {
     return *this;
 }
 
-template <std::derived_from<SDFOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
+template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
 auto SDFBuilder::comb(ArgsT&&... argst) {
     return [this, ...captured_args = std::forward<ArgsT>(argst)](auto&&... argsu) mutable -> auto& {
         auto obj = std::make_unique<U>(std::move(captured_args)...);
@@ -70,8 +70,8 @@ auto SDFBuilder::comb(ArgsT&&... argst) {
 }
 
 template <typename T, typename... Args>
-    requires (std::is_base_of_v<Modifier, T>)
-SDFBuilder& SDFBuilder::modOp(Args&&... args) {
+    requires (std::is_base_of_v<Animator, T>)
+SDFBuilder& SDFBuilder::animOp(Args&&... args) {
     if (m_lastOp) {
         m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
@@ -79,8 +79,8 @@ SDFBuilder& SDFBuilder::modOp(Args&&... args) {
 }
 
 template <typename T, typename... Args>
-    requires (std::is_base_of_v<Modifier, T>)
-SDFBuilder& SDFBuilder::modObj(Args&&... args) {
+    requires (std::is_base_of_v<Animator, T>)
+SDFBuilder& SDFBuilder::animObj(Args&&... args) {
     m_objChain.back()->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     return *this;
 }

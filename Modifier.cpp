@@ -1,7 +1,7 @@
 #include "Modifier.h"
 #include <format>
 
-void Modifier::serialize(std::vector<std::string>& strVec, size_t level, bool boundOnObj)
+void Animator::serialize(std::vector<std::string>& strVec, size_t level, bool boundOnObj)
 {
     std::stringstream ss{};
     ss << std::string(level, '\t');
@@ -12,7 +12,7 @@ void Modifier::serialize(std::vector<std::string>& strVec, size_t level, bool bo
     strVec.push_back(ss.str());
 }
 
-bool Modifier::getShaderCall(std::string& propName) const
+bool Animator::getShaderCall(std::string& propName) const
 {
     if (m_propName == propName) {
         getShaderModCall(propName);
@@ -21,42 +21,42 @@ bool Modifier::getShaderCall(std::string& propName) const
     return false;
 }
 
-void MODWaveSmooth::getShaderModCall(std::string& call) const
+void ANWaveSmooth::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateSine({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
+    call = std::format("waveSmooth({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
 }
 
-void MODWaveSmooth::update() const
+void ANWaveSmooth::update() const
 {
     *m_ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
 }
 
-void MODWaveSmoothV2::getShaderModCall(std::string& call) const
+void ANWaveSmoothV2::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateSineV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
+    call = std::format("waveSmoothV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void MODWaveSmoothV2::update() const
+void ANWaveSmoothV2::update() const
 {
     *m_ptr = m_initVal + ((Vec2{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
 }
 
-void MODWaveSmoothV3::getShaderModCall(std::string& call) const
+void ANWaveSmoothV3::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateSineV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
+    call = std::format("waveSmoothV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void MODWaveSmoothV3::update() const
+void ANWaveSmoothV3::update() const
 {
     *m_ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
 }
 
-void MODWaveLinear::getShaderModCall(std::string& call) const
+void ANWaveLinear::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateLinear({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
+    call = std::format("waveLinear({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
 }
 
-void MODWaveLinear::update() const
+void ANWaveLinear::update() const
 {
     double progress = fmod(0.25 * m_period + (GameTimer::gameTime() + (m_phase * m_period)), m_period) / m_period;
     progress -= 0.5;
@@ -68,12 +68,12 @@ void MODWaveLinear::update() const
     *m_ptr = m_initVal + progress * m_amplitude;
 }
 
-void MODWaveLinearV2::getShaderModCall(std::string& call) const
+void ANWaveLinearV2::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateLinearV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
+    call = std::format("waveLinearV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void MODWaveLinearV2::update() const
+void ANWaveLinearV2::update() const
 {
     double gameTime = GameTimer::gameTime();
     Vec2 progress{
@@ -89,12 +89,12 @@ void MODWaveLinearV2::update() const
     *m_ptr = m_initVal + progress * m_amplitude;
 }
 
-void MODWaveLinearV3::getShaderModCall(std::string& call) const
+void ANWaveLinearV3::getShaderModCall(std::string& call) const
 {
-    call = std::format("oscillateLinearV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
+    call = std::format("waveLinearV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
 }
 
-void MODWaveLinearV3::update() const
+void ANWaveLinearV3::update() const
 {
     double gameTime = GameTimer::gameTime();
     Vec3 progress{

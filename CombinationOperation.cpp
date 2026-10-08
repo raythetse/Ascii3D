@@ -161,18 +161,18 @@ void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level)
 	strVec.push_back(ss.str());
 }
 
-void SmoothCombination::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SmoothCombination::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "smoothing") {
-		propMod->BindToProp(&m_smoothing);
+		propMod->BindToProperty(&m_smoothing);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "colorBlending") {
-		propMod->BindToProp(&m_colorBlending);
+		propMod->BindToProperty(&m_colorBlending);
 		m_propMods.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "colorShifting") {
-		propMod->BindToProp(&m_colorShifting);
+		propMod->BindToProperty(&m_colorShifting);
 		m_propMods.push_back(std::move(propMod));
 	}
 }

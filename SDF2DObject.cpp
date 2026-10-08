@@ -20,18 +20,18 @@ double SDF2DObject::signedDistanceInner(Vec3 p) const
     return m_operation == OP2D_REVOLVE ? d2D : extrude2D(p.y, d2D, m_magnitude);
 }
 
-void SDF2DObject::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDF2DObject::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "magnitude") {
-        propMod->BindToProp(&m_magnitude);
+        propMod->BindToProperty(&m_magnitude);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "revolveRotations") {
-        propMod->BindToProp(&m_revolveRotations);
+        propMod->BindToProperty(&m_revolveRotations);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "revolveRotateOffset") {
-        propMod->BindToProp(&m_revolveRotateOffset);
+        propMod->BindToProperty(&m_revolveRotateOffset);
         m_propMods.push_back(std::move(propMod));
     }
     else bindPropertyModifierInner(std::move(propMod));
@@ -63,14 +63,14 @@ double SDFRhombus::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFRhombus::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFRhombus::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
-        propMod->BindToProp(&m_dimensions);
+        propMod->BindToProperty(&m_dimensions);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -101,14 +101,14 @@ double SDFEquilateralTriangle::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
 }
 
-void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "base") {
-        propMod->BindToProp(&m_base);
+        propMod->BindToProperty(&m_base);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -139,14 +139,14 @@ double SDFIsoscelesTriangle::signedDistanceInnerInner(Vec3 p) const
     return std::sqrt(d.x) * (d.y >= 0.0 ? -1.0 : 1.0);
 }
 
-void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
-        propMod->BindToProp(&m_dimensions);
+        propMod->BindToProperty(&m_dimensions);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -190,22 +190,22 @@ double SDFTriangle::signedDistanceInnerInner(Vec3 p) const
     return -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFTriangle::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "point1") {
-        propMod->BindToProp(&m_point1);
+        propMod->BindToProperty(&m_point1);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "point2") {
-        propMod->BindToProp(&m_point2);
+        propMod->BindToProperty(&m_point2);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "point3") {
-        propMod->BindToProp(&m_point3);
+        propMod->BindToProperty(&m_point3);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -238,18 +238,18 @@ double SDFPieSlice::signedDistanceInnerInner(Vec3 p) const
     return std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
 }
 
-void SDFPieSlice::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFPieSlice::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
-        propMod->BindToProp(&m_sweep);
+        propMod->BindToProperty(&m_sweep);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -280,14 +280,14 @@ double SDFPentagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFPentagon::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFPentagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -317,14 +317,14 @@ double SDFHexagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFHexagon::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFHexagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -355,14 +355,14 @@ double SDFOctagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFOctagon::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFOctagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -404,22 +404,22 @@ double SDFStar::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFStar::bindPropertyModifierInner(std::unique_ptr<Modifier> propMod)
+void SDFStar::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "numPoints") {
-        propMod->BindToProp(&m_numPointsD);
+        propMod->BindToProperty(&m_numPointsD);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "ratio") {
-        propMod->BindToProp(&m_ratio);
+        propMod->BindToProperty(&m_ratio);
         m_propMods.push_back(std::move(propMod));
     }
 }

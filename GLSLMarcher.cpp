@@ -83,19 +83,19 @@ vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 }
 
 // OPERATOR FUNCTIONS //
-float oscillateSine(float initVal, float period, float amplitude, float phase, float time) {
+float waveSmooth(float initVal, float period, float amplitude, float phase, float time) {
     return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
 }
 
-vec2 oscillateSineV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
+vec2 waveSmoothV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
     return initVal + sin(TAU * (vec2(time) + (phase * period)) / period) * amplitude;
 }
 
-vec3 oscillateSineV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+vec3 waveSmoothV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
     return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
 }
 
-float oscillateLinear(float initVal, float period, float amplitude, float phase, float time) {
+float waveLinear(float initVal, float period, float amplitude, float phase, float time) {
     float progress = mod(0.25 * period + time + phase * period, period) / period;
 	progress -= 0.5;
 	progress *= 2.0;
@@ -105,7 +105,7 @@ float oscillateLinear(float initVal, float period, float amplitude, float phase,
     return initVal + progress * amplitude;
 }
 
-vec2 oscillateLinearV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
+vec2 waveLinearV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
     vec2 progress = vec2(
         mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
         mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y
@@ -119,7 +119,7 @@ vec2 oscillateLinearV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, fl
 	return initVal + progress * amplitude;
 }
 
-vec3 oscillateLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+vec3 waveLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
     vec3 progress = vec3(
         mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
         mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y,

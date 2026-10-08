@@ -12,7 +12,7 @@ protected:
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	ResurfaceOperation(double magnitude) : SDFOperation(SDFOperationType::Resurface), m_magnitude(magnitude) {}
 public:
-	void bindPropertyModifier(std::unique_ptr<Modifier> propMod) override;
+	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 

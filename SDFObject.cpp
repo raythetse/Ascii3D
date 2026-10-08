@@ -119,10 +119,10 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
     }
 }
 
-void SDFObject::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFObject::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -151,18 +151,18 @@ double SDFPlane::signedDistanceInner(Vec3 p) const
     return p.dot(m_normal) - m_offset;
 }
 
-void SDFPlane::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFPlane::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "normal") {
-        propMod->BindToProp(&m_normal);
+        propMod->BindToProperty(&m_normal);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "offset") {
-        propMod->BindToProp(&m_offset);
+        propMod->BindToProperty(&m_offset);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -187,14 +187,14 @@ double SDFBox::signedDistanceInner(Vec3 p) const
     return p.maximum(0.0).length() + std::min(std::max(p.x, std::max(p.y, p.z)), 0.0);
 }
 
-void SDFBox::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFBox::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
-        propMod->BindToProp(&m_dimensions);
+        propMod->BindToProperty(&m_dimensions);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -225,18 +225,18 @@ double SDFBoxFrame::signedDistanceInner(Vec3 p) const
         Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
 }
 
-void SDFBoxFrame::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFBoxFrame::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
-        propMod->BindToProp(&m_dimensions);
+        propMod->BindToProperty(&m_dimensions);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "edgeThickness") {
-        propMod->BindToProp(&m_edgeThickness);
+        propMod->BindToProperty(&m_edgeThickness);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -259,14 +259,14 @@ double SDFSphere::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
-void SDFSphere::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFSphere::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -290,14 +290,14 @@ double SDFCrystal::signedDistanceInner(Vec3 p) const
     return (p.x + p.y + p.z - m_edgeLength) * 0.57735027;
 }
 
-void SDFCrystal::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFCrystal::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "edgeLength") {
-        propMod->BindToProp(&m_edgeLength);
+        propMod->BindToProperty(&m_edgeLength);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -330,18 +330,18 @@ double SDFCone::signedDistanceInner(Vec3 p) const
     return std::sqrt(d) * (s >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFCone::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFCone::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "height") {
-        propMod->BindToProp(&m_height);
+        propMod->BindToProperty(&m_height);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
-        propMod->BindToProp(&m_sweep);
+        propMod->BindToProperty(&m_sweep);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -370,18 +370,18 @@ double SDFSolidAngle::signedDistanceInner(Vec3 p) const
     return std::max(l, m * ((sincos.y * q.x - sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
 }
 
-void SDFSolidAngle::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFSolidAngle::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
-        propMod->BindToProp(&m_radius);
+        propMod->BindToProperty(&m_radius);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
-        propMod->BindToProp(&m_sweep);
+        propMod->BindToProperty(&m_sweep);
         m_propMods.push_back(std::move(propMod));
     }
 }
@@ -406,14 +406,14 @@ double SDFEllipsoid::signedDistanceInner(Vec3 p) const
     return k0 * (k0 - 1.0) / k1;
 }
 
-void SDFEllipsoid::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void SDFEllipsoid::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
-        propMod->BindToProp(&m_color);
+        propMod->BindToProperty(&m_color);
         m_propMods.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radii") {
-        propMod->BindToProp(&m_radii);
+        propMod->BindToProperty(&m_radii);
         m_propMods.push_back(std::move(propMod));
     }
 }

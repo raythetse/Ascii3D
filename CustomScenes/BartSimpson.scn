@@ -99,7 +99,7 @@ SDFObject color 1 1 1
 				SDFObject color 1 1 1
 					OPTranslate translation 0.45 1.3 0
 					OPRotate axis -0.5547 0 -0.83205 rotations 0.25
-					MODWaveSmooth boundOnObj 0 propName rotations period 1 amplitude 0.035 phase 0
+					ANWaveSmooth boundOnObj 0 propName rotations period 1 amplitude 0.035 phase 0
 					OPTranslate translation 0 -0.2 0
 					COMBAdd
 					SDFEllipsoid color 0.945098 0.305882 0.156863 radii 0.25 0.4 0.25
@@ -115,7 +115,7 @@ SDFObject color 1 1 1
 					SDFCapsule color 0.917647 0.74902 0.0156863 radius 0.17 bodyLength 0.5 axis 1
 						OPTranslate translation 0 -0.25 0
 						OPRotate axis 0 0 1 rotations 0.375
-						MODWaveSmooth boundOnObj 0 propName rotations period 1 amplitude 0.1 phase 0.3
+						ANWaveSmooth boundOnObj 0 propName rotations period 1 amplitude 0.1 phase 0.3
 						OPTranslate translation 0 0.1 0
 						COMBAddSmooth smoothing 0.05 colorBlending 1 colorShifting 0
 						SDFTaperedCapsule color 0.917647 0.74902 0.0156863 bodyLength 0.5 radii 0.15 0.1 axis 1

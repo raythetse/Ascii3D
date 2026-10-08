@@ -1,10 +1,10 @@
 #include "ResurfaceOperation.h"
 #include <sstream>
 
-void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<Modifier> propMod)
+void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "magnitude") {
-		propMod->BindToProp(&m_magnitude);
+		propMod->BindToProperty(&m_magnitude);
 		m_propMods.push_back(std::move(propMod));
 	}
 }

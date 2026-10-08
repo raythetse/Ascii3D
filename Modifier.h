@@ -11,7 +11,7 @@ inline std::string get_type_string(size_t) { return "size_t"; }
 inline std::string get_type_string(Vec2) { return "vec2"; }
 inline std::string get_type_string(Vec3) { return "vec3"; }
 
-class Modifier
+class Animator
 {
 private:
 	std::string m_propName;
@@ -19,10 +19,10 @@ protected:
 	virtual std::string getClassName() const = 0;
 	virtual void serializeInner(std::stringstream& ss) const = 0;
 	virtual void getShaderModCall(std::string& call) const = 0;
-	Modifier(std::string_view propName) : m_propName(propName) {}
+	Animator(std::string_view propName) : m_propName(propName) {}
 public:
 	std::string_view propName() { return m_propName; }
-	virtual void BindToProp(void* ref) = 0;
+	virtual void BindToProperty(void* ref) = 0;
 	virtual void update() const = 0;
 	virtual void resetProperty() const = 0;
 	void resetMods();
@@ -31,26 +31,26 @@ public:
 };
 
 template <typename T>
-class ModifierTemplate : public Modifier
+class AnimatorTemplate : public Animator
 {
 protected:
 	T* m_ptr{};
 	T m_initVal{};
 public:
-	ModifierTemplate(std::string_view propName)
-		: Modifier(propName) {}
-	void BindToProp(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
+	AnimatorTemplate(std::string_view propName)
+		: Animator(propName) {}
+	void BindToProperty(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
 	void resetProperty() const override;
 };
 
 template<typename T>
-inline void ModifierTemplate<T>::resetProperty() const
+inline void AnimatorTemplate<T>::resetProperty() const
 {
 	*m_ptr = m_initVal;
 }
 
 template <typename T, typename U>
-class MODWave : public ModifierTemplate<T>
+class ANWave : public AnimatorTemplate<T>
 {
 public:
 	inline static const double DFLT_PERIOD{ 1.0 };
@@ -62,80 +62,80 @@ protected:
 	U m_phase{};
 	void serializeInner(std::stringstream& ss) const override;
 public:
-	MODWave(std::string_view propName, U period, U amplitude, U phase)
-		: ModifierTemplate<T>(propName), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
+	ANWave(std::string_view propName, U period, U amplitude, U phase)
+		: AnimatorTemplate<T>(propName), m_period(period), m_amplitude(amplitude), m_phase(phase) {}
 };
 
 template <typename T, typename U>
-void MODWave<T, U>::serializeInner(std::stringstream& ss) const
+void ANWave<T, U>::serializeInner(std::stringstream& ss) const
 {
 	ss << " period " << m_period;
 	ss << " amplitude " << m_amplitude;
 	ss << " phase " << m_phase;
 }
 
-class MODWaveSmooth : public MODWave<double, double>
+class ANWaveSmooth : public ANWave<double, double>
 {
 protected:
-	std::string getClassName() const override { return "MODWaveSmooth"; }
+	std::string getClassName() const override { return "ANWaveSmooth"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	MODWaveSmooth(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
-		: MODWave(propName, period, amplitude, phase) {}
+	ANWaveSmooth(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+		: ANWave(propName, period, amplitude, phase) {}
 	virtual void update() const override;
 };
 
-class MODWaveSmoothV2 : public MODWave<Vec2, Vec2>
+class ANWaveSmoothV2 : public ANWave<Vec2, Vec2>
 {
 protected:
-	std::string getClassName() const override { return "MODWaveSmoothV2"; }
+	std::string getClassName() const override { return "ANWaveSmoothV2"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	MODWaveSmoothV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
-		: MODWave(propName, period, amplitude, phase) {}
+	ANWaveSmoothV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
+		: ANWave(propName, period, amplitude, phase) {}
 	virtual void update() const override;
 };
 
-class MODWaveSmoothV3 : public MODWave<Vec3, Vec3>
+class ANWaveSmoothV3 : public ANWave<Vec3, Vec3>
 {
 protected:
-	std::string getClassName() const override { return "MODWaveSmoothV3"; }
+	std::string getClassName() const override { return "ANWaveSmoothV3"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	MODWaveSmoothV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
-		: MODWave(propName, period, amplitude, phase) {}
+	ANWaveSmoothV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
+		: ANWave(propName, period, amplitude, phase) {}
 	virtual void update() const override;
 };
 
-class MODWaveLinear : public MODWave<double, double>
+class ANWaveLinear : public ANWave<double, double>
 {
 protected:
-	std::string getClassName() const override { return "MODWaveLinear"; }
+	std::string getClassName() const override { return "ANWaveLinear"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	MODWaveLinear(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
-		: MODWave(propName, period, amplitude, phase) {}
+	ANWaveLinear(std::string_view propName, double period = DFLT_PERIOD, double amplitude = DFLT_AMPLITUDE, double phase = DFLT_PHASE)
+		: ANWave(propName, period, amplitude, phase) {}
 	virtual void update() const override;
 };
 
-class MODWaveLinearV2 : public MODWave<Vec2, Vec2>
+class ANWaveLinearV2 : public ANWave<Vec2, Vec2>
 {
 protected:
-	std::string getClassName() const override { return "MODWaveLinearV2"; }
+	std::string getClassName() const override { return "ANWaveLinearV2"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	MODWaveLinearV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
-		: MODWave(propName, period, amplitude, phase) {}
+	ANWaveLinearV2(std::string_view propName, Vec2 period = DFLT_PERIOD, Vec2 amplitude = DFLT_AMPLITUDE, Vec2 phase = DFLT_PHASE)
+		: ANWave(propName, period, amplitude, phase) {}
 	virtual void update() const override;
 };
 
-class MODWaveLinearV3 : public MODWave<Vec3, Vec3>
+class ANWaveLinearV3 : public ANWave<Vec3, Vec3>
 {
 protected:
-	std::string getClassName() const override { return "MODWaveLinearV3"; }
+	std::string getClassName() const override { return "ANWaveLinearV3"; }
 	virtual void getShaderModCall(std::string& call) const override;
 public:
-	MODWaveLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
-		: MODWave(propName, period, amplitude, phase) {}
+	ANWaveLinearV3(std::string_view propName, Vec3 period = DFLT_PERIOD, Vec3 amplitude = DFLT_AMPLITUDE, Vec3 phase = DFLT_PHASE)
+		: ANWave(propName, period, amplitude, phase) {}
 	virtual void update() const override;
 };

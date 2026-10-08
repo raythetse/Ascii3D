@@ -11,19 +11,19 @@ ExclusionScene::ExclusionScene()
     add(SDFBuilder{}
         .comb<COMBAdd, SDFObject>()() // L1
         .op<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
-        .modOp<MODWaveSmoothV3>("translation", Vec3{ period }, Vec3::Left * dist * oscillation)
+        .animOp<ANWaveSmoothV3>("translation", Vec3{ period }, Vec3::Left * dist * oscillation)
         .comb<COMBAdd, SDFTorus>(AXIS_Z, dim, Color::Blue)() // L2
         .op<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
-        .modOp<MODWaveSmoothV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
+        .animOp<ANWaveSmoothV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
         .comb<COMBExclude, SDFTorus>(AXIS_Z, dim, Color::Green)(cMode) // L3
         .stepBack(0) // L0
         .comb<COMBExclude, SDFObject>()(cMode) // L1
         .op<OPTranslate>(Vec3::Down * dist * 2.0)
         .op<OPTranslate>(Vec3{ -dist, -dist, 0.0 })
-        .modOp<MODWaveSmoothV3>("translation", Vec3{ period }, Vec3::Down * dist * oscillation)
+        .animOp<ANWaveSmoothV3>("translation", Vec3{ period }, Vec3::Down * dist * oscillation)
         .comb<COMBAdd, SDFTorus>(AXIS_Z, dim, Color::Red)() // L2
         .op<OPTranslate>(Vec3{ dist * 2.0, 0.0, 0.0 })
-        .modOp<MODWaveSmoothV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
+        .animOp<ANWaveSmoothV3>("translation", Vec3{ period }, Vec3{ dist, dist, 0.0 } * oscillation)
         .comb<COMBExclude, SDFTorus>(AXIS_Z, dim, Color::Yellow)(cMode) // L4
         .stepBack(0) // L0
         .op<OPTranslate>(Vec3::Backward * 0.5)
