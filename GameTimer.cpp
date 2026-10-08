@@ -43,10 +43,10 @@ bool GameTimer::isPaused()
 	return instance().m_isPaused;
 }
 
-void GameTimer::reset()
+void GameTimer::reset(bool paused)
 {
 	instance().m_stopwatch.reset();
 	instance().m_deltaTime = 0.0;
 	instance().m_gameTime = 0.0;
-	instance().m_isPaused = false;
+	instance().m_isPaused = paused;
 }

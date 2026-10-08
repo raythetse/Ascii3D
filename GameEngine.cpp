@@ -74,6 +74,10 @@ bool GameEngine::handleInput()
     InputManager::update();
     if (InputManager::keyJustPushed(VK_ESCAPE)) return false;
     if (InputManager::keyJustPushed('P')) GameTimer::togglePause();
+    if (InputManager::keyDown('R')) GameTimer::reset(GameTimer::isPaused());
+    if (InputManager::keyJustPushed(VK_UP)) m_camera.changeMoveSpeed(1.0);
+    if (InputManager::keyJustPushed(VK_DOWN)) m_camera.changeMoveSpeed(-1.0);
+
     if (InputManager::keyJustPushed('M') && InputManager::keyDown(VK_CONTROL)) {
         std::vector<std::string> strVec{};
         m_scene->serialize(strVec);

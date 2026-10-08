@@ -59,6 +59,12 @@ void Camera::reset()
     m_rotation = Vec3::Zero;
 }
 
+void Camera::changeMoveSpeed(double delta)
+{
+    m_moveSpeed += delta;
+    m_moveSpeed = m_moveSpeed < 1.0 ? 1.0 : m_moveSpeed;
+}
+
 Vec3 Camera::getViewportRay(const double x, const double y) const
 {
     Vec3 screenPoint = m_position + m_forward;

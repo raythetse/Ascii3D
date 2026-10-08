@@ -26,6 +26,6 @@ public:
 	static double appTime();
 	static double gameTime();
 	static bool isPaused();
-	static void reset();
+	static void reset(bool paused = false);
 };
 

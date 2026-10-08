@@ -37,7 +37,6 @@ private:
 	void processMouseMovement();
 	void acquireCentre();
 	void checkActive();
-	void resetInstance();
 
 public:
 	InputManager(const InputManager&) = delete;

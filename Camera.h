@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec3.h"
 #include "Vec2.h"
+#include <vector>
 #include <windows.h>
 
 class Camera
@@ -20,6 +21,7 @@ public:
 	Camera() = default;
 	void update();
 	void reset();
+	void changeMoveSpeed(double delta);
 	Vec3 getViewportRay(const double x, const double y) const;
 	Vec2 setViewportSize(Vec2 size);
 	Vec3 getPosition() const { return m_position; }
