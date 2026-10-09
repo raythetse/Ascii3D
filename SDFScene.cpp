@@ -37,7 +37,7 @@ void SDFScene::update()
 
 bool SDFScene::serialize(std::vector<std::string>& strVec) const
 {
-    m_baseObject->resetMods();
+    m_baseObject->resetAnimations();
     m_baseObject->serialize(strVec, 0);
     for (auto& light : m_lights) {
         light->serialize(strVec);

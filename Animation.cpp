@@ -2,12 +2,11 @@
 #include <format>
 #include "Enumerations.h"
 
-void Animator::serialize(std::vector<std::string>& strVec, size_t level, bool boundOnObj)
+void Animator::serialize(std::vector<std::string>& strVec, size_t level)
 {
     std::stringstream ss{};
     ss << std::string(level, '\t');
     ss << getClassName();
-    ss << " boundOnObj " << boundOnObj;
     ss << " propName " << m_propName;
     serializeInner(ss);
     strVec.push_back(ss.str());

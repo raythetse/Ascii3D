@@ -9,29 +9,29 @@ void CombinationOperation::setCombineObject(std::unique_ptr<SDFObject> combineOb
 
 void CombinationOperation::update()
 {
-	for (auto& propMod : m_propMods) {
+	for (auto& propMod : m_animations) {
 		propMod->update();
 	}
 	innerUpdate();
 	m_combineObj->update();
 }
 
-void CombinationOperation::resetMods()
+void CombinationOperation::resetAnimations()
 {
-	for (auto& propMod : m_propMods) {
+	for (auto& propMod : m_animations) {
 		propMod->resetProperty();
 	}
-	m_combineObj->resetMods();
+	m_combineObj->resetAnimations();
 }
 
 void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t level) const
 {
-	for (auto& propMod : m_propMods) {
+	for (auto& propMod : m_animations) {
 		propMod->resetProperty();
 	}
 	innerSerialize(strVec, level);
-	for (auto& propMod : m_propMods) {
-		propMod->serialize(strVec, level, false);
+	for (auto& propMod : m_animations) {
+		propMod->serialize(strVec, level);
 	}
 	m_combineObj->serialize(strVec, level);
 }
@@ -165,15 +165,15 @@ void SmoothCombination::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "smoothing") {
 		propMod->BindToProperty(&m_smoothing);
-		m_propMods.push_back(std::move(propMod));
+		m_animations.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "colorBlending") {
 		propMod->BindToProperty(&m_colorBlending);
-		m_propMods.push_back(std::move(propMod));
+		m_animations.push_back(std::move(propMod));
 	}
 	else if (propMod->propName() == "colorShifting") {
 		propMod->BindToProperty(&m_colorShifting);
-		m_propMods.push_back(std::move(propMod));
+		m_animations.push_back(std::move(propMod));
 	}
 }
 

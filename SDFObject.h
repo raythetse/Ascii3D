@@ -21,14 +21,14 @@ class SDFObject
 protected:
 	Color m_color{};
 	std::vector<std::unique_ptr<SDFOperation>> m_operations;
-	std::vector<std::unique_ptr<Animator>> m_propMods{};
+	std::vector<std::unique_ptr<Animator>> m_animations{};
 	virtual double signedDistanceInner(Vec3 p) const;
 	virtual void serializeInner(std::stringstream& ss) const {};
 	virtual std::string getClassName() const { return "SDFObject"; }
 	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const {};
 	double extrude2D(double pDotY, double d2D, double magnitude) const;
 	Vec3 revolve2D(Vec3 p, double radius) const;
-	bool getShaderPropModCalls(std::string& propName) const;
+	bool getShaderAnimationCalls(std::string& propName) const;
 public:
 	SDFObject(Color color = Color::White)
 		: m_color{ color } {}
@@ -40,7 +40,7 @@ public:
 	SDFOperation* pushOperation(Args&&... args);
 	void setColor(Color color);
 	Color getColor();
-	void resetMods();
+	void resetAnimations();
 	virtual void serialize(std::vector<std::string> &strVec, size_t level) const;
 	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel);
 	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod);

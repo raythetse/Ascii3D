@@ -19,23 +19,21 @@ private:
     template<typename T, typename... Args>
         requires (std::is_base_of_v<SDFObject, T> || std::same_as<SDFObject, T>)
     SDFBuilder& pushSDFObj(Args&&... args);
+    bool m_lastAddedObj{ true };
 public:
     SDFBuilder();
     std::unique_ptr<SDFObject> getBaseObject();
     std::vector<std::unique_ptr<LightSource>> getLights();
 	template <std::derived_from<SDFOperation> T, typename... Args>
-    SDFBuilder& op(Args&&... args);
+    SDFBuilder& operation(Args&&... args);
     template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
-    auto comb(ArgsT&&... argst);
+    auto combination(ArgsT&&... argst);
     SDFBuilder& addLightSource(Vec3 position = LightSource::DFLT_POSITION, double luminance = LightSource::DFLT_LUMINANCE, Color color = LightSource::DFLT_COLOR, double ambientPower = LightSource::DFLT_AMBIENTPOWER);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     template <typename T, typename... Args>
         requires (std::is_base_of_v<Animator, T>)
-    SDFBuilder& animOp(Args&&... args);
-    template <typename T, typename... Args>
-        requires (std::is_base_of_v<Animator, T>)
-    SDFBuilder& animObj(Args&&... args);
+    SDFBuilder& animation(Args&&... args);
     SDFBuilder& loadSerialized(std::vector<std::string>& strVec);
 };
 
@@ -46,17 +44,19 @@ SDFBuilder& SDFBuilder::pushSDFObj(Args && ...args)
     auto obj = std::make_unique<T>(std::forward<Args>(args)...);
     m_objChain.push_back(obj.get());
     dynamic_cast<CombinationOperation*>(m_lastOp)->setCombineObject(std::move(obj));
+    m_lastAddedObj = true;
     return *this;
 }
 
 template <std::derived_from<SDFOperation> T, typename... Args>
-SDFBuilder& SDFBuilder::op(Args&&... args) {
+SDFBuilder& SDFBuilder::operation(Args&&... args) {
     m_lastOp = m_objChain.back()->pushOperation<T>(std::forward<Args>(args)...);
+    m_lastAddedObj = false;
     return *this;
 }
 
 template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
-auto SDFBuilder::comb(ArgsT&&... argst) {
+auto SDFBuilder::combination(ArgsT&&... argst) {
     return [this, ...captured_args = std::forward<ArgsT>(argst)](auto&&... argsu) mutable -> auto& {
         auto obj = std::make_unique<U>(std::move(captured_args)...);
         auto prev = m_objChain.back();
@@ -64,23 +64,18 @@ auto SDFBuilder::comb(ArgsT&&... argst) {
         auto op = std::make_unique<T>(std::move(obj), std::forward<decltype(argsu)>(argsu)...);
         m_lastOp = op.get();
         prev->pushOperation(std::move(op));
-
+        m_lastAddedObj = true;
         return *this;
     };
 }
 
 template <typename T, typename... Args>
     requires (std::is_base_of_v<Animator, T>)
-SDFBuilder& SDFBuilder::animOp(Args&&... args) {
-    if (m_lastOp) {
+SDFBuilder& SDFBuilder::animation(Args&&... args) {
+    if (m_lastAddedObj) {
+        m_objChain.back()->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+    } else if (m_lastOp) {
         m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
-    return *this;
-}
-
-template <typename T, typename... Args>
-    requires (std::is_base_of_v<Animator, T>)
-SDFBuilder& SDFBuilder::animObj(Args&&... args) {
-    m_objChain.back()->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     return *this;
 }

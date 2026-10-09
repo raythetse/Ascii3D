@@ -100,6 +100,27 @@ public:
 	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
 };
 
+class OPRotate : public TransformOperation
+{
+public:
+	inline static const Vec3 DFLT_AXIS{ 0.0, 1.0, 0.0 };
+	inline static const double DFLT_ROTATIONS{ 0.5 };
+private:
+	Vec3 m_axis;
+	double m_rotations;
+	Mat3 m_rotMat;
+protected:
+	void innerUpdate() override;
+	void transform(Vec3& p) const override;
+	std::string getClassName() const { return "OPRotate"; }
+	void innerInnerSerialize(std::stringstream& ss) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+public:
+	OPRotate(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS)
+		: m_axis(axis), m_rotations(rotations) {}
+	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+};
+
 class OPCubeRollHeight : public TransformOperation
 {
 public:
@@ -120,27 +141,6 @@ protected:
 public:
 	OPCubeRollHeight(double cubeHeight = DFLT_CUBEHEIGHT, double period = DFLT_PERIOD, double phase = DFLT_PHASE)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
-};
-
-class OPRotate : public TransformOperation
-{
-public:
-	inline static const Vec3 DFLT_AXIS{ 0.0, 1.0, 0.0 };
-	inline static const double DFLT_ROTATIONS{ 0.5 };
-private:
-	Vec3 m_axis;
-	double m_rotations;
-	Mat3 m_rotMat;
-protected:
-	void innerUpdate() override;
-	void transform(Vec3& p) const override;
-	std::string getClassName() const { return "OPRotate"; }
-	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
-public:
-	OPRotate(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS)
-		: m_axis(axis), m_rotations(rotations) {}
 	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
 };
 

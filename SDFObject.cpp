@@ -20,8 +20,8 @@ SDFObject::~SDFObject() {}
 
 void SDFObject::update()
 {
-    for (auto& propMod : m_propMods) {
-        propMod->update();
+    for (auto& an : m_animations) {
+        an->update();
     }
     for (auto& op : m_operations) {
         op->update();
@@ -45,21 +45,21 @@ Color SDFObject::getColor()
     return m_color;
 }
 
-bool SDFObject::getShaderPropModCalls(std::string& propName) const
+bool SDFObject::getShaderAnimationCalls(std::string& propName) const
 {
-    for (auto& propMod : m_propMods) {
-        if (propMod->getShaderCall(propName)) return true;
+    for (auto& an : m_animations) {
+        if (an->getShaderCall(propName)) return true;
     }
     return false;
 }
 
-void SDFObject::resetMods()
+void SDFObject::resetAnimations()
 {
     for (auto& op : m_operations) {
-        op->resetMods();
+        op->resetAnimations();
     }
-    for (auto& mod : m_propMods) {
-        mod->resetProperty();
+    for (auto& an : m_animations) {
+        an->resetProperty();
     }
 }
 
@@ -72,11 +72,11 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     serializeInner(ss);
     strVec.push_back(ss.str());
     ++level;
+    for (auto& an : m_animations) {
+        an->serialize(strVec, level);
+    }
     for (auto& op : m_operations) {
         op->serialize(strVec, level);
-    }
-    for (auto& mod : m_propMods) {
-        mod->serialize(strVec, level, true);
     }
     strVec.push_back(std::string(level, '\t') + "stepBack");
 }
@@ -99,7 +99,7 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
 {
     ss << "\t// SDFObject //\n";
     std::string propName{ "" };
-    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "color") ? propName : m_color.getShader()) << ";\n";
+    ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "color") ? propName : m_color.getShader()) << ";\n";
     if (level > maxLevel) {
         ss << "\tvec3 p" << level << ";\n";
         ss << "\tfloat d" << level << " = FLOAT_MAX;\n";
@@ -123,7 +123,7 @@ void SDFObject::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -142,7 +142,7 @@ void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t 
 {
     ss << "\t// SDFPlane //\n";
     std::string propName{ "" };
-    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "normal") ? "normalize(" + propName + ")" : m_normal.getShader()) << ";\n";
+    ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "normal") ? "normalize(" + propName + ")" : m_normal.getShader()) << ";\n";
     ss << "\td" << level << " = dot(p" << level << ", pmVec30) - " << m_offset << ";\n\n";
 }
 
@@ -155,15 +155,15 @@ void SDFPlane::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "normal") {
         propMod->BindToProperty(&m_normal);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "offset") {
         propMod->BindToProperty(&m_offset);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -176,7 +176,7 @@ void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t hi
 {
     ss << "\t// SDFBox //\n";
     std::string propName{ "" };
-    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
     ss << "\td" << level << " = box(p" << level << ", pmVec30);\n\n";
 }
 
@@ -191,11 +191,11 @@ void SDFBox::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
         propMod->BindToProperty(&m_dimensions);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -209,8 +209,8 @@ void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size
 {
     ss << "\t// SDFBoxFrame //\n";
     std::string propName{ "" };
-    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "edgeThickness") ? propName : std::to_string(m_edgeThickness)) << ";\n";
+    ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "edgeThickness") ? propName : std::to_string(m_edgeThickness)) << ";\n";
     ss << "\td" << level << " = boxFrame(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
@@ -229,15 +229,15 @@ void SDFBoxFrame::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
         propMod->BindToProperty(&m_dimensions);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "edgeThickness") {
         propMod->BindToProperty(&m_edgeThickness);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -250,7 +250,7 @@ void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t
 {
     ss << "\t// SDFSphere //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
     ss << "\td" << level << " = sphere(p" << level << ", pmFloat0);\n\n";
 }
 
@@ -263,11 +263,11 @@ void SDFSphere::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -280,7 +280,7 @@ void SDFCrystal::getShaderObjectCalls(std::stringstream& ss, size_t level, size_
 {
     ss << "\t// SDFCrystal //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "edgeLength") ? propName : std::to_string(m_edgeLength)) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "edgeLength") ? propName : std::to_string(m_edgeLength)) << ";\n";
     ss << "\td" << level << " = crystal(p" << level << ", pmFloat0);\n\n";
 }
 
@@ -294,11 +294,11 @@ void SDFCrystal::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "edgeLength") {
         propMod->BindToProperty(&m_edgeLength);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -312,8 +312,8 @@ void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t 
 {
     ss << "\t// SDFCone //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "height") ? propName : std::to_string(m_height)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "height") ? propName : std::to_string(m_height)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
     ss << "\td" << level << " = cone(p" << level << ", pmFloat0, pmFloat1);\n\n";
 }
 
@@ -334,15 +334,15 @@ void SDFCone::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "height") {
         propMod->BindToProperty(&m_height);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
         propMod->BindToProperty(&m_sweep);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -356,8 +356,8 @@ void SDFSolidAngle::getShaderObjectCalls(std::stringstream & ss, size_t level, s
 {
     ss << "\t// SDFSolidAngle //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
     ss << "\td" << level << " = solidAngle(p" << level << ", pmFloat0, pmFloat1);\n\n";
 }
 
@@ -374,15 +374,15 @@ void SDFSolidAngle::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
         propMod->BindToProperty(&m_sweep);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -395,7 +395,7 @@ void SDFEllipsoid::getShaderObjectCalls(std::stringstream& ss, size_t level, siz
 {
     ss << "\t// SDFEllipsoid //\n";
     std::string propName{ "" };
-    ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
     ss << "\td" << level << " = ellipsoid(p" << level << ", pmVec30);\n\n";
 }
 
@@ -410,10 +410,10 @@ void SDFEllipsoid::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radii") {
         propMod->BindToProperty(&m_radii);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }

@@ -403,10 +403,37 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
 	// SDFBoxFrame //
-	pmVec30 = vec3(2.0000000, 2.0000000, 2.0000000);
+	pmVec30 = linearCycle3D(vec3(2.0000000, 2.0000000, 2.0000000), vec3(0.7500000, 0.6140000, 0.5148000), vec3(0.7940000, 0.4830000, 0.6670000), vec3(0.8450000, 0.3780000, 0.8490000), vec3(1.1240000, 0.5560000, 0.7640000), vec3(0.6170000, 0.8850000, 0.4090000), vec3(0.0000000, 0.0000000, 0.0000000), time);
 	pmFloat0 = 0.100000;
 	d1 = boxFrame(p1, pmVec30, pmFloat0);
 
+
+	// OPTranslate //
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(1.0000000, 0.0000000, 0.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.0000000, 0.0000000, 0.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	vec3 p2;
+	float d2 = FLOAT_MAX;
+	vec3 color2;
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFBoxFrame //
+	pmVec30 = linearCycle3D(vec3(2.0000000, 2.0000000, 2.0000000), vec3(0.7500000, 0.6140000, 0.5148000), vec3(0.7940000, 0.4830000, 0.6670000), vec3(0.8450000, 0.3780000, 0.8490000), vec3(1.1240000, 0.5560000, 0.7640000), vec3(0.6170000, 0.8850000, 0.4090000), vec3(0.0000000, 0.0000000, 0.0000000), time);
+	pmFloat0 = 0.100000;
+	d2 = boxFrame(p2, pmVec30, pmFloat0);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
 
 	// COMBAdd //
 	if (d1 < d0) {

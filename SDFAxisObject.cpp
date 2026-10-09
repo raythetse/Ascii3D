@@ -38,7 +38,7 @@ void SDFTorus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t 
 {
     ss << "\t// SDFTorus //\n";
     std::string propName{ "" };
-    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
     ss << "\td" << level << " = torus(p" << level << getPSwizzle() << ", pmVec20);\n\n";
 }
 
@@ -52,11 +52,11 @@ void SDFTorus::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radii") {
         propMod->BindToProperty(&m_radii);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -71,8 +71,8 @@ void SDFTorusSegment::getShaderObjectCalls(std::stringstream& ss, size_t level, 
 {
     ss << "\t// SDFTorusSegment //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
-    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
     ss << "\td" << level << " = torusSegment(p" << level << getPSwizzle() << ", pmVec20, pmFloat0);\n\n";
 }
 
@@ -90,15 +90,15 @@ void SDFTorusSegment::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radii") {
         propMod->BindToProperty(&m_radii);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
         propMod->BindToProperty(&m_sweep);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -113,8 +113,8 @@ void SDFCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level, size_
 {
     ss << "\t// SDFCapsule //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
     ss << "\td" << level << " = capsule(p" << level << getPSwizzle() << ", pmFloat0, pmFloat1);\n\n";
 }
 
@@ -130,15 +130,15 @@ void SDFCapsule::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "bodyLength") {
         propMod->BindToProperty(&m_bodyLength);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -153,8 +153,8 @@ void SDFTaperedCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level
 {
     ss << "\t// SDFTaperedCapsule //\n";
     std::string propName{ "" };
-    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "bodyLength") ? propName : std::to_string(m_bodyLength)) << ";\n";
     ss << "d" << level << " = taperedCapsule(p" << level << getPSwizzle() << ", pmVec20, pmFloat0); \n\n";
 }
 
@@ -174,15 +174,15 @@ void SDFTaperedCapsule::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "bodyLength") {
         propMod->BindToProperty(&m_bodyLength);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radii") {
         propMod->BindToProperty(&m_radii);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -197,8 +197,8 @@ void SDFCylinder::getShaderObjectCalls(std::stringstream& ss, size_t level, size
 {
     ss << "\t// SDFCylinder //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "sideLength") ? propName : std::to_string(m_sideLength)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "sideLength") ? propName : std::to_string(m_sideLength)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
     ss << "\td" << level << " = cylinder(p" << level << getPSwizzle() << ", pmFloat0, pmFloat1);\n\n";
 }
 
@@ -214,14 +214,14 @@ void SDFCylinder::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sideLength") {
         propMod->BindToProperty(&m_sideLength);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }

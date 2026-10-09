@@ -3,8 +3,8 @@
 
 void SDFOperation::update()
 {
-	for (auto& propMod : m_propMods) {
-		propMod->update();
+	for (auto& an : m_animations) {
+		an->update();
 	}
 	innerUpdate();
 }
@@ -32,9 +32,9 @@ void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Colo
 	}
 }
 
-void SDFOperation::resetMods()
+void SDFOperation::resetAnimations()
 {
-	for (auto& propMod : m_propMods) {
+	for (auto& propMod : m_animations) {
 		propMod->resetProperty();
 	}
 }
@@ -42,8 +42,8 @@ void SDFOperation::resetMods()
 void SDFOperation::serialize(std::vector<std::string>& strVec, size_t level) const
 {
 	innerSerialize(strVec, level);
-	for (auto& propMod : m_propMods) {
-		propMod->serialize(strVec, level, false);
+	for (auto& an : m_animations) {
+		an->serialize(strVec, level);
 	}
 }
 
@@ -54,8 +54,8 @@ void SDFOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& m
 
 bool SDFOperation::getShaderPropModCalls(std::string& propName) const
 {
-	for (auto& propMod : m_propMods) {
-		if (propMod->getShaderCall(propName)) return true;
+	for (auto& an : m_animations) {
+		if (an->getShaderCall(propName)) return true;
 	}
 	return false;
 }

@@ -25,7 +25,7 @@ public:
 	virtual void update() const = 0;
 	virtual void resetProperty() const = 0;
 	void resetMods();
-	void serialize(std::vector<std::string>& strVec, size_t level, bool boundOnObj);
+	void serialize(std::vector<std::string>& strVec, size_t level);
 	bool getShaderCall(std::string& propName) const;
 };
 

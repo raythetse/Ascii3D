@@ -24,15 +24,15 @@ void SDF2DObject::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "magnitude") {
         propMod->BindToProperty(&m_magnitude);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "revolveRotations") {
         propMod->BindToProperty(&m_revolveRotations);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "revolveRotateOffset") {
         propMod->BindToProperty(&m_revolveRotateOffset);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else bindPropertyModifierInner(std::move(propMod));
 }
@@ -46,10 +46,10 @@ void SDFRhombus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_
 {
     ss << "\t// SDFRhombus //\n";
     std::string propName{ "" };
-    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = rhombus(p" << level << ", pmVec20, " << m_operation << ", pmFloat0, pmFloat1, pmVec22);\n\n";
 }
 
@@ -67,11 +67,11 @@ void SDFRhombus::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
         propMod->BindToProperty(&m_dimensions);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -84,10 +84,10 @@ void SDFEquilateralTriangle::getShaderObjectCalls(std::stringstream& ss, size_t 
 {
     ss << "\t// SDFEquilateralTriangle //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "base") ? propName : std::to_string(m_base)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "base") ? propName : std::to_string(m_base)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = equilateralTriangle(p" << level << ", pmFloat0, " << m_operation << ", pmFloat1, pmFloat2, pmVec22 );\n\n";
 }
 
@@ -105,11 +105,11 @@ void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<Animator>
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "base") {
         propMod->BindToProperty(&m_base);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -122,10 +122,10 @@ void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t le
 {
     ss << "\t// SDFIsoscelesTriangle //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = isoscelesTriangle(p" << level << ", pmVec20, " << m_operation << ", pmFloat0, pmFloat2, pmVec22);\n\n";
 }
 
@@ -143,11 +143,11 @@ void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> p
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "dimensions") {
         propMod->BindToProperty(&m_dimensions);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -162,12 +162,12 @@ void SDFTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size
 {
     ss << "\t// SDFTriangle //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmVec20 = " << (getShaderPropModCalls(propName = "point1") ? propName : m_point1.getShader()) << ";\n";
-    ss << "\tpmVec21 = " << (getShaderPropModCalls(propName = "point2") ? propName : m_point2.getShader()) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "point3") ? propName : m_point3.getShader()) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "point1") ? propName : m_point1.getShader()) << ";\n";
+    ss << "\tpmVec21 = " << (getShaderAnimationCalls(propName = "point2") ? propName : m_point2.getShader()) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "point3") ? propName : m_point3.getShader()) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = triangle(p" << level << ", pmVec20, pmVec21, pmVec22, " << m_operation << ", pmFloat0, pmFloat1, pmVec22);\n\n";
 }
 
@@ -194,19 +194,19 @@ void SDFTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "point1") {
         propMod->BindToProperty(&m_point1);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "point2") {
         propMod->BindToProperty(&m_point2);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "point3") {
         propMod->BindToProperty(&m_point3);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -220,11 +220,11 @@ void SDFPieSlice::getShaderObjectCalls(std::stringstream& ss, size_t level, size
 {
     ss << "\t// SDFPieSlice //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
-    ss << "\tpmVec32.x = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "sweep") ? propName : std::to_string(m_sweep)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmVec32.x = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = pieSlice(p" << level << ", pmFloat1, pmFloat2, " << m_operation << ", pmFloat0, pmVec32.x, pmVec22);\n\n";
 }
 
@@ -242,15 +242,15 @@ void SDFPieSlice::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "sweep") {
         propMod->BindToProperty(&m_sweep);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -263,10 +263,10 @@ void SDFPentagon::getShaderObjectCalls(std::stringstream& ss, size_t level, size
 {
     ss << "\t// SDFPentagon //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = pentagon(p" << level << ", pmFloat1, " << m_operation << ", pmFloat0, pmFloat2, pmVec22);\n\n";
 }
 
@@ -284,11 +284,11 @@ void SDFPentagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -301,10 +301,10 @@ void SDFHexagon::getShaderObjectCalls(std::stringstream& ss, size_t level, size_
 {
     ss << "\t// SDFHexagon //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = hexagon(p" << level << ", pmFloat1, " << m_operation << ", pmFloat0, pmFloat2, pmVec22);\n\n";
 }
 
@@ -321,11 +321,11 @@ void SDFHexagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -338,10 +338,10 @@ void SDFOctagon::getShaderObjectCalls(std::stringstream& ss, size_t level, size_
 {
     ss << "\t// SDFOctagon //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = octagon(p" << level << ", pmFloat1, " << m_operation << ", pmFloat0, pmFloat2, pmVec22);\n\n";
 }
 
@@ -359,11 +359,11 @@ void SDFOctagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }
 
@@ -378,12 +378,12 @@ void SDFStar::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t h
 {
     ss << "\t// SDFStar //\n";
     std::string propName{ "" };
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
-    ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
-    ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "ratio") ? propName : std::to_string(m_ratio)) << ";\n";
-    ss << "\tpmVec20.x = " << (getShaderPropModCalls(propName = "numPoints") ? propName : std::to_string(m_numPointsD)) << ";\n";
-    ss << "\tpmVec20.y = " << (getShaderPropModCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderPropModCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+    ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "radius") ? propName : std::to_string(m_radius)) << ";\n";
+    ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "ratio") ? propName : std::to_string(m_ratio)) << ";\n";
+    ss << "\tpmVec20.x = " << (getShaderAnimationCalls(propName = "numPoints") ? propName : std::to_string(m_numPointsD)) << ";\n";
+    ss << "\tpmVec20.y = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
+    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
     ss << "\td" << level << " = star(p" << level << ", pmVec20.x, pmFloat1, pmFloat2, " << m_operation << ", pmFloat0, pmVec20.y, pmVec22);\n\n";
 }
 
@@ -408,18 +408,18 @@ void SDFStar::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
 {
     if (propMod->propName() == "color") {
         propMod->BindToProperty(&m_color);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "numPoints") {
         propMod->BindToProperty(&m_numPointsD);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "radius") {
         propMod->BindToProperty(&m_radius);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
     else if (propMod->propName() == "ratio") {
         propMod->BindToProperty(&m_ratio);
-        m_propMods.push_back(std::move(propMod));
+        m_animations.push_back(std::move(propMod));
     }
 }

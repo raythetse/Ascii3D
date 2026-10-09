@@ -14,7 +14,7 @@ void DomainOperation::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "spacing") {
 		propMod->BindToProperty(&m_spacing);
-		m_propMods.push_back(std::move(propMod));
+		m_animations.push_back(std::move(propMod));
 	}
 }
 
@@ -157,11 +157,11 @@ void OPRepeatLimited::bindPropertyModifier(std::unique_ptr<Animator> propMod)
 {
 	if (propMod->propName() == "spacing") {
 		propMod->BindToProperty(&m_spacing);
-		m_propMods.push_back(std::move(propMod));
+		m_animations.push_back(std::move(propMod));
 		return;
 	}
 	if (propMod->propName() == "limits") {
 		propMod->BindToProperty(&m_limits);
-		m_propMods.push_back(std::move(propMod));
+		m_animations.push_back(std::move(propMod));
 	}
 }

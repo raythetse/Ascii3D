@@ -13,7 +13,7 @@ class SDFOperation
 {
 protected:
 	SDFOperationType m_opType;
-	std::vector<std::unique_ptr<Animator>> m_propMods{};
+	std::vector<std::unique_ptr<Animator>> m_animations{};
 	virtual void innerUpdate() = 0;
 	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return distanceA; }
 	virtual double resurface(double distance) { return distance; };
@@ -26,7 +26,7 @@ public:
 	virtual void update();
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) = 0;
-	virtual void resetMods();
+	virtual void resetAnimations();
 	virtual void serialize(std::vector<std::string>& strVec, size_t level) const;
 	virtual void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const;
 };

@@ -51,7 +51,6 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
         std::stringstream ss{ strVec[i] };
         std::string opName;
         ss >> opName;
-        //std::cout << opName << '\n';
         if (s_opMap.contains(opName)) {
             s_opMap.at(opName)(*this, ss);
         }
@@ -67,16 +66,16 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Combinations
     { "COMBAdd", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<COMBAdd>();
+        builder.operation<COMBAdd>();
     }},
     { "COMBSubtract", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<COMBSubtract>();
+        builder.operation<COMBSubtract>();
     }},
     { "COMBIntersect", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<COMBIntersect>();
+        builder.operation<COMBIntersect>();
     }},
     { "COMBIntersect", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<COMBIntersect>();
+        builder.operation<COMBIntersect>();
     }},
     { "COMBExclude", [](SDFBuilder& builder, std::stringstream& ss) {
         int colorMode{ColorMode::COLORMODE_DOUBLE};
@@ -86,7 +85,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "colorMode") ss >> colorMode;
         }
-        builder.op<COMBExclude>(nullptr, static_cast<ColorMode>(colorMode));
+        builder.operation<COMBExclude>(nullptr, static_cast<ColorMode>(colorMode));
     }},
     { "COMBAddSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         double smoothing{ SmoothCombination::DFLT_SMOOTHING };
@@ -100,7 +99,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "colorBlending") ss >> colorBlending;
             else if (param == "colorShifting") ss >> colorShifting;
         }
-        builder.op<COMBAddSmooth>(nullptr, smoothing, colorBlending, colorShifting);
+        builder.operation<COMBAddSmooth>(nullptr, smoothing, colorBlending, colorShifting);
     }},
     { "COMBSubtractSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         double smoothing{ SmoothCombination::DFLT_SMOOTHING };
@@ -114,7 +113,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "colorBlending") ss >> colorBlending;
             else if (param == "colorShifting") ss >> colorShifting;
         }
-        builder.op<COMBSubtractSmooth>(nullptr, smoothing, colorBlending, colorShifting);
+        builder.operation<COMBSubtractSmooth>(nullptr, smoothing, colorBlending, colorShifting);
     }},
     { "COMBIntersectSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         double smoothing{ SmoothCombination::DFLT_SMOOTHING };
@@ -128,7 +127,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "colorBlending") ss >> colorBlending;
             else if (param == "colorShifting") ss >> colorShifting;
         }
-        builder.op<COMBIntersectSmooth>(nullptr, smoothing, colorBlending, colorShifting);
+        builder.operation<COMBIntersectSmooth>(nullptr, smoothing, colorBlending, colorShifting);
     }},
 
     // Objects
@@ -517,25 +516,25 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Mirrors
     { "OPMirrorX", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorX>();
+        builder.operation<OPMirrorX>();
     } },
     { "OPMirrorY", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorY>();
+        builder.operation<OPMirrorY>();
     } },
     { "OPMirrorZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorZ>();
+        builder.operation<OPMirrorZ>();
     } },
     { "OPMirrorXY", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorXY>();
+        builder.operation<OPMirrorXY>();
     } },
     { "OPMirrorXZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorXZ>();
+        builder.operation<OPMirrorXZ>();
     } },
     { "OPMirrorYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorYZ>();
+        builder.operation<OPMirrorYZ>();
     } },
     { "OPMirrorXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPMirrorXYZ>();
+        builder.operation<OPMirrorXYZ>();
     } },
 
     // Transformations
@@ -547,7 +546,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "translation") ss >> translation;
         }
-        builder.op<OPTranslate>(translation);
+        builder.operation<OPTranslate>(translation);
     } },
     { "OPCubeRollHeight", [](SDFBuilder& builder, std::stringstream& ss) {
         double cubeHeight{ OPCubeRollHeight::DFLT_CUBEHEIGHT };
@@ -561,7 +560,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "period") ss >> period;
             else if (param == "phase") ss >> phase;
         }
-        builder.op<OPCubeRollHeight>(cubeHeight, period, phase);
+        builder.operation<OPCubeRollHeight>(cubeHeight, period, phase);
     } },
     { "OPRotate", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 axis{ OPRotate::DFLT_AXIS };
@@ -573,7 +572,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "axis") ss >> axis;
             else if (param == "rotations") ss >> rotations;
         }
-        builder.op<OPRotate>(axis, rotations);
+        builder.operation<OPRotate>(axis, rotations);
     } },
     { "OPCubeRoller", [](SDFBuilder& builder, std::stringstream& ss) {
         std::vector<Vec3> axes{ OPCubeRoller::DFLT_AXES };
@@ -596,7 +595,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "quarterTurnTime") ss >> quarterTurnTime;
             else if (param == "phase") ss >> phase;
         }
-        builder.op<OPCubeRoller>(axes, quarterTurnTime, phase);
+        builder.operation<OPCubeRoller>(axes, quarterTurnTime, phase);
     } },
     { "OPElongateX", [](SDFBuilder& builder, std::stringstream& ss) {
         double length{ OPElongateX::DFLT_LENGTH };
@@ -608,7 +607,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "length") ss >> length;
             else if (param == "offset") ss >> offset;
         }
-        builder.op<OPElongateX>(length, offset);
+        builder.operation<OPElongateX>(length, offset);
     } },
     { "OPElongateY", [](SDFBuilder& builder, std::stringstream& ss) {
         double length{ OPElongateY::DFLT_LENGTH };
@@ -620,7 +619,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "length") ss >> length;
             else if (param == "offset") ss >> offset;
         }
-        builder.op<OPElongateY>(length, offset);
+        builder.operation<OPElongateY>(length, offset);
     } },
     { "OPElongateZ", [](SDFBuilder& builder, std::stringstream& ss) {
         double length{ OPElongateZ::DFLT_LENGTH };
@@ -632,7 +631,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "length") ss >> length;
             else if (param == "offset") ss >> offset;
         }
-        builder.op<OPElongateZ>(length, offset);
+        builder.operation<OPElongateZ>(length, offset);
     } },
     { "OPElongateXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 lengths{ OPElongateXYZ::DFLT_LENGTHS };
@@ -644,7 +643,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "lengths") ss >> lengths;
             else if (param == "offsets") ss >> offsets;
         }
-        builder.op<OPElongateXYZ>(lengths, offsets);
+        builder.operation<OPElongateXYZ>(lengths, offsets);
     } },
 
     // Resurface Ops
@@ -656,7 +655,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "magnitude") ss >> magnitude;
         }
-        builder.op<OPRoundOff>(magnitude);
+        builder.operation<OPRoundOff>(magnitude);
     } },
     { "OPOnion", [](SDFBuilder& builder, std::stringstream& ss) {
         double magnitude{ OPOnion::DFLT_MAGNITUDE };
@@ -666,10 +665,10 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "magnitude") ss >> magnitude;
         }
-        builder.op<OPOnion>(magnitude);
+        builder.operation<OPOnion>(magnitude);
     } },
     { "OPInsideOut", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.op<OPInsideOut>();
+        builder.operation<OPInsideOut>();
     } },
 
     // Domain Ops
@@ -681,7 +680,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatX>(spacing);
+        builder.operation<OPRepeatX>(spacing);
     } },
     { "OPRepeatY", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -691,7 +690,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatY>(spacing);
+        builder.operation<OPRepeatY>(spacing);
     } },
     { "OPRepeatZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -701,7 +700,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatZ>(spacing);
+        builder.operation<OPRepeatZ>(spacing);
     } },
     { "OPRepeatXY", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -711,7 +710,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatXY>(spacing);
+        builder.operation<OPRepeatXY>(spacing);
     } },
     { "OPRepeatXZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -721,7 +720,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatXZ>(spacing);
+        builder.operation<OPRepeatXZ>(spacing);
     } },
     { "OPRepeatYZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -731,7 +730,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatYZ>(spacing);
+        builder.operation<OPRepeatYZ>(spacing);
     } },
     { "OPRepeatXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -741,7 +740,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "spacing") ss >> spacing;
         }
-        builder.op<OPRepeatXYZ>(spacing);
+        builder.operation<OPRepeatXYZ>(spacing);
     } },
     { "OPRepeatLimited", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
@@ -753,7 +752,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "spacing") ss >> spacing;
             else if (param == "limits") ss >> limits;
         }
-        builder.op<OPRepeatLimited>(limits, spacing);
+        builder.operation<OPRepeatLimited>(limits, spacing);
     } },
 
     // Property Modifiers
@@ -761,115 +760,91 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         std::string propName;
         double amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
         double phase{ ANSmoothCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj
-            ? builder.animObj<ANContinuous1D>(propName, amplitude, phase)
-            : builder.animOp<ANContinuous1D>(propName, amplitude, phase);
+        builder.animation<ANContinuous1D>(propName, amplitude, phase);
     } },
     { "ANContinuous2D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec2 amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
         Vec2 phase{ ANSmoothCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj
-            ? builder.animObj<ANContinuous2D>(propName, amplitude, phase)
-            : builder.animOp<ANContinuous2D>(propName, amplitude, phase);
+        builder.animation<ANContinuous2D>(propName, amplitude, phase);
     } },
     { "ANContinuous3D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec3 amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
         Vec3 phase{ ANSmoothCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj
-            ? builder.animObj<ANContinuous3D>(propName, amplitude, phase)
-            : builder.animOp<ANContinuous3D>(propName, amplitude, phase);
+        builder.animation<ANContinuous3D>(propName, amplitude, phase);
     } },
     { "ANSmoothCycle1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         double period{ ANSmoothCycle1D::DFLT_PERIOD };
         double amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
         double phase{ ANSmoothCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "period") ss >> period;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj
-            ? builder.animObj<ANSmoothCycle1D>(propName, period, amplitude, phase)
-            : builder.animOp<ANSmoothCycle1D>(propName, period, amplitude, phase);
+        builder.animation<ANSmoothCycle1D>(propName, period, amplitude, phase);
     } },
     { "ANSmoothCycle2D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec2 periods{ ANSmoothCycle2D::DFLT_PERIOD };
         Vec2 amplitudes{ ANSmoothCycle2D::DFLT_AMPLITUDE };
         Vec2 phases{ ANSmoothCycle2D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "period") ss >> periods;
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj
-            ? builder.animObj<ANSmoothCycle2D>(propName, periods, amplitudes, phases)
-            : builder.animOp<ANSmoothCycle2D>(propName, periods, amplitudes, phases);
+        builder.animation<ANSmoothCycle2D>(propName, periods, amplitudes, phases);
     } },
     { "ANSmoothCycle3D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         Vec3 periods{ ANSmoothCycle3D::DFLT_PERIOD };
         Vec3 amplitudes{ ANSmoothCycle3D::DFLT_AMPLITUDE };
         Vec3 phases{ ANSmoothCycle3D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "period") ss >> periods;
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj
-            ? builder.animObj<ANSmoothCycle3D>(propName, periods, amplitudes, phases)
-            : builder.animOp<ANSmoothCycle3D>(propName, periods, amplitudes, phases);
+        builder.animation<ANSmoothCycle3D>(propName, periods, amplitudes, phases);
     } },
     { "ANLinearCycle1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
@@ -879,13 +854,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         double delayTime2{ ANLinearCycle1D::DFLT_DELAYTIME2 };
         double amplitude{ ANLinearCycle1D::DFLT_AMPLITUDE };
         double phase{ ANLinearCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "forwardTime") ss >> forwardTime;
             else if (param == "delayTime1") ss >> delayTime1;
             else if (param == "backwardTime") ss >> backwardTime;
@@ -893,9 +866,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj  
-            ? builder.animObj<ANLinearCycle1D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase)
-            : builder.animOp<ANLinearCycle1D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
+        builder.animation<ANLinearCycle1D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
     } },
     { "ANLinearCycle2D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
@@ -905,13 +876,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         Vec2 delayTime2{ ANLinearCycle1D::DFLT_DELAYTIME2 };
         Vec2 amplitude{ ANLinearCycle1D::DFLT_AMPLITUDE };
         Vec2 phase{ ANLinearCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "forwardTime") ss >> forwardTime;
             else if (param == "delayTime1") ss >> delayTime1;
             else if (param == "backwardTime") ss >> backwardTime;
@@ -919,9 +888,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj
-            ? builder.animObj<ANLinearCycle2D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase)
-            : builder.animOp<ANLinearCycle2D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
+        builder.animation<ANLinearCycle2D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
     } },
     { "ANLinearCycle3D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
@@ -931,13 +898,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         Vec3 delayTime2{ ANLinearCycle1D::DFLT_DELAYTIME2 };
         Vec3 amplitude{ ANLinearCycle1D::DFLT_AMPLITUDE };
         Vec3 phase{ ANLinearCycle1D::DFLT_PHASE };
-        bool boundOnObj{};
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "propName") ss >> propName;
-            else if (param == "boundOnObj") ss >> boundOnObj;
             else if (param == "forwardTime") ss >> forwardTime;
             else if (param == "delayTime1") ss >> delayTime1;
             else if (param == "backwardTime") ss >> backwardTime;
@@ -945,9 +910,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj
-            ? builder.animObj<ANLinearCycle3D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase)
-            : builder.animOp<ANLinearCycle3D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
+        builder.animation<ANLinearCycle3D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
     } },
 
     // LightSources
