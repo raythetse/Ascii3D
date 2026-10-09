@@ -28,7 +28,7 @@ public:
 	SDFTorus(Axis axis = AXIS_Y, Vec2 radii = DFLT_RADII, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radii(radii) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class SDFTorusSegment : public SDFAxisObject
@@ -47,7 +47,7 @@ public:
 	SDFTorusSegment(Axis axis = AXIS_Y, Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radii(radii), m_sweep(sweep) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class SDFCapsule : public SDFAxisObject
@@ -66,7 +66,7 @@ public:
 	SDFCapsule(Axis axis = AXIS_Y, double radius = DFLT_RADIUS, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radius(radius), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class SDFTaperedCapsule : public SDFAxisObject
@@ -85,7 +85,7 @@ public:
 	SDFTaperedCapsule(Axis axis = AXIS_Y, Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radii(radii), m_bodyLength(bodyLength) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class SDFCylinder : public SDFAxisObject
@@ -104,5 +104,5 @@ public:
 	SDFCylinder(Axis axis = Axis::AXIS_Y, double radius = DFLT_RADIUS, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_sideLength(sideLength), m_radius(radius) {}
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) override;
 };

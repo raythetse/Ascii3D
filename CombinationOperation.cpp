@@ -9,8 +9,8 @@ void CombinationOperation::setCombineObject(std::unique_ptr<SDFObject> combineOb
 
 void CombinationOperation::update()
 {
-	for (auto& propMod : m_animations) {
-		propMod->update();
+	for (auto& an : m_animations) {
+		an->update();
 	}
 	innerUpdate();
 	m_combineObj->update();
@@ -18,20 +18,20 @@ void CombinationOperation::update()
 
 void CombinationOperation::resetAnimations()
 {
-	for (auto& propMod : m_animations) {
-		propMod->resetProperty();
+	for (auto& an : m_animations) {
+		an->resetProperty();
 	}
 	m_combineObj->resetAnimations();
 }
 
 void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t level) const
 {
-	for (auto& propMod : m_animations) {
-		propMod->resetProperty();
+	for (auto& an : m_animations) {
+		an->resetProperty();
 	}
 	innerSerialize(strVec, level);
-	for (auto& propMod : m_animations) {
-		propMod->serialize(strVec, level);
+	for (auto& an : m_animations) {
+		an->serialize(strVec, level);
 	}
 	m_combineObj->serialize(strVec, level);
 }
@@ -161,19 +161,19 @@ void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level)
 	strVec.push_back(ss.str());
 }
 
-void SmoothCombination::bindPropertyModifier(std::unique_ptr<Animator> propMod)
+void SmoothCombination::bindAnimation(std::unique_ptr<Animator> animation)
 {
-	if (propMod->propName() == "smoothing") {
-		propMod->BindToProperty(&m_smoothing);
-		m_animations.push_back(std::move(propMod));
+	if (animation->propName() == "smoothing") {
+		animation->BindToProperty(&m_smoothing);
+		m_animations.push_back(std::move(animation));
 	}
-	else if (propMod->propName() == "colorBlending") {
-		propMod->BindToProperty(&m_colorBlending);
-		m_animations.push_back(std::move(propMod));
+	else if (animation->propName() == "colorBlending") {
+		animation->BindToProperty(&m_colorBlending);
+		m_animations.push_back(std::move(animation));
 	}
-	else if (propMod->propName() == "colorShifting") {
-		propMod->BindToProperty(&m_colorShifting);
-		m_animations.push_back(std::move(propMod));
+	else if (animation->propName() == "colorShifting") {
+		animation->BindToProperty(&m_colorShifting);
+		m_animations.push_back(std::move(animation));
 	}
 }
 
@@ -207,9 +207,9 @@ void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 {
 	std::string propName{ "" };
 	ss << "\t// COMBAddSmooth //\n";
-	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
-	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
-	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
 	ss << "\tblend = clamp(0.5 + 0.5 * (d" << (level + 1) << " - d" << level << ") / pmFloat0, 0.0, 1.0);\n";
 	ss << "\tcolor" << level << " = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
 	ss << "\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - pmFloat0 * blend * (1.0 - blend);\n\n";
@@ -227,9 +227,9 @@ void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, s
 {
 	std::string propName{ "" };
 	ss << "\t// COMBSubtractSmooth //\n";
-	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
-	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
-	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
 	ss << "\tblend = pmFloat0 - abs(-d" << (level + 1) << " - d" << level << ");\n";
 	ss << "\tblend = max(blend, 0.0);\n";
 	ss << "\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
@@ -247,9 +247,9 @@ void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, 
 {
 	std::string propName{ "" };
 	ss << "\t// COMBIntersectSmooth //\n";
-	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
-	ss << "\tpmFloat1 = " << (getShaderPropModCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
-	ss << "\tpmFloat2 = " << (getShaderPropModCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
 	ss << "\tblend = clamp(0.5 - 0.5 * (d" << (level + 1) << " - d" << level << ") / pmFloat0, 0.0, 1.0);\n";
 	ss << "\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
 	ss << "\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) + pmFloat0 * blend * (1.0 - blend);\n\n";

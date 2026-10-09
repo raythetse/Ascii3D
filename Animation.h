@@ -17,7 +17,7 @@ private:
 protected:
 	virtual std::string getClassName() const = 0;
 	virtual void serializeInner(std::stringstream& ss) const = 0;
-	virtual void getShaderModCall(std::string& call) const = 0;
+	virtual void getShaderCallInner(std::string& call) const = 0;
 	Animator(std::string_view propName) : m_propName(propName) {}
 public:
 	std::string_view propName() { return m_propName; }
@@ -81,7 +81,7 @@ class ANContinuous1D : public ANContinuous<double>
 {
 protected:
 	std::string getClassName() const override { return "ANContinuous1D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANContinuous<double>::ANContinuous;
 };
@@ -90,7 +90,7 @@ class ANContinuous2D : public ANContinuous<Vec2>
 {
 protected:
 	std::string getClassName() const override { return "ANContinuous2D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANContinuous<Vec2>::ANContinuous;
 };
@@ -99,7 +99,7 @@ class ANContinuous3D : public ANContinuous<Vec3>
 {
 protected:
 	std::string getClassName() const override { return "ANContinuous3D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANContinuous<Vec3>::ANContinuous;
 };
@@ -131,7 +131,7 @@ class ANSmoothCycle1D : public ANSmoothCycle<double>
 {
 protected:
 	std::string getClassName() const override { return "ANSmoothCycle1D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANSmoothCycle<double>::ANSmoothCycle;
 	virtual void update() const override;
@@ -141,7 +141,7 @@ class ANSmoothCycle2D : public ANSmoothCycle<Vec2>
 {
 protected:
 	std::string getClassName() const override { return "ANSmoothCycle2D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANSmoothCycle<Vec2>::ANSmoothCycle;
 	virtual void update() const override;
@@ -151,7 +151,7 @@ class ANSmoothCycle3D : public ANSmoothCycle<Vec3>
 {
 protected:
 	std::string getClassName() const override { return "ANSmoothCycle3D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANSmoothCycle<Vec3>::ANSmoothCycle;
 	virtual void update() const override;
@@ -220,7 +220,7 @@ class ANLinearCycle1D : public ANLinearCycle<double>
 {
 protected:
 	std::string getClassName() const override { return "ANLinearCycle1D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 	using ANLinearCycle<double>::ANLinearCycle;
 	virtual void update() const override;
@@ -230,7 +230,7 @@ class ANLinearCycle2D : public ANLinearCycle<Vec2>
 {
 protected:
 	std::string getClassName() const override { return "ANLinearCycle2D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
 using ANLinearCycle<Vec2>::ANLinearCycle;
 	virtual void update() const override;
@@ -240,7 +240,7 @@ class ANLinearCycle3D : public ANLinearCycle<Vec3>
 {
 protected:
 	std::string getClassName() const override { return "ANLinearCycle3D"; }
-	virtual void getShaderModCall(std::string& call) const override;
+	virtual void getShaderCallInner(std::string& call) const override;
 public:
  using ANLinearCycle<Vec3>::ANLinearCycle;
 	virtual void update() const override;

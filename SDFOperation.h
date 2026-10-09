@@ -20,12 +20,12 @@ protected:
 	virtual void transform(Vec3& p) const {};
 	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const = 0;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const = 0;
-	bool getShaderPropModCalls(std::string& propName) const;
+	bool getShaderAnimationCalls(std::string& propName) const;
 	SDFOperation(SDFOperationType opType) : m_opType(opType) {}
 public:
 	virtual void update();
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
-	virtual void bindPropertyModifier(std::unique_ptr<Animator> propMod) = 0;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) = 0;
 	virtual void resetAnimations();
 	virtual void serialize(std::vector<std::string>& strVec, size_t level) const;
 	virtual void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const;

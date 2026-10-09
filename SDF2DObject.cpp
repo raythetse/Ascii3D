@@ -20,21 +20,21 @@ double SDF2DObject::signedDistanceInner(Vec3 p) const
     return m_operation == OP2D_REVOLVE ? d2D : extrude2D(p.y, d2D, m_magnitude);
 }
 
-void SDF2DObject::bindPropertyModifier(std::unique_ptr<Animator> propMod)
+void SDF2DObject::bindAnimation(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "magnitude") {
-        propMod->BindToProperty(&m_magnitude);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "magnitude") {
+        animation->BindToProperty(&m_magnitude);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "revolveRotations") {
-        propMod->BindToProperty(&m_revolveRotations);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "revolveRotations") {
+        animation->BindToProperty(&m_revolveRotations);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "revolveRotateOffset") {
-        propMod->BindToProperty(&m_revolveRotateOffset);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "revolveRotateOffset") {
+        animation->BindToProperty(&m_revolveRotateOffset);
+        m_animations.push_back(std::move(animation));
     }
-    else bindPropertyModifierInner(std::move(propMod));
+    else bindAnimationInner(std::move(animation));
 }
 
 void SDFRhombus::serializeInnerInner(std::stringstream& ss) const
@@ -63,15 +63,15 @@ double SDFRhombus::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFRhombus::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFRhombus::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "dimensions") {
-        propMod->BindToProperty(&m_dimensions);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "dimensions") {
+        animation->BindToProperty(&m_dimensions);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -101,15 +101,15 @@ double SDFEquilateralTriangle::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
 }
 
-void SDFEquilateralTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFEquilateralTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "base") {
-        propMod->BindToProperty(&m_base);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "base") {
+        animation->BindToProperty(&m_base);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -139,15 +139,15 @@ double SDFIsoscelesTriangle::signedDistanceInnerInner(Vec3 p) const
     return std::sqrt(d.x) * (d.y >= 0.0 ? -1.0 : 1.0);
 }
 
-void SDFIsoscelesTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFIsoscelesTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "dimensions") {
-        propMod->BindToProperty(&m_dimensions);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "dimensions") {
+        animation->BindToProperty(&m_dimensions);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -190,23 +190,23 @@ double SDFTriangle::signedDistanceInnerInner(Vec3 p) const
     return -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFTriangle::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "point1") {
-        propMod->BindToProperty(&m_point1);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "point1") {
+        animation->BindToProperty(&m_point1);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "point2") {
-        propMod->BindToProperty(&m_point2);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "point2") {
+        animation->BindToProperty(&m_point2);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "point3") {
-        propMod->BindToProperty(&m_point3);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "point3") {
+        animation->BindToProperty(&m_point3);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -238,19 +238,19 @@ double SDFPieSlice::signedDistanceInnerInner(Vec3 p) const
     return std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
 }
 
-void SDFPieSlice::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFPieSlice::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "sweep") {
-        propMod->BindToProperty(&m_sweep);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "sweep") {
+        animation->BindToProperty(&m_sweep);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "radius") {
-        propMod->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "radius") {
+        animation->BindToProperty(&m_radius);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -280,15 +280,15 @@ double SDFPentagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFPentagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFPentagon::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "radius") {
-        propMod->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "radius") {
+        animation->BindToProperty(&m_radius);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -317,15 +317,15 @@ double SDFHexagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFHexagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFHexagon::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "radius") {
-        propMod->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "radius") {
+        animation->BindToProperty(&m_radius);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -355,15 +355,15 @@ double SDFOctagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFOctagon::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFOctagon::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "radius") {
-        propMod->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "radius") {
+        animation->BindToProperty(&m_radius);
+        m_animations.push_back(std::move(animation));
     }
 }
 
@@ -404,22 +404,22 @@ double SDFStar::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFStar::bindPropertyModifierInner(std::unique_ptr<Animator> propMod)
+void SDFStar::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
-    if (propMod->propName() == "color") {
-        propMod->BindToProperty(&m_color);
-        m_animations.push_back(std::move(propMod));
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "numPoints") {
-        propMod->BindToProperty(&m_numPointsD);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "numPoints") {
+        animation->BindToProperty(&m_numPointsD);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "radius") {
-        propMod->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "radius") {
+        animation->BindToProperty(&m_radius);
+        m_animations.push_back(std::move(animation));
     }
-    else if (propMod->propName() == "ratio") {
-        propMod->BindToProperty(&m_ratio);
-        m_animations.push_back(std::move(propMod));
+    else if (animation->propName() == "ratio") {
+        animation->BindToProperty(&m_ratio);
+        m_animations.push_back(std::move(animation));
     }
 }

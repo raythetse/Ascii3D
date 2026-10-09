@@ -12,7 +12,7 @@ protected:
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const = 0;
 	DomainOperation(Vec3 spacing = DFLT_SPACING) : m_spacing(spacing) {};
 public:
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
@@ -99,5 +99,5 @@ protected:
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPRepeatLimited(Vec3 limits = DFLT_LIMITS, Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing), m_limits(limits) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };

@@ -10,7 +10,7 @@ protected:
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	TransformOperation() : SDFOperation(SDFOperationType::Transform) {};
 public:
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override {};
+	void bindAnimation(std::unique_ptr<Animator> animation) override {};
 	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
@@ -97,7 +97,7 @@ protected:
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
 public:
 	OPTranslate(Vec3 translation = DFLT_TRANSLATION) : m_translation(translation) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class OPRotate : public TransformOperation
@@ -118,7 +118,7 @@ protected:
 public:
 	OPRotate(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS)
 		: m_axis(axis), m_rotations(rotations) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class OPCubeRollHeight : public TransformOperation
@@ -141,7 +141,7 @@ protected:
 public:
 	OPCubeRollHeight(double cubeHeight = DFLT_CUBEHEIGHT, double period = DFLT_PERIOD, double phase = DFLT_PHASE)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class OPCubeRoller : public TransformOperation
@@ -164,7 +164,7 @@ protected:
 public:
 	OPCubeRoller(std::vector<Vec3> axes = DFLT_AXES, double quarterTurnTime = DFLT_QUARTERTURNTIME, double phase = DFLT_PHASE)
 		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class Elongate : public TransformOperation
@@ -184,7 +184,7 @@ protected:
 public:
 	Elongate(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: m_length(length), m_offset(offset) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };
 
 class OPElongateX : public Elongate
@@ -239,5 +239,5 @@ protected:
 public:
 	OPElongateXYZ(Vec3 lengths = DFLT_LENGTHS, Vec3 offsets = DFLT_OFFSETS)
 		: m_lengths(lengths), m_offsets(offsets) {}
-	void bindPropertyModifier(std::unique_ptr<Animator> propMod) override;
+	void bindAnimation(std::unique_ptr<Animator> animation) override;
 };

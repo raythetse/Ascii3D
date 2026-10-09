@@ -1,11 +1,11 @@
 #include "ResurfaceOperation.h"
 #include <sstream>
 
-void ResurfaceOperation::bindPropertyModifier(std::unique_ptr<Animator> propMod)
+void ResurfaceOperation::bindAnimation(std::unique_ptr<Animator> animation)
 {
-	if (propMod->propName() == "magnitude") {
-		propMod->BindToProperty(&m_magnitude);
-		m_animations.push_back(std::move(propMod));
+	if (animation->propName() == "magnitude") {
+		animation->BindToProperty(&m_magnitude);
+		m_animations.push_back(std::move(animation));
 	}
 }
 
@@ -28,7 +28,7 @@ void OPRoundOff::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& m
 {
 	std::string propName{ "" };
 	ss << "\t// OPRoundOff //\n";
-	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
 	ss << "\td" << level << " -= pmFloat0;\n\n";
 }
 
@@ -40,7 +40,7 @@ void OPOnion::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxL
 {
 	std::string propName{ "" };
 	ss << "\t// OPOnion //\n";
-	ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "magnitude") ? propName : std::to_string(m_magnitude)) << ";\n";
 	ss << "\td" << level << " = abs(d" << level << ") - pmFloat0; \n\n";
 }
 

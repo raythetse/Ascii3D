@@ -73,9 +73,9 @@ template <typename T, typename... Args>
     requires (std::is_base_of_v<Animator, T>)
 SDFBuilder& SDFBuilder::animation(Args&&... args) {
     if (m_lastAddedObj) {
-        m_objChain.back()->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+        m_objChain.back()->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     } else if (m_lastOp) {
-        m_lastOp->bindPropertyModifier(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+        m_lastOp->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
     return *this;
 }

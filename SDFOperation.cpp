@@ -34,8 +34,8 @@ void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Colo
 
 void SDFOperation::resetAnimations()
 {
-	for (auto& propMod : m_animations) {
-		propMod->resetProperty();
+	for (auto& animation : m_animations) {
+		animation->resetProperty();
 	}
 }
 
@@ -52,7 +52,7 @@ void SDFOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& m
 	getShaderOpCalls(ss, level, maxLevel);
 }
 
-bool SDFOperation::getShaderPropModCalls(std::string& propName) const
+bool SDFOperation::getShaderAnimationCalls(std::string& propName) const
 {
 	for (auto& an : m_animations) {
 		if (an->getShaderCall(propName)) return true;
