@@ -9,7 +9,6 @@
 #include "GameTimer.h"
 #include "InputManager.h"
 #include "MathFunctions.h"
-#include "Modifier.h"
 #include "SDFBuilder.h"
 #include "SDFOperationInc.h"
 

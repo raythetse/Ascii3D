@@ -104,7 +104,7 @@ BartScene::BartScene()
         .comb<COMBAddSmooth, SDFObject>()(0.01) // L4
         .op<OPTranslate>(Vec3{ 0.45, 1.3, 0.0 })
         .op<OPRotate>(Vec3{ -0.5, 0.0, -0.75 }.getNormal(), 0.25)
-        .animOp<ANWaveSmooth>("rotations", 1.0, 0.035)
+        .animOp<ANSmoothCycle1D>("rotations", 1.0, 0.035)
         .op<OPTranslate>(Vec3::Down * 0.2)
         .comb<COMBAdd, SDFEllipsoid>(Vec3{ 0.25, 0.4, 0.25 }, shirtCol)() // L5
         .op<OPTranslate>(Vec3::Down * 0.25)
@@ -118,7 +118,7 @@ BartScene::BartScene()
         .comb<COMBAdd, SDFCapsule>(AXIS_Y, 0.17, 0.5, skinCol)() // L5
         .op<OPTranslate>(Vec3::Down * 0.25)
         .op<OPRotate>(Vec3::Forward, 0.375)
-        .animOp<ANWaveSmooth>("rotations", 1.0, 0.1, 0.3)
+        .animOp<ANSmoothCycle1D>("rotations", 1.0, 0.1, 0.3)
         .op<OPTranslate>(Vec3::Up * 0.1)
         .comb<COMBAddSmooth, SDFTaperedCapsule>(AXIS_Y, Vec2{ 0.15, 0.1 }, 0.5, skinCol)(0.05) // L6
         // Left hand

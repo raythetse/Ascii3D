@@ -839,11 +839,11 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
 
     // Property Modifiers
-    { "ANWaveSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANSmoothCycle1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ ANWaveSmooth::DFLT_PERIOD };
-        double amplitude{ ANWaveSmooth::DFLT_AMPLITUDE };
-        double phase{ ANWaveSmooth::DFLT_PHASE };
+        double period{ ANSmoothCycle1D::DFLT_PERIOD };
+        double amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
+        double phase{ ANSmoothCycle1D::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -855,13 +855,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.animObj<ANWaveSmooth>(propName, period, amplitude, phase) : builder.animOp<ANWaveSmooth>(propName, period, amplitude, phase);
+        boundOnObj
+            ? builder.animObj<ANSmoothCycle1D>(propName, period, amplitude, phase)
+            : builder.animOp<ANSmoothCycle1D>(propName, period, amplitude, phase);
     } },
-    { "ANWaveSmoothV2", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANSmoothCycle2D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 periods{ ANWaveSmoothV2::DFLT_PERIOD };
-        Vec2 amplitudes{ ANWaveSmoothV2::DFLT_AMPLITUDE };
-        Vec2 phases{ ANWaveSmoothV2::DFLT_PHASE };
+        Vec2 periods{ ANSmoothCycle2D::DFLT_PERIOD };
+        Vec2 amplitudes{ ANSmoothCycle2D::DFLT_AMPLITUDE };
+        Vec2 phases{ ANSmoothCycle2D::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -873,13 +875,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj ? builder.animObj<ANWaveSmoothV2>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveSmoothV2>(propName, periods, amplitudes, phases);
+        boundOnObj
+            ? builder.animObj<ANSmoothCycle2D>(propName, periods, amplitudes, phases)
+            : builder.animOp<ANSmoothCycle2D>(propName, periods, amplitudes, phases);
     } },
-    { "ANWaveSmoothV3", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANSmoothCycle3D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ ANWaveSmoothV3::DFLT_PERIOD };
-        Vec3 amplitudes{ ANWaveSmoothV3::DFLT_AMPLITUDE };
-        Vec3 phases{ ANWaveSmoothV3::DFLT_PHASE };
+        Vec3 periods{ ANSmoothCycle3D::DFLT_PERIOD };
+        Vec3 amplitudes{ ANSmoothCycle3D::DFLT_AMPLITUDE };
+        Vec3 phases{ ANSmoothCycle3D::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -891,13 +895,18 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "amplitude") ss >> amplitudes;
             else if (param == "phase") ss >> phases;
         }
-        boundOnObj ? builder.animObj<ANWaveSmoothV3>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveSmoothV3>(propName, periods, amplitudes, phases);
+        boundOnObj
+            ? builder.animObj<ANSmoothCycle3D>(propName, periods, amplitudes, phases)
+            : builder.animOp<ANSmoothCycle3D>(propName, periods, amplitudes, phases);
     } },
-    { "ANWaveLinear", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANLinearCycle1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double period{ ANWaveLinear::DFLT_PERIOD };
-        double amplitude{ ANWaveLinear::DFLT_AMPLITUDE };
-        double phase{ ANWaveLinear::DFLT_PHASE };
+        double forwardTime{ ANLinearCycle1D::DFLT_FORWARDTIME };
+        double delayTime1{ ANLinearCycle1D::DFLT_DELAYTIME1 };
+        double backwardTime{ ANLinearCycle1D::DFLT_BACKWARDTIME };
+        double delayTime2{ ANLinearCycle1D::DFLT_DELAYTIME2 };
+        double amplitude{ ANLinearCycle1D::DFLT_AMPLITUDE };
+        double phase{ ANLinearCycle1D::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -905,17 +914,25 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> period;
+            else if (param == "forwardTime") ss >> forwardTime;
+            else if (param == "delayTime1") ss >> delayTime1;
+            else if (param == "backwardTime") ss >> backwardTime;
+            else if (param == "delayTime2") ss >> delayTime2;
             else if (param == "amplitude") ss >> amplitude;
             else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.animObj<ANWaveLinear>(propName, period, amplitude, phase) : builder.animOp<ANWaveLinear>(propName, period, amplitude, phase);
+        boundOnObj  
+            ? builder.animObj<ANLinearCycle1D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase)
+            : builder.animOp<ANLinearCycle1D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
     } },
-    { "ANWaveLinearV2", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANLinearCycle2D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 periods{ ANWaveLinearV2::DFLT_PERIOD };
-        Vec2 amplitudes{ ANWaveLinearV2::DFLT_AMPLITUDE };
-        Vec2 phases{ ANWaveLinearV2::DFLT_PHASE };
+        Vec2 forwardTime{ ANLinearCycle1D::DFLT_FORWARDTIME };
+        Vec2 delayTime1{ ANLinearCycle1D::DFLT_DELAYTIME1 };
+        Vec2 backwardTime{ ANLinearCycle1D::DFLT_BACKWARDTIME };
+        Vec2 delayTime2{ ANLinearCycle1D::DFLT_DELAYTIME2 };
+        Vec2 amplitude{ ANLinearCycle1D::DFLT_AMPLITUDE };
+        Vec2 phase{ ANLinearCycle1D::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -923,17 +940,25 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> periods;
-            else if (param == "amplitude") ss >> amplitudes;
-            else if (param == "phase") ss >> phases;
+            else if (param == "forwardTime") ss >> forwardTime;
+            else if (param == "delayTime1") ss >> delayTime1;
+            else if (param == "backwardTime") ss >> backwardTime;
+            else if (param == "delayTime2") ss >> delayTime2;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.animObj<ANWaveLinearV2>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveLinearV2>(propName, periods, amplitudes, phases);
+        boundOnObj
+            ? builder.animObj<ANLinearCycle2D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase)
+            : builder.animOp<ANLinearCycle2D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
     } },
-    { "ANWaveLinearV3", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "ANLinearCycle3D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 periods{ ANWaveLinearV3::DFLT_PERIOD };
-        Vec3 amplitudes{ ANWaveLinearV3::DFLT_AMPLITUDE };
-        Vec3 phases{ ANWaveLinearV3::DFLT_PHASE };
+        Vec3 forwardTime{ ANLinearCycle1D::DFLT_FORWARDTIME };
+        Vec3 delayTime1{ ANLinearCycle1D::DFLT_DELAYTIME1 };
+        Vec3 backwardTime{ ANLinearCycle1D::DFLT_BACKWARDTIME };
+        Vec3 delayTime2{ ANLinearCycle1D::DFLT_DELAYTIME2 };
+        Vec3 amplitude{ ANLinearCycle1D::DFLT_AMPLITUDE };
+        Vec3 phase{ ANLinearCycle1D::DFLT_PHASE };
         bool boundOnObj{};
 
         while (ss.peek() != EOF) {
@@ -941,11 +966,16 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "propName") ss >> propName;
             else if (param == "boundOnObj") ss >> boundOnObj;
-            else if (param == "period") ss >> periods;
-            else if (param == "amplitude") ss >> amplitudes;
-            else if (param == "phase") ss >> phases;
+            else if (param == "forwardTime") ss >> forwardTime;
+            else if (param == "delayTime1") ss >> delayTime1;
+            else if (param == "backwardTime") ss >> backwardTime;
+            else if (param == "delayTime2") ss >> delayTime2;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
         }
-        boundOnObj ? builder.animObj<ANWaveLinearV3>(propName, periods, amplitudes, phases) : builder.animOp<ANWaveLinearV3>(propName, periods, amplitudes, phases);
+        boundOnObj
+            ? builder.animObj<ANLinearCycle3D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase)
+            : builder.animOp<ANLinearCycle3D>(propName, amplitude, forwardTime, delayTime1, backwardTime, delayTime2, phase);
     } },
 
     // LightSources

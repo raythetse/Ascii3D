@@ -1,5 +1,5 @@
 #pragma once
-#include "Modifier.h"
+#include "Animation.h"
 #include "SDFOperation.h"
 #include "SDFObjectInc.h"
 

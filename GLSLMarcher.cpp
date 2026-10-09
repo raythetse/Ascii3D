@@ -82,57 +82,54 @@ vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 	return mix(colorA, colorB, alpha);
 }
 
-// OPERATOR FUNCTIONS //
-float waveSmooth(float initVal, float period, float amplitude, float phase, float time) {
+// OPERATION FUNCTIONS //
+float smoothCycle1D(float initVal, float period, float amplitude, float phase, float time) {
     return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
 }
 
-vec2 waveSmoothV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
+vec2 smoothCycle2D(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
     return initVal + sin(TAU * (vec2(time) + (phase * period)) / period) * amplitude;
 }
 
-vec3 waveSmoothV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+vec3 waveSmooth3D(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
     return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
 }
 
-float waveLinear(float initVal, float period, float amplitude, float phase, float time) {
-    float progress = mod(0.25 * period + time + phase * period, period) / period;
-	progress -= 0.5;
-	progress *= 2.0;
-	progress = abs(progress);
-	progress -= 0.5;
-	progress *= 2.0;
-    return initVal + progress * amplitude;
+float linearCycle1D(float initVal, float amplitude, float forwardTime, float delayTime1, float backwardTime, float delayTime2, float phase, float time) {
+	float totalTime = forwardTime + delayTime1 + backwardTime + delayTime2;
+	float cycleTime = mod(time + phase, totalTime);
+	float progress = 0.0;
+
+	if (cycleTime < forwardTime) {
+		progress = cycleTime / forwardTime;
+	}
+	else if ((cycleTime -= forwardTime) < delayTime1) {
+		progress = 1.0;
+	}
+	else if ((cycleTime -= delayTime1) < backwardTime) {
+		progress = 1.0 - (cycleTime / backwardTime);
+	}
+	else {
+		progress = 0.0;
+	}
+
+	return initVal + mix(-1.0, 1.0, progress) * amplitude;
 }
 
-vec2 waveLinearV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
-    vec2 progress = vec2(
-        mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
-        mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y
-	);
-	progress -= 0.5;
-	progress *= 2.0;
-	progress = abs(progress);
-	progress -= 0.5;
-	progress *= 2.0;
+vec2 linearCycle2D(vec2 initVal, vec2 amplitude, vec2 forwardTime, vec2 delayTime1, vec2 backwardTime, vec2 delayTime2, vec2 phase, float time) {
+    return vec2 (
+        linearCycle1D(initVal.x, amplitude.x, forwardTime.x, delayTime1.x, backwardTime.x, delayTime2.x, phase.x, time),
+        linearCycle1D(initVal.y, amplitude.y, forwardTime.y, delayTime1.y, backwardTime.y, delayTime2.y, phase.y, time)
+    );
+}  
 
-	return initVal + progress * amplitude;
-}
-
-vec3 waveLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-    vec3 progress = vec3(
-        mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
-        mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y,
-        mod(0.25 * period.z + time + phase.z * period.z, period.z) / period.z
-	);
-	progress -= 0.5;
-	progress *= 2.0;
-	progress = abs(progress);
-	progress -= 0.5;
-	progress *= 2.0;
-
-	return initVal + progress * amplitude;
-}
+vec3 linearCycle3D(vec3 initVal, vec3 amplitude, vec3 forwardTime, vec3 delayTime1, vec3 backwardTime, vec3 delayTime2, vec3 phase, float time) {
+    return vec3 (
+        linearCycle1D(initVal.x, amplitude.x, forwardTime.x, delayTime1.x, backwardTime.x, delayTime2.x, phase.x, time),
+        linearCycle1D(initVal.y, amplitude.y, forwardTime.y, delayTime1.y, backwardTime.y, delayTime2.y, phase.y, time),
+        linearCycle1D(initVal.z, amplitude.z, forwardTime.z, delayTime1.z, backwardTime.z, delayTime2.z, phase.z, time)
+    );
+}   
 
 vec3 translateLinear(vec3 vector, vec2 transitTimes, vec2 endDelays, float phase, float time) {
 	float progress = mod(time + phase + transitTimes.x * 0.5, transitTimes.x + transitTimes.y + endDelays.x + endDelays.y);

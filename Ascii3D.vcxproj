@@ -174,7 +174,7 @@
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Mat2.cpp" />
     <ClCompile Include="Mat3.cpp" />
-    <ClCompile Include="Modifier.cpp" />
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="ResurfaceOperation.cpp" />
     <ClCompile Include="SDFOperation.cpp" />
     <ClCompile Include="PerfMonitor.cpp" />
@@ -212,7 +212,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="MathFunctions.h" />
-    <ClInclude Include="Modifier.h" />
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="SDFOperationInc.h" />
     <ClInclude Include="ResurfaceOperation.h" />
     <ClInclude Include="SDFOperation.h" />

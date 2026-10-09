@@ -11,6 +11,7 @@ Required:
 - Add oscillate prop mods with end delays (remove linear/sine translates?)
 - Add missing update vals for software rendering ops
 - Update loop functions for SDF software mode efficiency
+- Scene description with printing on top line
 
 Optional:
 - more robust templating of propMods
@@ -26,3 +27,7 @@ Optional:
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers
+
+Scene Ideas
+- Mechanical arm moving boxes
+- Seasonal themes outdoor scenes

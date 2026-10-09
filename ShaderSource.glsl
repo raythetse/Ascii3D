@@ -75,57 +75,54 @@ vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 	return mix(colorA, colorB, alpha);
 }
 
-// OPERATOR FUNCTIONS //
-float waveSmooth(float initVal, float period, float amplitude, float phase, float time) {
+// OPERATION FUNCTIONS //
+float smoothCycle1D(float initVal, float period, float amplitude, float phase, float time) {
     return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
 }
 
-vec2 waveSmoothV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
+vec2 smoothCycle2D(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
     return initVal + sin(TAU * (vec2(time) + (phase * period)) / period) * amplitude;
 }
 
-vec3 waveSmoothV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+vec3 waveSmooth3D(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
     return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
 }
 
-float waveLinear(float initVal, float period, float amplitude, float phase, float time) {
-    float progress = mod(0.25 * period + time + phase * period, period) / period;
-	progress -= 0.5;
-	progress *= 2.0;
-	progress = abs(progress);
-	progress -= 0.5;
-	progress *= 2.0;
-    return initVal + progress * amplitude;
+float linearCycle1D(float initVal, float amplitude, float forwardTime, float delayTime1, float backwardTime, float delayTime2, float phase, float time) {
+	float totalTime = forwardTime + delayTime1 + backwardTime + delayTime2;
+	float cycleTime = mod(time + phase, totalTime);
+	float progress = 0.0;
+
+	if (cycleTime < forwardTime) {
+		progress = cycleTime / forwardTime;
+	}
+	else if ((cycleTime -= forwardTime) < delayTime1) {
+		progress = 1.0;
+	}
+	else if ((cycleTime -= delayTime1) < backwardTime) {
+		progress = 1.0 - (cycleTime / backwardTime);
+	}
+	else {
+		progress = 0.0;
+	}
+
+	return initVal + mix(-1.0, 1.0, progress) * amplitude;
 }
 
-vec2 waveLinearV2(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
-    vec2 progress = vec2(
-        mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
-        mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y
-	);
-	progress -= 0.5;
-	progress *= 2.0;
-	progress = abs(progress);
-	progress -= 0.5;
-	progress *= 2.0;
+vec2 linearCycle2D(vec2 initVal, vec2 amplitude, vec2 forwardTime, vec2 delayTime1, vec2 backwardTime, vec2 delayTime2, vec2 phase, float time) {
+    return vec2 (
+        linearCycle1D(initVal.x, amplitude.x, forwardTime.x, delayTime1.x, backwardTime.x, delayTime2.x, phase.x, time),
+        linearCycle1D(initVal.y, amplitude.y, forwardTime.y, delayTime1.y, backwardTime.y, delayTime2.y, phase.y, time)
+    );
+}  
 
-	return initVal + progress * amplitude;
-}
-
-vec3 waveLinearV3(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-    vec3 progress = vec3(
-        mod(0.25 * period.x + time + phase.x * period.x, period.x) / period.x,
-        mod(0.25 * period.y + time + phase.y * period.y, period.y) / period.y,
-        mod(0.25 * period.z + time + phase.z * period.z, period.z) / period.z
-	);
-	progress -= 0.5;
-	progress *= 2.0;
-	progress = abs(progress);
-	progress -= 0.5;
-	progress *= 2.0;
-
-	return initVal + progress * amplitude;
-}
+vec3 linearCycle3D(vec3 initVal, vec3 amplitude, vec3 forwardTime, vec3 delayTime1, vec3 backwardTime, vec3 delayTime2, vec3 phase, float time) {
+    return vec3 (
+        linearCycle1D(initVal.x, amplitude.x, forwardTime.x, delayTime1.x, backwardTime.x, delayTime2.x, phase.x, time),
+        linearCycle1D(initVal.y, amplitude.y, forwardTime.y, delayTime1.y, backwardTime.y, delayTime2.y, phase.y, time),
+        linearCycle1D(initVal.z, amplitude.z, forwardTime.z, delayTime1.z, backwardTime.z, delayTime2.z, phase.z, time)
+    );
+}   
 
 vec3 translateLinear(vec3 vector, vec2 transitTimes, vec2 endDelays, float phase, float time) {
 	float progress = mod(time + phase + transitTimes.x * 0.5, transitTimes.x + transitTimes.y + endDelays.x + endDelays.y);
@@ -394,54 +391,59 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color0 = pmVec30;
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	pmVec30 = vec3(0.5000000, 0.5000000, 1.0000000);
 	vec3 p1;
 	float d1 = FLOAT_MAX;
 	vec3 color1;
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
+	// SDFPlane //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	d1 = dot(p1, pmVec30) - -2;
 
-	// OPTranslate //
-	pmVec30 = waveSmoothV3(vec3(-0.1250000, -0.1250000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(-1.0000000, 0.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
-	p1 -= pmVec30; 
 
 	// SDFObject //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	vec3 p2;
 	float d2 = FLOAT_MAX;
 	vec3 color2;
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = pmVec30;
-	// SDFTorus //
-	pmVec20 = vec2(0.5000000, 0.2000000);
-	d2 = torus(p2.xzy, pmVec20);
-
 
 	// OPTranslate //
-	pmVec30 = waveSmoothV3(vec3(0.2500000, 0.0000000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(1.0000000, 1.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
+	pmVec30 = vec3(0.0000000, 0.0000000, -2.4142137);
 	p2 -= pmVec30; 
 
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.000000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
 	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	vec3 p3;
 	float d3 = FLOAT_MAX;
 	vec3 color3;
 	p3 = p2;
 	d3 = FLOAT_MAX;
 	color3 = pmVec30;
-	// SDFTorus //
-	pmVec20 = vec2(0.5000000, 0.2000000);
-	d3 = torus(p3.xzy, pmVec20);
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.xzy, pmVec20, pmFloat0);
 
 
-	// COMBExclude - InternalDouble //
-	pmFloat0 = max(min(d2, d3), min(-d2, -d3));
-	if ((pmFloat0 >= 0.0) != (d2 <= d3)) {
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
 		color2 = color3; 
 	}
-	d2 = pmFloat0;
+	else if (false) {
+		color2 = color3; 
+	}
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -451,6 +453,158 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	else if (false) {
 		color1 = color2; 
 	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(2.4142137, 0.0000000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(-1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.750000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.yxz, pmVec20, pmFloat0);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 2.4142137);
+	p2 -= pmVec30; 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 0.0000000, -1.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.000000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.xzy, pmVec20, pmFloat0);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(-2.4142137, 0.0000000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.250000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.yxz, pmVec20, pmFloat0);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, -1.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(8.0000000, 2.0000000, 8.0000000);
+	d2 = box(p2, pmVec30);
+
+
+	// COMBSubtract //
+	if (d1 < -d2) d1 = -d2;
 
 	// COMBAdd //
 	if (d1 < d0) {
@@ -467,44 +621,46 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
 
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, -0.2500000, 0.0000000);
-	p1 -= pmVec30; 
-
-	// OPTranslate //
-	pmVec30 = waveSmoothV3(vec3(-0.1250000, -0.1250000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(0.0000000, -1.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
-	p1 -= pmVec30; 
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.125000;
+	p1 = rotateVec3(p1, pmVec30, pmFloat0);
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = pmVec30;
-	// SDFTorus //
-	pmVec20 = vec2(0.5000000, 0.2000000);
-	d2 = torus(p2.xzy, pmVec20);
-
 
 	// OPTranslate //
-	pmVec30 = waveSmoothV3(vec3(0.2500000, 0.0000000, 0.0000000), vec3(32.0000000, 32.0000000, 32.0000000), vec3(1.0000000, 1.0000000, 0.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
+	pmVec30 = vec3(0.0000000, 0.0000000, -2.4142137);
 	p2 -= pmVec30; 
 
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 0.0000000, -1.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.000000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p3 = p2;
 	d3 = FLOAT_MAX;
 	color3 = pmVec30;
-	// SDFTorus //
-	pmVec20 = vec2(0.5000000, 0.2000000);
-	d3 = torus(p3.xzy, pmVec20);
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.xzy, pmVec20, pmFloat0);
 
 
-	// COMBExclude - InternalDouble //
-	pmFloat0 = max(min(d2, d3), min(-d2, -d3));
-	if ((pmFloat0 >= 0.0) != (d2 <= d3)) {
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
 		color2 = color3; 
 	}
-	d2 = pmFloat0;
+	else if (false) {
+		color2 = color3; 
+	}
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -515,29 +671,166 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 		color1 = color2; 
 	}
 
-	// COMBExclude - InternalDouble //
-	pmFloat0 = max(min(d0, d1), min(-d0, -d1));
-	if ((pmFloat0 >= 0.0) != (d0 <= d1)) {
-		color0 = color1; 
-	}
-	d0 = pmFloat0;
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.0000000, -0.5000000);
-	p0 -= pmVec30; 
+	pmVec30 = vec3(2.4142137, 0.0000000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.250000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
 
 	// SDFObject //
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = pmVec30;
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.yxz, pmVec20, pmFloat0);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 2.4142137);
+	p2 -= pmVec30; 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.000000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.xzy, pmVec20, pmFloat0);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(-2.4142137, 0.0000000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// OPRotateContinuous //
+	pmVec30 = vec3(-1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.250000;
+	pmFloat1 = 0.750000;
+	p2 = rotateVec3(p2, pmVec30, time * pmFloat0 + pmFloat1);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFTorusSegment //
+	pmFloat0 = 0.500000;
+	pmVec20 = vec2(1.0000000, 0.2500000);
+	d3 = torusSegment(p3.yxz, pmVec20, pmFloat0);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
 	// SDFBox //
-	pmVec30 = vec3(100.0000000, 100.0000000, 1.0000000);
-	d1 = box(p1, pmVec30);
+	pmVec30 = vec3(8.0000000, 2.0000000, 8.0000000);
+	d2 = box(p2, pmVec30);
 
 
 	// COMBSubtract //
-	if (d0 < -d1) d0 = -d1;
+	if (d1 < -d2) d1 = -d2;
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
 
 }
 
@@ -628,7 +921,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(5.0000000, 5.0000000, -10.0000000) - p0;
+		rayDir = vec3(3.0000000, 5.0000000, -5.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -641,12 +934,36 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 250 : 0.0;
-				float ambLight = 250 * 0.3 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
+				float ambLight = 50 * 0.25 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
-				cumulativeColor += vec3(1.0000000, 1.0000000, 1.0000000) * lightPower;
+				cumulativeColor += vec3(0.5000000, 0.5000000, 1.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [1] //
+		rayDir = vec3(-2.0000000, 4.0000000, -5.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+
+		while (true) {
+			np = p0 + rayDir * (SHADOW_TOLERANCE + rayLength);
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
+				float ambLight = 50 * 0.25 * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(1.0000000, 0.5000000, 0.5000000) * lightPower;
 				break;
 			}
 		}

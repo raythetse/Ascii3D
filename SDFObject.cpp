@@ -210,7 +210,7 @@ void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size
     ss << "\t// SDFBoxFrame //\n";
     std::string propName{ "" };
     ss << "\tpmVec30 = " << (getShaderPropModCalls(propName = "dimensions") ? propName : m_dimensions.getShader()) << ";\n";
-    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "edgeThickness") ? propName : m_dimensions.getShader()) << ";\n";
+    ss << "\tpmFloat0 = " << (getShaderPropModCalls(propName = "edgeThickness") ? propName : std::to_string(m_edgeThickness)) << ";\n";
     ss << "\td" << level << " = boxFrame(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 

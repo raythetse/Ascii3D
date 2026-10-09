@@ -1,0 +1,11 @@
+SDFObject color 1 1 1
+	OPMirrorX
+	OPRotate axis 0 1 0 rotations 0.25
+	OPMirrorX
+	COMBAdd
+	SDFBoxFrame color 1 1 1 dimensions 2 2 2 edgeThickness 0.1
+		ANLinearCycle3D boundOnObj 1 propName dimensions forwardTime 0.5 0.648 0.7584 delayTime1 0.246 0.378 1.24 backwardTime 0.9204 1.48 0.784 delayTime2 0.385 0.48 0.668 phase 1 1 1
+		stepBack
+	stepBack
+LightSource position 5 8 -5 luminance 100 color 1 1 1 ambientPower 0.2
+end

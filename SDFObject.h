@@ -6,7 +6,7 @@
 #include "Enumerations.h"
 #include "Mat3.h"
 #include "MathFunctions.h"
-#include "Modifier.h"
+#include "Animation.h"
 #include "SDFOperation.h"
 #include "Vec2.h"
 #include "Vec3.h"
