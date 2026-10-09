@@ -91,7 +91,7 @@ vec2 smoothCycle2D(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float 
     return initVal + sin(TAU * (vec2(time) + (phase * period)) / period) * amplitude;
 }
 
-vec3 waveSmooth3D(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
+vec3 smoothCycle3D(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
     return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
 }
 

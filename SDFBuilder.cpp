@@ -549,38 +549,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.op<OPTranslate>(translation);
     } },
-    { "OPTranslateSine", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 translation{ OPTranslateSine::DFLT_TRANSLATION };
-        double amplitude{ OPTranslateSine::DFLT_AMPLITUDE };
-        double period{ OPTranslateSine::DFLT_PERIOD };
-        double phase{ OPTranslateSine::DFLT_PHASE };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "translation") ss >> translation;
-            else if (param == "amplitude") ss >> amplitude;
-            else if (param == "period") ss >> period;
-            else if (param == "phase") ss >> phase;
-        }
-        builder.op<OPTranslateSine>(translation, amplitude, period, phase);
-    } },
-    { "OPTranslateLinear", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 translation{ OPTranslateLinear::DFLT_TRANSLATION };
-        Vec2 transitTimes{ OPTranslateLinear::DFLT_TRANSITTIMES };
-        Vec2 endDelays{ OPTranslateLinear::DFLT_ENDDELAYS };
-        double phase{ OPTranslateLinear::DFLT_PHASE };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "translation") ss >> translation;
-            else if (param == "transitTimes") ss >> transitTimes;
-            else if (param == "endDelays") ss >> endDelays;
-            else if (param == "phase") ss >> phase;
-        }
-        builder.op<OPTranslateLinear>(translation, transitTimes, endDelays, phase);
-    } },
     { "OPCubeRollHeight", [](SDFBuilder& builder, std::stringstream& ss) {
         double cubeHeight{ OPCubeRollHeight::DFLT_CUBEHEIGHT };
         double period{ OPCubeRollHeight::DFLT_PERIOD };
@@ -606,56 +574,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "rotations") ss >> rotations;
         }
         builder.op<OPRotate>(axis, rotations);
-    } },
-    { "OPRotateContinuous", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ OPRotateContinuous::DFLT_AXIS };
-        double rotationsPerSecond{ OPRotateContinuous::DFLT_ROTATIONSPERSECOND };
-        double phase{ OPRotateContinuous::DFLT_PHASE };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "axis") ss >> axis;
-            else if (param == "rotationsPerSecond") ss >> rotationsPerSecond;
-            else if (param == "phase") ss >> phase;
-        }
-        builder.op<OPRotateContinuous>(axis, rotationsPerSecond, phase);
-    } },
-    { "OPRotateScan", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ OPRotateScan::DFLT_AXIS };
-        double rotations{ OPRotateScan::DFLT_ROTATIONS };
-        Vec2 transitTimes{ OPRotateScan::DFLT_TRANSTIMES };
-        Vec2 endDelays{ OPRotateScan::DFLT_ENDDELAYS };
-        double phase{ OPRotateScan::DFLT_PHASE };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "axis") ss >> axis;
-            else if (param == "rotations") ss >> rotations;
-            else if (param == "transitTimes") ss >> transitTimes;
-            else if (param == "endDelays") ss >> endDelays;
-            else if (param == "phase") ss >> phase;
-        }
-        builder.op<OPRotateScan>(axis, rotations, transitTimes, endDelays, phase);
-    } },
-    { "OPRotateDelay", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 axis{ OPRotateDelay::DFLT_AXIS };
-        double rotations{ OPRotateDelay::DFLT_ROTATIONS };
-        double rotateTime{ OPRotateDelay::DFLT_ROTATETIME };
-        double delayTime{ OPRotateDelay::DFLT_DELAYTIME };
-        double phase{ OPRotateDelay::DFLT_PHASE };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "axis") ss >> axis;
-            else if (param == "rotations") ss >> rotations;
-            else if (param == "rotateTime") ss >> rotateTime;
-            else if (param == "delayTime") ss >> delayTime;
-            else if (param == "phase") ss >> phase;
-        }
-        builder.op<OPRotateDelay>(axis, rotations, rotateTime, delayTime, phase);
     } },
     { "OPCubeRoller", [](SDFBuilder& builder, std::stringstream& ss) {
         std::vector<Vec3> axes{ OPCubeRoller::DFLT_AXES };
@@ -839,6 +757,60 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
 
     // Property Modifiers
+    { "ANContinuous1D", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        double amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
+        double phase{ ANSmoothCycle1D::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
+        }
+        boundOnObj
+            ? builder.animObj<ANContinuous1D>(propName, amplitude, phase)
+            : builder.animOp<ANContinuous1D>(propName, amplitude, phase);
+    } },
+    { "ANContinuous2D", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        Vec2 amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
+        Vec2 phase{ ANSmoothCycle1D::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
+        }
+        boundOnObj
+            ? builder.animObj<ANContinuous2D>(propName, amplitude, phase)
+            : builder.animOp<ANContinuous2D>(propName, amplitude, phase);
+    } },
+    { "ANContinuous3D", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string propName;
+        Vec3 amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
+        Vec3 phase{ ANSmoothCycle1D::DFLT_PHASE };
+        bool boundOnObj{};
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "propName") ss >> propName;
+            else if (param == "boundOnObj") ss >> boundOnObj;
+            else if (param == "amplitude") ss >> amplitude;
+            else if (param == "phase") ss >> phase;
+        }
+        boundOnObj
+            ? builder.animObj<ANContinuous3D>(propName, amplitude, phase)
+            : builder.animOp<ANContinuous3D>(propName, amplitude, phase);
+    } },
     { "ANSmoothCycle1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         double period{ ANSmoothCycle1D::DFLT_PERIOD };

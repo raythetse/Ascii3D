@@ -11,25 +11,33 @@ WormsScene::WormsScene()
         .comb<COMBAdd, SDFPlane>(Vec3::Up, -2.0, Color::LightBlue)() //L1
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Backward * offset)
-        .op<OPRotateContinuous>(Vec3::Forward, rps)
+        //.op<OPRotateContinuous>(Vec3::Forward, rps)
+        .op<OPRotate>(Vec3::Forward)
+        .animOp<ANContinuous1D>("rotations", rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
         .stepBack(2) //L1
 
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Right * offset)
-        .op<OPRotateContinuous>(Vec3::Left, rps, .75)
+        //.op<OPRotateContinuous>(Vec3::Left, rps, .75)
+        .op<OPRotate>(Vec3::Left)
+        .animOp<ANContinuous1D>("rotations", rps, 0.75 / rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
         .stepBack(2) //L1
 
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Forward * offset)
-        .op<OPRotateContinuous>(Vec3::Backward, rps)
+        //.op<OPRotateContinuous>(Vec3::Backward, rps)
+        .op<OPRotate>(Vec3::Backward)
+        .animOp<ANContinuous1D>("rotations", rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
         .stepBack(2) //L1
 
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Left * offset)
-        .op<OPRotateContinuous>(Vec3::Right, rps, 0.25)
+        //.op<OPRotateContinuous>(Vec3::Right, rps, 0.25)
+        .op<OPRotate>(Vec3::Right)
+        .animOp<ANContinuous1D>("rotations", rps, 0.25 / rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
         .stepBack(2) //L1
 
@@ -41,25 +49,33 @@ WormsScene::WormsScene()
         .op<OPRotate>(Vec3::Up, 0.125)
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Backward * offset)
-        .op<OPRotateContinuous>(Vec3::Backward, rps)
+        //.op<OPRotateContinuous>(Vec3::Backward, rps)
+        .op<OPRotate>(Vec3::Backward)
+        .animOp<ANContinuous1D>("rotations", rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
         .stepBack(2) //L1
 
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Right * offset)
-        .op<OPRotateContinuous>(Vec3::Right, rps, .25)
+        //.op<OPRotateContinuous>(Vec3::Right, rps, .25)
+        .op<OPRotate>(Vec3::Right)
+        .animOp<ANContinuous1D>("rotations", rps, 0.25 / rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
         .stepBack(2) //L1
 
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Forward * offset)
-        .op<OPRotateContinuous>(Vec3::Forward, rps)
+        //.op<OPRotateContinuous>(Vec3::Forward, rps)
+        .op<OPRotate>(Vec3::Forward)
+        .animOp<ANContinuous1D>("rotations", rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
         .stepBack(2) //L1
 
         .comb<COMBAdd, SDFObject>()() //L2
         .op<OPTranslate>(Vec3::Left * offset)
-        .op<OPRotateContinuous>(Vec3::Left, rps, 0.75)
+        //.op<OPRotateContinuous>(Vec3::Left, rps, 0.75)
+        .op<OPRotate>(Vec3::Left)
+        .animOp<ANContinuous1D>("rotations", rps, 0.75 / rps)
         .comb<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
         .stepBack(2) //L1
 

@@ -86,6 +86,11 @@ Vec2 Vec2::getNormal() const
     return !m ? Vec2{} : Vec2(x / m, y / m);
 }
 
+Vec2 Vec2::operator-() const
+{
+    return { -x, -y };
+}
+
 Vec2 Vec2::operator+(const Vec2& p) const
 {
     return { x + p.x, y + p.y };
@@ -93,17 +98,37 @@ Vec2 Vec2::operator+(const Vec2& p) const
 
 Vec2 Vec2::operator-(const Vec2& p) const
 {
-    return { x - p.x, y - p.y};
+    return { x - p.x, y - p.y };
 }
 
 Vec2 Vec2::operator*(const Vec2& p) const
 {
-    return { x * p.x, y * p.y};
+    return { x * p.x, y * p.y };
 }
 
 Vec2 Vec2::operator/(const Vec2& p) const noexcept
 {
-    return { p.x == 0 ? 0.0 : x / p.x, p.y == 0 ? 0.0 : y / p.y};
+    return { p.x == 0 ? 0.0 : x / p.x, p.y == 0 ? 0.0 : y / p.y };
+}
+
+Vec2 Vec2::operator+(const double d) const
+{
+    return { x + d, y + d };
+}
+
+Vec2 Vec2::operator-(const double d) const
+{
+    return { x - d, y - d };
+}
+
+Vec2 Vec2::operator*(const double d) const
+{
+    return { x * d, y * d };
+}
+
+Vec2 Vec2::operator/(const double d) const noexcept
+{
+    return { d == 0 ? 0.0 : x / d, d == 0 ? 0.0 : y / d };
 }
 
 Vec2& Vec2::operator+=(const Vec2& p)
@@ -130,12 +155,36 @@ Vec2& Vec2::operator/=(const Vec2& p)
     return *this;
 }
 
-Vec2 Vec2::operator*(const double d) const {
-    return { x * d, y * d };
+Vec2& Vec2::operator+=(const double d)
+{
+    x += d; y += d;
+    return *this;
+}
+
+Vec2& Vec2::operator-=(const double d)
+{
+    x -= d; y -= d;
+    return *this;
+}
+
+Vec2& Vec2::operator*=(const double d)
+{
+    x *= d; y *= d;
+    return *this;
+}
+
+Vec2& Vec2::operator/=(const double d)
+{
+    x = d == 0.0 ? 0.0 : x / d; y = d == 0.0 ? 0.0 : d;
+    return *this;
 }
 
 bool Vec2::operator==(const Vec2& p) const {
     return (x == p.x && y == p.y);
+}
+
+bool Vec2::operator==(const double d) const {
+    return (x == d && y == d);
 }
 
 std::string Vec2::getShader() const

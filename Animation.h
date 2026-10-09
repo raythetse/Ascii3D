@@ -36,9 +36,10 @@ protected:
 	T* m_ptr{};
 	T m_initVal{};
 	T m_amplitude{};
+	T m_phase{};
 public:
-	AnimatorTemplate(std::string_view propName, T amplitude)
-		: Animator(propName), m_amplitude(amplitude) {}
+	AnimatorTemplate(std::string_view propName, T amplitude, T phase)
+		: Animator(propName), m_amplitude(amplitude), m_phase(phase) {}
 	void BindToProperty(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
 	void resetProperty() const override;
 };
@@ -50,6 +51,60 @@ inline void AnimatorTemplate<T>::resetProperty() const
 }
 
 template <AnimType T>
+class ANContinuous : public AnimatorTemplate<T>
+{
+public:
+	inline static const double DFLT_AMPLITUDE{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
+protected:
+	void serializeInner(std::stringstream& ss) const override;
+public:
+	ANContinuous(std::string propName, T amplitude = DFLT_AMPLITUDE, T phase = DFLT_PHASE)
+		: AnimatorTemplate<T>(propName, amplitude, phase) {}
+	virtual void update() const override;
+};
+
+template<AnimType T>
+inline void ANContinuous<T>::serializeInner(std::stringstream& ss) const
+{
+	ss << " amplitude " << ANContinuous::m_amplitude;
+	ss << " phase " << ANContinuous::m_phase;
+}
+
+template<AnimType T>
+inline void ANContinuous<T>::update() const
+{
+	*ANContinuous::m_ptr = ANContinuous::m_initVal + (ANContinuous::m_phase + GameTimer::gameTime()) * ANContinuous::m_amplitude;
+}
+
+class ANContinuous1D : public ANContinuous<double>
+{
+protected:
+	std::string getClassName() const override { return "ANContinuous1D"; }
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	using ANContinuous<double>::ANContinuous;
+};
+
+class ANContinuous2D : public ANContinuous<Vec2>
+{
+protected:
+	std::string getClassName() const override { return "ANContinuous2D"; }
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	using ANContinuous<Vec2>::ANContinuous;
+};
+
+class ANContinuous3D : public ANContinuous<Vec3>
+{
+protected:
+	std::string getClassName() const override { return "ANContinuous3D"; }
+	virtual void getShaderModCall(std::string& call) const override;
+public:
+	using ANContinuous<Vec3>::ANContinuous;
+};
+
+template <AnimType T>
 class ANSmoothCycle : public AnimatorTemplate<T>
 {
 public:
@@ -58,11 +113,10 @@ public:
 	inline static const double DFLT_PHASE{ 0.0 };
 protected:
 	T m_period{};
-	T m_phase{};
 	void serializeInner(std::stringstream& ss) const override;
 public:
 	ANSmoothCycle(std::string_view propName, T period = DFLT_PERIOD, T amplitude = DFLT_AMPLITUDE, T phase = DFLT_PHASE)
-		: AnimatorTemplate<T>(propName, amplitude), m_period(period), m_phase(phase) {}
+		: AnimatorTemplate<T>(propName, amplitude, phase), m_period(period) {}
 };
 
 template <AnimType T>
@@ -70,7 +124,7 @@ void ANSmoothCycle<T>::serializeInner(std::stringstream& ss) const
 {
 	ss << " period " << m_period;
 	ss << " amplitude " << ANSmoothCycle::m_amplitude;
-	ss << " phase " << m_phase;
+	ss << " phase " << ANSmoothCycle::m_phase;
 }
 
 class ANSmoothCycle1D : public ANSmoothCycle<double>
@@ -119,13 +173,12 @@ protected:
 	T m_delayTime1;
 	T m_backwardTime;
 	T m_delayTime2;
-	T m_phase;
 	void serializeInner(std::stringstream& ss) const override;
 	double updateSingle(double initVal, double amplitude, double forwardTime, double delayTime1, double backwardTime, double delayTime2, double phase) const;
 public:
 	ANLinearCycle<T>(std::string propName, T amplitude = DFLT_AMPLITUDE, T forwardTime = DFLT_FORWARDTIME, T delayTime1 = DFLT_DELAYTIME1
 		, T backwardTime = DFLT_BACKWARDTIME, T delayTime2 = DFLT_DELAYTIME2, T phase = DFLT_PHASE)
-		: AnimatorTemplate<T>(propName, amplitude), m_forwardTime(forwardTime), m_delayTime1(delayTime1), m_backwardTime(backwardTime), m_delayTime2(delayTime2), m_phase(phase) {}
+		: AnimatorTemplate<T>(propName, amplitude, phase), m_forwardTime(forwardTime), m_delayTime1(delayTime1), m_backwardTime(backwardTime), m_delayTime2(delayTime2) {}
 };
 
 template <AnimType T>
@@ -135,7 +188,8 @@ void ANLinearCycle<T>::serializeInner(std::stringstream& ss) const
 	ss << " delayTime1 " << m_delayTime1;
 	ss << " backwardTime " << m_backwardTime;
 	ss << " delayTime2 " << m_delayTime2;
-	ss << " phase " << m_phase;
+	ss << " phase " << ANLinearCycle::m_phase;
+	ss << " amplitude " << ANLinearCycle::m_amplitude;
 }
 
 template<AnimType T>

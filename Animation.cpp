@@ -22,6 +22,21 @@ bool Animator::getShaderCall(std::string& propName) const
     return false;
 }
 
+void ANContinuous1D::getShaderModCall(std::string& call) const
+{
+    call = std::format("({:.7f} + {:.7f} * ({:.7f} + time))", m_initVal, m_amplitude, m_phase);
+}
+
+void ANContinuous2D::getShaderModCall(std::string& call) const
+{
+    call = std::format("({} + {} * ({} +  time))", m_initVal.getShader(), m_amplitude.getShader(), m_phase.getShader());
+}
+
+void ANContinuous3D::getShaderModCall(std::string& call) const
+{
+    call = std::format("({} + {} * ({} +  time))", m_initVal.getShader(), m_amplitude.getShader(), m_phase.getShader());
+}
+
 void ANSmoothCycle1D::getShaderModCall(std::string& call) const
 {
     call = std::format("smoothCycle1D({:.7f}, {:.7f}, {:.7f}, {:.7f}, time)", m_initVal, m_period, m_amplitude, m_phase);
@@ -102,46 +117,3 @@ void ANLinearCycle3D::update() const
         updateSingle(m_initVal.z, m_amplitude.z, m_forwardTime.z, m_delayTime1.z, m_backwardTime.z, m_delayTime2.z, m_phase.z)
     };
 }
-
-//void ANLinearCycle2D::getShaderModCall(std::string& call) const
-//{
-//    call = std::format("waveLinearV2({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
-//}
-//
-//void ANLinearCycle2D::update() const
-//{
-//    double gameTime = GameTimer::gameTime();
-//    Vec2 progress{
-//        fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
-//        fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y
-//    };
-//    progress -= 0.5;
-//    progress *= 2.0;
-//    progress = progress.abs();
-//    progress -= 0.5;
-//    progress *= 2.0;
-//
-//    *m_ptr = m_initVal + progress * m_amplitude;
-//}
-//
-//void ANLinearCycle3D::getShaderModCall(std::string& call) const
-//{
-//    call = std::format("waveLinearV3({}, {}, {}, {}, time)", m_initVal.getShader(), m_period.getShader(), m_amplitude.getShader(), m_phase.getShader());
-//}
-//
-//void ANLinearCycle3D::update() const
-//{
-//    double gameTime = GameTimer::gameTime();
-//    Vec3 progress{
-//        fmod(0.25 * m_period.x + (gameTime + (m_phase.x * m_period.x)), m_period.x) / m_period.x,
-//        fmod(0.25 * m_period.y + (gameTime + (m_phase.y * m_period.y)), m_period.y) / m_period.y,
-//        fmod(0.25 * m_period.z + (gameTime + (m_phase.z * m_period.z)), m_period.z) / m_period.z
-//    };
-//    progress -= 0.5;
-//    progress *= 2.0;
-//    progress = progress.abs();
-//    progress -= 0.5;
-//    progress *= 2.0;
-//
-//    *m_ptr = m_initVal + progress * m_amplitude;
-//}
