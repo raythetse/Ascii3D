@@ -11,7 +11,6 @@ WormsScene::WormsScene()
         .combination<COMBAdd, SDFPlane>(Vec3::Up, -2.0, Color::LightBlue)() //L1
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Backward * offset)
-        //.operation<OPRotateContinuous>(Vec3::Forward, rps)
         .operation<OPRotate>(Vec3::Forward)
         .animation<ANContinuous1D>("rotations", rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
@@ -19,7 +18,6 @@ WormsScene::WormsScene()
 
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Right * offset)
-        //.operation<OPRotateContinuous>(Vec3::Left, rps, .75)
         .operation<OPRotate>(Vec3::Left)
         .animation<ANContinuous1D>("rotations", rps, 0.75 / rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
@@ -27,7 +25,6 @@ WormsScene::WormsScene()
 
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Forward * offset)
-        //.operation<OPRotateContinuous>(Vec3::Backward, rps)
         .operation<OPRotate>(Vec3::Backward)
         .animation<ANContinuous1D>("rotations", rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
@@ -35,7 +32,6 @@ WormsScene::WormsScene()
 
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Left * offset)
-        //.operation<OPRotateContinuous>(Vec3::Right, rps, 0.25)
         .operation<OPRotate>(Vec3::Right)
         .animation<ANContinuous1D>("rotations", rps, 0.25 / rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
@@ -49,7 +45,6 @@ WormsScene::WormsScene()
         .operation<OPRotate>(Vec3::Up, 0.125)
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Backward * offset)
-        //.operation<OPRotateContinuous>(Vec3::Backward, rps)
         .operation<OPRotate>(Vec3::Backward)
         .animation<ANContinuous1D>("rotations", rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
@@ -57,7 +52,6 @@ WormsScene::WormsScene()
 
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Right * offset)
-        //.operation<OPRotateContinuous>(Vec3::Right, rps, .25)
         .operation<OPRotate>(Vec3::Right)
         .animation<ANContinuous1D>("rotations", rps, 0.25 / rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3
@@ -65,7 +59,6 @@ WormsScene::WormsScene()
 
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Forward * offset)
-        //.operation<OPRotateContinuous>(Vec3::Forward, rps)
         .operation<OPRotate>(Vec3::Forward)
         .animation<ANContinuous1D>("rotations", rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_Z, radii, 0.5)() //L3
@@ -73,7 +66,6 @@ WormsScene::WormsScene()
 
         .combination<COMBAdd, SDFObject>()() //L2
         .operation<OPTranslate>(Vec3::Left * offset)
-        //.operation<OPRotateContinuous>(Vec3::Left, rps, 0.75)
         .operation<OPRotate>(Vec3::Left)
         .animation<ANContinuous1D>("rotations", rps, 0.75 / rps)
         .combination<COMBAdd, SDFTorusSegment>(AXIS_X, radii, 0.5)() //L3

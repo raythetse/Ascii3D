@@ -4,14 +4,26 @@
 TestScene::TestScene()
 {
 	add(SDFBuilder{}
-		.operation<OPTranslate>()
-		.animation<ANLinearCycle3D>("translation", Vec3::Right, 1.0, 1.0, 0.0, 1.0, 0.0)
-		.combination<COMBAdd, SDFBoxFrame>(Vec3{ 2.0 })()
-		.animation<ANLinearCycle3D>("dimensions", Vec3{ 0.75, 0.614, 0.5148 }, Vec3{ .794, .483, .667 }, Vec3{ .845, .378, .849 }, Vec3{ 1.124, .556, .764 }, Vec3{ .617, .885, .409 }, 0.0)
-		.operation<OPTranslate>()
-		.animation<ANLinearCycle3D>("translation", Vec3::Right, 1.0, 1.0, 0.0, 1.0, 0.0)
-		.combination<COMBAdd, SDFBoxFrame>(Vec3{ 2.0 })()
-		.animation<ANLinearCycle3D>("dimensions", Vec3{ 0.75, 0.614, 0.5148 }, Vec3{ .794, .483, .667 }, Vec3{ .845, .378, .849 }, Vec3{ 1.124, .556, .764 }, Vec3{ .617, .885, .409 }, 0.0)
-		.addLightSource(Vec3{ 5.0, 8.0, -5.0 }, 100.0, Color::White)
+		.startBranch("2x2")
+		.combination<COMBAdd, SDFBox>(Vec3{ 0.95 })()
+		.operation<OPRoundOff>(0.04)
+		.operation<OPMirrorXZ>()
+		.operation<OPTranslate>(Vec3{ 0.25, 0.5, 0.25 })
+		.combination<COMBAdd, SDFCylinder>(AXIS_Y, 0.15, 0.425)()
+		.operation<OPRoundOff>(0.02)
+		.endBranch()
+
+		//.startBranch("4x4")
+		//.combination<COMBAdd, SDFObject>()()
+		//.operation<OPMirrorXZ>()
+		//.operation<OPTranslate>(Vec3{ 0.5, 0.0, 0.5 })
+		//.insertBranch("2x2")
+		//.endBranch()
+
+		.operation<OPTranslate>(Vec3{ 1.0, 0.0, 1.0 })
+		.insertBranch("2x2")
+		.operation<OPTranslate>(Vec3{ 1.0, 0.0, 1.0 })
+		.insertBranch("2x2")
+		.addLightSource(Vec3{5.0, 5.0, -3.0}, 60.0, Color::White, 0.2)
 	);
 }

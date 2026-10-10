@@ -66,11 +66,13 @@ void SDFObject::resetAnimations()
 void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
 {
     std::stringstream ss{};
-    ss << std::string(level, '\t');
-    ss << getClassName();
-    ss << " color " << m_color;
-    serializeInner(ss);
-    strVec.push_back(ss.str());
+    if (level != 0) {
+        ss << std::string(level, '\t');
+        ss << getClassName();
+        ss << " color " << m_color;
+        serializeInner(ss);
+        strVec.push_back(ss.str());
+    }
     ++level;
     for (auto& an : m_animations) {
         an->serialize(strVec, level);
@@ -78,7 +80,7 @@ void SDFObject::serialize(std::vector<std::string>& strVec, size_t level) const
     for (auto& op : m_operations) {
         op->serialize(strVec, level);
     }
-    strVec.push_back(std::string(level, '\t') + "stepBack");
+    if (level != 0) strVec.push_back(std::string(level, '\t') + "stepBack");
 }
 
 double SDFObject::signedDistance(Vec3 p, Color* colorOut) const

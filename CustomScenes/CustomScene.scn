@@ -1,16 +1,38 @@
-SDFObject color 1 1 1
-	OPTranslate translation 0 1 0
-	ANLinearCycle3D propName translation forwardTime 1 1 1 delayTime1 1 1 1 backwardTime 0 0 0 delayTime2 1 1 1 phase 0 0 0 amplitude 1 0 0
+startBranch 2x2
+COMBAdd
+SDFBox color 1 1 1 dimensions 0.95 0.95 0.95
+	OPRoundOff magnitude 0.04
+	OPMirrorXZ
+	OPTranslate translation 0.25 0.5 0.25
 	COMBAdd
-	SDFBoxFrame color 1 1 1 dimensions 2 2 2 edgeThickness 0.1
-		ANLinearCycle3D propName dimensions forwardTime 0.794 0.483 0.667 delayTime1 0.845 0.378 0.849 backwardTime 1.124 0.556 0.764 delayTime2 0.617 0.885 0.409 phase 0 0 0 amplitude 0.75 0.614 0.5148
-		OPTranslate translation 0 1 0
-		ANLinearCycle3D propName translation forwardTime 1 1 1 delayTime1 1 1 1 backwardTime 0 0 0 delayTime2 1 1 1 phase 0 0 0 amplitude 1 0 0
-		COMBAdd
-		SDFBoxFrame color 1 1 1 dimensions 2 2 2 edgeThickness 0.1
-			ANLinearCycle3D propName dimensions forwardTime 0.794 0.483 0.667 delayTime1 0.845 0.378 0.849 backwardTime 1.124 0.556 0.764 delayTime2 0.617 0.885 0.409 phase 0 0 0 amplitude 0.75 0.614 0.5148
-			stepBack
+	SDFCylinder color 1 1 1 sideLength 0.425 radius 0.15 axis 1
+		OPRoundOff magnitude 0.02
 		stepBack
 	stepBack
-LightSource position 5 8 -5 luminance 100 color 1 1 1 ambientPower 0.2
+stepBack
+endBranch
+OPTranslate translation 1 0 1
+COMBAdd
+SDFBox color 1 1 1 dimensions 0.95 0.95 0.95
+	OPRoundOff magnitude 0.04
+	OPMirrorXZ
+	OPTranslate translation 0.25 0.5 0.25
+	COMBAdd
+	SDFCylinder color 1 1 1 sideLength 0.425 radius 0.15 axis 1
+		OPRoundOff magnitude 0.02
+		stepBack
+	stepBack
+OPTranslate translation 1 0 1
+COMBAdd
+SDFBox color 1 1 1 dimensions 0.95 0.95 0.95
+	OPRoundOff magnitude 0.04
+	OPMirrorXZ
+	OPTranslate translation 0.25 0.5 0.25
+	COMBAdd
+	SDFCylinder color 1 1 1 sideLength 0.425 radius 0.15 axis 1
+		OPRoundOff magnitude 0.02
+		stepBack
+	stepBack
+stepBack
+LightSource position 5 5 -3 luminance 60 color 1 1 1 ambientPower 0.2
 end

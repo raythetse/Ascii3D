@@ -5,6 +5,7 @@
 
 SDFBuilder::SDFBuilder() {
     m_baseObject = std::make_unique<SDFObject>();
+    m_branchMap = std::make_unique<std::unordered_map<std::string, std::vector<std::string>>>();
     m_objChain.push_back(m_baseObject.get());
 }
 
@@ -15,6 +16,11 @@ std::unique_ptr<SDFObject> SDFBuilder::getBaseObject() {
 std::vector<std::unique_ptr<LightSource>> SDFBuilder::getLights()
 {
     return std::move(m_lights);
+}
+
+std::unique_ptr<std::unordered_map<std::string, std::vector<std::string>>> SDFBuilder::getBranchMap()
+{
+    return std::move(m_branchMap);
 }
 
 SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance, Color color, double ambientPower)
@@ -40,14 +46,37 @@ SDFBuilder& SDFBuilder::color(Vec3 color)
     return *this;
 }
 
-SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
+size_t SDFBuilder::loadSerializedBranches(std::vector<std::string>& strVec)
 {
-    m_baseObject = std::make_unique<SDFObject>();
-    m_objChain.push_back(m_baseObject.get());
+    size_t index{};
+    while (true) {
+        if (!strVec[index].starts_with("startBranch")) return index;
+        size_t startIndex = index;
+        std::stringstream ss{ strVec[index] };
+        std::string branchName;
+        ss >> branchName >> branchName;
+        index += 1;
+        for (; index < strVec.size(); ++index) {
+            if (strVec[index] == "endBranch") {
+                (*m_branchMap)[branchName].insert((*m_branchMap)[branchName].begin(), strVec.begin() + startIndex + 1, strVec.begin() + index);
+                ++index;
+                break;
+            }
+        }
+    }
+    return index;
+}
 
-    SDFBuilder builder{};
-    for (size_t i{ 1 }; i < strVec.size(); ++i) {
-        std::replace(strVec[i].begin(), strVec[i].end(), ',', ' ');
+SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec, bool addToExisting)
+{
+    if (!addToExisting) {
+        m_baseObject = std::make_unique<SDFObject>();
+        m_objChain.clear();
+        m_objChain.push_back(m_baseObject.get());
+    }
+    size_t branchLinesRead = loadSerializedBranches(strVec);
+
+    for (size_t i{ branchLinesRead }; i < strVec.size(); ++i) {
         std::stringstream ss{ strVec[i] };
         std::string opName;
         ss >> opName;
@@ -58,10 +87,82 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
     return *this;
 }
 
+SDFBuilder& SDFBuilder::startBranch(std::string branchName)
+{
+    if (m_currentBranch) endBranch();
+
+    m_currentBranchName = branchName;
+    if (m_branchMap->contains(m_currentBranchName)) {
+        m_currentBranch = std::make_unique<SDFBuilder>();
+        m_currentBranch->loadSerialized((*m_branchMap)[m_currentBranchName]);
+    }
+    else {
+        m_currentBranch = std::make_unique<SDFBuilder>();
+    }
+    return *this;
+}
+
+SDFBuilder& SDFBuilder::endBranch()
+{
+    if (!m_currentBranch) return *this;
+    (*m_branchMap)[m_currentBranchName].clear();
+    m_currentBranch->serialize((*m_branchMap)[m_currentBranchName]);
+    m_currentBranch = nullptr;
+    return *this;
+}
+
+SDFBuilder& SDFBuilder::insertBranch(std::string branchName, bool stepBack)
+{
+    if (m_branchMap->contains(branchName))
+    {
+        auto& branch = (*m_branchMap)[m_currentBranchName];
+        if (stepBack) {
+            loadSerialized(branch, true);
+        }
+        else {
+            int i{ static_cast<int>(branch.size()) };
+            for (; i > 0; --i) {
+                std::stringstream ss{ branch[i - 1] };
+                std::string str;
+                ss >> str;
+                if (str != "stepBack") {
+                    break;
+                }
+            }
+            std::vector<std::string> subset{ branch.begin(), branch.begin() + i };
+            loadSerialized(subset, true);
+        }
+    }
+    return *this;
+}
+
+void SDFBuilder::serialize(std::vector<std::string>& strVec)
+{
+    m_baseObject->serialize(strVec, 0);
+}
+
 const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> SDFBuilder::s_opMap = {
     // Step Back
     { "stepBack", [](SDFBuilder& builder, std::stringstream& ss) {
         builder.stepBack();
+    }},
+
+
+    // Branching
+    { "startBranch", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string branchName;
+        ss >> branchName;
+        builder.startBranch(branchName);
+    }},
+    { "endBranch", [](SDFBuilder& builder, std::stringstream& ss) {
+        builder.endBranch();
+    }},
+    { "insertBranch", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string branchName;
+        ss >> branchName;
+        bool stepBack;
+        ss >> stepBack;
+        builder.insertBranch(branchName, stepBack);
     }},
 
     // Combinations
