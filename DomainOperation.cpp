@@ -3,19 +3,21 @@
 void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level, '\t');
+	ss << std::string(level - 1, '\t');
 	ss << getClassName();
 	ss << " spacing " << m_spacing;
 
 	strVec.push_back(ss.str());
 }
 
-void DomainOperation::bindAnimation(std::unique_ptr<Animator> animation)
+Amination* DomainOperation::bindAnimation(std::unique_ptr<Amination> animation)
 {
 	if (animation->propName() == "spacing") {
 		animation->BindToProperty(&m_spacing);
 		m_animations.push_back(std::move(animation));
+		return m_animations.back().get();
 	}
+	return nullptr;
 }
 
 void OPRepeatX::transform(Vec3& p) const
@@ -135,7 +137,7 @@ void OPRepeatLimited::transform(Vec3& p) const
 void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level, '\t');
+	ss << std::string(level - 1, '\t');
 	ss << getClassName();
 	ss << " spacing " << m_spacing;
 	ss << " limits " << m_limits;
@@ -153,15 +155,17 @@ void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level, size
 	ss << "\tp" << level << " -= pmVec30 * clamp(round(p" << level << " / pmVec30), -pmVec31, pmVec31);\n\n";
 }
 
-void OPRepeatLimited::bindAnimation(std::unique_ptr<Animator> animation)
+Amination* OPRepeatLimited::bindAnimation(std::unique_ptr<Amination> animation)
 {
 	if (animation->propName() == "spacing") {
 		animation->BindToProperty(&m_spacing);
 		m_animations.push_back(std::move(animation));
-		return;
+		return m_animations.back().get();
 	}
 	if (animation->propName() == "limits") {
 		animation->BindToProperty(&m_limits);
 		m_animations.push_back(std::move(animation));
+		return m_animations.back().get();
 	}
+	return nullptr;
 }

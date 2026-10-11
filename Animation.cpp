@@ -2,17 +2,17 @@
 #include <format>
 #include "Enumerations.h"
 
-void Animator::serialize(std::vector<std::string>& strVec, size_t level)
+void Amination::serialize(std::vector<std::string>& strVec, size_t level)
 {
     std::stringstream ss{};
-    ss << std::string(level, '\t');
+    ss << std::string(level - 1, '\t');
     ss << getClassName();
     ss << " propName " << m_propName;
     serializeInner(ss);
     strVec.push_back(ss.str());
 }
 
-bool Animator::getShaderCall(std::string& propName) const
+bool Amination::getShaderCall(std::string& propName) const
 {
     if (m_propName == propName) {
         getShaderCallInner(propName);

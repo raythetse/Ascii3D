@@ -10,7 +10,7 @@
 template <typename T>
 concept AnimType =	std::same_as<T, double> || std::same_as<T, Vec2> || std::same_as<T, Vec3>;
 
-class Animator
+class Amination
 {
 private:
 	std::string m_propName;
@@ -18,7 +18,7 @@ protected:
 	virtual std::string getClassName() const = 0;
 	virtual void serializeInner(std::stringstream& ss) const = 0;
 	virtual void getShaderCallInner(std::string& call) const = 0;
-	Animator(std::string_view propName) : m_propName(propName) {}
+	Amination(std::string_view propName) : m_propName(propName) {}
 public:
 	std::string_view propName() { return m_propName; }
 	virtual void BindToProperty(void* ref) = 0;
@@ -30,7 +30,7 @@ public:
 };
 
 template <AnimType T>
-class AnimatorTemplate : public Animator
+class AnimatorTemplate : public Amination
 {
 protected:
 	T* m_ptr{};
@@ -39,7 +39,7 @@ protected:
 	T m_phase{};
 public:
 	AnimatorTemplate(std::string_view propName, T amplitude, T phase)
-		: Animator(propName), m_amplitude(amplitude), m_phase(phase) {}
+		: Amination(propName), m_amplitude(amplitude), m_phase(phase) {}
 	void BindToProperty(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
 	void resetProperty() const override;
 };

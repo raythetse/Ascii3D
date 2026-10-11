@@ -1,18 +1,20 @@
 #include "ResurfaceOperation.h"
 #include <sstream>
 
-void ResurfaceOperation::bindAnimation(std::unique_ptr<Animator> animation)
+Amination* ResurfaceOperation::bindAnimation(std::unique_ptr<Amination> animation)
 {
 	if (animation->propName() == "magnitude") {
 		animation->BindToProperty(&m_magnitude);
 		m_animations.push_back(std::move(animation));
+		return m_animations.back().get();
 	}
+	return nullptr;
 }
 
 void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level, '\t');
+	ss << std::string(level - 1, '\t');
 	ss << getClassName();
 	ss << " magnitude " << m_magnitude;
 
