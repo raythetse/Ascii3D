@@ -2,7 +2,6 @@
 #include <memory>
 #include <ranges>
 #include <string>
-#include <unordered_map>
 #include <vector>
 #include "SDFBuilder.h"
 #include "SDFObjectInc.h"
@@ -13,7 +12,6 @@ class SDFBuilder;
 class SDFScene
 {
 private:
-	std::unique_ptr<std::unordered_map <std::string, std::vector<std::string>>> m_branchMap;
 	std::unique_ptr<SDFObject> m_baseObject{};
 	std::vector<std::unique_ptr<LightSource>> m_lights{};
 protected:

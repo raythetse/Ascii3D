@@ -1,4 +1,5 @@
 Required:
+- change builder to add animations with 1 function instead of 2
 - object chain copying/merging for SDF branch reuse (shared_ptrs for SDFObjects?)
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
@@ -23,7 +24,6 @@ Optional:
 - Input controls for animations?
 - improve ambient light, occlusion, and shadow functions
 - investigate rhombus axis issue
-- value randomizers?
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers

@@ -391,7 +391,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color0 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.0000000);
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(1.0000000, 0.0000000, 0.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.0000000, 0.0000000, 0.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
 	p0 -= pmVec30; 
 
 	// SDFObject //
@@ -402,20 +402,14 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
-	// SDFBox //
-	pmVec30 = vec3(0.9500000, 0.9500000, 0.9500000);
-	d1 = box(p1, pmVec30);
+	// SDFBoxFrame //
+	pmVec30 = linearCycle3D(vec3(2.0000000, 2.0000000, 2.0000000), vec3(0.7500000, 0.6140000, 0.5148000), vec3(0.7940000, 0.4830000, 0.6670000), vec3(0.8450000, 0.3780000, 0.8490000), vec3(1.1240000, 0.5560000, 0.7640000), vec3(0.6170000, 0.8850000, 0.4090000), vec3(0.0000000, 0.0000000, 0.0000000), time);
+	pmFloat0 = 0.100000;
+	d1 = boxFrame(p1, pmVec30, pmFloat0);
 
-
-	// OPRoundOff //
-	pmFloat0 = 0.040000;
-	d1 -= pmFloat0;
-
-	// OPMirrorXZ //
-	p1.xz = abs(p1.xz);
 
 	// OPTranslate //
-	pmVec30 = vec3(0.2500000, 0.5000000, 0.2500000);
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(1.0000000, 0.0000000, 0.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.0000000, 0.0000000, 0.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.0000000, 0.0000000, 0.0000000), time);
 	p1 -= pmVec30; 
 
 	// SDFObject //
@@ -426,73 +420,11 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = pmVec30;
-	// SDFCylinder //
-	pmFloat0 = 0.425000;
-	pmFloat1 = 0.150000;
-	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+	// SDFBoxFrame //
+	pmVec30 = linearCycle3D(vec3(2.0000000, 2.0000000, 2.0000000), vec3(0.7500000, 0.6140000, 0.5148000), vec3(0.7940000, 0.4830000, 0.6670000), vec3(0.8450000, 0.3780000, 0.8490000), vec3(1.1240000, 0.5560000, 0.7640000), vec3(0.6170000, 0.8850000, 0.4090000), vec3(0.0000000, 0.0000000, 0.0000000), time);
+	pmFloat0 = 0.100000;
+	d2 = boxFrame(p2, pmVec30, pmFloat0);
 
-
-	// OPRoundOff //
-	pmFloat0 = 0.020000;
-	d2 -= pmFloat0;
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-	else if (false) {
-		color1 = color2; 
-	}
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-	else if (false) {
-		color0 = color1; 
-	}
-
-	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.0000000);
-	p0 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = pmVec30;
-	// SDFBox //
-	pmVec30 = vec3(0.9500000, 0.9500000, 0.9500000);
-	d1 = box(p1, pmVec30);
-
-
-	// OPRoundOff //
-	pmFloat0 = 0.040000;
-	d1 -= pmFloat0;
-
-	// OPMirrorXZ //
-	p1.xz = abs(p1.xz);
-
-	// OPTranslate //
-	pmVec30 = vec3(0.2500000, 0.5000000, 0.2500000);
-	p1 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = pmVec30;
-	// SDFCylinder //
-	pmFloat0 = 0.425000;
-	pmFloat1 = 0.150000;
-	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
-
-
-	// OPRoundOff //
-	pmFloat0 = 0.020000;
-	d2 -= pmFloat0;
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -601,7 +533,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(5.0000000, 5.0000000, -3.0000000) - p0;
+		rayDir = vec3(5.0000000, 8.0000000, -5.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -614,8 +546,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 60 : 0.0;
-				float ambLight = 60 * 0.2 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 100 : 0.0;
+				float ambLight = 100 * 0.2 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
