@@ -45,7 +45,7 @@ void CombinationOperation::getShaderCalls(std::stringstream& ss, size_t level, s
 void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level - 1, '\t');
+	ss << std::string(level, '\t');
 	ss << getClassName();
 	strVec.push_back(ss.str());
 }
@@ -155,36 +155,32 @@ void COMBExclude::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level - 1, '\t');
+	ss << std::string(level, '\t');
 	ss << getClassName();
 	ss << " colorMode " << m_colorMode;
 	strVec.push_back(ss.str());
 }
 
-Amination* SmoothCombination::bindAnimation(std::unique_ptr<Amination> animation)
+void SmoothCombination::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "smoothing") {
 		animation->BindToProperty(&m_smoothing);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "colorBlending") {
+	else if (animation->propName() == "colorBlending") {
 		animation->BindToProperty(&m_colorBlending);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "colorShifting") {
+	else if (animation->propName() == "colorShifting") {
 		animation->BindToProperty(&m_colorShifting);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }
 
 void SmoothCombination::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level - 1, '\t');
+	ss << std::string(level, '\t');
 	ss << getClassName();
 	ss << " smoothing " << m_smoothing;
 	ss << " colorBlending " << m_colorBlending;

@@ -1,91 +1,38 @@
+startBranch 2x2
 COMBAdd
-SDFPlane color 0.5 0.5 1 normal 0 1 0 offset -2
+SDFBox color 1 1 1 dimensions 0.95 0.95 0.95
+	OPRoundOff magnitude 0.04
+	OPMirrorXZ
+	OPTranslate translation 0.25 0.5 0.25
 	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation 0 0 -2.41421
-		OPRotate axis 0 0 1 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 0
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 2
-			stepBack
-		stepBack
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation 2.41421 0 0
-		OPRotate axis -1 0 0 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 3
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 0
-			stepBack
-		stepBack
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation 0 0 2.41421
-		OPRotate axis 0 0 -1 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 0
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 2
-			stepBack
-		stepBack
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation -2.41421 0 0
-		OPRotate axis 1 0 0 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 1
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 0
-			stepBack
-		stepBack
-	OPTranslate translation 0 -1 0
-	COMBSubtract
-	SDFBox color 1 1 1 dimensions 8 2 8
-		stepBack
-	stepBack
-COMBAdd
-SDFObject color 1 1 1
-	OPRotate axis 0 1 0 rotations 0.125
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation 0 0 -2.41421
-		OPRotate axis 0 0 -1 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 0
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 2
-			stepBack
-		stepBack
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation 2.41421 0 0
-		OPRotate axis 1 0 0 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 1
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 0
-			stepBack
-		stepBack
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation 0 0 2.41421
-		OPRotate axis 0 0 1 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 0
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 2
-			stepBack
-		stepBack
-	COMBAdd
-	SDFObject color 1 1 1
-		OPTranslate translation -2.41421 0 0
-		OPRotate axis -1 0 0 rotations 0.5
-		ANContinuous1D propName rotations amplitude 0.25 phase 3
-		COMBAdd
-		SDFTorusSegment color 1 1 1 radii 1 0.25 sweep 0.5 axis 0
-			stepBack
-		stepBack
-	OPTranslate translation 0 1 0
-	COMBSubtract
-	SDFBox color 1 1 1 dimensions 8 2 8
+	SDFCylinder color 1 1 1 sideLength 0.425 radius 0.15 axis 1
+		OPRoundOff magnitude 0.02
 		stepBack
 	stepBack
 stepBack
-LightSource position 3 5 -5 luminance 50 color 0.5 0.5 1 ambientPower 0.25
-LightSource position -2 4 -5 luminance 50 color 1 0.5 0.5 ambientPower 0.25
+endBranch
+OPTranslate translation 1 0 1
+COMBAdd
+SDFBox color 1 1 1 dimensions 0.95 0.95 0.95
+	OPRoundOff magnitude 0.04
+	OPMirrorXZ
+	OPTranslate translation 0.25 0.5 0.25
+	COMBAdd
+	SDFCylinder color 1 1 1 sideLength 0.425 radius 0.15 axis 1
+		OPRoundOff magnitude 0.02
+		stepBack
+	stepBack
+OPTranslate translation 1 0 1
+COMBAdd
+SDFBox color 1 1 1 dimensions 0.95 0.95 0.95
+	OPRoundOff magnitude 0.04
+	OPMirrorXZ
+	OPTranslate translation 0.25 0.5 0.25
+	COMBAdd
+	SDFCylinder color 1 1 1 sideLength 0.425 radius 0.15 axis 1
+		OPRoundOff magnitude 0.02
+		stepBack
+	stepBack
+stepBack
+LightSource position 5 5 -3 luminance 60 color 1 1 1 ambientPower 0.2
 end

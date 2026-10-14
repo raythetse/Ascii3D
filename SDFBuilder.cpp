@@ -5,7 +5,7 @@
 
 SDFBuilder::SDFBuilder() {
     m_baseObject = std::make_unique<SDFObject>();
-    m_groupMap = std::make_unique<std::unordered_map<std::string, std::vector<std::string>>>();
+    m_branchMap = std::make_unique<std::unordered_map<std::string, std::vector<std::string>>>();
     m_objChain.push_back(m_baseObject.get());
 }
 
@@ -20,7 +20,7 @@ std::vector<std::unique_ptr<LightSource>> SDFBuilder::getLights()
 
 std::unique_ptr<std::unordered_map<std::string, std::vector<std::string>>> SDFBuilder::getBranchMap()
 {
-    return std::move(m_groupMap);
+    return std::move(m_branchMap);
 }
 
 SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance, Color color, double ambientPower)
@@ -50,15 +50,15 @@ size_t SDFBuilder::loadSerializedBranches(std::vector<std::string>& strVec)
 {
     size_t index{};
     while (true) {
-        if (!strVec[index].starts_with("startGroup")) return index;
+        if (!strVec[index].starts_with("startBranch")) return index;
         size_t startIndex = index;
         std::stringstream ss{ strVec[index] };
-        std::string groupName;
-        ss >> groupName >> groupName;
+        std::string branchName;
+        ss >> branchName >> branchName;
         index += 1;
         for (; index < strVec.size(); ++index) {
-            if (strVec[index] == "endGroup") {
-                (*m_groupMap)[groupName].insert((*m_groupMap)[groupName].begin(), strVec.begin() + startIndex + 1, strVec.begin() + index);
+            if (strVec[index] == "endBranch") {
+                (*m_branchMap)[branchName].insert((*m_branchMap)[branchName].begin(), strVec.begin() + startIndex + 1, strVec.begin() + index);
                 ++index;
                 break;
             }
@@ -74,9 +74,9 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec, bool ad
         m_objChain.clear();
         m_objChain.push_back(m_baseObject.get());
     }
-    size_t groupLinesRead = loadSerializedBranches(strVec);
+    size_t branchLinesRead = loadSerializedBranches(strVec);
 
-    for (size_t i{ groupLinesRead }; i < strVec.size(); ++i) {
+    for (size_t i{ branchLinesRead }; i < strVec.size(); ++i) {
         std::stringstream ss{ strVec[i] };
         std::string opName;
         ss >> opName;
@@ -87,51 +87,49 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec, bool ad
     return *this;
 }
 
-SDFBuilder& SDFBuilder::startGroup(std::string groupName)
+SDFBuilder& SDFBuilder::startBranch(std::string branchName)
 {
-    if (m_currentGroup) endGroup();
+    if (m_currentBranch) endBranch();
 
-    m_currentGroupName = groupName;
-    if (m_groupMap->contains(m_currentGroupName)) {
-        m_currentGroup = std::make_unique<SDFBuilder>();
-        m_currentGroup->loadSerialized((*m_groupMap)[m_currentGroupName]);
+    m_currentBranchName = branchName;
+    if (m_branchMap->contains(m_currentBranchName)) {
+        m_currentBranch = std::make_unique<SDFBuilder>();
+        m_currentBranch->loadSerialized((*m_branchMap)[m_currentBranchName]);
     }
     else {
-        m_currentGroup = std::make_unique<SDFBuilder>();
+        m_currentBranch = std::make_unique<SDFBuilder>();
     }
     return *this;
 }
 
-SDFBuilder& SDFBuilder::endGroup()
+SDFBuilder& SDFBuilder::endBranch()
 {
-    if (!m_currentGroup) return *this;
-    (*m_groupMap)[m_currentGroupName].clear();
-    m_currentGroup->serialize((*m_groupMap)[m_currentGroupName]);
-    m_currentGroup = nullptr;
+    if (!m_currentBranch) return *this;
+    (*m_branchMap)[m_currentBranchName].clear();
+    m_currentBranch->serialize((*m_branchMap)[m_currentBranchName]);
+    m_currentBranch = nullptr;
     return *this;
 }
 
-SDFBuilder& SDFBuilder::insertGroup(std::string groupName, bool stepBack)
+SDFBuilder& SDFBuilder::insertBranch(std::string branchName, bool stepBack)
 {
-    if (m_groupMap->contains(groupName))
+    if (m_branchMap->contains(branchName))
     {
-        m_objChain.back()->pushOperation<OPInsertGroup>(groupName);
-
-        auto& group = (*m_groupMap)[groupName];
+        auto& branch = (*m_branchMap)[m_currentBranchName];
         if (stepBack) {
-            loadSerialized(group, true);
+            loadSerialized(branch, true);
         }
         else {
-            int i{ static_cast<int>(group.size()) };
+            int i{ static_cast<int>(branch.size()) };
             for (; i > 0; --i) {
-                std::stringstream ss{ group[i - 1] };
+                std::stringstream ss{ branch[i - 1] };
                 std::string str;
                 ss >> str;
                 if (str != "stepBack") {
                     break;
                 }
             }
-            std::vector<std::string> subset{ group.begin(), group.begin() + i };
+            std::vector<std::string> subset{ branch.begin(), branch.begin() + i };
             loadSerialized(subset, true);
         }
     }
@@ -149,20 +147,22 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.stepBack();
     }},
 
-    // Grouping
-    { "startGroup", [](SDFBuilder& builder, std::stringstream& ss) {
-        std::string groupName;
-        ss >> groupName;
-        builder.startGroup(groupName);
+
+    // Branching
+    { "startBranch", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string branchName;
+        ss >> branchName;
+        builder.startBranch(branchName);
     }},
-    { "endGroup", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.endGroup();
+    { "endBranch", [](SDFBuilder& builder, std::stringstream& ss) {
+        builder.endBranch();
     }},
-    { "OPInsertGroup", [](SDFBuilder& builder, std::stringstream& ss) {
-        std::string groupName;
-        ss >> groupName;
-        builder.operation<OPInsertGroup>(groupName);
-        builder.insertGroup(groupName);
+    { "insertBranch", [](SDFBuilder& builder, std::stringstream& ss) {
+        std::string branchName;
+        ss >> branchName;
+        bool stepBack;
+        ss >> stepBack;
+        builder.insertBranch(branchName, stepBack);
     }},
 
     // Combinations

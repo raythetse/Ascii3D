@@ -20,24 +20,21 @@ double SDF2DObject::signedDistanceInner(Vec3 p) const
     return m_operation == OP2D_REVOLVE ? d2D : extrude2D(p.y, d2D, m_magnitude);
 }
 
-Amination* SDF2DObject::bindAnimation(std::unique_ptr<Amination> animation)
+void SDF2DObject::bindAnimation(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "magnitude") {
         animation->BindToProperty(&m_magnitude);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "revolveRotations") {
         animation->BindToProperty(&m_revolveRotations);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "revolveRotateOffset") {
         animation->BindToProperty(&m_revolveRotateOffset);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    else return bindAnimationInner(std::move(animation));
+    else bindAnimationInner(std::move(animation));
 }
 
 void SDFRhombus::serializeInnerInner(std::stringstream& ss) const
@@ -66,19 +63,16 @@ double SDFRhombus::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFRhombus::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFRhombus::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "dimensions") {
         animation->BindToProperty(&m_dimensions);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFEquilateralTriangle::serializeInnerInner(std::stringstream& ss) const
@@ -107,19 +101,16 @@ double SDFEquilateralTriangle::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFEquilateralTriangle::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFEquilateralTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "base") {
         animation->BindToProperty(&m_base);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFIsoscelesTriangle::serializeInnerInner(std::stringstream& ss) const
@@ -148,19 +139,16 @@ double SDFIsoscelesTriangle::signedDistanceInnerInner(Vec3 p) const
     return std::sqrt(d.x) * (d.y >= 0.0 ? -1.0 : 1.0);
 }
 
-Amination* SDFIsoscelesTriangle::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFIsoscelesTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "dimensions") {
         animation->BindToProperty(&m_dimensions);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFTriangle::serializeInnerInner(std::stringstream& ss) const
@@ -202,29 +190,24 @@ double SDFTriangle::signedDistanceInnerInner(Vec3 p) const
     return -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFTriangle::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "point1") {
         animation->BindToProperty(&m_point1);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "point2") {
         animation->BindToProperty(&m_point2);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "point3") {
         animation->BindToProperty(&m_point3);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFPieSlice::serializeInnerInner(std::stringstream& ss) const
@@ -255,24 +238,20 @@ double SDFPieSlice::signedDistanceInnerInner(Vec3 p) const
     return std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
 }
 
-Amination* SDFPieSlice::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFPieSlice::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "sweep") {
         animation->BindToProperty(&m_sweep);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "radius") {
         animation->BindToProperty(&m_radius);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFPentagon::serializeInnerInner(std::stringstream& ss) const
@@ -301,19 +280,16 @@ double SDFPentagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFPentagon::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFPentagon::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "radius") {
         animation->BindToProperty(&m_radius);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFHexagon::serializeInnerInner(std::stringstream& ss) const
@@ -341,19 +317,16 @@ double SDFHexagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFHexagon::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFHexagon::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "radius") {
         animation->BindToProperty(&m_radius);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFOctagon::serializeInnerInner(std::stringstream& ss) const
@@ -382,19 +355,16 @@ double SDFOctagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFOctagon::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFOctagon::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "radius") {
         animation->BindToProperty(&m_radius);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }
 
 void SDFStar::serializeInnerInner(std::stringstream& ss) const
@@ -434,27 +404,22 @@ double SDFStar::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-Amination* SDFStar::bindAnimationInner(std::unique_ptr<Amination> animation)
+void SDFStar::bindAnimationInner(std::unique_ptr<Animator> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "numPoints") {
         animation->BindToProperty(&m_numPointsD);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "radius") {
         animation->BindToProperty(&m_radius);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
     else if (animation->propName() == "ratio") {
         animation->BindToProperty(&m_ratio);
         m_animations.push_back(std::move(animation));
-        return m_animations.back().get();
     }
-    return nullptr;
 }

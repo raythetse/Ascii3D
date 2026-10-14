@@ -6,7 +6,7 @@
 void TransformOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
-	ss << std::string(level - 1, '\t');
+	ss << std::string(level, '\t');
 	ss << getClassName();
 	innerInnerSerialize(ss);
 	strVec.push_back(ss.str());
@@ -110,14 +110,12 @@ void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << " -= pmVec30; \n\n";
 }
 
-Amination* OPTranslate::bindAnimation(std::unique_ptr<Amination> animation)
+void OPTranslate::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "translation") {
 		animation->BindToProperty(&m_translation);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }
 
 void OPRotate::innerUpdate()
@@ -145,24 +143,20 @@ void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& max
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
-Amination* OPRotate::bindAnimation(std::unique_ptr<Amination> animation)
+void OPRotate::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "axis") {
 		animation->BindToProperty(&m_axis);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "rotations") {
+	else if (animation->propName() == "rotations") {
 		animation->BindToProperty(&m_rotations);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "rotMat") {
+	else if (animation->propName() == "rotMat") {
 		animation->BindToProperty(&m_rotMat);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }
 
 void OPCubeRollHeight::innerUpdate() {
@@ -199,24 +193,20 @@ void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, siz
 	ss << "\tp" << level << ".y -= pmFloat0;\n\n";
 }
 
-Amination* OPCubeRollHeight::bindAnimation(std::unique_ptr<Amination> animation)
+void OPCubeRollHeight::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "cubeHeight") {
 		animation->BindToProperty(&m_cubeHeight);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "period") {
+	else if (animation->propName() == "period") {
 		animation->BindToProperty(&m_period);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "phase") {
+	else if (animation->propName() == "phase") {
 		animation->BindToProperty(&m_phase);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }
 
 void OPCubeRoller::innerUpdate() {
@@ -262,24 +252,20 @@ void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 	++numRollers;
 }
 
-Amination* OPCubeRoller::bindAnimation(std::unique_ptr<Amination> animation)
+void OPCubeRoller::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "axes") {
 		animation->BindToProperty(&m_axes);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "phase") {
+	else if (animation->propName() == "phase") {
 		animation->BindToProperty(&m_phase);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "quarterTurnTime") {
+	else if (animation->propName() == "quarterTurnTime") {
 		animation->BindToProperty(&m_quarterTurnTime);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }
 
 void Elongate::innerUpdate() {
@@ -293,19 +279,16 @@ void Elongate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " offset " << m_offset;
 }
 
-Amination* Elongate::bindAnimation(std::unique_ptr<Amination> animation)
+void Elongate::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "length") {
 		animation->BindToProperty(&m_length);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "offset") {
+	else if (animation->propName() == "offset") {
 		animation->BindToProperty(&m_offset);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }
 
 void OPElongateX::transform(Vec3& p) const
@@ -376,17 +359,14 @@ void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tp" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n\n";
 }
 
-Amination* OPElongateXYZ::bindAnimation(std::unique_ptr<Amination> animation)
+void OPElongateXYZ::bindAnimation(std::unique_ptr<Animator> animation)
 {
 	if (animation->propName() == "lengths") {
 		animation->BindToProperty(&m_lengths);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	if (animation->propName() == "offsets") {
+	else if (animation->propName() == "offsets") {
 		animation->BindToProperty(&m_offsets);
 		m_animations.push_back(std::move(animation));
-		return m_animations.back().get();
 	}
-	return nullptr;
 }

@@ -22,14 +22,14 @@ void SDFScene::add(SDFBuilder& builder)
 {
     m_baseObject = std::move(builder.getBaseObject());
     m_lights = std::move(builder.getLights());
-    m_groupMap = std::move(builder.getBranchMap());
+    m_branchMap = std::move(builder.getBranchMap());
 }
 
 void SDFScene::add(SDFBuilder&& builder)
 {
     m_baseObject = std::move(builder.getBaseObject());
     m_lights = std::move(builder.getLights());
-    m_groupMap = std::move(builder.getBranchMap());
+    m_branchMap = std::move(builder.getBranchMap());
 }
 
 void SDFScene::update()
@@ -39,7 +39,7 @@ void SDFScene::update()
 
 bool SDFScene::serialize(std::vector<std::string>& strVec) const
 {
-    for (auto& branch : *m_groupMap) {
+    for (auto& branch : *m_branchMap) {
         strVec.push_back("startBranch " + branch.first);
         strVec.insert(strVec.end(), branch.second.begin(), branch.second.end());
         strVec.push_back("endBranch");

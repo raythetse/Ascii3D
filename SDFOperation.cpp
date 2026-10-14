@@ -59,8 +59,3 @@ bool SDFOperation::getShaderAnimationCalls(std::string& propName) const
 	}
 	return false;
 }
-
-void OPInsertGroup::innerSerialize(std::vector<std::string>&strVec, size_t level) const
-{
-	strVec.push_back(std::string(level - 1, '\t') + "OPInsertGroup " + m_groupName);
-}

@@ -29,5 +29,4 @@ enum SDFOperationType {
 	Combine,
 	Resurface,
 	Transform,
-	Group,
 };

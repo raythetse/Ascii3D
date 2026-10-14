@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <memory>
 #include <sstream>
-#include <string>
 #include "Enumerations.h"
 #include "Mat3.h"
 #include "MathFunctions.h"
@@ -14,7 +13,7 @@ class SDFOperation
 {
 protected:
 	SDFOperationType m_opType;
-	std::vector<std::unique_ptr<Amination>> m_animations{};
+	std::vector<std::unique_ptr<Animator>> m_animations{};
 	virtual void innerUpdate() = 0;
 	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return distanceA; }
 	virtual double resurface(double distance) { return distance; };
@@ -26,22 +25,8 @@ protected:
 public:
 	virtual void update();
 	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
-	virtual Amination* bindAnimation(std::unique_ptr<Amination> animation) = 0;
+	virtual void bindAnimation(std::unique_ptr<Animator> animation) = 0;
 	virtual void resetAnimations();
 	virtual void serialize(std::vector<std::string>& strVec, size_t level) const;
 	virtual void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const;
-};
-
-class OPInsertGroup : public SDFOperation
-{
-private:
-	std::string m_groupName{};
-protected:
-	// Inherited via SDFOperation
-	void innerUpdate() override {};
-	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
-	void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
-public:
-	Amination* bindAnimation(std::unique_ptr<Amination> animation) override { return nullptr; };
-	OPInsertGroup(std::string groupName) : SDFOperation(Group), m_groupName(groupName) {};
 };
