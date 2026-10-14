@@ -119,7 +119,7 @@ void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxL
     }
 }
 
-void SDFObject::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFObject::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -151,7 +151,7 @@ double SDFPlane::signedDistanceInner(Vec3 p) const
     return p.dot(m_normal) - m_offset;
 }
 
-void SDFPlane::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFPlane::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -187,7 +187,7 @@ double SDFBox::signedDistanceInner(Vec3 p) const
     return p.maximum(0.0).length() + std::min(std::max(p.x, std::max(p.y, p.z)), 0.0);
 }
 
-void SDFBox::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFBox::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -225,7 +225,7 @@ double SDFBoxFrame::signedDistanceInner(Vec3 p) const
         Vec3(q.x, q.y, p.z).maximum(0.0).length() + std::min(std::max(q.x, std::max(q.y, p.z)), 0.0));
 }
 
-void SDFBoxFrame::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFBoxFrame::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -259,7 +259,7 @@ double SDFSphere::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
-void SDFSphere::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFSphere::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -290,7 +290,7 @@ double SDFCrystal::signedDistanceInner(Vec3 p) const
     return (p.x + p.y + p.z - m_edgeLength) * 0.57735027;
 }
 
-void SDFCrystal::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFCrystal::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -330,7 +330,7 @@ double SDFCone::signedDistanceInner(Vec3 p) const
     return std::sqrt(d) * (s >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFCone::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFCone::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -370,7 +370,7 @@ double SDFSolidAngle::signedDistanceInner(Vec3 p) const
     return std::max(l, m * ((sincos.y * q.x - sincos.x * q.y) > 0.0 ? 1.0 : -1.0));
 }
 
-void SDFSolidAngle::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFSolidAngle::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -406,7 +406,7 @@ double SDFEllipsoid::signedDistanceInner(Vec3 p) const
     return k0 * (k0 - 1.0) / k1;
 }
 
-void SDFEllipsoid::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFEllipsoid::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);

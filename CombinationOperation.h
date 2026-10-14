@@ -11,7 +11,7 @@ protected:
 	virtual std::string getClassName() const = 0;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const {};
-	virtual void bindAnimation(std::unique_ptr<Animator> animation) override {};
+	virtual void bindAnimation(std::unique_ptr<Animation> animation) override {};
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj)
 		: SDFOperation(SDFOperationType::Combine), m_combineObj(std::move(combineObj)) {}
 public:
@@ -79,7 +79,7 @@ protected:
 	double m_colorBlending;
 	double m_colorShifting;
 	void blendColors(double blendRate, Vec3 colorIn, Vec3* colorOut);
-	void bindAnimation(std::unique_ptr<Animator> animation) override;
+	void bindAnimation(std::unique_ptr<Animation> animation) override;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	SmoothCombination(std::unique_ptr<SDFObject> combineObj, double smoothing = DFLT_SMOOTHING, double colorBlending = DFLT_COLORBLENDING, double colorShifting = DFLT_COLORSHIFTING)

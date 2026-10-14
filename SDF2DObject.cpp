@@ -20,7 +20,7 @@ double SDF2DObject::signedDistanceInner(Vec3 p) const
     return m_operation == OP2D_REVOLVE ? d2D : extrude2D(p.y, d2D, m_magnitude);
 }
 
-void SDF2DObject::bindAnimation(std::unique_ptr<Animator> animation)
+void SDF2DObject::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "magnitude") {
         animation->BindToProperty(&m_magnitude);
@@ -63,7 +63,7 @@ double SDFRhombus::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFRhombus::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFRhombus::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -101,7 +101,7 @@ double SDFEquilateralTriangle::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y < 0.0 ? 1.0 : -1.0);
 }
 
-void SDFEquilateralTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFEquilateralTriangle::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -139,7 +139,7 @@ double SDFIsoscelesTriangle::signedDistanceInnerInner(Vec3 p) const
     return std::sqrt(d.x) * (d.y >= 0.0 ? -1.0 : 1.0);
 }
 
-void SDFIsoscelesTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFIsoscelesTriangle::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -190,7 +190,7 @@ double SDFTriangle::signedDistanceInnerInner(Vec3 p) const
     return -std::sqrt(d.x) * (d.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFTriangle::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFTriangle::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -238,7 +238,7 @@ double SDFPieSlice::signedDistanceInnerInner(Vec3 p) const
     return std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
 }
 
-void SDFPieSlice::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFPieSlice::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -280,7 +280,7 @@ double SDFPentagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFPentagon::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFPentagon::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -317,7 +317,7 @@ double SDFHexagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFHexagon::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFHexagon::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -355,7 +355,7 @@ double SDFOctagon::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.y >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFOctagon::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFOctagon::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -404,7 +404,7 @@ double SDFStar::signedDistanceInnerInner(Vec3 p) const
     return p2D.length() * (p2D.x >= 0.0 ? 1.0 : -1.0);
 }
 
-void SDFStar::bindAnimationInner(std::unique_ptr<Animator> animation)
+void SDFStar::bindAnimationInner(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);

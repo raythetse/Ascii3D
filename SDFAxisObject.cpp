@@ -48,7 +48,7 @@ double SDFTorus::signedDistanceInner(Vec3 p) const
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
-void SDFTorus::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFTorus::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -86,7 +86,7 @@ double SDFTorusSegment::signedDistanceInner(Vec3 p) const
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
-void SDFTorusSegment::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFTorusSegment::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -126,7 +126,7 @@ double SDFCapsule::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
-void SDFCapsule::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFCapsule::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -170,7 +170,7 @@ double SDFTaperedCapsule::signedDistanceInner(Vec3 p) const
     return q.dot(Vec2{ a, b }) - m_radii.x;
 }
 
-void SDFTaperedCapsule::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFTaperedCapsule::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);
@@ -210,7 +210,7 @@ double SDFCylinder::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
-void SDFCylinder::bindAnimation(std::unique_ptr<Animator> animation)
+void SDFCylinder::bindAnimation(std::unique_ptr<Animation> animation)
 {
     if (animation->propName() == "color") {
         animation->BindToProperty(&m_color);

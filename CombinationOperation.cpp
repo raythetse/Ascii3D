@@ -161,7 +161,7 @@ void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level)
 	strVec.push_back(ss.str());
 }
 
-void SmoothCombination::bindAnimation(std::unique_ptr<Animator> animation)
+void SmoothCombination::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "smoothing") {
 		animation->BindToProperty(&m_smoothing);

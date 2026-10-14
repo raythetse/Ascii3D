@@ -1,7 +1,7 @@
 #include "ResurfaceOperation.h"
 #include <sstream>
 
-void ResurfaceOperation::bindAnimation(std::unique_ptr<Animator> animation)
+void ResurfaceOperation::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "magnitude") {
 		animation->BindToProperty(&m_magnitude);

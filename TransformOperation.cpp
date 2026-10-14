@@ -110,7 +110,7 @@ void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << " -= pmVec30; \n\n";
 }
 
-void OPTranslate::bindAnimation(std::unique_ptr<Animator> animation)
+void OPTranslate::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "translation") {
 		animation->BindToProperty(&m_translation);
@@ -143,7 +143,7 @@ void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& max
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
-void OPRotate::bindAnimation(std::unique_ptr<Animator> animation)
+void OPRotate::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "axis") {
 		animation->BindToProperty(&m_axis);
@@ -193,7 +193,7 @@ void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, siz
 	ss << "\tp" << level << ".y -= pmFloat0;\n\n";
 }
 
-void OPCubeRollHeight::bindAnimation(std::unique_ptr<Animator> animation)
+void OPCubeRollHeight::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "cubeHeight") {
 		animation->BindToProperty(&m_cubeHeight);
@@ -252,7 +252,7 @@ void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t&
 	++numRollers;
 }
 
-void OPCubeRoller::bindAnimation(std::unique_ptr<Animator> animation)
+void OPCubeRoller::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "axes") {
 		animation->BindToProperty(&m_axes);
@@ -279,7 +279,7 @@ void Elongate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " offset " << m_offset;
 }
 
-void Elongate::bindAnimation(std::unique_ptr<Animator> animation)
+void Elongate::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "length") {
 		animation->BindToProperty(&m_length);
@@ -359,7 +359,7 @@ void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\tp" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n\n";
 }
 
-void OPElongateXYZ::bindAnimation(std::unique_ptr<Animator> animation)
+void OPElongateXYZ::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "lengths") {
 		animation->BindToProperty(&m_lengths);

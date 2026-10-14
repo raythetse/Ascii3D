@@ -2,7 +2,7 @@
 #include <format>
 #include "Enumerations.h"
 
-void Animator::serialize(std::vector<std::string>& strVec, size_t level)
+void Animation::serialize(std::vector<std::string>& strVec, size_t level)
 {
     std::stringstream ss{};
     ss << std::string(level, '\t');
@@ -12,7 +12,7 @@ void Animator::serialize(std::vector<std::string>& strVec, size_t level)
     strVec.push_back(ss.str());
 }
 
-bool Animator::getShaderCall(std::string& propName) const
+bool Animation::getShaderCall(std::string& propName) const
 {
     if (m_propName == propName) {
         getShaderCallInner(propName);

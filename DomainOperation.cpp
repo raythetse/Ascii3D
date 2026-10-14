@@ -10,7 +10,7 @@ void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t le
 	strVec.push_back(ss.str());
 }
 
-void DomainOperation::bindAnimation(std::unique_ptr<Animator> animation)
+void DomainOperation::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "spacing") {
 		animation->BindToProperty(&m_spacing);
@@ -153,7 +153,7 @@ void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level, size
 	ss << "\tp" << level << " -= pmVec30 * clamp(round(p" << level << " / pmVec30), -pmVec31, pmVec31);\n\n";
 }
 
-void OPRepeatLimited::bindAnimation(std::unique_ptr<Animator> animation)
+void OPRepeatLimited::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "spacing") {
 		animation->BindToProperty(&m_spacing);

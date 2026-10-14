@@ -2,6 +2,7 @@
 #include <functional>
 #include <sstream>
 #include <unordered_map>
+#include "Animation.h"
 #include "LightSource.h"
 #include "SDFObjectInc.h"
 #include "SDFOperation.h"
@@ -32,7 +33,7 @@ public:
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     template <typename T, typename... Args>
-        requires (std::is_base_of_v<Animator, T>)
+        requires (std::is_base_of_v<Animation, T>)
     SDFBuilder& animation(Args&&... args);
     SDFBuilder& loadSerialized(std::vector<std::string>& strVec);
 };
@@ -70,7 +71,7 @@ auto SDFBuilder::combination(ArgsT&&... argst) {
 }
 
 template <typename T, typename... Args>
-    requires (std::is_base_of_v<Animator, T>)
+    requires (std::is_base_of_v<Animation, T>)
 SDFBuilder& SDFBuilder::animation(Args&&... args) {
     if (m_lastAddedObj) {
         m_objChain.back()->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
