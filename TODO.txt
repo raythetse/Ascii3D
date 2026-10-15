@@ -1,6 +1,4 @@
 Required:
-- change builder to add animations with 1 function instead of 2
-- object chain copying/merging for SDF branch reuse (shared_ptrs for SDFObjects?)
 - ensure all propmod hooks exist
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
@@ -8,15 +6,13 @@ Required:
 - consts wherever sensical
 - instructions for custom scene files
 - add controls instructions to main menu screen
-- Add oscillate animations with end delays (remove linear/sine translates?)
 - Add missing update vals for software rendering ops
 - Update loop functions for SDF software mode efficiency
-- Scene description with printing on top line
 
 Optional:
-- more robust templating of animations
+- Reusable groups (tried once, taking too long, try later when I have more time.)
+- more robust templating of animations?
 - light movement
-- per-scene camera start pos/look dir
 - bounding boxes/spheres/capsules for efficiency
 - change repeat operations to not rely on vec3
 - transparency/reflection

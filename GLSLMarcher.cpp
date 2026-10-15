@@ -270,6 +270,17 @@ float taperedCapsule(vec3 p, vec2 radii, float height) {
     return dot(q, vec2(a, b)) - radii.x;
 }
 
+float taperedCylinder(vec3 p, float sideLength, vec2 radii) {
+    float halfLength = sideLength * 0.5;
+    vec2 q = vec2(length(p.xz), p.y);
+    vec2 k1 = vec2(radii.y, halfLength);
+    vec2 k2 = vec2(radii.y - radii.x, 2.0 * halfLength);
+    vec2 ca = vec2(q.x - min(q.x, (q.y < 0.0) ? radii.x : radii.y), abs(q.y) - halfLength);
+    vec2 cb = q - k1 + k2 * clamp(dot(k1 - q, k2) / dot(k2, k2), 0.0, 1.0 );
+    float s = (cb.x < 0.0 && ca.y < 0.0) ? -1.0 : 1.0;
+    return s * sqrt(min(dot(ca, ca), dot(cb, cb)));
+}
+
 float rhombus(vec3 p, vec2 dimensions, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset)
 {
     if (operation == 1) p = revolve2D(p, magnitude, revolveRotations, revolveRotateOffset);

@@ -106,3 +106,22 @@ public:
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
+
+class SDFTaperedCylinder : public SDFAxisObject
+{
+public:
+	inline const static Vec2 DFLT_RADII{ 0.5, 0.25 };
+	inline const static double DFLT_SIDELENGTH{ 1.0 };
+private:
+	Vec2 m_radii;
+	double m_sideLength;
+protected:
+	std::string getClassName() const override { return "SDFTaperedCylinder"; }
+	void serializeInner(std::stringstream& ss) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+public:
+	SDFTaperedCylinder(Axis axis = Axis::AXIS_Y, Vec2 radii = DFLT_RADII, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
+		: SDFAxisObject(axis, color), m_sideLength(sideLength), m_radii(radii) {}
+	double signedDistanceInner(Vec3 p) const override;
+	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
+};

@@ -225,3 +225,48 @@ void SDFCylinder::bindAnimation(std::unique_ptr<Animation> animation)
         m_animations.push_back(std::move(animation));
     }
 }
+
+void SDFTaperedCylinder::serializeInner(std::stringstream& ss) const
+{
+    ss << " sideLength " << m_sideLength;
+    ss << " radii " << m_radii;
+    ss << " axis " << m_axis;
+}
+
+void SDFTaperedCylinder::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+{
+    ss << "\t// SDFTaperedCylinder //\n";
+    std::string propName{ "" };
+    ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "sideLength") ? propName : std::to_string(m_sideLength)) << ";\n";
+    ss << "\tpmVec20 = " << (getShaderAnimationCalls(propName = "radii") ? propName : m_radii.getShader()) << ";\n";
+    ss << "\td" << level << " = taperedCylinder(p" << level << getPSwizzle() << ", pmFloat0, pmVec20);\n\n";
+}
+
+double SDFTaperedCylinder::signedDistanceInner(Vec3 p) const
+{
+    p = getP(p);
+    double halfLength = 0.5 * m_sideLength;
+    Vec2 q = Vec2(Vec2(p.x, p.z).length(), p.y);
+    Vec2 k1 = Vec2(m_radii.y, halfLength);
+    Vec2 k2 = Vec2(m_radii.y - m_radii.x, 2.0 * halfLength);
+    Vec2 ca = Vec2(q.x - std::min(q.x, (q.y < 0.0) ? m_radii.x : m_radii.y), abs(q.y) - halfLength);
+    Vec2 cb = q - k1 + k2 * std::clamp((k1 - q).dot(k2) / k2.dot(k2), 0.0, 1.0);
+    double s = (cb.x < 0.0 && ca.y < 0.0) ? -1.0 : 1.0;
+    return s * std::sqrt(std::min(ca.dot(ca), cb.dot(cb)));
+}
+
+void SDFTaperedCylinder::bindAnimation(std::unique_ptr<Animation> animation)
+{
+    if (animation->propName() == "color") {
+        animation->BindToProperty(&m_color);
+        m_animations.push_back(std::move(animation));
+    }
+    else if (animation->propName() == "radii") {
+        animation->BindToProperty(&m_radii);
+        m_animations.push_back(std::move(animation));
+    }
+    else if (animation->propName() == "sideLength") {
+        animation->BindToProperty(&m_sideLength);
+        m_animations.push_back(std::move(animation));
+    }
+}

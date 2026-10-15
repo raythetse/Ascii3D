@@ -10,13 +10,7 @@ SDFObject color 1 1 1
 			OPRoundOff magnitude 0.05
 			OPMirrorXZ
 			OPRotate axis 0 1 0 rotations -0.125
-			OPMirrorX
-			OPRotate axis 0 1 0 rotations -0.0625
-			OPMirrorX
-			OPRotate axis 0 1 0 rotations -0.03125
-			OPMirrorX
-			OPRotate axis 0 1 0 rotations -0.015625
-			OPTranslate translation 0 0 0.51
+		
 			OPTranslate translation 0 0.75 0
 			OPRotate axis 1 0 0 rotations -0.06
 			COMBAddSmooth smoothing 0.01 colorBlending 1 colorShifting 0
