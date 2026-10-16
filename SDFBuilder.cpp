@@ -323,6 +323,22 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.pushSDFObj<SDFTaperedCapsule>(static_cast<Axis>(axis), radii, bodyLength, color);
     } },
+    { "SDFTaperedCylinder", [](SDFBuilder& builder, std::stringstream& ss) {
+        Color color{ Color::White };
+        double bodyLength{ SDFTaperedCylinder::DFLT_SIDELENGTH };
+        Vec2 radii{ SDFTaperedCylinder::DFLT_RADII };
+        int axis{ AXIS_Y };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "color") ss >> color;
+            else if (param == "sideLength") ss >> bodyLength;
+            else if (param == "radii") ss >> radii;
+            else if (param == "axis") ss >> axis;
+        }
+        builder.pushSDFObj<SDFTaperedCylinder>(static_cast<Axis>(axis), radii, bodyLength, color);
+    } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         Vec2 dimensions{ SDFRhombus::DFLT_DIMENSIONS };

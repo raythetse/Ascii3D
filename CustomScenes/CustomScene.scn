@@ -44,7 +44,63 @@ SDFObject color 1 1 1
 					stepBack
 				stepBack
 			stepBack
+		COMBAdd
+		SDFObject color 1 1 1
+			OPRotate axis 0 1 0 rotations 0
+			ANLinearCycle1D propName rotations forwardTime 1 delayTime1 1 backwardTime 1 delayTime2 0 phase 0.5 amplitude 0.25
+			COMBAdd
+			SDFObject color 1 1 1
+				OPTranslate translation 0 3.5 0
+				COMBAdd
+				SDFCylinder color 1 1 1 sideLength 0.25 radius 0.45 axis 1
+					OPRoundOff magnitude 0.05
+					OPTranslate translation 0 0.5 0
+					COMBAdd
+					SDFTaperedCylinder color 1 1 1 sideLength 1.55 radii 0.4 0.35 axis 1
+						stepBack
+					stepBack
+				OPTranslate translation 0 1.5 0
+				COMBAddSmooth smoothing 0.2 colorBlending 1 colorShifting 0
+				SDFObject color 1 1 1
+					OPElongateZ length 0.9 offset 0
+					COMBAdd
+					SDFTorus color 1 1 1 radii 0.35 0.05 axis 2
+						stepBack
+					stepBack
+				COMBSubtractSmooth smoothing 0.1 colorBlending 1 colorShifting 0
+				SDFObject color 1 1 1
+					OPTranslate translation 0 0.25 0
+					OPElongateY length 0.25 offset 0
+					COMBAdd
+					SDFCylinder color 1 1 1 sideLength 1 radius 0.33 axis 0
+						stepBack
+					stepBack
+				OPRotate axis 0 0 1 rotations 0
+				ANLinearCycle1D propName rotations forwardTime 1 delayTime1 1 backwardTime 1 delayTime2 0 phase 1 amplitude 0.2
+				COMBAdd
+				SDFObject color 1 1 1
+					COMBAdd
+					SDFCylinder color 1 1 1 sideLength 1 radius 0.29 axis 2
+						OPMirrorZ
+						OPTranslate translation 0 0 0.5
+						COMBAddSmooth smoothing 0.025 colorBlending 1 colorShifting 0
+						SDFCapsule color 1 1 1 radius 0.05 bodyLength 0.45 axis 0
+							COMBAdd
+							SDFCapsule color 1 1 1 radius 0.05 bodyLength 0.45 axis 1
+								stepBack
+							stepBack
+						stepBack
+					OPTranslate translation 0 0.75 0
+					COMBAddSmooth smoothing 0.1 colorBlending 1 colorShifting 0
+					SDFCylinder color 1 1 1 sideLength 1.5 radius 0.29 axis 1
+						COMBAdd
+						SDFObject color 1 1 1
+							stepBack
+						stepBack
+					stepBack
+				stepBack
+			stepBack
 		stepBack
 	stepBack
-LightSource position 10 16 -10 luminance 250 color 1 1 1 ambientPower 0.2
+LightSource position 10 16 -10 luminance 250 color 1 1 1 ambientPower 0.5
 end

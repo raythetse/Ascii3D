@@ -63,7 +63,7 @@ vec2 rotateVec2(vec2 p, float rotations) {
     return m * p;
 }
 
-float extrude2D(double pDotY, float d2D, float height) {
+float extrude2D(float pDotY, float d2D, float height) {
     vec2 w = vec2(d2D, abs(pDotY) - height * 0.5);
     return min(max(w.x, w.y), 0.0) + length(max(w, 0.0));
 }
