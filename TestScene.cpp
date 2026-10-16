@@ -1,5 +1,6 @@
 #include "TestScene.h"
 #include "Enumerations.h"
+#include "MathFunctions.h"
 
 TestScene::TestScene()
 {
@@ -7,6 +8,8 @@ TestScene::TestScene()
 
 		// Robot
 		.combination<COMBAdd, SDFObject>()()
+		.operation<OPTranslate>(Vec3::Zero)
+		.animation<ANToggle3D>("translation", Vec3{ MF::MAX_DOUBLE })
 
 			// Base
 			.combination<COMBAdd, SDFObject>()()
@@ -49,7 +52,7 @@ TestScene::TestScene()
 
 				// First segment
 				.operation<OPRotate>(Vec3::Up, 0.0)
-				.animation<ANLinearCycle1D>("rotations", 0.25, 1.0, 1.0, 1.0, 0.0, 0.5)
+				//.animation<ANLinearCycle1D>("rotations", 0.25, 1.0, 1.0, 1.0, 0.0, 0.5)
 				.combination<COMBAdd, SDFObject>()()
 					.operation<OPTranslate>(Vec3::Up * 3.5)
 					.combination<COMBAdd, SDFCylinder>(AXIS_Y, 0.45, 0.25)()
@@ -70,7 +73,7 @@ TestScene::TestScene()
 
 					// Second segment
 					.operation<OPRotate>(Vec3::Forward, 0.0)
-						.animation<ANLinearCycle1D>("rotations", 0.2, 1.0, 1.0, 1.0, 0.0, 1.5)
+						//.animation<ANLinearCycle1D>("rotations", 0.2, 1.0, 1.0, 1.0, 0.0, 1.5)
 						.combination<COMBAdd, SDFObject>()()
 							.combination<COMBAdd, SDFCylinder>(AXIS_Z, 0.29)()
 								.operation<OPMirrorZ>()
@@ -94,7 +97,7 @@ TestScene::TestScene()
 
 						// Third Segment
 						.operation<OPRotate>(Vec3::Forward, 0.0)
-							.animation<ANLinearCycle1D>("rotations", 0.2, 1.0, 1.0, 1.0, 0.0, 2.0)
+							//.animation<ANLinearCycle1D>("rotations", 0.2, 1.0, 1.0, 1.0, 0.0, 2.0)
 							.combination<COMBAdd, SDFObject>()()
 								.combination<COMBAdd, SDFCylinder>(AXIS_Z, 0.29)()
 									.operation<OPMirrorZ>()

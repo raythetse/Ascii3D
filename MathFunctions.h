@@ -1,4 +1,5 @@
 #pragma once
+#include <limits>
 #include "Vec2.h"
 
 namespace MF {
@@ -8,6 +9,8 @@ namespace MF {
     inline static const double TAU = 6.283185307179586;
     inline static const double ROOT2 = 1.4142135623730951;
     inline static const double ROOT3 = 1.7320508075688773;
+#undef max
+    inline static const double MAX_DOUBLE = std::numeric_limits<double>::max();
 
     inline Vec2 fast_sincos(double angle) {
         return { std::sin(angle), std::cos(angle) };

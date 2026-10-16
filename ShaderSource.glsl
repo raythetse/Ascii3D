@@ -650,7 +650,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = linearCycle1D(0.0000000, 0.2500000, 1.0000000, 1.0000000, 1.0000000, 0.0000000, 0.5000000, time);
+	pmFloat0 = 0.000000;
 	p2 = rotateVec3(p2, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -802,7 +802,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = linearCycle1D(0.0000000, 0.2000000, 1.0000000, 1.0000000, 1.0000000, 0.0000000, 1.5000000, time);
+	pmFloat0 = 0.000000;
 	p3 = rotateVec3(p3, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -821,6 +821,9 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	pmFloat1 = 0.290000;
 	d5 = cylinder(p5.xzy, pmFloat0, pmFloat1);
 
+
+	// OPMirrorZ //
+	p5.z = abs(p5.z);
 
 	// OPTranslate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 0.5000000);
@@ -1000,7 +1003,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = linearCycle1D(0.0000000, 0.2000000, 1.0000000, 1.0000000, 1.0000000, 0.0000000, 2.0000000, time);
+	pmFloat0 = 0.000000;
 	p3 = rotateVec3(p3, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -1019,6 +1022,9 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	pmFloat1 = 0.290000;
 	d5 = cylinder(p5.xzy, pmFloat0, pmFloat1);
 
+
+	// OPMirrorZ //
+	p5.z = abs(p5.z);
 
 	// OPTranslate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 0.5000000);
