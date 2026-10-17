@@ -1,13 +1,14 @@
 #include "Mat2.h"
 #include "MathFunctions.h"
 
-const Mat2 Mat2::Identity{ std::vector<double>{ 1.0, 0.0, 0.0, 1.0 } };
+const Mat2 Mat2::Identity{ 1.0, 0.0, 0.0, 1.0 };
 
-Mat2::Mat2(std::vector<double> values)
+Mat2::Mat2(double v00, double v10, double v01, double v11)
 {
-    for (size_t i{}; i < values.size(); ++i) {
-        m_mat[i % 2][i / 2] = values[i];
-    }
+    m_mat[0][0] = v00;
+    m_mat[0][1] = v01;
+    m_mat[1][0] = v10;
+    m_mat[1][1] = v11;
 }
 
 Mat2 Mat2::operator*(const Mat2& other) const

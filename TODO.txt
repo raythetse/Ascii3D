@@ -24,6 +24,7 @@ Optional:
 - improve ambient light, occlusion, and shadow functions
 - investigate rhombus axis issue
 - improve (reduce repetition of) mapped builder functions
+- investigate how non-symmetrical rotational repetition might be possible in this architecture (use an object instead of an operation perhaps?)
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers

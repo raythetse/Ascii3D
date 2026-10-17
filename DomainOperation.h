@@ -100,3 +100,19 @@ public:
 	OPRepeatLimited(Vec3 limits = DFLT_LIMITS, Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing), m_limits(limits) {}
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
+
+class OPRepeatCircle : public DomainOperation // Naive operation, requires rotational symmetry or artifacting may occur
+{
+public:
+	static inline const size_t DFLT_REPETITIONS{ 10 };
+private:
+	size_t m_repetitions;
+protected:
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const override;
+	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
+	std::string getClassName() const override { return "OPRepeatCircle"; }
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
+public:
+	OPRepeatCircle(size_t repetitions = DFLT_REPETITIONS) : DomainOperation(), m_repetitions(repetitions) {}
+	void bindAnimation(std::unique_ptr<Animation> animation) override;
+};

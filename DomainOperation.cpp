@@ -1,4 +1,5 @@
 #include "DomainOperation.h"
+#include "Mat2.h"
 
 void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
@@ -173,3 +174,32 @@ void OPRepeatLimited::bindAnimation(std::unique_ptr<Animation> animation)
 		m_animations.push_back(std::move(animation));
 	}
 }
+
+void OPRepeatCircle::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
+	Vec2 p2D{ p.x, p.z };
+	double r = static_cast<double>(m_repetitions);
+	double b = MF::TAU / r;
+	double a = std::atan2(p.z, p.x);
+
+	if (a < 0.0) a += MF::TAU;
+
+	double i = std::floor((a + b * 0.5) / b);
+
+	if (i >= r) i = 0.0;
+	double c = b * i;
+	Vec2 sc = MF::fast_sincos(c);
+
+	p2D = Mat2{ sc.y, -sc.x, sc.x, sc.y } * p2D;
+	p.x = p2D.x;
+	p.z = p2D.y;
+}
+
+void OPRepeatCircle::innerSerialize(std::vector<std::string>& strVec, size_t level) const
+{}
+
+void OPRepeatCircle::getShaderOpCalls(std::stringstream & ss, size_t level) const
+{}
+
+void OPRepeatCircle::bindAnimation(std::unique_ptr<Animation> animation)
+{}
