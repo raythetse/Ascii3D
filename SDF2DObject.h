@@ -37,7 +37,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFRhombus"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFRhombus(OP2D operation = DFLT_OPERATION, Vec2 dimensions = DFLT_DIMENSIONS, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -57,7 +57,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFEquilateralTriangle"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFEquilateralTriangle(OP2D operation = DFLT_OPERATION, double base = DFLT_BASE, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -77,7 +77,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFIsoscelesTriangle"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFIsoscelesTriangle(OP2D operation = DFLT_OPERATION, Vec2 dimensions = DFLT_DIMENSIONS, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -101,7 +101,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTriangle"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFTriangle(OP2D operation = DFLT_OPERATION, Vec2 point1 = DFLT_POINT1, Vec2 point2 = DFLT_POINT2, Vec2 point3 = DFLT_POINT3, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -121,7 +121,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPieSlice"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFPieSlice(OP2D operation = DFLT_OPERATION, double sweep = DFLT_SWEEP, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -141,7 +141,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPentagon"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFPentagon(OP2D operation = DFLT_OPERATION, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -161,7 +161,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFHexagon"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFHexagon(OP2D operation = DFLT_OPERATION, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -181,7 +181,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFOctagon"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFOctagon(OP2D operation = DFLT_OPERATION, double radius = DFLT_RADIUS, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
@@ -206,7 +206,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFStar"; }
 	void serializeInnerInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFStar(OP2D operation = DFLT_OPERATION, size_t numPoints = DFLT_NUMPOINT, double radius = DFLT_RADIUS, double ratio = DFLT_RATIO, double magnitude = DFLT_MAGNITUDE
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)

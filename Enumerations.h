@@ -24,9 +24,3 @@ enum MarchingMode {
 	MARCHINGMODE_SOFTWARE,
 	MARCHINGMODE_HARDWARE,
 };
-
-enum SDFOperationType {
-	Combine,
-	Resurface,
-	Transform,
-};

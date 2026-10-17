@@ -23,7 +23,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTorus"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFTorus(Axis axis = AXIS_Y, Vec2 radii = DFLT_RADII, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radii(radii) {}
@@ -42,7 +42,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTorusSegment"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFTorusSegment(Axis axis = AXIS_Y, Vec2 radii = DFLT_RADII, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radii(radii), m_sweep(sweep) {}
@@ -61,7 +61,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCapsule"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFCapsule(Axis axis = AXIS_Y, double radius = DFLT_RADIUS, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radius(radius), m_bodyLength(bodyLength) {}
@@ -80,7 +80,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTaperedCapsule"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFTaperedCapsule(Axis axis = AXIS_Y, Vec2 radii = DFLT_RADII, double bodyLength = DFLT_BODYLENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_radii(radii), m_bodyLength(bodyLength) {}
@@ -99,7 +99,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCylinder"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFCylinder(Axis axis = Axis::AXIS_Y, double radius = DFLT_RADIUS, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_sideLength(sideLength), m_radius(radius) {}
@@ -118,7 +118,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFTaperedCylinder"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFTaperedCylinder(Axis axis = Axis::AXIS_Y, Vec2 radii = DFLT_RADII, double sideLength = DFLT_SIDELENGTH, Color color = Color::White)
 		: SDFAxisObject(axis, color), m_sideLength(sideLength), m_radii(radii) {}

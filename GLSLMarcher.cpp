@@ -82,6 +82,10 @@ vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 	return mix(colorA, colorB, alpha);
 }
 
+bool isEnabled(float onTime, float offTime, float phase, float time) {
+    return mod(time + phase, onTime + offTime) <= onTime;
+}
+
 // OPERATION FUNCTIONS //
 float smoothCycle1D(float initVal, float period, float amplitude, float phase, float time) {
     return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
@@ -509,11 +513,10 @@ void GLSLMarcher::buildSampleFunction(std::stringstream & ss, const std::unique_
     ss << "\td0 = maxDist;\n";
     ss << "\tfloat blend;\n";
     ss << "\tcolor0 = vec3(0.0);\n\n";
-    ss << "\tfloat pmFloat0, pmFloat1, pmFloat2;\n";
+    ss << "\tfloat pmFloat0, pmFloat1, pmFloat2, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10;\n";
     ss << "\tvec2 pmVec20, pmVec21, pmVec22;\n";
-    ss << "\tvec3 pmVec30, pmVec31, pmVec32;\n\n";
-    size_t maxLevel{ 0 };
-    baseObject->getShaderCalls(ss, 0, maxLevel);
+    ss << "\tvec3 pmVec30, pmVec31, pmVec32, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, color1, color2, color3, color4, color5, color6, color7, color8, color9, color10;\n\n";
+    baseObject->getShaderCalls(ss, 0);
     ss << "}\n\n";
 }
 

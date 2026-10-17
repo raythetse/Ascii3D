@@ -9,29 +9,6 @@ void SDFOperation::update()
 	innerUpdate();
 }
 
-void SDFOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut)
-{
-	switch (m_opType)
-	{
-	case SDFOperationType::Combine: {
-		distanceA = combine(p, distanceA, colorIn, colorOut);
-		return;
-	}
-	case SDFOperationType::Resurface: {
-		distanceA = resurface(distanceA);
-		if (colorOut) *colorOut = colorIn;
-		return;
-	}
-	case SDFOperationType::Transform: {
-		transform(p);
-		if (colorOut) *colorOut = colorIn;
-		return;
-	}
-	default:
-		break;
-	}
-}
-
 void SDFOperation::resetAnimations()
 {
 	for (auto& animation : m_animations) {
@@ -47,9 +24,9 @@ void SDFOperation::serialize(std::vector<std::string>& strVec, size_t level) con
 	}
 }
 
-void SDFOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void SDFOperation::getShaderCalls(std::stringstream& ss, size_t level) const
 {
-	getShaderOpCalls(ss, level, maxLevel);
+	getShaderOpCalls(ss, level);
 }
 
 bool SDFOperation::getShaderAnimationCalls(std::string& propName) const

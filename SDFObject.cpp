@@ -95,27 +95,21 @@ double SDFObject::signedDistance(Vec3 p, Color* colorOut) const
     return distance;
 }
 
-void SDFObject::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel)
+void SDFObject::getShaderCalls(std::stringstream& ss, size_t level)
 {
     ss << "\t// SDFObject //\n";
     std::string propName{ "" };
     ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "color") ? propName : m_color.getShader()) << ";\n";
-    if (level > maxLevel) {
-        ss << "\tvec3 p" << level << ";\n";
-        ss << "\tfloat d" << level << " = FLOAT_MAX;\n";
-        ss << "\tvec3 color" << level << ";\n";
-        maxLevel = level;
-    }
     if (level != 0) {
         ss << "\tp" << level << " = p" << (level - 1) << ";\n";
         ss << "\td" << level << " = FLOAT_MAX;\n";
     }
     ss << "\tcolor" << level << " = pmVec30;\n";
-    getShaderObjectCalls(ss, level, maxLevel);
+    getShaderObjectCalls(ss, level);
     ss << "\n";
 
     for (auto& op : m_operations) {
-        op->getShaderCalls(ss, level, maxLevel);
+        op->getShaderCalls(ss, level);
     }
 }
 
@@ -138,7 +132,7 @@ void SDFPlane::serializeInner(std::stringstream& ss) const
     ss << " offset " << m_offset;
 }
 
-void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFPlane::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFPlane //\n";
     std::string propName{ "" };
@@ -172,7 +166,7 @@ void SDFBox::serializeInner(std::stringstream& ss) const
     ss << " dimensions " << m_dimensions;
 }
 
-void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFBox::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFBox //\n";
     std::string propName{ "" };
@@ -205,7 +199,7 @@ void SDFBoxFrame::serializeInner(std::stringstream& ss) const
     ss << " edgeThickness " << m_edgeThickness;
 }
 
-void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFBoxFrame::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFBoxFrame //\n";
     std::string propName{ "" };
@@ -246,7 +240,7 @@ void SDFSphere::serializeInner(std::stringstream& ss) const
     ss << " radius " << m_radius;
 }
 
-void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFSphere::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFSphere //\n";
     std::string propName{ "" };
@@ -276,7 +270,7 @@ void SDFCrystal::serializeInner(std::stringstream& ss) const
     ss << " edgeLength " << m_edgeLength;
 }
 
-void SDFCrystal::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFCrystal::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFCrystal //\n";
     std::string propName{ "" };
@@ -308,7 +302,7 @@ void SDFCone::serializeInner(std::stringstream& ss) const
     ss << " sweep " << m_sweep;
 }
 
-void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+void SDFCone::getShaderObjectCalls(std::stringstream & ss, size_t level) const
 {
     ss << "\t// SDFCone //\n";
     std::string propName{ "" };
@@ -352,7 +346,7 @@ void SDFSolidAngle::serializeInner(std::stringstream& ss) const
     ss << " sweep " << m_sweep;
 }
 
-void SDFSolidAngle::getShaderObjectCalls(std::stringstream & ss, size_t level, size_t highestLevel) const
+void SDFSolidAngle::getShaderObjectCalls(std::stringstream & ss, size_t level) const
 {
     ss << "\t// SDFSolidAngle //\n";
     std::string propName{ "" };
@@ -391,7 +385,7 @@ void SDFEllipsoid::serializeInner(std::stringstream& ss) const
     ss << " radii " << m_radii;
 }
 
-void SDFEllipsoid::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFEllipsoid::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFEllipsoid //\n";
     std::string propName{ "" };

@@ -12,89 +12,97 @@ void TransformOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 	strVec.push_back(ss.str());
 }
 
-void OPMirrorX::transform(Vec3& p) const
+void OPMirrorX::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.x = abs(p.x);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorX::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorX //\n";
 	ss << "\tp" << level << ".x = abs(p" << level << ".x);\n\n";
 }
 
-void OPMirrorY::transform(Vec3& p) const
+void OPMirrorY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.y = abs(p.y);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorY::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorY //\n";
 	ss << "\tp" << level << ".y = abs(p" << level << ".y);\n\n";
 }
 
-void OPMirrorZ::transform(Vec3& p) const
+void OPMirrorZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.z = abs(p.z);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorZ //\n";
 	ss << "\tp" << level << ".z = abs(p" << level << ".z);\n\n";
 }
 
-void OPMirrorXY::transform(Vec3& p) const
+void OPMirrorXY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.x = abs(p.x);
 	p.y = abs(p.y);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorXY::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorXY //\n";
 	ss << "\tp" << level << ".xy = abs(p" << level << ".xy);\n\n";
 }
 
-void OPMirrorXZ::transform(Vec3& p) const
+void OPMirrorXZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.x = abs(p.x);
 	p.z = abs(p.z);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorXZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorXZ //\n";
 	ss << "\tp" << level << ".xz = abs(p" << level << ".xz);\n\n";
 }
 
-void OPMirrorYZ::transform(Vec3& p) const
+void OPMirrorYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.y = abs(p.y);
 	p.z = abs(p.z);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorYZ //\n";
 	ss << "\tp" << level << ".yz = abs(p" << level << ".yz);\n\n";
 }
 
-void OPMirrorXYZ::transform(Vec3& p) const
+void OPMirrorXYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p = p.abs();
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPMirrorXYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPMirrorXYZ //\n";
 	ss << "\tp" << level << " = abs(p" << level << ");\n\n";
 }
 
-void OPTranslate::transform(Vec3& p) const
+void OPTranslate::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p -= m_translation;
+	if (colorOut) *colorOut = colorIn;
 }
 
 void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
@@ -102,7 +110,7 @@ void OPTranslate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " translation " << m_translation;
 }
 
-void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPTranslate //\n";
@@ -123,9 +131,10 @@ void OPRotate::innerUpdate()
 	Mat3::fromAxisAngle(m_axis, m_rotMat, m_rotations * MF::TAU);
 }
 
-void OPRotate::transform(Vec3& p) const
+void OPRotate::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p = m_rotMat * p;
+	if (colorOut) *colorOut = colorIn;
 }
 
 void OPRotate::innerInnerSerialize(std::stringstream& ss) const
@@ -134,7 +143,7 @@ void OPRotate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " rotations " << m_rotations;
 }
 
-void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPRotate //\n";
@@ -165,9 +174,10 @@ void OPCubeRollHeight::innerUpdate() {
 	m_updateVal = (rot.y - m_cubeHeight * 0.5);
 }
 
-void OPCubeRollHeight::transform(Vec3& p) const
+void OPCubeRollHeight::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.y -= m_updateVal;
+	if (colorOut) *colorOut = colorIn;
 }
 
 void OPCubeRollHeight::innerInnerSerialize(std::stringstream& ss) const
@@ -177,7 +187,7 @@ void OPCubeRollHeight::innerInnerSerialize(std::stringstream& ss) const
 	ss << " phase " << m_phase;
 }
 
-void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPCubeRollHeight //\n";
@@ -217,9 +227,10 @@ void OPCubeRoller::innerUpdate() {
 	Mat3::fromAxisAngle(m_axes[index], m_updateVal, MF::HALFPI * time);
 }
 
-void OPCubeRoller::transform(Vec3& p) const
+void OPCubeRoller::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p = m_updateVal * p;
+	if (colorOut) *colorOut = colorIn;
 }
 
 void OPCubeRoller::innerInnerSerialize(std::stringstream& ss) const
@@ -232,7 +243,7 @@ void OPCubeRoller::innerInnerSerialize(std::stringstream& ss) const
 	ss << " phase " << m_phase;
 }
 
-void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	static size_t numRollers{ 0 };
 	std::string propName{ "" };
@@ -291,12 +302,13 @@ void Elongate::bindAnimation(std::unique_ptr<Animation> animation)
 	}
 }
 
-void OPElongateX::transform(Vec3& p) const
+void OPElongateX::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.x -= std::clamp(p.x - m_offset, m_halfLenNeg, m_halfLen);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPElongateX //\n";
@@ -305,12 +317,13 @@ void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << ".x -= clamp(p" << level << ".x - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
 }
 
-void OPElongateY::transform(Vec3& p) const
+void OPElongateY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.y -= std::clamp(p.y - m_offset, m_halfLenNeg, m_halfLen);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPElongateY //\n";
@@ -319,12 +332,13 @@ void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << ".y -= clamp(p" << level << ".y - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
 }
 
-void OPElongateZ::transform(Vec3& p) const
+void OPElongateZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPElongateZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPElongateZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPElongateZ //\n";
@@ -339,9 +353,10 @@ void OPElongateXYZ::innerUpdate()
 	m_halfLenNegs = -m_halfLens;
 }
 
-void OPElongateXYZ::transform(Vec3& p) const
+void OPElongateXYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p -= (p - m_offsets).clamp(m_halfLenNegs, m_halfLens);
+	if (colorOut) *colorOut = colorIn;
 }
 
 void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
@@ -350,7 +365,7 @@ void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
 	ss << " offsets " << m_offsets;
 }
 
-void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPElongateXYZ //\n";

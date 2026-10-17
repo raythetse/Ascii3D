@@ -8,18 +8,17 @@ protected:
 	virtual std::string getClassName() const = 0;
 	virtual void innerInnerSerialize(std::stringstream& ss) const {};
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
-	TransformOperation() : SDFOperation(SDFOperationType::Transform) {};
+	TransformOperation() = default;
 public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override {};
-	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
 class OPMirrorX : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorX"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorX() {};
 };
@@ -27,9 +26,9 @@ public:
 class OPMirrorY : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorY() {};
 };
@@ -37,9 +36,9 @@ public:
 class OPMirrorZ : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorZ() {};
 };
@@ -47,9 +46,9 @@ public:
 class OPMirrorXY : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorXY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorXY() {};
 };
@@ -57,9 +56,9 @@ public:
 class OPMirrorXZ : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorXZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorXZ() {};
 };
@@ -67,9 +66,9 @@ public:
 class OPMirrorYZ : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorYZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorYZ() {};
 };
@@ -77,9 +76,9 @@ public:
 class OPMirrorXYZ : public TransformOperation
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPMirrorXYZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPMirrorXYZ() {};
 };
@@ -91,10 +90,10 @@ public:
 private:
 	Vec3 m_translation;
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPTranslate"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPTranslate(Vec3 translation = DFLT_TRANSLATION) : m_translation(translation) {}
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
@@ -111,10 +110,10 @@ private:
 	Mat3 m_rotMat;
 protected:
 	void innerUpdate() override;
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPRotate"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPRotate(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS)
 		: m_axis(axis), m_rotations(rotations) {}
@@ -134,10 +133,10 @@ private:
 	double m_updateVal{};
 protected:
 	void innerUpdate() override;
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPCubeRollHeight"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPCubeRollHeight(double cubeHeight = DFLT_CUBEHEIGHT, double period = DFLT_PERIOD, double phase = DFLT_PHASE)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
@@ -157,10 +156,10 @@ private:
 	Mat3 m_updateVal;
 protected:
 	void innerUpdate() override;
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPCubeRoller"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPCubeRoller(std::vector<Vec3> axes = DFLT_AXES, double quarterTurnTime = DFLT_QUARTERTURNTIME, double phase = DFLT_PHASE)
 		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
@@ -180,7 +179,7 @@ protected:
 	void innerUpdate() override;
 	std::string getClassName() const { return "Elongate"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override {};
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override {};
 public:
 	Elongate(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: m_length(length), m_offset(offset) {}
@@ -190,9 +189,9 @@ public:
 class OPElongateX : public Elongate
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPElongateX"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPElongateX(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: Elongate(length, offset) {}
@@ -201,9 +200,9 @@ public:
 class OPElongateY : public Elongate
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPElongateY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPElongateY(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: Elongate(length, offset) {}
@@ -212,9 +211,9 @@ public:
 class OPElongateZ : public Elongate
 {
 protected:
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPElongateZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPElongateZ(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: Elongate(length, offset) {}
@@ -232,10 +231,10 @@ private:
 	Vec3 m_halfLenNegs{};
 protected:
 	void innerUpdate() override;
-	void transform(Vec3& p) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPElongateXYZ"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPElongateXYZ(Vec3 lengths = DFLT_LENGTHS, Vec3 offsets = DFLT_OFFSETS)
 		: m_lengths(lengths), m_offsets(offsets) {}

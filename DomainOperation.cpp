@@ -18,13 +18,14 @@ void DomainOperation::bindAnimation(std::unique_ptr<Animation> animation)
 	}
 }
 
-void OPRepeatX::transform(Vec3& p) const
+void OPRepeatX::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.x) return;
 	p.x -= m_spacing.x * round(p.x / m_spacing.x);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatX::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.x) return;
 	std::string propName{ "" };
@@ -33,13 +34,14 @@ void OPRepeatX::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& ma
 	ss << "\tp" << level << ".x -= pmFloat0 * round(p" << level << ".x / pmFloat0);\n\n";
 }
 
-void OPRepeatY::transform(Vec3& p) const
+void OPRepeatY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.y) return;
 	p.y -= m_spacing.y * round(p.y / m_spacing.y);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatY::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.y) return;
 	std::string propName{ "" };
@@ -48,13 +50,14 @@ void OPRepeatY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& ma
 	ss << "\tp" << level << ".y -= pmFloat0 * round(p" << level << ".y / pmFloat0);\n\n";
 }
 
-void OPRepeatZ::transform(Vec3& p) const
+void OPRepeatZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.z) return;
 	p.z -= m_spacing.z * round(p.z / m_spacing.z);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.z) return;
 	std::string propName{ "" };
@@ -63,14 +66,15 @@ void OPRepeatZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& ma
 	ss << "\tp" << level << ".z -= pmFloat0 * round(p" << level << ".z / pmFloat0);\n\n";
 }
 
-void OPRepeatXY::transform(Vec3& p) const
+void OPRepeatXY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.x || !m_spacing.y) return;
 	p.x -= m_spacing.x * round(p.x / m_spacing.x);
 	p.y -= m_spacing.y * round(p.y / m_spacing.y);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatXY::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.x || !m_spacing.y) return;
 	std::string propName{ "" };
@@ -79,14 +83,15 @@ void OPRepeatXY::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& m
 	ss << "\tp" << level << ".xy -= pmVec30.xy * round(p" << level << ".xy / pmVec30.xy);\n\n";
 }
 
-void OPRepeatXZ::transform(Vec3& p) const
+void OPRepeatXZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.x || !m_spacing.z) return;
 	p.x -= m_spacing.x * round(p.x / m_spacing.x);
 	p.z -= m_spacing.z * round(p.z / m_spacing.z);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatXZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.x || !m_spacing.z) return;
 	std::string propName{ "" };
@@ -95,14 +100,15 @@ void OPRepeatXZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& m
 	ss << "\tp" << level << ".xz -= pmVec30.xz * round(p" << level << ".xz / pmVec30.xz);\n\n";
 }
 
-void OPRepeatYZ::transform(Vec3& p) const
+void OPRepeatYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.y || !m_spacing.z) return;
 	p.y -= m_spacing.y * round(p.y / m_spacing.y);
 	p.z -= m_spacing.z * round(p.z / m_spacing.z);
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
@@ -111,13 +117,14 @@ void OPRepeatYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& m
 	ss << "\tp" << level << ".yz -= pmVec30.yz * round(p" << level << ".yz / pmVec30.yz);\n\n";
 }
 
-void OPRepeatXYZ::transform(Vec3& p) const
+void OPRepeatXYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 	p -= m_spacing * (p / m_spacing).round();
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRepeatXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatXYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };
@@ -126,10 +133,11 @@ void OPRepeatXYZ::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& 
 	ss << "\tp" << level << " -= pmVec30 * round(p" << level << " / pmVec30);\n\n";
 }
 
-void OPRepeatLimited::transform(Vec3& p) const
+void OPRepeatLimited::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 	p -= m_spacing * (p / m_spacing).round().clamp(-m_limits, m_limits);
+	if (colorOut) *colorOut = colorIn;
 }
 
 void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t level) const
@@ -143,7 +151,7 @@ void OPRepeatLimited::innerSerialize(std::vector<std::string>& strVec, size_t le
 	strVec.push_back(ss.str());
 }
 
-void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRepeatLimited::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	if (!m_spacing.x || !m_spacing.y || !m_spacing.z) return;
 	std::string propName{ "" };

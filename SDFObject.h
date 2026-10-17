@@ -25,7 +25,7 @@ protected:
 	virtual double signedDistanceInner(Vec3 p) const;
 	virtual void serializeInner(std::stringstream& ss) const {};
 	virtual std::string getClassName() const { return "SDFObject"; }
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const {};
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const {};
 	double extrude2D(double pDotY, double d2D, double magnitude) const;
 	Vec3 revolve2D(Vec3 p, double radius) const;
 	bool getShaderAnimationCalls(std::string& propName) const;
@@ -42,7 +42,7 @@ public:
 	Color getColor();
 	void resetAnimations();
 	virtual void serialize(std::vector<std::string> &strVec, size_t level) const;
-	void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel);
+	void getShaderCalls(std::stringstream& ss, size_t level);
 	virtual void bindAnimation(std::unique_ptr<Animation> animation);
 };
 
@@ -63,7 +63,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFPlane"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFPlane(Vec3 normal = DFLT_NORMAL, double offset = DFLT_OFFSET, Color color = Color::White)
 		: SDFObject{ color }, m_normal(normal), m_offset(offset) {}
@@ -80,7 +80,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBox"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFBox(Vec3 dimensions = DFLT_DIMENSIONS, Color color = Color::White)
 		: SDFObject(color), m_dimensions(dimensions) {}
@@ -99,7 +99,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFBoxFrame"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFBoxFrame(Vec3 dimensions = DFLT_DIMENSIONS, double edgeThickness = DFLT_EDGETHICKNESS, Color color = Color::White)
 		: SDFObject(color), m_dimensions(dimensions), m_edgeThickness(edgeThickness) {}
@@ -116,7 +116,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFSphere"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFSphere(double radius = DFLT_RADIUS, Color color = Color::White)
 		: SDFObject(color), m_radius(radius) {}
@@ -133,7 +133,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCrystal"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFCrystal(double edgeLength = DFLT_EDGELENGTH, Color color = Color::White)
 		: SDFObject(color), m_edgeLength(edgeLength) {}
@@ -152,7 +152,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFCone"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFCone(double height = DFLT_HEIGHT, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_height(height), m_sweep(sweep) {}
@@ -171,7 +171,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFSolidAngle"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFSolidAngle(double radius = DFLT_RADIUS, double sweep = DFLT_SWEEP, Color color = Color::White)
 		: SDFObject(color), m_radius(radius), m_sweep(sweep) {}
@@ -188,7 +188,7 @@ private:
 protected:
 	std::string getClassName() const override { return "SDFEllipsoid"; }
 	void serializeInner(std::stringstream& ss) const override;
-	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const override;
+	virtual void getShaderObjectCalls(std::stringstream& ss, size_t level) const override;
 public:
 	SDFEllipsoid(Vec3 radii = DFLT_RADII, Color color = Color::White)
 		: SDFObject(color), m_radii(radii) {}

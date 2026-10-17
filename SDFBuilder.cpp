@@ -66,13 +66,23 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
 
     // Combinations
     { "COMBAdd", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operation<COMBAdd>();
+        double onTime{ 1.0 };
+        double offTime{ 0.0 };
+        double phase{ 0.0 };
+        bool overwriteColor{ false };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "onTime") ss >> onTime;
+            else if (param == "offTime") ss >> offTime;
+            else if (param == "phase") ss >> phase;
+            else if (param == "overwriteColor") ss >> overwriteColor;
+        }
+        builder.operation<COMBAdd>(nullptr, overwriteColor, onTime, offTime, phase);
     }},
     { "COMBSubtract", [](SDFBuilder& builder, std::stringstream& ss) {
         builder.operation<COMBSubtract>();
-    }},
-    { "COMBIntersect", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operation<COMBIntersect>();
     }},
     { "COMBIntersect", [](SDFBuilder& builder, std::stringstream& ss) {
         builder.operation<COMBIntersect>();

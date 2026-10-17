@@ -9,11 +9,14 @@ void CombinationOperation::setCombineObject(std::unique_ptr<SDFObject> combineOb
 
 void CombinationOperation::update()
 {
-	for (auto& an : m_animations) {
-		an->update();
+	m_isOn = m_offTime <= 0.0 || std::fmod(GameTimer::gameTime() + m_phase, m_onTime + m_offTime) <= m_onTime;
+	if (m_isOn) {
+		for (auto& an : m_animations) {
+			an->update();
+		}
+		innerUpdate();
+		m_combineObj->update();
 	}
-	innerUpdate();
-	m_combineObj->update();
 }
 
 void CombinationOperation::resetAnimations()
@@ -36,10 +39,16 @@ void CombinationOperation::serialize(std::vector<std::string>& strVec, size_t le
 	m_combineObj->serialize(strVec, level);
 }
 
-void CombinationOperation::getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void CombinationOperation::getShaderCalls(std::stringstream& ss, size_t level) const
 {
-	m_combineObj->getShaderCalls(ss, level + 1, maxLevel);
-	getShaderOpCalls(ss, level, maxLevel);
+	if (m_offTime > 0.0) {
+		ss << "if (isEnabled(" << m_onTime << ", " << m_offTime << ", " << m_phase << ", time)) {\n";
+	}
+	m_combineObj->getShaderCalls(ss, level + 1);
+	getShaderOpCalls(ss, level);
+	if (m_offTime > 0.0) {
+		ss << "}\n";
+	}
 }
 
 void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
@@ -47,19 +56,30 @@ void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size
 	std::stringstream ss{};
 	ss << std::string(level, '\t');
 	ss << getClassName();
+	ss << " onTime " << m_onTime;
+	ss << " offTime " << m_offTime;
+	ss << " phase " << m_phase;
 	strVec.push_back(ss.str());
 }
 
-double COMBAdd::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+void CombinationOperation::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
+	if (m_isOn) {
+		combine(p, distanceA, colorIn, colorOut);
+	}
+}
+
+void COMBAdd::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
 		if (colorOut && !m_overwriteColor) *colorOut = colorIn;
-		return distanceA;
+		return;
 	}
-	return distanceB;
+	distanceA = distanceB;
 }
 
-void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// COMBAdd //\n";
 	ss << "\tif (d" << (level + 1) << " < d" << level << ") {\n";
@@ -71,34 +91,35 @@ void COMBAdd::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxL
 	ss << "\t}\n\n";
 }
 
-double COMBSubtract::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+void COMBSubtract::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
 	double distanceB = -m_combineObj->signedDistance(p, colorOut);
 	if (colorOut) *colorOut = colorIn;
-	return distanceA > distanceB ? distanceA : distanceB;
+	distanceA = distanceA > distanceB ? distanceA : distanceB;
 }
 
-void COMBSubtract::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBSubtract::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// COMBSubtract //\n";
 	ss << "\tif (d" << level << " < -d" << (level + 1) << ") d" << level << " = -d" << (level + 1) << ";\n\n";
 }
 
-double COMBIntersect::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+void COMBIntersect::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	if (distanceA <= distanceB) {
-		return distanceB;
+		distanceA = distanceB;
 	}
 	if (colorOut) *colorOut = colorIn;
-	return distanceA;
 }
 
-void COMBIntersect::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBIntersect::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// COMBIntersect //\n";
 	ss << "\tif (d" << level << " <= d" << (level + 1) << ") d" << level << " = d" << (level + 1) << ";\n\n";
 }
 
-double COMBExclude::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut)
+void COMBExclude::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::max(std::min(distanceA, distanceB), std::min(-distanceA, -distanceB));
@@ -121,10 +142,10 @@ double COMBExclude::combine(Vec3 p, double distanceA, Color colorIn, Color* colo
 			break;
 		}
 	}
-	return h;
+	distanceA = h;
 }
 
-void COMBExclude::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBExclude::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string modeMap[]{ "Double", "Single", "Internal", "InternalDouble" };
 	ss << "\t// COMBExclude - " << modeMap[m_colorMode] << " //\n";
@@ -188,7 +209,7 @@ void SmoothCombination::innerSerialize(std::vector<std::string>& strVec, size_t 
 	strVec.push_back(ss.str());
 }
 
-void SmoothCombination::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
+void SmoothCombination::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut) const
 {
 	alpha *= m_colorBlending;
 	alpha -= 0.5 * (m_colorBlending - 1.0);
@@ -196,14 +217,15 @@ void SmoothCombination::blendColors(double alpha, Vec3 colorIn, Vec3* colorOut)
 	*colorOut = colorIn.lerp(*colorOut, alpha);
 }
 
-double COMBAddSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+void COMBAddSmooth::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 + 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);
 	if (colorOut) blendColors(std::clamp(1.0 - h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);
-	return std::lerp(distanceB, distanceA, h) - m_smoothing * h * (1.0 - h);
+	distanceA = std::lerp(distanceB, distanceA, h) - m_smoothing * h * (1.0 - h);
 }
 
-void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// COMBAddSmooth //\n";
@@ -215,15 +237,16 @@ void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t
 	ss << "\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - pmFloat0 * blend * (1.0 - blend);\n\n";
 }
 
-double COMBSubtractSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+void COMBSubtractSmooth::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = m_smoothing - abs(-distanceB - distanceA);
 	h = h < 0.0 ? 0.0 : h;
 	if (colorOut) blendColors(std::clamp(h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);
-	return (distanceA > -distanceB ? distanceA : -distanceB) + h * h * 0.25 / m_smoothing;
+	distanceA = (distanceA > -distanceB ? distanceA : -distanceB) + h * h * 0.25 / m_smoothing;
 }
 
-void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// COMBSubtractSmooth //\n";
@@ -236,14 +259,15 @@ void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, s
 	ss << "\td" << level << " = (d" << level << " > -d" << (level + 1) << " ? d" << level << " : -d" << (level + 1) << ") + blend * blend * 0.25 / pmFloat0;\n\n";
 }
 
-double COMBIntersectSmooth::combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) {
+void COMBIntersectSmooth::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
 	double distanceB = m_combineObj->signedDistance(p, colorOut);
 	double h = std::clamp(0.5 - 0.5 * (distanceB - distanceA) / m_smoothing, 0.0, 1.0);
 	if (colorOut) blendColors(std::clamp(h + m_colorShifting, 0.0, 1.0), colorIn, colorOut);
-	return std::lerp(distanceB, distanceA, h) + m_smoothing * h * (1.0 - h);
+	distanceA = std::lerp(distanceB, distanceA, h) + m_smoothing * h * (1.0 - h);
 }
 
-void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// COMBIntersectSmooth //\n";

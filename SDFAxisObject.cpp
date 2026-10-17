@@ -34,7 +34,7 @@ void SDFTorus::serializeInner(std::stringstream& ss) const
     ss << " axis " << m_axis;
 }
 
-void SDFTorus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFTorus::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFTorus //\n";
     std::string propName{ "" };
@@ -67,7 +67,7 @@ void SDFTorusSegment::serializeInner(std::stringstream& ss) const
     ss << " axis " << m_axis;
 }
 
-void SDFTorusSegment::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFTorusSegment::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFTorusSegment //\n";
     std::string propName{ "" };
@@ -109,7 +109,7 @@ void SDFCapsule::serializeInner(std::stringstream& ss) const
     ss << " axis " << m_axis;
 }
 
-void SDFCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFCapsule //\n";
     std::string propName{ "" };
@@ -149,7 +149,7 @@ void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
     ss << " axis " << m_axis;
 }
 
-void SDFTaperedCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFTaperedCapsule::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFTaperedCapsule //\n";
     std::string propName{ "" };
@@ -193,7 +193,7 @@ void SDFCylinder::serializeInner(std::stringstream& ss) const
     ss << " axis " << m_axis;
 }
 
-void SDFCylinder::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFCylinder::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFCylinder //\n";
     std::string propName{ "" };
@@ -233,7 +233,7 @@ void SDFTaperedCylinder::serializeInner(std::stringstream& ss) const
     ss << " axis " << m_axis;
 }
 
-void SDFTaperedCylinder::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFTaperedCylinder::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFTaperedCylinder //\n";
     std::string propName{ "" };

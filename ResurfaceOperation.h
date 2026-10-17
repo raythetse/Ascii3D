@@ -10,18 +10,17 @@ protected:
 	void innerUpdate() override {};
 	virtual std::string getClassName() const = 0;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
-	ResurfaceOperation(double magnitude) : SDFOperation(SDFOperationType::Resurface), m_magnitude(magnitude) {}
+	ResurfaceOperation(double magnitude) : m_magnitude(magnitude) {}
 public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
-	friend void SDFOperation::execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
 };
 
 class OPRoundOff : public ResurfaceOperation
 {
 protected:
-	double resurface(double distance) override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPRoundOff"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPRoundOff(double magnitude = DFLT_MAGNITUDE) : ResurfaceOperation(magnitude) {}
 };
@@ -29,9 +28,9 @@ public:
 class OPOnion : public ResurfaceOperation
 {
 protected:
-	double resurface(double distance) override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPOnion"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPOnion(double magnitude = DFLT_MAGNITUDE) : ResurfaceOperation(magnitude) {}
 };
@@ -39,9 +38,9 @@ public:
 class OPInsideOut : public ResurfaceOperation
 {
 protected:
-	double resurface(double distance) override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	std::string getClassName() const { return "OPOnion"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const override;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPInsideOut() : ResurfaceOperation(0.0) {}
 };

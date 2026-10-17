@@ -51,62 +51,6 @@ inline void AnimatorTemplate<T>::resetProperty() const
 }
 
 template <AnimType T>
-class ANToggle : public AnimatorTemplate<T>
-{
-public:
-	inline static const double DFLT_ALTVALUE{ MF::MAX_DOUBLE };
-	inline static const double DFLT_ONTIME{ 1.0 };
-	inline static const double DFLT_OFFTIME{ 1.0 };
-	inline static const double DFLT_PHASE{ 0.0 };
-protected:
-	double m_onTime;
-	double m_offTime;
-	double m_phase;
-	virtual void serializeInner(std::stringstream& ss) const {};
-	virtual void getShaderCallInner(std::string& call) const {};
-public:
-	ANToggle(std::string propName, T altValue = DFLT_ALTVALUE, double onTime = DFLT_ONTIME, double offTime = DFLT_OFFTIME, double phase = DFLT_PHASE)
-		: AnimatorTemplate<T>(propName, altValue, phase), m_onTime(onTime), m_offTime(offTime) {}
-	virtual void update() const override;
-};
-
-template<AnimType T>
-inline void ANToggle<T>::update() const
-{
-	double time = std::fmod(GameTimer::gameTime() + m_phase, m_onTime + m_offTime);
-	if (time > m_onTime) {
-		*ANToggle::m_ptr = ANToggle::m_amplitude;
-	}
-	else if (*ANToggle::m_ptr == ANToggle::m_amplitude) {
-		*ANToggle::m_ptr = ANToggle::m_initVal;
-	}
-}
-
-class ANToggle1D : public ANToggle<double>
-{
-protected:
-	std::string getClassName() const override { return "ANToggle1D"; }
-public:
-	using ANToggle<double>::ANToggle;
-};
-
-class ANToggle2D : public ANToggle<Vec2>
-{
-protected:
-	std::string getClassName() const override { return "ANToggle2D"; }
-public:
-	using ANToggle<Vec2>::ANToggle;
-};
-
-class ANToggle3D : public ANToggle<Vec3>
-{
-protected:
-	std::string getClassName() const override { return "ANToggle3D"; }
-public:
-	using ANToggle<Vec3>::ANToggle;
-};
-
-template <AnimType T>
 class ANContinuous : public AnimatorTemplate<T>
 {
 public:

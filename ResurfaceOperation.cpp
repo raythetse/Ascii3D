@@ -19,12 +19,13 @@ void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 	strVec.push_back(ss.str());
 }
 
-double OPRoundOff::resurface(double distance)
+void OPRoundOff::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
-	return distance - m_magnitude;
+	distanceA -= - m_magnitude;
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPRoundOff::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPRoundOff::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPRoundOff //\n";
@@ -32,11 +33,13 @@ void OPRoundOff::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& m
 	ss << "\td" << level << " -= pmFloat0;\n\n";
 }
 
-double OPOnion::resurface(double distance) {
-	return abs(distance) - m_magnitude;
+void OPOnion::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
+	distanceA = abs(distanceA) - m_magnitude;
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPOnion::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPOnion::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	std::string propName{ "" };
 	ss << "\t// OPOnion //\n";
@@ -44,11 +47,13 @@ void OPOnion::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxL
 	ss << "\td" << level << " = abs(d" << level << ") - pmFloat0; \n\n";
 }
 
-double OPInsideOut::resurface(double distance) {
-	return -distance;
+void OPInsideOut::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
+	distanceA = -distanceA;
+	if (colorOut) *colorOut = colorIn;
 }
 
-void OPInsideOut::getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const
+void OPInsideOut::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
 	ss << "\t// OPInsideOut //\n";
 	ss << "\td" << level << " = -d" << level << ";\n\n";

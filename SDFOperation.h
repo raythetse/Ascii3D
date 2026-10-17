@@ -12,21 +12,17 @@
 class SDFOperation
 {
 protected:
-	SDFOperationType m_opType;
 	std::vector<std::unique_ptr<Animation>> m_animations{};
 	virtual void innerUpdate() = 0;
-	virtual double combine(Vec3 p, double distanceA, Color colorIn, Color* colorOut) { return distanceA; }
-	virtual double resurface(double distance) { return distance; };
-	virtual void transform(Vec3& p) const {};
 	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const = 0;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const = 0;
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const = 0;
 	bool getShaderAnimationCalls(std::string& propName) const;
-	SDFOperation(SDFOperationType opType) : m_opType(opType) {}
+	SDFOperation() = default;
 public:
 	virtual void update();
-	void execute(Vec3& p, double& distance, const Color colorIn, Color* colorOut);
+	virtual void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const = 0;
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) = 0;
 	virtual void resetAnimations();
 	virtual void serialize(std::vector<std::string>& strVec, size_t level) const;
-	virtual void getShaderCalls(std::stringstream& ss, size_t level, size_t& maxLevel) const;
+	virtual void getShaderCalls(std::stringstream& ss, size_t level) const;
 };

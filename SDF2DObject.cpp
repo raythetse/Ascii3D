@@ -42,7 +42,7 @@ void SDFRhombus::serializeInnerInner(std::stringstream& ss) const
     ss << " dimensions " << m_dimensions;
 }
 
-void SDFRhombus::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFRhombus::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFRhombus //\n";
     std::string propName{ "" };
@@ -80,7 +80,7 @@ void SDFEquilateralTriangle::serializeInnerInner(std::stringstream& ss) const
     ss << " base " << m_base;
 }
 
-void SDFEquilateralTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFEquilateralTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFEquilateralTriangle //\n";
     std::string propName{ "" };
@@ -118,7 +118,7 @@ void SDFIsoscelesTriangle::serializeInnerInner(std::stringstream& ss) const
     ss << " dimensions " << m_dimensions;
 }
 
-void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFIsoscelesTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFIsoscelesTriangle //\n";
     std::string propName{ "" };
@@ -158,7 +158,7 @@ void SDFTriangle::serializeInnerInner(std::stringstream& ss) const
     ss << " point3 " << m_point3;
 }
 
-void SDFTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFTriangle //\n";
     std::string propName{ "" };
@@ -216,7 +216,7 @@ void SDFPieSlice::serializeInnerInner(std::stringstream& ss) const
     ss << " radius " << m_radius;
 }
 
-void SDFPieSlice::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFPieSlice::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFPieSlice //\n";
     std::string propName{ "" };
@@ -259,7 +259,7 @@ void SDFPentagon::serializeInnerInner(std::stringstream& ss) const
     ss << " radius " << m_radius;
 }
 
-void SDFPentagon::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFPentagon::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFPentagon //\n";
     std::string propName{ "" };
@@ -297,7 +297,7 @@ void SDFHexagon::serializeInnerInner(std::stringstream& ss) const
     ss << " radius " << m_radius;
 }
 
-void SDFHexagon::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFHexagon::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFHexagon //\n";
     std::string propName{ "" };
@@ -334,7 +334,7 @@ void SDFOctagon::serializeInnerInner(std::stringstream& ss) const
     ss << " radius " << m_radius;
 }
 
-void SDFOctagon::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFOctagon::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFOctagon //\n";
     std::string propName{ "" };
@@ -374,7 +374,7 @@ void SDFStar::serializeInnerInner(std::stringstream& ss) const
     ss << " ratio " << m_ratio;
 }
 
-void SDFStar::getShaderObjectCalls(std::stringstream& ss, size_t level, size_t highestLevel) const
+void SDFStar::getShaderObjectCalls(std::stringstream& ss, size_t level) const
 {
     ss << "\t// SDFStar //\n";
     std::string propName{ "" };

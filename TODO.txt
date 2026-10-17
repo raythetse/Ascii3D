@@ -1,5 +1,5 @@
 Required:
-- ensure all propmod hooks exist
+- ensure all propmod hooks exist/work
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU
 - comment everything
@@ -10,6 +10,9 @@ Required:
 - Update loop functions for SDF software mode efficiency
 
 Optional:
+- add off/on to other combination types?  (only have on COMBAdd right now)
+- refactor execute function on operation child types
+- refactor serialization (inner) on operation types
 - Reusable groups (tried once, taking too long, try later when I have more time.)
 - more robust templating of animations?
 - light movement
@@ -20,6 +23,7 @@ Optional:
 - Input controls for animations?
 - improve ambient light, occlusion, and shadow functions
 - investigate rhombus axis issue
+- improve (reduce repetition of) mapped builder functions
 
 Ongoing:
 - design/implement new SDFs, Operations, and Modifiers
