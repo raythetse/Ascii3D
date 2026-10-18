@@ -780,6 +780,16 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.operation<OPRepeatLimited>(limits, spacing);
     } },
+    { "OPRepeatCircle", [](SDFBuilder& builder, std::stringstream& ss) {
+        size_t repetitions{ OPRepeatCircle::DFLT_REPETITIONS };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "repetitions") ss >> repetitions;
+        }
+        builder.operation<OPRepeatCircle>(repetitions);
+    } },
 
     // Property Modifiers
     { "ANContinuous1D", [](SDFBuilder& builder, std::stringstream& ss) {

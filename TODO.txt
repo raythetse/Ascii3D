@@ -1,4 +1,5 @@
 Required:
+- Fix repeat on barts hair
 - ensure all propmod hooks exist/work
 - lots of built-in demos to illustrate all sdfs and ops with propmods
 - rich demo scenes for GPU

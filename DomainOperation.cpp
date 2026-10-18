@@ -169,7 +169,7 @@ void OPRepeatLimited::bindAnimation(std::unique_ptr<Animation> animation)
 		m_animations.push_back(std::move(animation));
 		return;
 	}
-	if (animation->propName() == "limits") {
+	else if (animation->propName() == "limits") {
 		animation->BindToProperty(&m_limits);
 		m_animations.push_back(std::move(animation));
 	}
@@ -177,7 +177,6 @@ void OPRepeatLimited::bindAnimation(std::unique_ptr<Animation> animation)
 
 void OPRepeatCircle::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
-	Vec2 p2D{ p.x, p.z };
 	double r = static_cast<double>(m_repetitions);
 	double b = MF::TAU / r;
 	double a = std::atan2(p.z, p.x);
@@ -190,16 +189,35 @@ void OPRepeatCircle::execute(Vec3& p, double& distanceA, const Color colorIn, Co
 	double c = b * i;
 	Vec2 sc = MF::fast_sincos(c);
 
+	Vec2 p2D{ p.x, p.z };
 	p2D = Mat2{ sc.y, -sc.x, sc.x, sc.y } * p2D;
 	p.x = p2D.x;
 	p.z = p2D.y;
 }
 
 void OPRepeatCircle::innerSerialize(std::vector<std::string>& strVec, size_t level) const
-{}
+{
+	std::stringstream ss{};
+	ss << std::string(level, '\t');
+	ss << getClassName();
+	ss << " repetitions " << m_repetitions;
+
+	strVec.push_back(ss.str());
+}
 
 void OPRepeatCircle::getShaderOpCalls(std::stringstream & ss, size_t level) const
-{}
+{
+	std::string propName{ "" };
+	ss << "\t// OPRepeatCircle //\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "repetitions") ? propName : std::to_string(m_repetitions)) << ";\n";
+	ss << "\tp" << level << " = repeatCircle(p" << level << ", pmFloat0);\n\n";
+}
 
 void OPRepeatCircle::bindAnimation(std::unique_ptr<Animation> animation)
-{}
+{
+	if (animation->propName() == "repetitions") {
+		animation->BindToProperty(&m_repetitions);
+		m_animations.push_back(std::move(animation));
+		return;
+	}
+}

@@ -234,7 +234,7 @@ double SDFPieSlice::signedDistanceInnerInner(Vec3 p) const
     p2D.x = std::abs(p2D.x);
     double l = p2D.length() - m_radius;
     Vec2 sincos = MF::fast_sincos(m_sweep * MF::PI);
-    double m = (p2D - sincos * std::clamp(p2D.dot(sincos), 0.0, m_radius)).length(); // c=sin/cos of aperture
+    double m = (p2D - sincos * std::clamp(p2D.dot(sincos), 0.0, m_radius)).length();
     return std::max(l, m * (sincos.y * p2D.x - sincos.x * p2D.y >= 0.0 ? 1.0 : -1.0));
 }
 

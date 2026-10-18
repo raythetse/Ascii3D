@@ -21,7 +21,7 @@ void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 
 void OPRoundOff::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
-	distanceA -= - m_magnitude;
+	distanceA -= m_magnitude;
 	if (colorOut) *colorOut = colorIn;
 }
 

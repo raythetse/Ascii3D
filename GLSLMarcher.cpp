@@ -179,6 +179,25 @@ vec3 rotateDelay(vec3 p, vec3 axis, float rotations, float rotateTime, float del
     return rotateVec3(p, axis, completeCycles * rotations);
 }
 
+vec3 repeatCircle(vec3 p, float repetitions) {
+	float b = TAU / repetitions;
+	float a = atan(p.z, p.x);
+
+	if (a < 0.0) a += TAU;
+
+	float i = floor((a + b * 0.5) / b);
+
+	if (i >= repetitions) i = 0.0;
+	float c = b * i;
+    float sn = sin(c);
+    float cs = cos(c);
+
+    vec2 p2D = vec2(p.x, p.z);
+	p2D = mat2(cs, -sn, sn, cs) * p2D;
+
+    return vec3(p2D.x, p.y, p2D.y);
+}
+
 // OBJECT FUNCTIONS //
 float box(vec3 p, vec3 dimensions) {
     p = abs(p) - dimensions * 0.5;
@@ -305,7 +324,7 @@ float equilateralTriangle(vec3 p, float base, int operation, float magnitude, fl
     p2D -= vec2(0.5, 0.5 * ROOT3) * max(p2D.x + ROOT3 * p2D.y, 0.0);
     p2D -= vec2(clamp(p2D.x, -halfBase, halfBase), -halfBase / ROOT3);
     float d2D = length(p2D) * sign(-p2D.y);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -316,7 +335,7 @@ float isoscelesTriangle(vec3 p, vec2 dimensions, int operation, float magnitude,
     float s = -sign(dimensions.y);
     vec2 d = min(vec2(dot(a, a), s * (p2D.x * dimensions.y - p2D.y * dimensions.x)), vec2(dot(b, b), s * (p2D.y - dimensions.y)));
     float d2D = -sqrt(d.x) * sign(d.y);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float pieSlice(vec3 p, float sweep, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -328,7 +347,7 @@ float pieSlice(vec3 p, float sweep, float radius, int operation, float magnitude
     float l = length(p2D) - radius;
     float m = length(p2D - sincos * clamp(dot(p2D, sincos), 0.0, radius));
     float d2D = max(l, m * sign(sincos.y * p2D.x - sincos.x * p2D.y));
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float pentagon(vec3 p, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -339,7 +358,7 @@ float pentagon(vec3 p, float radius, int operation, float magnitude, float revol
     p2D -= 2.0 * min(dot(vec2( k.x, k.y), p2D), 0.0) * vec2( k.x, k.y);
     p2D -= vec2(clamp(p2D.x, -radius * k.z, radius * k.z), radius);    
     float d2D = length(p2D) * sign(p2D.y);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float hexagon(vec3 p, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -349,7 +368,7 @@ float hexagon(vec3 p, float radius, int operation, float magnitude, float revolv
     p2D -= 2.0 * min(dot(k.xy, p2D), 0.0) * k.xy;
     p2D -= vec2(clamp(p2D.x, -k.z * radius, k.z * radius), radius);
     float d2D = length(p2D) * sign(p2D.y);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float octagon(vec3 p, float radius, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -360,7 +379,7 @@ float octagon(vec3 p, float radius, int operation, float magnitude, float revolv
     p2D -= 2.0 * min(dot(vec2(-k.x, k.y), p2D), 0.0) * vec2(-k.x, k.y);
     p2D -= vec2(clamp(p2D.x, -k.z * radius, k.z * radius), radius);
     float d2D = length(p2D) * sign(p2D.y);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float star(vec3 p, float numPoints, float radius, float ratio, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -380,7 +399,7 @@ float star(vec3 p, float numPoints, float radius, float ratio, int operation, fl
     p2D -= radius * acs;
     p2D += ecs * clamp(-dot(p2D, ecs), 0.0, radius * acs.y / ecs.y);
     float d2D = length(p2D) * sign(p2D.x);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;
 }
 
 float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, float magnitude, float revolveRotations, vec2 revolveRotateOffset) {
@@ -396,7 +415,7 @@ float triangle(vec3 p, vec2 point1, vec2 point2, vec2 point3, int operation, flo
                      vec2(dot(pq1, pq1), s * (v1.x * e1.y - v1.y * e1.x))),
                      vec2(dot(pq2, pq2), s * (v2.x * e2.y - v2.y * e2.x)));
     float d2D = -sqrt(d.x) * sign(d.y);
-    return operation == 0 ? extrude2D(p.y, d2D, magnitude * 0.5) : d2D;    
+    return operation == 0 ? extrude2D(p.y, d2D, magnitude) : d2D;    
 }
     
 )"
