@@ -8,6 +8,7 @@ TestScene::TestScene()
 
 	add(SDFBuilder{}
 		// Robot
+		.operation<OPTranslate>(Vec3::Forward * 2.5)
 		.combination<COMBAdd, SDFObject>()()
 			.operation<OPTranslate>(Vec3::Down * 2.0)
 
@@ -48,8 +49,8 @@ TestScene::TestScene()
 			.combination<COMBAdd, SDFObject>()()
 
 				// First segment
-				.operation<OPRotate>(Vec3::Up, 0.235) // T = 0.09, B = 0.38
-				.animation<ANLinearCycle1D>("rotations", 0.145, 2.0, 1.0, 2.0, 1.0)
+				.operation<OPRotate>(Vec3::Up, 0.24) // T = 0.09, B = 0.39
+				.animation<ANLinearCycle1D>("rotations", 0.15, 1.5, 1.5, 1.5, 1.5)
 				.combination<COMBAdd, SDFObject>()()
 					.operation<OPTranslate>(Vec3::Up * 3.5)
 					.combination<COMBAdd, SDFCylinder>(AXIS_Y, 0.45, 0.25)().color(Color::Blue)
@@ -70,7 +71,7 @@ TestScene::TestScene()
 
 					// Second segment
 					.operation<OPRotate>(Vec3::Forward, -0.055) // T = 0.08, B = -0.19 
-						.animation<ANLinearCycle1D>("rotations", -0.135, 2.0, 1.0, 2.0, 1.0)
+						.animation<ANLinearCycle1D>("rotations", -0.135, 1.65, 1.35, 1.65, 1.35)
 						.combination<COMBAdd, SDFObject>()()
 							.combination<COMBAdd, SDFCylinder>(AXIS_Z, 0.29)().color(armColor)
 								.operation<OPMirrorZ>()
@@ -94,7 +95,7 @@ TestScene::TestScene()
 
 						// Third Segment
 						.operation<OPRotate>(Vec3::Forward, 0.0) // T = 0.11, B = -0.11
-							.animation<ANLinearCycle1D>("rotations", -0.11, 2.0, 1.0, 2.0, 1.0)
+							.animation<ANLinearCycle1D>("rotations", -0.11, 1.75, 1.25, 1.75, 1.25)
 							.combination<COMBAdd, SDFObject>()()
 								.combination<COMBAdd, SDFCylinder>(AXIS_Z, 0.29)().color(armColor)
 									.operation<OPMirrorZ>()
@@ -118,7 +119,7 @@ TestScene::TestScene()
 
 							// Forth Segment
 							.operation<OPRotate>(Vec3::Forward, 0.035) // T = 0.18, B = -0.11
-							.animation<ANLinearCycle1D>("rotations", -0.145, 2.0, 1.0, 2.0, 1.0)
+							.animation<ANLinearCycle1D>("rotations", -0.145, 1.9, 1.1, 1.9, 1.1)
 							.combination<COMBAdd, SDFObject>()()
 								.combination<COMBAdd, SDFCylinder>(AXIS_Z, 0.18, 0.625)().color(armColor)
 									.operation<OPMirrorZ>()
@@ -135,7 +136,7 @@ TestScene::TestScene()
 								// Grabber Segment
 								.combination<COMBAdd, SDFObject>()()
 									.operation<OPRotate>(Vec3::Up, 0.15) // T = 0.0, B = 0.15
-									//.animation<ANLinearCycle1D>("rotations", 0.21, 0.94, 1.354, 1.24, 0.849)
+									.animation<ANLinearCycle1D>("rotations", 2.0, 1.5, 1.5, 2.0, 1.0)
 									.operation<OPTranslate>(Vec3::Up * 0.1)
 									.combination<COMBAdd, SDFCylinder>(AXIS_Y, 0.15, 0.05)().color(Color::Blue)
 										.combination<COMBAdd, SDFBox>(Vec3{ 0.2, 0.2, 0.05 })().color(Color::LightGray)
@@ -144,12 +145,17 @@ TestScene::TestScene()
 											.combination<COMBAddSmooth, SDFCylinder>(AXIS_Z, 0.025, 1.0)(0.02).color(Color::LightGray)
 												.stepBack(2)
 										.operation<OPMirrorZ>()
-										.operation<OPTranslate>(Vec3{ 0.0, 0.425, 0.475 }) // Open Pos = 0.475
-										//.animation<ANLinearCycle3D>("translation", Vec3{ 0.0, 0.0, 0.125 })
+										.operation<OPTranslate>(Vec3{ 0.0, 0.425, 0.4 }) // Open Pos = 0.475
+										.animation<ANLinearCycle3D>("translation", Vec3{ 0.0, 0.0, 0.07 }, 0.25, 2.75, 0.25, 2.75, 1.5)
 										.combination<COMBAdd, SDFBox>(Vec3{ 0.25, 0.75, 0.05 })().color(Color::LightGray)
 											.operation<OPTranslate>(Vec3{ 0.0, 0.35, 0.0 })
 											.combination<COMBAddSmooth, SDFCylinder>(AXIS_X, 0.05, 0.3)(0.02, 20.0).color(Color::Red)
-												.stepBack(0)
+												.stepBack(3)
+									// Held Sphere
+									.operation<OPTranslate>(Vec3::Up * 0.55)
+									.combination<COMBAdd, SDFSphere>(0.3)(false, 3.0, 3.0, 4.5)
+										.stepBack(0)
+							
 		
 		// Ramp
 		.combination<COMBAdd, SDFObject>()()
@@ -169,7 +175,24 @@ TestScene::TestScene()
 					.combination<COMBSubtract, SDFBox>(Vec3{ 1.2, 3.0, 8.0 })()
 						.stepBack(2)
 				.combination<COMBIntersect, SDFBox>(Vec3{ 1.0, 3.0, 4.0 })()
-		
+					.stepBack(0)
+
+		// Rolling Sphere
+		.combination<COMBAdd, SDFObject>()()
+			.operation<OPTranslate>(Vec3{ 2.75, 1.275, -0.1 })
+			.animation<ANLinearCycle3D>("translation", Vec3{ 0.0, 1.0, 2.1 }, 2.0, 1.0, 2.0, 1.0, 4.5)
+			//.operation<OPTranslate>(Vec3{ 0.0, 0.275, -2.3 }) //Bottom pos
+			//.operation<OPTranslate>(Vec3{ 0.0, 2.275, 1.9 }) //Top pos
+			.combination<COMBAdd, SDFSphere>(0.3)(false, 3.0, 3.0, 1.5)
+				.stepBack(0)
+
+		// Landing Tray
+		.combination<COMBAdd, SDFObject>()()
+			.operation<OPTranslate>(Vec3{ 2.75, -0.125, -2.25 })
+				.combination<COMBAdd, SDFCylinder>(AXIS_Y, 0.25, 0.75)()
+					.operation<OPTranslate>(Vec3::Up * 0.45)
+					.combination<COMBSubtractSmooth, SDFSphere>(0.35)(0.1)
+
 
 
 

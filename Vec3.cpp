@@ -39,6 +39,7 @@ const Vec3 Vec3::Yellow{ 1.0, 1.0, 0.0 };
 const Vec3 Vec3::Magenta{ 1.0, 0.0, 1.0 };
 const Vec3 Vec3::Teal{ 0.0, 1.0, 1.0 };
 
+const Vec3 Vec3::Brown{ 0.4, 0.33, 0.18 };
 const Vec3 Vec3::Gold{ 1.0, 0.87, 0.0 };
 
 double Vec3::length() const

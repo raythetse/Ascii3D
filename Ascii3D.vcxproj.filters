@@ -67,6 +67,12 @@
     <Filter Include="Header Files\Animation">
       <UniqueIdentifier>{9c99e063-e19d-4fa5-9c1d-53cab87b22a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SDF\DemoScenes\CustomScenes">
+      <UniqueIdentifier>{f8a12575-0347-44a3-a370-21b8698d6015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SDF\DemoScenes\CustomScenes">
+      <UniqueIdentifier>{11b896f8-0c7f-4ef6-9d2f-38e38dede7a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp">
@@ -150,9 +156,6 @@
     <ClCompile Include="WormsScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
-    <ClCompile Include="BartScene.cpp">
-      <Filter>Source Files\SDF\DemoScenes</Filter>
-    </ClCompile>
     <ClCompile Include="ExclusionScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
@@ -179,6 +182,12 @@
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="BartScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes\CustomScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="RoboticArmScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes\CustomScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,9 +272,6 @@
     <ClInclude Include="DemoScenesInc.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
-    <ClInclude Include="BartScene.h">
-      <Filter>Header Files\SDF\DemoScenes</Filter>
-    </ClInclude>
     <ClInclude Include="ExclusionScene.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
@@ -295,6 +301,12 @@
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="BartScene.h">
+      <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="RoboticArmScene.h">
+      <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

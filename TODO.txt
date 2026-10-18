@@ -31,5 +31,4 @@ Ongoing:
 - design/implement new SDFs, Operations, and Modifiers
 
 Scene Ideas
-- Mechanical arm moving boxes
 - Seasonal themes outdoor scenes

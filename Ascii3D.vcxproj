@@ -165,6 +165,7 @@
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="GLSLMarcher.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
+    <ClCompile Include="RoboticArmScene.cpp" />
     <ClCompile Include="SDF2DObject.cpp" />
     <ClCompile Include="SDF2DObject.h" />
     <ClCompile Include="SDFAxisObject.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="GLSLMarcher.h" />
+    <ClInclude Include="RoboticArmScene.h" />
     <ClInclude Include="SDFAxisObject.h" />
     <ClInclude Include="SDFObjectInc.h" />
     <ClInclude Include="TestScene.h" />

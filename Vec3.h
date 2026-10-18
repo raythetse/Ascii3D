@@ -41,6 +41,7 @@ public:
 	static const Vec3 Magenta;
 	static const Vec3 Teal;
 
+	static const Vec3 Brown;
 	static const Vec3 Gold;
 	static const Vec3 Transparent;
 

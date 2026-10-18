@@ -424,6 +424,10 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	color0 = pmVec30;
 
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 2.5000000);
+	p0 -= pmVec30; 
+
 	// SDFObject //
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p1 = p0;
@@ -653,7 +657,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = linearCycle1D(0.2350000, 0.1450000, 2.0000000, 1.0000000, 2.0000000, 1.0000000, 1.0000000, time);
+	pmFloat0 = linearCycle1D(0.2400000, 0.1500000, 1.5000000, 1.5000000, 1.5000000, 1.5000000, 1.0000000, time);
 	p2 = rotateVec3(p2, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -802,7 +806,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = linearCycle1D(-0.0550000, -0.1350000, 2.0000000, 1.0000000, 2.0000000, 1.0000000, 1.0000000, time);
+	pmFloat0 = linearCycle1D(-0.0550000, -0.1350000, 1.6500000, 1.3500000, 1.6500000, 1.3500000, 1.0000000, time);
 	p3 = rotateVec3(p3, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -997,7 +1001,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = linearCycle1D(0.0000000, -0.1100000, 2.0000000, 1.0000000, 2.0000000, 1.0000000, 1.0000000, time);
+	pmFloat0 = linearCycle1D(0.0000000, -0.1100000, 1.7500000, 1.2500000, 1.7500000, 1.2500000, 1.0000000, time);
 	p3 = rotateVec3(p3, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -1192,7 +1196,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	pmFloat0 = linearCycle1D(0.0350000, -0.1450000, 2.0000000, 1.0000000, 2.0000000, 1.0000000, 1.0000000, time);
+	pmFloat0 = linearCycle1D(0.0350000, -0.1450000, 1.9000000, 1.1000000, 1.9000000, 1.1000000, 1.0000000, time);
 	p3 = rotateVec3(p3, pmVec30, pmFloat0);
 
 	// SDFObject //
@@ -1322,7 +1326,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// OPRotate //
 	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	pmFloat0 = 0.150000;
+	pmFloat0 = linearCycle1D(0.1500000, 2.0000000, 1.5000000, 1.5000000, 2.0000000, 1.0000000, 1.0000000, time);
 	p5 = rotateVec3(p5, pmVec30, pmFloat0);
 
 	// OPTranslate //
@@ -1389,7 +1393,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p6.z = abs(p6.z);
 
 	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.4250000, 0.4750000);
+	pmVec30 = linearCycle3D(vec3(0.0000000, 0.4250000, 0.4000000), vec3(0.0000000, 0.0000000, 0.0700000), vec3(0.2500000, 0.2500000, 0.2500000), vec3(2.7500000, 2.7500000, 2.7500000), vec3(0.2500000, 0.2500000, 0.2500000), vec3(2.7500000, 2.7500000, 2.7500000), vec3(1.5000000, 1.5000000, 1.5000000), time);
 	p6 -= pmVec30; 
 
 	// SDFObject //
@@ -1443,6 +1447,31 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 		color5 = color6; 
 	}
 
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.5500000, 0.0000000);
+	p5 -= pmVec30; 
+
+if (isEnabled(3, 3, 4.5, time)) {
+	// SDFObject //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	p6 = p5;
+	d6 = FLOAT_MAX;
+	color6 = pmVec30;
+	// SDFSphere //
+	pmFloat0 = 0.300000;
+	d6 = sphere(p6, pmFloat0);
+
+
+	// COMBAdd //
+	if (d6 < d5) {
+		d5 = d6;
+		color5 = color6; 
+	}
+	else if (false) {
+		color5 = color6; 
+	}
+
+}
 	// COMBAdd //
 	if (d5 < d4) {
 		d4 = d5;
@@ -1509,7 +1538,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p2 -= pmVec30; 
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	pmVec30 = vec3(0.7500000, 0.7500000, 0.7500000);
 	p3 = p2;
 	d3 = FLOAT_MAX;
 	color3 = pmVec30;
@@ -1548,7 +1577,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p4.z -= clamp(p4.z - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	pmVec30 = vec3(0.4000000, 0.3300000, 0.1800000);
 	p5 = p4;
 	d5 = FLOAT_MAX;
 	color5 = pmVec30;
@@ -1613,6 +1642,108 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 
 	// COMBIntersect //
 	if (d2 <= d3) d2 = d3;
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = linearCycle3D(vec3(2.7500000, 1.2750000, -0.1000000), vec3(0.0000000, 1.0000000, 2.0999999), vec3(2.0000000, 2.0000000, 2.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(2.0000000, 2.0000000, 2.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(4.5000000, 4.5000000, 4.5000000), time);
+	p1 -= pmVec30; 
+
+if (isEnabled(3, 3, 1.5, time)) {
+	// SDFObject //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFSphere //
+	pmFloat0 = 0.300000;
+	d2 = sphere(p2, pmFloat0);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+}
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(2.7500000, -0.1250000, -2.2500000);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(0.4000000, 0.3300000, 0.1800000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.750000;
+	pmFloat1 = 0.250000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.4500000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFSphere //
+	pmFloat0 = 0.350000;
+	d3 = sphere(p3, pmFloat0);
+
+
+	// COMBSubtractSmooth //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	blend = pmFloat0 - abs(-d3 - d2);
+	blend = max(blend, 0.0);
+	color2 = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color2, color3, pmFloat2);
+	d2 = (d2 > -d3 ? d2 : -d3) + blend * blend * 0.25 / pmFloat0;
 
 	// COMBAdd //
 	if (d2 < d1) {
