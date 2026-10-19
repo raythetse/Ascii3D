@@ -437,7 +437,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color2 = pmVec30;
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p2.xz -= pmVec30.xz * round(p2.xz / pmVec30.xz);
 
 	// OPRotate //
@@ -492,7 +492,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// OPRepeatCircle //
@@ -545,7 +545,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color2 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.7170000);
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
 	p2 -= pmVec30; 
 
 	// SDFObject //
@@ -555,7 +555,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color3 = pmVec30;
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p3.xz -= pmVec30.xz * round(p3.xz / pmVec30.xz);
 
 	// OPRotate //
@@ -610,11 +610,11 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color2 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.7170000);
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
 	p2 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p2.xz -= pmVec30.xz * round(p2.xz / pmVec30.xz);
 
 	// OPRepeatCircle //
@@ -674,7 +674,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// SDFObject //
@@ -713,11 +713,11 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(0.5000000, 0.0000000, 0.8600000);
+	pmVec30 = vec3(0.5000000, 0.0000000, 0.8660254);
 	p1 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// SDFObject //
@@ -756,11 +756,11 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(0.5000000, 0.0000000, -0.8600000);
+	pmVec30 = vec3(0.5000000, 0.0000000, -0.8660254);
 	p1 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// SDFObject //
@@ -803,11 +803,11 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 -= pmVec30; 
 
 	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.7170000);
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
 	p1 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// SDFObject //
@@ -846,15 +846,15 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(0.5000000, 0.0000000, 0.8600000);
+	pmVec30 = vec3(0.5000000, 0.0000000, 0.8660254);
 	p1 -= pmVec30; 
 
 	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.7170000);
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
 	p1 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// SDFObject //
@@ -893,15 +893,15 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 
 	// OPTranslate //
-	pmVec30 = vec3(0.5000000, 0.0000000, -0.8600000);
+	pmVec30 = vec3(0.5000000, 0.0000000, -0.8660254);
 	p1 -= pmVec30; 
 
 	// OPTranslate //
-	pmVec30 = vec3(1.0000000, 0.0000000, 1.7170000);
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
 	p1 -= pmVec30; 
 
 	// OPRepeatXZ //
-	pmVec30 = vec3(2.0000000, 1.0000000, 3.4340000);
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
 	p1.xz -= pmVec30.xz * round(p1.xz / pmVec30.xz);
 
 	// SDFObject //

@@ -190,7 +190,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
         std::cout << "[3] Worms - Combining partial toruses into continuous moving worms\n";
         std::cout << "[4] Rainbow - Cycling colors and sweeping out 2D shapes in a ring\n";
         std::cout << "[5] Waves - Animating shape parameters and smooth combinations\n";
-        std::cout << "[6] Jigsaw - Domain Repetition\n";
+        std::cout << "[6] Jigsaw - Domain Repetition tricks\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);

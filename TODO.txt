@@ -7,7 +7,7 @@ Required:
 - instructions for custom scene files
 - add controls instructions to main menu screen
 - Add missing update vals for software rendering ops
-- color overwrite on combos
+- fix color overwrite on add combos
 
 Optional:
 - add off/on to other combination types?  (only have on COMBAdd right now)
