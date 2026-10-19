@@ -1,0 +1,104 @@
+SDFObject color 1 1 1
+	COMBAdd onTime 1 offTime 0 phase 0
+	SDFPlane color 1 1 1 normal 0 1 0 offset -2.7
+		stepBack
+	OPTranslate translation 0 1 7
+	COMBAdd onTime 1 offTime 0 phase 0
+	SDFObject color 1 1 1
+		OPRepeatCircle repetitions 16 axis 1
+		OPTranslate translation 1 0 0
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFTorus color 1 0.5 0 radii 3 0.85 axis 2
+			stepBack
+		stepBack
+	COMBSubtractSmooth smoothing 0.5 colorBlending 1 colorShifting 0
+	SDFSphere color 1 1 1 radius 3.8
+		stepBack
+	COMBSubtract onTime 1 offTime 0 phase 0
+	SDFSolidAngle color 1 1 1 radius 6 sweep 0.12
+		stepBack
+	COMBSubtract onTime 1 offTime 0 phase 0
+	SDFObject color 1 1 1
+		OPTranslate translation 0 0 -3.5
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFObject color 1 1 1
+			OPRepeatCircle repetitions 25 axis 2
+			OPTranslate translation 1.45 0 0
+			COMBAdd onTime 1 offTime 0 phase 0
+			SDFBox color 1 1 1 dimensions 0.4 3 0.25
+				OPTranslate translation 0.25 0 0
+				COMBAdd onTime 1 offTime 0 phase 0
+				SDFBox color 1 1 1 dimensions 0.4 3 0.5
+					OPTranslate translation 0.3 0 0
+					COMBAdd onTime 1 offTime 0 phase 0
+					SDFBox color 1 1 1 dimensions 0.4 3 0.25
+						stepBack
+					stepBack
+				stepBack
+			stepBack
+		OPElongateZ length 2 offset 0
+		OPRotate axis 0 0 1 rotations 0.5
+		COMBIntersect onTime 1 offTime 0 phase 0
+		SDFTorusSegment color 1 1 1 radii 2 1 sweep 0.25 axis 2
+			stepBack
+		stepBack
+	COMBSubtract onTime 1 offTime 0 phase 0
+	SDFObject color 1 1 1
+		OPTranslate translation 0 0 -4
+		OPMirrorX
+		OPTranslate translation 0.4 0 0
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFCylinder color 1 1 1 sideLength 2 radius 0.3 axis 2
+			stepBack
+		stepBack
+	COMBSubtract onTime 1 offTime 0 phase 0
+	SDFObject color 1 1 1
+		OPTranslate translation 0 1.5 -4
+		OPMirrorX
+		OPTranslate translation 0.35 0 0
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFCylinder color 1 1 1 sideLength 3 radius 1.5 axis 2
+			OPRotate axis 0 0 1 rotations 0.1
+			OPTranslate translation 1.7 0.65 0
+			COMBIntersect onTime 1 offTime 0 phase 0
+			SDFBox color 1 1 1 dimensions 2 2 3.1
+				stepBack
+			stepBack
+		stepBack
+	COMBAdd onTime 1 offTime 0 phase 0
+	SDFObject color 1 1 1
+		OPTranslate translation 0 -0.4 -4.65
+		OPRotate axis 1 0 0 rotations 0.125
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFTorus color 1 1 1 radii 0.5 0.1 axis 1
+			stepBack
+		stepBack
+	COMBAdd onTime 1 offTime 0 phase 0
+	SDFObject color 1 1 1
+		OPTranslate translation 0.05 3.2 -0.05
+		OPRotate axis -0.773245 0.386622 -0.502609 rotations -0.02
+		OPTranslate translation 0 -3 0
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFObject color 1 1 1
+			OPRepeatCircle repetitions 16 axis 1
+			OPTranslate translation 1 0 0
+			COMBAdd onTime 1 offTime 0 phase 0
+			SDFTorus color 1 0.5 0 radii 3 0.85 axis 2
+				stepBack
+			stepBack
+		COMBSubtractSmooth smoothing 0.5 colorBlending 1 colorShifting 0
+		SDFSphere color 1 1 1 radius 3.5
+			stepBack
+		COMBIntersect onTime 1 offTime 0 phase 0
+		SDFSolidAngle color 1 1 1 radius 6 sweep 0.12
+			stepBack
+		OPTranslate translation 0 4.2 0
+		COMBAdd onTime 1 offTime 0 phase 0
+		SDFStar color 0 1 0 magnitude 1.2 operation 0 revolveRotations 0 revolveRotateOffset 0 0 numPoints 10 radius 0.2 ratio 0.1
+			stepBack
+		stepBack
+	stepBack
+LightSource position 5 9 2 luminance 50 color 1 1 1 ambientPower 0.5
+LightSource position 0 2 7 luminance 70 color 1 0.5 0 ambientPower 0.075
+LightSource position 0 3 7 luminance 70 color 1 0.5 0 ambientPower 0.075
+end

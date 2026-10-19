@@ -431,7 +431,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 	// SDFPlane //
 	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	d1 = dot(p1, pmVec30) - -2.85;
+	d1 = dot(p1, pmVec30) - -2.7;
 
 
 	// COMBAdd //
@@ -495,7 +495,7 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
 	// SDFSphere //
-	pmFloat0 = 3.650000;
+	pmFloat0 = 3.800000;
 	d1 = sphere(p1, pmFloat0);
 
 
@@ -654,11 +654,156 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	color1 = pmVec30;
 
 	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.0000000, -4.0000000);
+	p1 -= pmVec30; 
+
+	// OPMirrorX //
+	p1.x = abs(p1.x);
+
+	// OPTranslate //
+	pmVec30 = vec3(0.4000000, 0.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 2.000000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xzy, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBSubtract //
+	if (d0 < -d1) d0 = -d1;
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 1.5000000, -4.0000000);
+	p1 -= pmVec30; 
+
+	// OPMirrorX //
+	p1.x = abs(p1.x);
+
+	// OPTranslate //
+	pmVec30 = vec3(0.3500000, 0.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 3.000000;
+	pmFloat1 = 1.500000;
+	d2 = cylinder(p2.xzy, pmFloat0, pmFloat1);
+
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	pmFloat0 = 0.100000;
+	p2 = rotateVec3(p2, pmVec30, pmFloat0);
+
+	// OPTranslate //
+	pmVec30 = vec3(1.7000000, 0.6500000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(2.0000000, 2.0000000, 3.0999999);
+	d3 = box(p3, pmVec30);
+
+
+	// COMBIntersect //
+	if (d2 <= d3) d2 = d3;
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBSubtract //
+	if (d0 < -d1) d0 = -d1;
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, -0.4000000, -4.6500001);
+	p1 -= pmVec30; 
+
+	// OPRotate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat0 = 0.125000;
+	p1 = rotateVec3(p1, pmVec30, pmFloat0);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFTorus //
+	pmVec20 = vec2(0.5000000, 0.1000000);
+	d2 = torus(p2.xyz, pmVec20);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
 	pmVec30 = vec3(0.0500000, 3.2000000, -0.0500000);
 	p1 -= pmVec30; 
 
 	// OPRotate //
-	pmVec30 = vec3(-0.7732447, 0.3866223, -0.5026090);
+	pmVec30 = vec3(-0.7732450, 0.3866220, -0.5026090);
 	pmFloat0 = -0.020000;
 	p1 = rotateVec3(p1, pmVec30, pmFloat0);
 
@@ -904,8 +1049,32 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
-				float ambLight = 50 * 0.1 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 70 : 0.0;
+				float ambLight = 70 * 0.075 * attenuation;
+				float dot = max(0.0, dot(rayDir, normal));
+				directLight *= dot;
+				float lightPower = directLight + ambLight;
+				cumulativeColor += vec3(1.0000000, 0.5000000, 0.0000000) * lightPower;
+				break;
+			}
+		}
+
+		// SAMPLE LIGHT [2] //
+		rayDir = vec3(0.0000000, 3.0000000, 7.0000000) - p0;
+		lightDist = length(rayDir);
+		rayDir = normalize(rayDir);
+		rayLength = push.surfTolerance+0.001;
+		d0 = push.maxDistance;
+
+		while (true) {
+			np = p0 + rayDir * (SHADOW_TOLERANCE + rayLength);
+
+			sampleScene(np, lightDist, d0, colorSample, push.time);
+			rayLength += d0;
+			if (d0 < push.surfTolerance || rayLength >= lightDist) {
+				float attenuation = 1.0 / (lightDist * lightDist);
+				float directLight = (rayLength >= lightDist) ? attenuation * 70 : 0.0;
+				float ambLight = 70 * 0.075 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;

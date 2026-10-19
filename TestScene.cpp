@@ -9,7 +9,7 @@ TestScene::TestScene()
 
 	add(SDFBuilder{}
 
-		.combination<COMBAdd, SDFPlane>(Vec3::Up, -2.85)()
+		.combination<COMBAdd, SDFPlane>(Vec3::Up, -2.7)()
 			.stepBack()
 
 		.operation<OPTranslate>(offset)
@@ -20,7 +20,7 @@ TestScene::TestScene()
 			.operation<OPTranslate>(Vec3::Right * 1.0)
 			.combination<COMBAdd, SDFTorus>(AXIS_Z, Vec2{3.0, 0.85})().color(pumpkinCol)
 				.stepBack(2)
-		.combination<COMBSubtractSmooth, SDFSphere>(3.65)()
+		.combination<COMBSubtractSmooth, SDFSphere>(3.8)()
 			.stepBack(1)
 		.combination<COMBSubtract, SDFSolidAngle>(6.0, 0.12)()
 			.stepBack(0)
@@ -42,6 +42,32 @@ TestScene::TestScene()
 			.combination<COMBIntersect, SDFTorusSegment>(AXIS_Z, Vec2{ 2.0, 1.0 })()
 				.stepBack(0)
 
+		// Nose
+		.combination<COMBSubtract, SDFObject>()()
+			.operation<OPTranslate>(Vec3::Backward * 4.0)
+			.operation<OPMirrorX>()
+			.operation<OPTranslate>(Vec3::Right * 0.4)
+			.combination<COMBAdd, SDFCylinder>(AXIS_Z, 0.3, 2.0)()
+				.stepBack(0)
+
+		// Eyes
+		.combination<COMBSubtract, SDFObject>()()
+		.operation<OPTranslate>(Vec3{ 0.0, 1.5 , -4.0 })
+			.operation<OPMirrorX>()
+			.operation<OPTranslate>(Vec3::Right * 0.35)
+			.combination<COMBAdd, SDFCylinder>(AXIS_Z, 1.5, 3.0)()
+				.operation<OPRotate>(Vec3::Forward, 0.1)
+				.operation<OPTranslate>(Vec3{ 1.7, 0.65, 0.0 })
+				.combination<COMBIntersect, SDFBox>(Vec3{ 2.0, 2.0, 3.1 })()
+					.stepBack(0)
+
+		// Nose Ring
+		.combination<COMBAdd, SDFObject>()()
+			.operation<OPTranslate>(Vec3{ 0.0, -0.4, -4.65 })
+			.operation<OPRotate>(Vec3::Right, 0.125)
+			.combination<COMBAdd, SDFTorus>(AXIS_Y, Vec2{ 0.5, 0.1 })()
+				.stepBack(0)
+
 		// Cap
 		.combination<COMBAdd, SDFObject>()()
 			.operation<OPTranslate>(Vec3{ 0.05, 3.2, -0.05 })
@@ -61,6 +87,7 @@ TestScene::TestScene()
 						.stepBack(0)
 
 		.addLightSource(offset + Vec3{ 5.0, 8.0, -5.0 }, 50.0, Color::White, 0.5)
-		.addLightSource(offset + Vec3::Up, 50.0, Color::Orange, 0.1)
+		.addLightSource(offset + Vec3::Up, 70.0, Color::Orange, 0.075)
+		.addLightSource(offset + Vec3::Up * 2.0, 70.0, Color::Orange, 0.075)
 	);
 }
