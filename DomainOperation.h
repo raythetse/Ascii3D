@@ -1,4 +1,5 @@
 #pragma once
+#include "Enumerations.h"
 #include "TransformOperation.h"
 
 class DomainOperation : public TransformOperation
@@ -6,6 +7,8 @@ class DomainOperation : public TransformOperation
 public:
 	inline static const Vec3 DFLT_SPACING{ 1.0 };
 protected:
+	Vec3 getPForAxis(Vec3 p, Axis axis) const;
+	std::string getPSwizzleForAxis(Axis axis) const;
 	Vec3 m_spacing;
 	virtual std::string getClassName() const = 0;
 	virtual void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
@@ -106,6 +109,7 @@ class OPRepeatCircle : public DomainOperation // Naive operation, requires rotat
 public:
 	static inline const size_t DFLT_REPETITIONS{ 10 };
 private:
+	Axis m_axis;
 	size_t m_repetitions;
 protected:
 	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const override;
@@ -113,6 +117,6 @@ protected:
 	std::string getClassName() const override { return "OPRepeatCircle"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
-	OPRepeatCircle(size_t repetitions = DFLT_REPETITIONS) : DomainOperation(), m_repetitions(repetitions) {}
+	OPRepeatCircle(Axis axis, size_t repetitions = DFLT_REPETITIONS) : DomainOperation(), m_axis(axis), m_repetitions(repetitions) {}
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };

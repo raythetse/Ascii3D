@@ -167,8 +167,8 @@ void SDFTriangle::getShaderObjectCalls(std::stringstream& ss, size_t level) cons
     ss << "\tpmVec21 = " << (getShaderAnimationCalls(propName = "point2") ? propName : m_point2.getShader()) << ";\n";
     ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "point3") ? propName : m_point3.getShader()) << ";\n";
     ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "revolveRotations") ? propName : std::to_string(m_revolveRotations)) << ";\n";
-    ss << "\tpmVec22 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ";\n";
-    ss << "\td" << level << " = triangle(p" << level << ", pmVec20, pmVec21, pmVec22, " << m_operation << ", pmFloat0, pmFloat1, pmVec22);\n\n";
+    ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "revolveRotateOffset") ? propName : m_revolveRotateOffset.getShader()) << ".xyy;\n";
+    ss << "\td" << level << " = triangle(p" << level << ", pmVec20, pmVec21, pmVec22, " << m_operation << ", pmFloat0, pmFloat1, pmVec22.xy);\n\n";
 }
 
 double SDFTriangle::signedDistanceInnerInner(Vec3 p) const

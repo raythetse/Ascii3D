@@ -1,6 +1,34 @@
 #include "DomainOperation.h"
 #include "Mat2.h"
 
+Vec3 DomainOperation::getPForAxis(Vec3 p, Axis axis) const
+{
+	switch (axis)
+	{
+	case AXIS_X:
+		return Vec3(p.y, p.x, p.z);
+	case AXIS_Y:
+		return p;
+	case AXIS_Z:
+		return Vec3(p.x, p.z, p.y);
+	}
+	return p;
+}
+
+std::string DomainOperation::getPSwizzleForAxis(Axis axis) const
+{
+	switch (axis)
+	{
+	case AXIS_X:
+		return ".yxz";
+	case AXIS_Y:
+		return ".xyz";
+	case AXIS_Z:
+		return ".xzy";
+	}
+	return ".xyz";
+}
+
 void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const
 {
 	std::stringstream ss{};
@@ -177,6 +205,8 @@ void OPRepeatLimited::bindAnimation(std::unique_ptr<Animation> animation)
 
 void OPRepeatCircle::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
+	p = getPForAxis(p, m_axis);
+
 	double r = static_cast<double>(m_repetitions);
 	double b = MF::TAU / r;
 	double a = std::atan2(p.z, p.x);
@@ -201,6 +231,7 @@ void OPRepeatCircle::innerSerialize(std::vector<std::string>& strVec, size_t lev
 	ss << std::string(level, '\t');
 	ss << getClassName();
 	ss << " repetitions " << m_repetitions;
+	ss << " axis " << m_axis;
 
 	strVec.push_back(ss.str());
 }
@@ -210,7 +241,7 @@ void OPRepeatCircle::getShaderOpCalls(std::stringstream & ss, size_t level) cons
 	std::string propName{ "" };
 	ss << "\t// OPRepeatCircle //\n";
 	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "repetitions") ? propName : std::to_string(m_repetitions)) << ";\n";
-	ss << "\tp" << level << " = repeatCircle(p" << level << ", pmFloat0);\n\n";
+	ss << "\tp" << level << " = repeatCircle(p" << level << getPSwizzleForAxis(m_axis) << ", pmFloat0);\n\n";
 }
 
 void OPRepeatCircle::bindAnimation(std::unique_ptr<Animation> animation)

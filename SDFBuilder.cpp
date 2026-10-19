@@ -782,13 +782,15 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "OPRepeatCircle", [](SDFBuilder& builder, std::stringstream& ss) {
         size_t repetitions{ OPRepeatCircle::DFLT_REPETITIONS };
+        int axis{ AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "repetitions") ss >> repetitions;
+            else if (param == "axis") ss >> axis;
         }
-        builder.operation<OPRepeatCircle>(repetitions);
+        builder.operation<OPRepeatCircle>(static_cast<Axis>(axis), repetitions);
     } },
 
     // Property Modifiers

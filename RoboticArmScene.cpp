@@ -38,7 +38,7 @@ RoboticArmScene::RoboticArmScene()
 		.combination<COMBAdd, SDFCylinder>(AXIS_Y, 2.0, 0.1)().color(Color::MediumGray)
 
 		// Bolts
-		.operation<OPRepeatCircle>(16)
+		.operation<OPRepeatCircle>(AXIS_Y, 16)
 		.operation<OPTranslate>(Vec3{ 1.8, 0.075, 0.0 })
 		.combination<COMBAdd, SDFOctagon>(OP2D_EXTRUDE, 0.05, 0.1)().color(Color::LightGray)
 		.stepBack(3)

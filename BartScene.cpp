@@ -30,7 +30,7 @@ BartScene::BartScene()
         //.operation<OPTranslate>(Vec3::Forward * 0.51)
         .operation<OPTranslate>(Vec3::Up * 0.7)
         //.operation<OPRotate>(Vec3::Right, -0.06)
-        .operation<OPRepeatCircle>(20)
+        .operation<OPRepeatCircle>(AXIS_Y, 20)
         .operation<OPTranslate>(Vec3::Right * 0.45)
         .combination<COMBAddSmooth, SDFCone>(0.155, 0.2, skinCol)(0.01) // L3
         .operation<OPRoundOff>(0.01)

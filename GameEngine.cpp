@@ -203,7 +203,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                     m_scene = std::make_unique<WormsScene>();
                     return;
                 case 123:
-                    m_scene = std::make_unique<RoboticArmScene>();
+                    m_scene = std::make_unique<TestScene>();
                     return;
                 }
             }
