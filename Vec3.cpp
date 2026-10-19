@@ -31,6 +31,7 @@ const Vec3 Vec3::LightGreen{ 0.5, 1.0, 0.5 };
 
 const Vec3 Vec3::Blue{ 0.0, 0.0, 1.0 };
 const Vec3 Vec3::Violet{ 0.5, 0.0, 1.0 };
+const Vec3 Vec3::Indigo{ 0.3, 0.0, 0.51 };
 const Vec3 Vec3::AzureBlue{ 0.0, 0.5, 1.0 };
 const Vec3 Vec3::LightBlue{ 0.5, 0.5, 1.0 };
 const Vec3 Vec3::SkyBlue{ 0.53, 0.80, 0.92 };

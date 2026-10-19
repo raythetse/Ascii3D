@@ -167,7 +167,7 @@ public:
 	inline static const double DFLT_DELAYTIME1{ 1.0 };
 	inline static const double DFLT_BACKWARDTIME{ 1.0 };
 	inline static const double DFLT_DELAYTIME2{ 1.0 };
-	inline static const double DFLT_PHASE{ 1.0 };
+	inline static const double DFLT_PHASE{ 0.0 };
 protected:
 	T m_forwardTime;
 	T m_delayTime1;

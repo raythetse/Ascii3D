@@ -19,20 +19,11 @@ BartScene::BartScene()
         .operation<OPRoundOff>(0.05)
 
         // Hair
-        //.operation<OPMirrorXZ>()
-        //.operation<OPRotate>(Vec3::Up, -8.0 / 64.0)
-        //.operation<OPMirrorX>()
-        //.operation<OPRotate>(Vec3::Up, -4.0 / 64.0)
-        //.operation<OPMirrorX>()
-        //.operation<OPRotate>(Vec3::Up, -2.0 / 64.0)
-        //.operation<OPMirrorX>()
-        //.operation<OPRotate>(Vec3::Up, -1.0 / 64.0)
-        //.operation<OPTranslate>(Vec3::Forward * 0.51)
-        .operation<OPTranslate>(Vec3::Up * 0.7)
-        //.operation<OPRotate>(Vec3::Right, -0.06)
-        .operation<OPRepeatCircle>(AXIS_Y, 20)
-        .operation<OPTranslate>(Vec3::Right * 0.45)
-        .combination<COMBAddSmooth, SDFCone>(0.155, 0.2, skinCol)(0.01) // L3
+        .operation<OPTranslate>(Vec3::Up * 0.8)
+        .operation<OPRepeatCircle>(AXIS_Y, 22)
+        .operation<OPTranslate>(Vec3::Right * 0.5)
+        .operation<OPRotate>(Vec3::Forward, 0.05)
+        .combination<COMBAddSmooth, SDFCone>(0.155, 0.2, skinCol)(0.02) // L3
         .operation<OPRoundOff>(0.01)
         .stepBack(2) // L1
 

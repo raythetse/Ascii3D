@@ -1,7 +1,10 @@
 #pragma once
 #include "BartScene.h"
 #include "ExclusionScene.h"
+#include "JigsawScene.h"
+#include "PumpkinScene.h"
+#include "RainbowScene.h"
 #include "RoboticArmScene.h"
-#include "TestScene.h"
 #include "WalkingCubesScene.h"
+#include "WavesScene.h"
 #include "WormsScene.h"

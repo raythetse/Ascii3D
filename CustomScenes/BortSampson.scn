@@ -8,18 +8,11 @@ SDFObject color 1 1 1
 		COMBAdd onTime 1 offTime 0 phase 0
 		SDFCylinder color 0.917647 0.74902 0.0156863 sideLength 1.2 radius 0.46 axis 1
 			OPRoundOff magnitude 0.05
-			OPMirrorXZ
-			OPRotate axis 0 1 0 rotations -0.125
-			OPMirrorX
-			OPRotate axis 0 1 0 rotations -0.0625
-			OPMirrorX
-			OPRotate axis 0 1 0 rotations -0.03125
-			OPMirrorX
-			OPRotate axis 0 1 0 rotations -0.015625
-			OPTranslate translation 0 0 0.51
-			OPTranslate translation 0 0.75 0
-			OPRotate axis 1 0 0 rotations -0.06
-			COMBAddSmooth smoothing 0.01 colorBlending 1 colorShifting 0
+			OPTranslate translation 0 0.8 0
+			OPRepeatCircle repetitions 22 axis 1
+			OPTranslate translation 0.5 0 0
+			OPRotate axis 0 0 1 rotations 0.05
+			COMBAddSmooth smoothing 0.02 colorBlending 1 colorShifting 0
 			SDFCone color 0.917647 0.74902 0.0156863 height 0.155 sweep 0.2
 				OPRoundOff magnitude 0.01
 				stepBack

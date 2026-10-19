@@ -162,9 +162,6 @@
     <ClCompile Include="WalkingCubesScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>Source Files\SDF\DemoScenes</Filter>
-    </ClCompile>
     <ClCompile Include="GLSLMarcher.cpp">
       <Filter>Source Files\Rendering\Hardware</Filter>
     </ClCompile>
@@ -188,6 +185,18 @@
     </ClCompile>
     <ClCompile Include="RoboticArmScene.cpp">
       <Filter>Source Files\SDF\DemoScenes\CustomScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="PumpkinScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes\CustomScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="RainbowScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="WavesScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="JigsawScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,9 +290,6 @@
     <ClInclude Include="SDFScene.h">
       <Filter>Header Files\SDF</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h">
-      <Filter>Header Files\SDF\DemoScenes</Filter>
-    </ClInclude>
     <ClInclude Include="GLSLMarcher.h">
       <Filter>Header Files\Rendering\Hardware</Filter>
     </ClInclude>
@@ -307,6 +313,18 @@
     </ClInclude>
     <ClInclude Include="RoboticArmScene.h">
       <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="PumpkinScene.h">
+      <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="RainbowScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="WavesScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="JigsawScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,13 @@
 Required:
-- Fix repeat on barts hair
+- fix inability to animate combo ops
 - ensure all propmod hooks exist/work
 - lots of built-in demos to illustrate all sdfs and ops with propmods
-- rich demo scenes for GPU
 - comment everything
 - consts wherever sensical
 - instructions for custom scene files
 - add controls instructions to main menu screen
 - Add missing update vals for software rendering ops
-- Update loop functions for SDF software mode efficiency
+- color overwrite on combos
 
 Optional:
 - add off/on to other combination types?  (only have on COMBAdd right now)

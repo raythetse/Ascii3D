@@ -151,7 +151,7 @@ bool GameEngine::selectSceneType()
 {
     std::cout << "\033[2J\033[1;1H"; // clear console
     std::cout << "Select a scene-type (WARNING: Custom scenes may run very poorly on CPU Renderer)\n\n";
-    std::cout << "[1] Built-In (Hardcoded in SDFScene.cpp source file)\n[2] Custom (Defined in the \\CustomScenes folder)\n[3] Back to device selection\n";
+    std::cout << "[1] Built-In (Simple hard-coded demo scenes)\n[2] Custom (Defined in the \\CustomScenes folder)\n[3] Back to device selection\n";
 
     int selection{};
 
@@ -188,6 +188,9 @@ void GameEngine::selectBuiltInScene(bool noCustom)
         std::cout << "[1] WalkingCubes - Classic cube rolling\n";
         std::cout << "[2] Exclusion - Removing overlapping spaces, coloring interior spaces\n";
         std::cout << "[3] Worms - Combining partial toruses into continuous moving worms\n";
+        std::cout << "[4] Rainbow - Cycling colors and sweeping out 2D shapes in a ring\n";
+        std::cout << "[5] Waves - Animating shape parameters and smooth combinations\n";
+        std::cout << "[6] Jigsaw - Domain Repetition\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
@@ -202,8 +205,14 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                 case 3:
                     m_scene = std::make_unique<WormsScene>();
                     return;
-                case 123:
-                    m_scene = std::make_unique<TestScene>();
+                case 4:
+                    m_scene = std::make_unique<RainbowScene>();
+                    return;
+                case 5:
+                    m_scene = std::make_unique<WavesScene>();
+                    return;
+                case 6:
+                    m_scene = std::make_unique<JigsawScene>();
                     return;
                 }
             }

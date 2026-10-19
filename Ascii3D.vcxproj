@@ -165,11 +165,13 @@
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="GLSLMarcher.cpp" />
     <ClCompile Include="GradientGenerator.cpp" />
+    <ClCompile Include="JigsawScene.cpp" />
+    <ClCompile Include="PumpkinScene.cpp" />
+    <ClCompile Include="RainbowScene.cpp" />
     <ClCompile Include="RoboticArmScene.cpp" />
     <ClCompile Include="SDF2DObject.cpp" />
     <ClCompile Include="SDF2DObject.h" />
     <ClCompile Include="SDFAxisObject.cpp" />
-    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="VulkanManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LightSource.cpp" />
@@ -191,6 +193,7 @@
     <ClCompile Include="SDFObject.cpp" />
     <ClCompile Include="PixelSample.cpp" />
     <ClCompile Include="WalkingCubesScene.cpp" />
+    <ClCompile Include="WavesScene.cpp" />
     <ClCompile Include="WormsScene.cpp" />
     <ClCompile Include="WormsScene.h" />
   </ItemGroup>
@@ -206,10 +209,12 @@
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="GLSLMarcher.h" />
+    <ClInclude Include="JigsawScene.h" />
+    <ClInclude Include="PumpkinScene.h" />
+    <ClInclude Include="RainbowScene.h" />
     <ClInclude Include="RoboticArmScene.h" />
     <ClInclude Include="SDFAxisObject.h" />
     <ClInclude Include="SDFObjectInc.h" />
-    <ClInclude Include="TestScene.h" />
     <ClInclude Include="VulkanManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />
@@ -234,6 +239,7 @@
     <ClInclude Include="SDFObject.h" />
     <ClInclude Include="PixelSample.h" />
     <ClInclude Include="WalkingCubesScene.h" />
+    <ClInclude Include="WavesScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
