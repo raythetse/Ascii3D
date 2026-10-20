@@ -279,18 +279,18 @@ void OPCubeRoller::bindAnimation(std::unique_ptr<Animation> animation)
 	}
 }
 
-void Elongate::innerUpdate() {
-	m_halfLen = m_length * 0.5;
-	m_halfLenNeg = -m_halfLen;
+void OPElongate::innerUpdate() {
+	m_halfLen = abs(m_length * 0.5);
 }
 
-void Elongate::innerInnerSerialize(std::stringstream& ss) const
+void OPElongate::innerInnerSerialize(std::stringstream& ss) const
 {
 	ss << " length " << m_length;
 	ss << " offset " << m_offset;
+	ss << " axis " << m_axis;
 }
 
-void Elongate::bindAnimation(std::unique_ptr<Animation> animation)
+void OPElongate::bindAnimation(std::unique_ptr<Animation> animation)
 {
 	if (animation->propName() == "length") {
 		animation->BindToProperty(&m_length);
@@ -302,86 +302,51 @@ void Elongate::bindAnimation(std::unique_ptr<Animation> animation)
 	}
 }
 
-void OPElongateX::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+double OPElongate::executeTerm(double d) const
 {
-	p.x -= std::clamp(p.x - m_offset, m_halfLenNeg, m_halfLen);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPElongateX::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	std::string propName{ "" };
-	ss << "\t// OPElongateX //\n";
-	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
-	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
-	ss << "\tp" << level << ".x -= clamp(p" << level << ".x - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
-}
-
-void OPElongateY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p.y -= std::clamp(p.y - m_offset, m_halfLenNeg, m_halfLen);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPElongateY::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	std::string propName{ "" };
-	ss << "\t// OPElongateY //\n";
-	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
-	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
-	ss << "\tp" << level << ".y -= clamp(p" << level << ".y - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
-}
-
-void OPElongateZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p.z -= std::clamp(p.z - m_offset, m_halfLenNeg, m_halfLen);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPElongateZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	std::string propName{ "" };
-	ss << "\t// OPElongateZ //\n";
-	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
-	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
-	ss << "\tp" << level << ".z -= clamp(p" << level << ".z - pmFloat1, -0.5 * pmFloat0, 0.5 * pmFloat0);\n\n";
-}
-
-void OPElongateXYZ::innerUpdate()
-{
-	m_halfLens = m_lengths * 0.5;
-	m_halfLenNegs = -m_halfLens;
-}
-
-void OPElongateXYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p -= (p - m_offsets).clamp(m_halfLenNegs, m_halfLens);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPElongateXYZ::innerInnerSerialize(std::stringstream& ss) const
-{
-	ss << " lengths " << m_lengths;
-	ss << " offsets " << m_offsets;
-}
-
-void OPElongateXYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	std::string propName{ "" };
-	ss << "\t// OPElongateXYZ //\n";
-	ss << "\tpmVec30 = " << (getShaderAnimationCalls(propName = "lengths") ? propName : m_lengths.getShader()) << ";\n";
-	ss << "\tpmVec31 = " << (getShaderAnimationCalls(propName = "offsets") ? propName : m_offsets.getShader()) << ";\n";
-	ss << "\tp" << level << " -= clamp(p" << level << " - pmVec31, -0.5 * pmVec30, 0.5 * pmVec30);\n\n";
-}
-
-void OPElongateXYZ::bindAnimation(std::unique_ptr<Animation> animation)
-{
-	if (animation->propName() == "lengths") {
-		animation->BindToProperty(&m_lengths);
-		m_animations.push_back(std::move(animation));
+	if (m_length >= 0.0) {
+		return d - std::clamp(d - m_offset, -m_halfLen, m_halfLen);
 	}
-	else if (animation->propName() == "offsets") {
-		animation->BindToProperty(&m_offsets);
-		m_animations.push_back(std::move(animation));
+	else {
+		return d - (d > m_offset ? -m_halfLen : m_halfLen);
+	}
+}
+
+void OPElongate::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
+	switch (m_axis)
+	{
+	case AXIS_X:
+		p.x = executeTerm(p.x);
+		break;
+	case AXIS_Y:
+		p.y = executeTerm(p.y);
+		break;
+	case AXIS_Z:
+		p.z = executeTerm(p.z);
+		break;
+	default:
+		break;
+	}
+	if (colorOut) *colorOut = colorIn;
+}
+
+void OPElongate::getShaderOpCalls(std::stringstream& ss, size_t level) const
+{
+	std::string propName{ "" };
+	ss << "\t// OPElongate //\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "length") ? propName : std::to_string(m_length)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "offset") ? propName : std::to_string(m_offset)) << ";\n";
+	switch (m_axis)
+	{
+	case AXIS_X:
+		ss << "\tp" << level << ".x = elongate(p" << level << ".x, pmFloat0, pmFloat1);\n\n";
+		break;
+	case AXIS_Y:
+		ss << "\tp" << level << ".y = elongate(p" << level << ".y, pmFloat0, pmFloat1);\n\n";
+		break;
+	case AXIS_Z:
+		ss << "\tp" << level << ".z = elongate(p" << level << ".z, pmFloat0, pmFloat1);\n\n";
+		break;
 	}
 }

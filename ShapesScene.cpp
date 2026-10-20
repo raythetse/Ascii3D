@@ -6,6 +6,7 @@ ShapesScene::ShapesScene()
 
     add(SDFBuilder{}
 
+        .operate<OPTranslate>(Vec3::Left * offset * 2.0 + Vec3::Up)
         .combine<COMBAdd, SDFPlane>(Vec3::Up, -2.0)()
         .combine<COMBAdd, SDFSphere>()().color(Color::Red)
         .operate<OPTranslate>(Vec3::Right * offset)

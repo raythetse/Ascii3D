@@ -1,6 +1,8 @@
 #pragma once
 #include "BartScene.h"
+#include "ColorBlendScene.h"
 #include "CombinationScene.h"
+#include "ElongateScene.h"
 #include "ExclusionScene.h"
 #include "JigsawScene.h"
 #include "PumpkinScene.h"

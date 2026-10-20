@@ -166,77 +166,25 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
-class Elongate : public TransformOperation
+class OPElongate : public TransformOperation
 {
+private:
+	double executeTerm(double d) const;
 public:
 	inline static const double DFLT_LENGTH{ 1.0 };
 	inline static const double DFLT_OFFSET{ 0.0 };
 protected:
+	Axis m_axis;
 	double m_length;
 	double m_offset;
 	double m_halfLen{};
-	double m_halfLenNeg{};
 	void innerUpdate() override;
-	std::string getClassName() const { return "Elongate"; }
-	void innerInnerSerialize(std::stringstream& ss) const override;
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override {};
-public:
-	Elongate(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
-		: m_length(length), m_offset(offset) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
-};
-
-class OPElongateX : public Elongate
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPElongateX"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPElongateX(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
-		: Elongate(length, offset) {}
-};
-
-class OPElongateY : public Elongate
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPElongateY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPElongateY(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
-		: Elongate(length, offset) {}
-};
-
-class OPElongateZ : public Elongate
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPElongateZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPElongateZ(double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
-		: Elongate(length, offset) {}
-};
-
-class OPElongateXYZ : public TransformOperation
-{
-public:
-	inline static const Vec3 DFLT_LENGTHS{ 1.0 };
-	inline static const Vec3 DFLT_OFFSETS{ 0.0 };
-private:
-	Vec3 m_lengths;
-	Vec3 m_offsets;
-	Vec3 m_halfLens{};
-	Vec3 m_halfLenNegs{};
-protected:
-	void innerUpdate() override;
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPElongateXYZ"; }
+	std::string getClassName() const { return "OPElongate"; }
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 public:
-	OPElongateXYZ(Vec3 lengths = DFLT_LENGTHS, Vec3 offsets = DFLT_OFFSETS)
-		: m_lengths(lengths), m_offsets(offsets) {}
+	OPElongate(Axis axis = AXIS_Y, double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
+		: m_axis(axis), m_length(length), m_offset(offset) {}
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };

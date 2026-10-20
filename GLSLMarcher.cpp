@@ -74,6 +74,16 @@ vec3 revolve2D(vec3 p, float radius, float rotations, vec2 rotateOffset)
     return rotateVec3(p, vec3(0.0, 1.0, 0.0), rotations) - vec3(rotateOffset.x, 0.0, rotateOffset.y);
 }
 
+float elongate(float f, float length, float offset) {
+    float halfLen = abs(length * 0.5);
+    if (length >= 0.0) {
+		return f - clamp(f - offset, -halfLen, halfLen);
+	}
+	else {
+		return f - (f > offset ? -halfLen : halfLen);
+	}
+}
+
 vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 {
 	alpha *= colorBlending;

@@ -207,6 +207,12 @@
     <ClCompile Include="ShapesScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
+    <ClCompile Include="ColorBlendScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ElongateScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -336,6 +342,12 @@
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
     <ClInclude Include="CombinationScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorBlendScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ElongateScene.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
   </ItemGroup>

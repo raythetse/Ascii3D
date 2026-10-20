@@ -158,9 +158,11 @@
     <ClCompile Include="Ascii3D.cpp" />
     <ClCompile Include="BartScene.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ColorBlendScene.cpp" />
     <ClCompile Include="CombinationOperation.cpp" />
     <ClCompile Include="CombinationScene.cpp" />
     <ClCompile Include="DomainOperation.cpp" />
+    <ClCompile Include="ElongateScene.cpp" />
     <ClCompile Include="ExclusionScene.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameTimer.cpp" />
@@ -202,11 +204,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BartScene.h" />
+    <ClInclude Include="ColorBlendScene.h" />
     <ClInclude Include="CombinationOperation.h" />
     <ClInclude Include="CombinationScene.h" />
     <ClInclude Include="ConsoleFunctions.h" />
     <ClInclude Include="DemoScenesInc.h" />
     <ClInclude Include="DomainOperation.h" />
+    <ClInclude Include="ElongateScene.h" />
     <ClInclude Include="Enumerations.h" />
     <ClInclude Include="ExclusionScene.h" />
     <ClInclude Include="FileHandler.h" />

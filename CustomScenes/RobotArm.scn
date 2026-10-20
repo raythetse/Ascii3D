@@ -36,7 +36,7 @@ SDFObject color 1 1 1
 			OPTranslate translation 0 3 0
 			COMBAdd onTime 1 offTime 0 phase 0
 			SDFCylinder color 0.5 0.5 0.5 sideLength 0.1 radius 2 axis 1
-				OPRepeatCircle repetitions 16
+				OPRepeatCircle repetitions 16 axis 1
 				OPTranslate translation 1.8 0.075 0
 				COMBAdd onTime 1 offTime 0 phase 0
 				SDFOctagon color 0.75 0.75 0.75 magnitude 0.1 operation 0 revolveRotations 0 revolveRotateOffset 0 0 radius 0.05
@@ -46,7 +46,7 @@ SDFObject color 1 1 1
 		COMBAdd onTime 1 offTime 0 phase 0
 		SDFObject color 1 1 1
 			OPRotate axis 0 1 0 rotations 0.24
-			ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 1.5 backwardTime 1.5 delayTime2 1.5 phase 1 amplitude 0.15
+			ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 1.5 backwardTime 1.5 delayTime2 1.5 phase 0 amplitude 0.15
 			COMBAdd onTime 1 offTime 0 phase 0
 			SDFObject color 1 1 1
 				OPTranslate translation 0 3.5 0
@@ -61,7 +61,7 @@ SDFObject color 1 1 1
 				OPTranslate translation 0 1.5 0
 				COMBAddSmooth smoothing 0.2 colorBlending 1 colorShifting 0
 				SDFObject color 1 1 1
-					OPElongateZ length 0.9 offset 0
+					OPElongate length 0.9 offset 0 axis 2
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFTorus color 1 0.87 0 radii 0.35 0.05 axis 2
 						stepBack
@@ -69,13 +69,13 @@ SDFObject color 1 1 1
 				COMBSubtractSmooth smoothing 0.1 colorBlending 1 colorShifting 0
 				SDFObject color 1 1 1
 					OPTranslate translation 0 0.25 0
-					OPElongateY length 0.25 offset 0
+					OPElongate length 0.25 offset 0 axis 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFCylinder color 1 0.87 0 sideLength 1 radius 0.33 axis 0
 						stepBack
 					stepBack
 				OPRotate axis 0 0 1 rotations -0.055
-				ANLinearCycle1D propName rotations forwardTime 1.65 delayTime1 1.35 backwardTime 1.65 delayTime2 1.35 phase 1 amplitude -0.135
+				ANLinearCycle1D propName rotations forwardTime 1.65 delayTime1 1.35 backwardTime 1.65 delayTime2 1.35 phase 0 amplitude -0.135
 				COMBAdd onTime 1 offTime 0 phase 0
 				SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
@@ -97,7 +97,7 @@ SDFObject color 1 1 1
 				OPTranslate translation 0 1.5 0
 				COMBAddSmooth smoothing 0.2 colorBlending 1 colorShifting 0
 				SDFObject color 1 1 1
-					OPElongateZ length 0.9 offset 0
+					OPElongate length 0.9 offset 0 axis 2
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFTorus color 1 0.87 0 radii 0.35 0.05 axis 2
 						stepBack
@@ -105,13 +105,13 @@ SDFObject color 1 1 1
 				COMBSubtractSmooth smoothing 0.1 colorBlending 1 colorShifting 0
 				SDFObject color 1 1 1
 					OPTranslate translation 0 0.25 0
-					OPElongateY length 0.25 offset 0
+					OPElongate length 0.25 offset 0 axis 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFCylinder color 1 0.87 0 sideLength 1 radius 0.33 axis 0
 						stepBack
 					stepBack
 				OPRotate axis 0 0 1 rotations 0
-				ANLinearCycle1D propName rotations forwardTime 1.75 delayTime1 1.25 backwardTime 1.75 delayTime2 1.25 phase 1 amplitude -0.11
+				ANLinearCycle1D propName rotations forwardTime 1.75 delayTime1 1.25 backwardTime 1.75 delayTime2 1.25 phase 0 amplitude -0.11
 				COMBAdd onTime 1 offTime 0 phase 0
 				SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
@@ -133,7 +133,7 @@ SDFObject color 1 1 1
 				OPTranslate translation 0 1.5 0
 				COMBAddSmooth smoothing 0.2 colorBlending 1 colorShifting 0
 				SDFObject color 1 1 1
-					OPElongateZ length 0.5 offset 0
+					OPElongate length 0.5 offset 0 axis 2
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFTorus color 1 0.87 0 radii 0.2 0.05 axis 2
 						stepBack
@@ -141,13 +141,13 @@ SDFObject color 1 1 1
 				COMBSubtractSmooth smoothing 0.1 colorBlending 1 colorShifting 0
 				SDFObject color 1 1 1
 					OPTranslate translation 0 0.175 0
-					OPElongateY length 0.25 offset 0
+					OPElongate length 0.25 offset 0 axis 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFCylinder color 1 0.87 0 sideLength 0.6 radius 0.19 axis 0
 						stepBack
 					stepBack
 				OPRotate axis 0 0 1 rotations 0.035
-				ANLinearCycle1D propName rotations forwardTime 1.9 delayTime1 1.1 backwardTime 1.9 delayTime2 1.1 phase 1 amplitude -0.145
+				ANLinearCycle1D propName rotations forwardTime 1.9 delayTime1 1.1 backwardTime 1.9 delayTime2 1.1 phase 0 amplitude -0.145
 				COMBAdd onTime 1 offTime 0 phase 0
 				SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
@@ -172,7 +172,7 @@ SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFObject color 1 1 1
 						OPRotate axis 0 1 0 rotations 0.15
-						ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 1.5 backwardTime 2 delayTime2 1 phase 1 amplitude 2
+						ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 1.5 backwardTime 2 delayTime2 1 phase 0 amplitude 2
 						OPTranslate translation 0 0.1 0
 						COMBAdd onTime 1 offTime 0 phase 0
 						SDFCylinder color 0 0 1 sideLength 0.05 radius 0.15 axis 1
@@ -186,7 +186,7 @@ SDFObject color 1 1 1
 								stepBack
 							OPMirrorZ
 							OPTranslate translation 0 0.425 0.4
-							ANLinearCycle3D propName translation forwardTime 0.25 0.25 0.25 delayTime1 2.75 2.75 2.75 backwardTime 0.25 0.25 0.25 delayTime2 2.75 2.75 2.75 phase 1.5 1.5 1.5 amplitude 0 0 0.07
+							ANLinearCycle3D propName translation forwardTime 0.25 0.25 0.25 delayTime1 2.75 2.75 2.75 backwardTime 0.25 0.25 0.25 delayTime2 2.75 2.75 2.75 phase 0.5 0.5 0.5 amplitude 0 0 0.07
 							COMBAdd onTime 1 offTime 0 phase 0
 							SDFBox color 0.75 0.75 0.75 dimensions 0.25 0.75 0.05
 								OPTranslate translation 0 0.35 0
@@ -196,7 +196,7 @@ SDFObject color 1 1 1
 								stepBack
 							stepBack
 						OPTranslate translation 0 0.55 0
-						COMBAdd onTime 3 offTime 3 phase 4.5
+						COMBAdd onTime 3 offTime 3 phase 3.5
 						SDFSphere color 0 1 0 radius 0.3
 							stepBack
 						stepBack
@@ -218,7 +218,7 @@ SDFObject color 1 1 1
 				COMBAdd onTime 1 offTime 0 phase 0
 				SDFObject color 1 1 1
 					OPTranslate translation 0 0 -0.75
-					OPElongateZ length 5.5 offset 0
+					OPElongate length 5.5 offset 0 axis 2
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFTorus color 0.4 0.33 0.18 radii 0.45 0.05 axis 2
 						stepBack
@@ -236,8 +236,8 @@ SDFObject color 1 1 1
 	COMBAdd onTime 1 offTime 0 phase 0
 	SDFObject color 1 1 1
 		OPTranslate translation 2.75 1.275 -0.1
-		ANLinearCycle3D propName translation forwardTime 2 2 2 delayTime1 1 1 1 backwardTime 2 2 2 delayTime2 1 1 1 phase 4.5 4.5 4.5 amplitude 0 1 2.1
-		COMBAdd onTime 3 offTime 3 phase 1.5
+		ANLinearCycle3D propName translation forwardTime 2 2 2 delayTime1 1 1 1 backwardTime 2 2 2 delayTime2 1 1 1 phase 3.5 3.5 3.5 amplitude 0 1 2.1
+		COMBAdd onTime 3 offTime 3 phase 0.5
 		SDFSphere color 0 1 0 radius 0.3
 			stepBack
 		stepBack

@@ -205,13 +205,15 @@ void GameEngine::selectBuiltInScene(bool noCustom)
         if (noCustom) std::cout << "No Custom Scenes found\n\n";
         std::cout << "Choose a Built-In Scene\n\n";
         std::cout << "[1] Shapes - Collection of Raymarched shapes.\n";
-        std::cout << "[1] Combination - Add, subtract, intersect.  Smoothing in the back row.\n";
-        std::cout << "[2] Walking Cubes - Classic cube rolling.\n";
-        std::cout << "[3] Exclusion - Removing overlapping spaces, coloring interior spaces.\n";
-        std::cout << "[4] Worms - Combining partial toruses into continuous moving worms.\n";
-        std::cout << "[5] Rainbow - Cycling colors across multiple objects.\n";
-        std::cout << "[6] Jigsaw - Domain Repetition tricks.\n";
-        std::cout << "[7] Revolution - Dynamic animation of a star-shaped ring.\n";
+        std::cout << "[2] Combination - Add, subtract, intersect.  Smoothing in the back row.\n";
+        std::cout << "[3] Walking Cubes - Classic cube rolling.\n";
+        std::cout << "[4] Exclusion - Removing overlapping spaces, coloring interior spaces.\n";
+        std::cout << "[5] Worms - Combining partial toruses into continuous moving worms.\n";
+        std::cout << "[6] Rainbow - Cycling colors across multiple objects.\n";
+        std::cout << "[7] Jigsaw - Domain Repetition tricks.\n";
+        std::cout << "[8] Revolution - Dynamic animation of a star-shaped ring.\n";
+        std::cout << "[9] Color Blend - Blending colors in varying fashion.\n";
+        std::cout << "[0] Elongation - Elongating a sphere on three Axes.\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
@@ -240,6 +242,12 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                     return;
                 case 8:
                     m_scene = std::make_unique<RevolutionScene>();
+                    return;
+                case 9:
+                    m_scene = std::make_unique<ColorBlendScene>();
+                    return;
+                case 0:
+                    m_scene = std::make_unique<ElongateScene>();
                     return;
                 }
             }

@@ -623,53 +623,19 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.operate<OPCubeRoller>(axes, quarterTurnTime, phase);
     } },
-    { "OPElongateX", [](SDFBuilder& builder, std::stringstream& ss) {
-        double length{ OPElongateX::DFLT_LENGTH };
-        double offset{ OPElongateX::DFLT_OFFSET };
+    { "OPElongate", [](SDFBuilder& builder, std::stringstream& ss) {
+        double length{ OPElongate::DFLT_LENGTH };
+        double offset{ OPElongate::DFLT_OFFSET };
+        int axis{ AXIS_Y };
 
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
             if (param == "length") ss >> length;
             else if (param == "offset") ss >> offset;
+            else if (param == "axis") ss >> axis;
         }
-        builder.operate<OPElongateX>(length, offset);
-    } },
-    { "OPElongateY", [](SDFBuilder& builder, std::stringstream& ss) {
-        double length{ OPElongateY::DFLT_LENGTH };
-        double offset{ OPElongateY::DFLT_OFFSET };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "length") ss >> length;
-            else if (param == "offset") ss >> offset;
-        }
-        builder.operate<OPElongateY>(length, offset);
-    } },
-    { "OPElongateZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        double length{ OPElongateZ::DFLT_LENGTH };
-        double offset{ OPElongateZ::DFLT_OFFSET };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "length") ss >> length;
-            else if (param == "offset") ss >> offset;
-        }
-        builder.operate<OPElongateZ>(length, offset);
-    } },
-    { "OPElongateXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 lengths{ OPElongateXYZ::DFLT_LENGTHS };
-        Vec3 offsets{ OPElongateXYZ::DFLT_OFFSETS };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "lengths") ss >> lengths;
-            else if (param == "offsets") ss >> offsets;
-        }
-        builder.operate<OPElongateXYZ>(lengths, offsets);
+        builder.operate<OPElongate>(static_cast<Axis>(axis), length, offset);
     } },
 
     // Resurface Ops

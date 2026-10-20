@@ -1,5 +1,6 @@
 Required:
-- ensure all propmod hooks exist/work
+- fix all things to use Axis enum rather than specific classes
+- ensure all property hooks exist/work
 - lots of built-in demos to illustrate all sdfs and ops
 - comment everything
 - consts wherever sensical
