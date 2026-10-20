@@ -204,36 +204,36 @@ void GameEngine::selectBuiltInScene(bool noCustom)
         std::cout << "\033[2J\033[1;1H";
         if (noCustom) std::cout << "No Custom Scenes found\n\n";
         std::cout << "Choose a Built-In Scene\n\n";
-        std::cout << "[1] Combinations - Add, subtract, intersect.  Smoothing in the back row.\n";
-        std::cout << "[2] WalkingCubes - Classic cube rolling\n";
-        std::cout << "[3] Exclusion - Removing overlapping spaces, coloring interior spaces\n";
-        std::cout << "[4] Worms - Combining partial toruses into continuous moving worms\n";
-        std::cout << "[5] Rainbow - Cycling colors across multiple objects\n";
-        std::cout << "[6] Waves - Animating shape parameters and smooth combinations\n";
-        std::cout << "[7] Jigsaw - Domain Repetition tricks\n";
-        std::cout << "[8] Revolution - Dynamic animation of a star-shaped ring\n";
+        std::cout << "[1] Shapes - Collection of Raymarched shapes.\n";
+        std::cout << "[1] Combination - Add, subtract, intersect.  Smoothing in the back row.\n";
+        std::cout << "[2] Walking Cubes - Classic cube rolling.\n";
+        std::cout << "[3] Exclusion - Removing overlapping spaces, coloring interior spaces.\n";
+        std::cout << "[4] Worms - Combining partial toruses into continuous moving worms.\n";
+        std::cout << "[5] Rainbow - Cycling colors across multiple objects.\n";
+        std::cout << "[6] Jigsaw - Domain Repetition tricks.\n";
+        std::cout << "[7] Revolution - Dynamic animation of a star-shaped ring.\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
             if (ss >> selection) {
                 switch (selection) {
                 case 1:
-                    m_scene = std::make_unique<CombinationScene>();
+                    m_scene = std::make_unique<ShapesScene>();
                     return;
                 case 2:
-                    m_scene = std::make_unique<WalkingCubesScene>();
+                    m_scene = std::make_unique<CombinationScene>();
                     return;
                 case 3:
-                    m_scene = std::make_unique<ExclusionScene>();
+                    m_scene = std::make_unique<WalkingCubesScene>();
                     return;
                 case 4:
-                    m_scene = std::make_unique<WormsScene>();
+                    m_scene = std::make_unique<ExclusionScene>();
                     return;
                 case 5:
-                    m_scene = std::make_unique<RainbowScene>();
+                    m_scene = std::make_unique<WormsScene>();
                     return;
                 case 6:
-                    m_scene = std::make_unique<WavesScene>();
+                    m_scene = std::make_unique<RainbowScene>();
                     return;
                 case 7:
                     m_scene = std::make_unique<JigsawScene>();

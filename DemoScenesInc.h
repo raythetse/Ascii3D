@@ -7,6 +7,6 @@
 #include "RainbowScene.h"
 #include "RevolutionScene.h"
 #include "RoboticArmScene.h"
+#include "ShapesScene.h"
 #include "WalkingCubesScene.h"
-#include "WavesScene.h"
 #include "WormsScene.h"

@@ -192,9 +192,6 @@
     <ClCompile Include="RainbowScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
-    <ClCompile Include="WavesScene.cpp">
-      <Filter>Source Files\SDF\DemoScenes</Filter>
-    </ClCompile>
     <ClCompile Include="JigsawScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
@@ -202,6 +199,12 @@
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
     <ClCompile Include="CombinationScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapesScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapesScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -324,9 +327,6 @@
       <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>
     </ClInclude>
     <ClInclude Include="RainbowScene.h">
-      <Filter>Header Files\SDF\DemoScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="WavesScene.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
     <ClInclude Include="JigsawScene.h">
