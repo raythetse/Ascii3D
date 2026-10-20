@@ -178,6 +178,7 @@
     <ClCompile Include="SDFAxisObject.cpp" />
     <ClCompile Include="ShapesScene.cpp" />
     <ClCompile Include="ShapesScene.h" />
+    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="VulkanManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LightSource.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="RoboticArmScene.h" />
     <ClInclude Include="SDFAxisObject.h" />
     <ClInclude Include="SDFObjectInc.h" />
+    <ClInclude Include="TestScene.h" />
     <ClInclude Include="VulkanManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mat2.h" />

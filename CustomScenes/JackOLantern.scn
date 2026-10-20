@@ -36,7 +36,7 @@ SDFObject color 1 1 1
 					stepBack
 				stepBack
 			stepBack
-		OPElongateZ length 2 offset 0
+		OPElongate length 2 offset 0 axis 2
 		OPRotate axis 0 0 1 rotations 0.5
 		COMBIntersect onTime 1 offTime 0 phase 0
 		SDFTorusSegment color 1 1 1 radii 2 1 sweep 0.25 axis 2

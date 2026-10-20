@@ -84,6 +84,35 @@ float elongate(float f, float length, float offset) {
 	}
 }
 
+float intersect(float a, float b) {
+    return a > b ? a : b;
+}
+
+float addSmooth(float a, float b, float smoothing, out float h)
+{
+    h = clamp(0.5 + 0.5 * (b - a) / smoothing, 0.0, 1.0);
+    return mix(b, a, h) - smoothing * h * (1.0 - h);
+}
+
+float subtractSmooth(float a, float b, float smoothing, out float h) {
+    h = max(smoothing - abs(-b - a), 0.0);
+    return max(a, -b) + h * h * 0.25 / smoothing;
+}
+
+float intersectSmooth(float a, float b, float smoothing, out float h)
+{
+    h = clamp(0.5 - 0.5 * (b - a) / smoothing, 0.0, 1.0);
+    return mix(b, a, h) + smoothing * h * (1.0 - h);
+}
+
+float excludeSmooth(float a, float b, float smoothing, out float sA, out float sB, out float h) {
+    float i = intersectSmooth(a, b, smoothing, h);
+    float hNull;
+    sA = subtractSmooth(a, i, smoothing, hNull);
+    sB = subtractSmooth(b, i, smoothing, hNull);
+    return sA < sB ? sA : sB;
+}
+
 vec3 blendColors(float alpha, vec3 colorA, vec3 colorB, float colorBlending)
 {
 	alpha *= colorBlending;

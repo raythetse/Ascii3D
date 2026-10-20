@@ -232,9 +232,8 @@ void COMBAddSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) const
 	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
 	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
 	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
-	ss << "\tblend = clamp(0.5 + 0.5 * (d" << (level + 1) << " - d" << level << ") / pmFloat0, 0.0, 1.0);\n";
-	ss << "\tcolor" << level << " = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
-	ss << "\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) - pmFloat0 * blend * (1.0 - blend);\n\n";
+	ss << "\td" << level << " = addSmooth(d" << level << ", d" << (level + 1) << ", pmFloat0, blend);\n";
+	ss << "\tcolor" << level << " = blendColors(clamp(1.0 - blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n\n";
 }
 
 void COMBSubtractSmooth::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
@@ -253,10 +252,8 @@ void COMBSubtractSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) c
 	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
 	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
 	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
-	ss << "\tblend = pmFloat0 - abs(-d" << (level + 1) << " - d" << level << ");\n";
-	ss << "\tblend = max(blend, 0.0);\n";
-	ss << "\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
-	ss << "\td" << level << " = (d" << level << " > -d" << (level + 1) << " ? d" << level << " : -d" << (level + 1) << ") + blend * blend * 0.25 / pmFloat0;\n\n";
+	ss << "\td" << level << " = subtractSmooth(d" << level << ", d" << (level + 1) << ", pmFloat0, blend); \n";
+	ss << "\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n\n";
 }
 
 void COMBIntersectSmooth::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
@@ -274,7 +271,41 @@ void COMBIntersectSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) 
 	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
 	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
 	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
-	ss << "\tblend = clamp(0.5 - 0.5 * (d" << (level + 1) << " - d" << level << ") / pmFloat0, 0.0, 1.0);\n";
+	ss << "\td" << level << " = intersectSmooth(d" << level << ", d" << (level + 1) << ", pmFloat0, blend);\n";
 	ss << "\tcolor" << level << " = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color" << level << ", color" << (level + 1) << ", pmFloat2);\n";
-	ss << "\td" << level << " = mix(d" << (level + 1) << ", d" << level << ", blend) + pmFloat0 * blend * (1.0 - blend);\n\n";
+}
+
+void COMBExcludeSmooth::combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+{
+	double dI{ distanceA };
+	double distanceB = m_combineObj->signedDistance(p, colorOut);
+
+	if (distanceA <= distanceB) {
+		dI = distanceB;
+	}
+
+	double h{ m_smoothing - abs(-dI - distanceA) };
+	h = h < 0.0 ? 0.0 : h;
+	double sA{ (distanceA > -dI ? distanceA : -dI) + h * h * 0.25 / m_smoothing };
+
+	h = m_smoothing - abs(-dI - distanceB);
+	h = h < 0.0 ? 0.0 : h;
+	double sB{ (distanceB > -dI ? distanceB : -dI) + h * h * 0.25 / m_smoothing };
+
+	distanceA = (sA > sB) ? sB : sA;
+
+	if (colorOut) {
+		if (sA <= sB) *colorOut = colorIn;
+	}
+}
+
+void COMBExcludeSmooth::getShaderOpCalls(std::stringstream& ss, size_t level) const
+{
+	std::string propName{ "" };
+	ss << "\t// COMBExcludeSmooth //\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "smoothing") ? propName : std::to_string(m_smoothing)) << ";\n";
+	ss << "\tpmFloat1 = " << (getShaderAnimationCalls(propName = "colorShifting") ? propName : std::to_string(m_colorShifting)) << ";\n";
+	ss << "\tpmFloat2 = " << (getShaderAnimationCalls(propName = "colorBlending") ? propName : std::to_string(m_colorBlending)) << ";\n";
+	ss << "\td" << level << " = excludeSmooth(d" << level << ", d" << (level + 1) << ", pmFloat0, pmVec20.x, pmVec20.y, blend);\n";
+	ss << "\tcolor" << level << " = pmVec20.x <= pmVec20.y ?  color" << level << " : color" << (level + 1) << ";\n\n";
 }

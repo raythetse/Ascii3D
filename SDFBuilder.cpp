@@ -139,6 +139,20 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         }
         builder.operate<COMBIntersectSmooth>(nullptr, smoothing, colorBlending, colorShifting);
     }},
+    { "COMBExcludeSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
+        double smoothing{ SmoothCombination::DFLT_SMOOTHING };
+        double colorBlending{ SmoothCombination::DFLT_COLORBLENDING };
+        double colorShifting{ SmoothCombination::DFLT_COLORSHIFTING };
+
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "smoothing") ss >> smoothing;
+            else if (param == "colorBlending") ss >> colorBlending;
+            else if (param == "colorShifting") ss >> colorShifting;
+        }
+        builder.operate<COMBExcludeSmooth>(nullptr, smoothing, colorBlending, colorShifting);
+    }},
 
     // Objects
     { "SDFObject", [](SDFBuilder& builder, std::stringstream& ss) {

@@ -221,6 +221,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                 switch (selection) {
                 case 1:
                     m_scene = std::make_unique<ShapesScene>();
+                    //m_scene = std::make_unique<TestScene>();
                     return;
                 case 2:
                     m_scene = std::make_unique<CombinationScene>();

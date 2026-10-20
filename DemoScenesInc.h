@@ -10,5 +10,6 @@
 #include "RevolutionScene.h"
 #include "RoboticArmScene.h"
 #include "ShapesScene.h"
+#include "TestScene.h"
 #include "WalkingCubesScene.h"
 #include "WormsScene.h"

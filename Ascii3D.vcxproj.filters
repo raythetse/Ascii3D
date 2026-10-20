@@ -213,6 +213,9 @@
     <ClCompile Include="ElongateScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -348,6 +351,9 @@
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
     <ClInclude Include="ElongateScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -124,3 +124,14 @@ public:
 	COMBIntersectSmooth(std::unique_ptr<SDFObject> objectPtr = nullptr,	double smoothing = DFLT_SMOOTHING, double colorBlending = DFLT_COLORBLENDING, double colorShifting = DFLT_COLORSHIFTING)
 		: SmoothCombination(std::move(objectPtr), smoothing, colorBlending, colorShifting) {}
 };
+
+class COMBExcludeSmooth : public SmoothCombination
+{
+protected:
+	virtual void combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const override;
+	std::string getClassName() const override { return "COMBExcludeSmooth"; }
+	void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
+public:
+	COMBExcludeSmooth(std::unique_ptr<SDFObject> objectPtr = nullptr, double smoothing = DFLT_SMOOTHING, double colorBlending = DFLT_COLORBLENDING, double colorShifting = DFLT_COLORSHIFTING)
+		: SmoothCombination(std::move(objectPtr), smoothing, colorBlending, colorShifting) {}
+};
