@@ -4,6 +4,7 @@
 #include "JigsawScene.h"
 #include "PumpkinScene.h"
 #include "RainbowScene.h"
+#include "RevolutionScene.h"
 #include "RoboticArmScene.h"
 #include "WalkingCubesScene.h"
 #include "WavesScene.h"

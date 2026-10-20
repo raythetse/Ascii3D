@@ -198,6 +198,9 @@
     <ClCompile Include="JigsawScene.cpp">
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
+    <ClCompile Include="RevolutionScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -324,6 +327,9 @@
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
     <ClInclude Include="JigsawScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="RevolutionScene.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
   </ItemGroup>

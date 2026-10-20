@@ -168,6 +168,7 @@
     <ClCompile Include="JigsawScene.cpp" />
     <ClCompile Include="PumpkinScene.cpp" />
     <ClCompile Include="RainbowScene.cpp" />
+    <ClCompile Include="RevolutionScene.cpp" />
     <ClCompile Include="RoboticArmScene.cpp" />
     <ClCompile Include="SDF2DObject.cpp" />
     <ClCompile Include="SDF2DObject.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="JigsawScene.h" />
     <ClInclude Include="PumpkinScene.h" />
     <ClInclude Include="RainbowScene.h" />
+    <ClInclude Include="RevolutionScene.h" />
     <ClInclude Include="RoboticArmScene.h" />
     <ClInclude Include="SDFAxisObject.h" />
     <ClInclude Include="SDFObjectInc.h" />

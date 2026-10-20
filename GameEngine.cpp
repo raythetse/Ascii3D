@@ -188,9 +188,10 @@ void GameEngine::selectBuiltInScene(bool noCustom)
         std::cout << "[1] WalkingCubes - Classic cube rolling\n";
         std::cout << "[2] Exclusion - Removing overlapping spaces, coloring interior spaces\n";
         std::cout << "[3] Worms - Combining partial toruses into continuous moving worms\n";
-        std::cout << "[4] Rainbow - Cycling colors and sweeping out 2D shapes in a ring\n";
+        std::cout << "[4] Rainbow - Cycling colors across multiple objects\n";
         std::cout << "[5] Waves - Animating shape parameters and smooth combinations\n";
         std::cout << "[6] Jigsaw - Domain Repetition tricks\n";
+        std::cout << "[7] Revolution - Dynamic animation of a star-shaped ring\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
@@ -213,6 +214,9 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                     return;
                 case 6:
                     m_scene = std::make_unique<JigsawScene>();
+                    return;
+                case 7:
+                    m_scene = std::make_unique<RevolutionScene>();
                     return;
                 }
             }
