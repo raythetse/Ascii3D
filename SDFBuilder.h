@@ -26,15 +26,18 @@ public:
     std::unique_ptr<SDFObject> getBaseObject();
     std::vector<std::unique_ptr<LightSource>> getLights();
 	template <std::derived_from<SDFOperation> T, typename... Args>
-    SDFBuilder& operation(Args&&... args);
+    SDFBuilder& operate(Args&&... args);
     template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
-    auto combination(ArgsT&&... argst);
+    auto combine(ArgsT&&... argst);
     SDFBuilder& addLightSource(Vec3 position = LightSource::DFLT_POSITION, double luminance = LightSource::DFLT_LUMINANCE, Color color = LightSource::DFLT_COLOR, double ambientPower = LightSource::DFLT_AMBIENTPOWER);
     SDFBuilder& stepBack(size_t steps = 1);
     SDFBuilder& color(Color color);
     template <typename T, typename... Args>
         requires (std::is_base_of_v<Animation, T>)
-    SDFBuilder& animation(Args&&... args);
+    SDFBuilder& animate(Args&&... args);
+    template <typename T, typename... Args>
+        requires (std::is_base_of_v<Animation, T>)
+    SDFBuilder& animateComb(Args&&... args);
     SDFBuilder& loadSerialized(std::vector<std::string>& strVec);
 };
 
@@ -50,14 +53,14 @@ SDFBuilder& SDFBuilder::pushSDFObj(Args && ...args)
 }
 
 template <std::derived_from<SDFOperation> T, typename... Args>
-SDFBuilder& SDFBuilder::operation(Args&&... args) {
+SDFBuilder& SDFBuilder::operate(Args&&... args) {
     m_lastOp = m_objChain.back()->pushOperation<T>(std::forward<Args>(args)...);
     m_lastAddedObj = false;
     return *this;
 }
 
 template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
-auto SDFBuilder::combination(ArgsT&&... argst) {
+auto SDFBuilder::combine(ArgsT&&... argst) {
     return [this, ...captured_args = std::forward<ArgsT>(argst)](auto&&... argsu) mutable -> auto& {
         auto obj = std::make_unique<U>(std::move(captured_args)...);
         auto prev = m_objChain.back();
@@ -72,11 +75,22 @@ auto SDFBuilder::combination(ArgsT&&... argst) {
 
 template <typename T, typename... Args>
     requires (std::is_base_of_v<Animation, T>)
-SDFBuilder& SDFBuilder::animation(Args&&... args) {
+SDFBuilder& SDFBuilder::animate(Args&&... args) {
     if (m_lastAddedObj) {
         m_objChain.back()->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
-    } else if (m_lastOp) {
+    }
+    else if (m_lastOp) {
         m_lastOp->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+    }
+    return *this;
+}
+
+template <typename T, typename... Args>
+    requires (std::is_base_of_v<Animation, T>)
+SDFBuilder& SDFBuilder::animateComb(Args&&... args) {
+    CombinationOperation* combOp = dynamic_cast<CombinationOperation*>(m_lastOp);
+    if (combOp) {
+        combOp->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
     }
     return *this;
 }

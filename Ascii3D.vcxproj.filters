@@ -199,7 +199,10 @@
       <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
     <ClCompile Include="RevolutionScene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\SDF\DemoScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CombinationScene.cpp">
+      <Filter>Source Files\SDF\DemoScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -330,6 +333,9 @@
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
     <ClInclude Include="RevolutionScene.h">
+      <Filter>Header Files\SDF\DemoScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinationScene.h">
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
   </ItemGroup>

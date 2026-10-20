@@ -1,5 +1,4 @@
 Required:
-- fix inability to animate combo ops
 - ensure all propmod hooks exist/work
 - lots of built-in demos to illustrate all sdfs and ops
 - comment everything

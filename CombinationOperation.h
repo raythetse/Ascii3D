@@ -16,12 +16,12 @@ protected:
 	virtual std::string getClassName() const = 0;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const {};
-	virtual void bindAnimation(std::unique_ptr<Animation> animation) override {};
 	virtual void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	virtual void combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const = 0;
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double onTime = 1.0, double offTime = 0.0, double phase = 0.0)
 		: m_combineObj(std::move(combineObj)), m_onTime(onTime), m_offTime(offTime), m_phase(phase) {}
 public:
+	virtual void bindAnimation(std::unique_ptr<Animation> animation) override {};
 	void setCombineObject(std::unique_ptr<SDFObject> combineObj);
 	virtual void update() override;
 	virtual void resetAnimations() override;
