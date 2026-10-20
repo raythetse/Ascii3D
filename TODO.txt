@@ -5,7 +5,6 @@ Required:
 - comment everything
 - consts wherever sensical
 - instructions for custom scene files
-- add controls instructions to main menu screen
 - Add missing update vals for software rendering ops
 - fix color overwrite on add combos
 

@@ -114,25 +114,44 @@ bool GameEngine::selectRenderer()
     auto& deviceProps = m_vulkanManager->enumerateDevices();
     int selection{ -1 };
 
-    std::function<void()> prompt = [&selection, &deviceProps]() {
+    std::function<void(bool)> prompt = [&selection, &deviceProps](bool controls) {
         std::cout << "\033[2J\033[1;1H";
-        std::cout << "===========================================\n";
-        std::cout << "      ASCII Raymarcher 3D - Ray Young\n";
-        std::cout << "===========================================\n\n";
+        if (controls) {
+            std::cout << "==============================================================\n";
+            std::cout << "[ESCAPE] = Close Scene\n";
+            std::cout << "[WASD] = Move Forward/Left/Back/Right\n";
+            std::cout << "[SPACE/LSHIFT] = Move Up/Down\n";
+            std::cout << "[UP/DOWN] = Increase/Decrease movement speed\n";
+            std::cout << "[BACKSPACE] = reset position\n";
+            std::cout << "[P] = Pause/Unpause animations\n";
+            std::cout << "[R] = Restart animation\n";
+            std::cout << "[CTRL M] = Save scene to CustomScene.scn\n";
+            std::cout << "[CTRL -/+] = Decrease/Increase font size (affects performance)\n";
+            std::cout << "[CTRL 0] = Reset to default font size\n";
+            std::cout << "[ALT ENTER] = Toggle fullscreen (affects performance\n";
+            std::cout << "==============================================================\n\n";
+        }
+        else {
+            std::cout << "==============================================================\n";
+            std::cout << "              ASCII Raymarcher 3D - Ray Young\n";
+            std::cout << "==============================================================\n\n";
+        }
         std::cout << "      Rendering Devices\n\n";
-        std::cout << "[1] - CPU (Multi-threaded)\n";
+        std::cout << "[1] - CPU (Slow mode)\n";
 
         for (size_t i{}; i < deviceProps.size(); ++i) {
             std::cout << "[" << (i + 2) << "] - " << deviceProps[i].deviceName << '\n';
         }
-        std::cout << "[" << (deviceProps.size() + 2) << "] - Exit\n";
+        std::cout << "\n";
+        std::cout << "[" << (deviceProps.size() + 2) << "] - Controls and Information\n";
+        std::cout << "[" << (deviceProps.size() + 3) << "] - Exit\n";
 
-        std::cout << "\nChoose Your Rendering Device\n\n";
+        std::cout << "\nSelect an option: ";
     };
 
-    do prompt(); while (!(std::cin >> selection && selection >= 1 && selection <= 4));    
+    do prompt(selection == deviceProps.size() + 2); while (!(std::cin >> selection && selection >= 1 && selection <= deviceProps.size() + 3 && selection != deviceProps.size() + 2));
 
-    if (selection == deviceProps.size() + 2) return false;
+    if (selection == deviceProps.size() + 3) return false;
 
     if (selection == 1) {
         m_marchMode = MARCHINGMODE_SOFTWARE;

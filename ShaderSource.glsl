@@ -429,15 +429,265 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
-	// SDFStar //
-	pmFloat0 = 2.000000;
-	pmFloat1 = smoothCycle1D(1.0000000, 5.6470000, 0.5000000, 0.0000000, time);
-	pmFloat2 = smoothCycle1D(0.5000000, 8.0000000, 0.4500000, 0.0000000, time);
-	pmVec20.x = 6.000000;
-	pmVec20.y = (1.0000000 + 0.2500000 * (0.0000000 + time));
-	pmVec22 = smoothCycle2D(vec2(0.0000000, 0.0000000), vec2(2.1740000, 3.6781001), vec2(0.5000000, 0.5000000), vec2(0.0000000, 0.0000000), time);
-	d1 = star(p1, pmVec20.x, pmFloat1, pmFloat2, 1, pmFloat0, pmVec20.y, pmVec22);
 
+	// OPCubeRollHeight //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	pmFloat2 = 1.000000;
+	pmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;
+	pmFloat1 = cos(pmFloat0);
+	pmFloat0 = sin(pmFloat0);
+	pmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);
+	pmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);
+	pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
+	p1.y -= pmFloat0;
+
+	// OPTranslate //
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(0.5000000, 0.0000000, 0.5000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.5000000, 0.0000000, 1.5000000), time);
+	p1 -= pmVec30; 
+
+	// OPCubeRoller //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	vec3 axes0[4]; 
+	axes0[0] = vec3(0.0000000, 0.0000000, 1.0000000);
+	axes0[1] = vec3(1.0000000, 0.0000000, 0.0000000);
+	axes0[2] = vec3(0.0000000, 0.0000000, -1.0000000);
+	axes0[3] = vec3(-1.0000000, 0.0000000, 0.0000000);
+	pmFloat2 = 4 * pmFloat1;
+	pmFloat2 = mod(time + pmFloat0, pmFloat2);
+	pmFloat0 = floor(pmFloat2);
+	pmFloat2 /= pmFloat1;
+	p1 = rotateVec3(p1, axes0[int(pmFloat0)], 0.25 * pmFloat2);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	d2 = box(p2, pmVec30);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// OPTranslate //
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(0.5000000, 0.0000000, 0.5000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.5000000, 0.0000000, 1.5000000), time);
+	p1 -= pmVec30; 
+
+	// OPCubeRollHeight //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	pmFloat2 = 3.000000;
+	pmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;
+	pmFloat1 = cos(pmFloat0);
+	pmFloat0 = sin(pmFloat0);
+	pmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);
+	pmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);
+	pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
+	p1.y -= pmFloat0;
+
+	// OPCubeRoller //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	vec3 axes1[4]; 
+	axes1[0] = vec3(0.0000000, 0.0000000, -1.0000000);
+	axes1[1] = vec3(-1.0000000, 0.0000000, 0.0000000);
+	axes1[2] = vec3(0.0000000, 0.0000000, 1.0000000);
+	axes1[3] = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat2 = 4 * pmFloat1;
+	pmFloat2 = mod(time + pmFloat0, pmFloat2);
+	pmFloat0 = floor(pmFloat2);
+	pmFloat2 /= pmFloat1;
+	p1 = rotateVec3(p1, axes1[int(pmFloat0)], 0.25 * pmFloat2);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	d2 = box(p2, pmVec30);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.500000;
+	p1 = rotateVec3(p1, pmVec30, pmFloat0);
+
+	// OPCubeRollHeight //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	pmFloat2 = 1.000000;
+	pmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;
+	pmFloat1 = cos(pmFloat0);
+	pmFloat0 = sin(pmFloat0);
+	pmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);
+	pmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);
+	pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
+	p1.y -= pmFloat0;
+
+	// OPTranslate //
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(0.5000000, 0.0000000, 0.5000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.5000000, 0.0000000, 1.5000000), time);
+	p1 -= pmVec30; 
+
+	// OPCubeRoller //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	vec3 axes2[4]; 
+	axes2[0] = vec3(0.0000000, 0.0000000, 1.0000000);
+	axes2[1] = vec3(1.0000000, 0.0000000, 0.0000000);
+	axes2[2] = vec3(0.0000000, 0.0000000, -1.0000000);
+	axes2[3] = vec3(-1.0000000, 0.0000000, 0.0000000);
+	pmFloat2 = 4 * pmFloat1;
+	pmFloat2 = mod(time + pmFloat0, pmFloat2);
+	pmFloat0 = floor(pmFloat2);
+	pmFloat2 /= pmFloat1;
+	p1 = rotateVec3(p1, axes2[int(pmFloat0)], 0.25 * pmFloat2);
+
+	// SDFObject //
+	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	d2 = box(p2, pmVec30);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.500000;
+	p1 = rotateVec3(p1, pmVec30, pmFloat0);
+
+	// OPCubeRollHeight //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	pmFloat2 = 3.000000;
+	pmFloat0 = mod(time + pmFloat0, pmFloat1) * HALFPI - HALFPI;
+	pmFloat1 = cos(pmFloat0);
+	pmFloat0 = sin(pmFloat0);
+	pmVec20 = vec2(-pmFloat2 * 0.5, pmFloat2 * 0.5);
+	pmVec20 = vec2(pmVec20.x * pmFloat1 - pmVec20.y * pmFloat0, pmVec20.x * pmFloat0 + pmVec20.y * pmFloat1);
+	pmFloat0 = (pmVec20.y - pmFloat2 * 0.5);
+	p1.y -= pmFloat0;
+
+	// OPTranslate //
+	pmVec30 = linearCycle3D(vec3(0.0000000, 1.0000000, 0.0000000), vec3(0.5000000, 0.0000000, 0.5000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(1.0000000, 1.0000000, 1.0000000), vec3(0.5000000, 0.0000000, 1.5000000), time);
+	p1 -= pmVec30; 
+
+	// OPCubeRoller //
+	pmFloat0 = 0.500000;
+	pmFloat1 = 1.000000;
+	vec3 axes3[4]; 
+	axes3[0] = vec3(0.0000000, 0.0000000, -1.0000000);
+	axes3[1] = vec3(-1.0000000, 0.0000000, 0.0000000);
+	axes3[2] = vec3(0.0000000, 0.0000000, 1.0000000);
+	axes3[3] = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmFloat2 = 4 * pmFloat1;
+	pmFloat2 = mod(time + pmFloat0, pmFloat2);
+	pmFloat0 = floor(pmFloat2);
+	pmFloat2 /= pmFloat1;
+	p1 = rotateVec3(p1, axes3[int(pmFloat0)], 0.25 * pmFloat2);
+
+	// SDFObject //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	d2 = box(p2, pmVec30);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
 
 	// COMBAdd //
 	if (d1 < d0) {
@@ -537,7 +787,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(1.0000000, 10.0000000, -7.5000000) - p0;
+		rayDir = vec3(2.0000000, 6.0000000, -2.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -550,8 +800,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
-				float ambLight = 200 * 0.15 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 50 : 0.0;
+				float ambLight = 50 * 0.2 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
