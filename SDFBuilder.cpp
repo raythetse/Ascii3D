@@ -678,79 +678,9 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
 
     // Domain Ops
-    { "OPRepeatX", [](SDFBuilder& builder, std::stringstream& ss) {
+    { "OPRepeat", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatX>(spacing);
-    } },
-    { "OPRepeatY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatY>(spacing);
-    } },
-    { "OPRepeatZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatZ>(spacing);
-    } },
-    { "OPRepeatXY", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatXY>(spacing);
-    } },
-    { "OPRepeatXZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatXZ>(spacing);
-    } },
-    { "OPRepeatYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatYZ>(spacing);
-    } },
-    { "OPRepeatXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "spacing") ss >> spacing;
-        }
-        builder.operate<OPRepeatXYZ>(spacing);
-    } },
-    { "OPRepeatLimited", [](SDFBuilder& builder, std::stringstream& ss) {
-        Vec3 spacing{ DomainOperation::DFLT_SPACING };
-        Vec3 limits{ OPRepeatLimited::DFLT_LIMITS };
+        Vec3 limits{ OPRepeat::DFLT_LIMITS };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -758,7 +688,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "spacing") ss >> spacing;
             else if (param == "limits") ss >> limits;
         }
-        builder.operate<OPRepeatLimited>(limits, spacing);
+        builder.operate<OPRepeat>(limits, spacing);
     } },
     { "OPRepeatCircle", [](SDFBuilder& builder, std::stringstream& ss) {
         size_t repetitions{ OPRepeatCircle::DFLT_REPETITIONS };

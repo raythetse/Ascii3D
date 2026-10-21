@@ -463,616 +463,157 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	color0 = pmVec30;
 
-	// OPTranslate //
-	pmVec30 = vec3(-4.0000000, 1.0000000, 0.0000000);
-	p0 -= pmVec30; 
-
 	// SDFObject //
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
-	// SDFPlane //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	d1 = dot(p1, pmVec30) - -2;
-
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = pmVec30;
-	// SDFSphere //
-	pmFloat0 = 0.500000;
-	d2 = sphere(p2, pmFloat0);
 
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p2 -= pmVec30 * clamp(round(p2 / pmVec30), -pmVec31, pmVec31);
 
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p2 -= pmVec30; 
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.083333;
+	p2 = rotateVec3(p2, pmVec30, pmFloat0);
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p3 = p2;
 	d3 = FLOAT_MAX;
 	color3 = pmVec30;
-	// SDFBox //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	d3 = box(p3, pmVec30);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p3 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p4 = p3;
-	d4 = FLOAT_MAX;
-	color4 = pmVec30;
-	// SDFBoxFrame //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	pmFloat0 = 0.100000;
-	d4 = boxFrame(p4, pmVec30, pmFloat0);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p4 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	p5 = p4;
-	d5 = FLOAT_MAX;
-	color5 = pmVec30;
-	// SDFSphere //
-	pmFloat0 = 0.500000;
-	d5 = sphere(p5, pmFloat0);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p5 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	p6 = p5;
-	d6 = FLOAT_MAX;
-	color6 = pmVec30;
-	// SDFCrystal //
-	pmFloat0 = 1.000000;
-	d6 = crystal(p6, pmFloat0);
-
-
-	// COMBAdd //
-	if (d6 < d5) {
-		d5 = d6;
-		color5 = color6; 
-	}
-	else if (false) {
-		color5 = color6; 
-	}
-
-	// COMBAdd //
-	if (d5 < d4) {
-		d4 = d5;
-		color4 = color5; 
-	}
-	else if (false) {
-		color4 = color5; 
-	}
-
-	// COMBAdd //
-	if (d4 < d3) {
-		d3 = d4;
-		color3 = color4; 
-	}
-	else if (false) {
-		color3 = color4; 
-	}
-
-	// COMBAdd //
-	if (d3 < d2) {
-		d2 = d3;
-		color2 = color3; 
-	}
-	else if (false) {
-		color2 = color3; 
-	}
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-	else if (false) {
-		color1 = color2; 
-	}
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-	else if (false) {
-		color0 = color1; 
-	}
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 2.0000000);
-	p0 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = pmVec30;
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = pmVec30;
-	// SDFCone //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	d2 = cone(p2, pmFloat0, pmFloat1);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p2 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = pmVec30;
-	// SDFSolidAngle //
-	pmFloat0 = 0.250000;
-	pmFloat1 = 0.500000;
-	d3 = solidAngle(p3, pmFloat0, pmFloat1);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p3 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	p4 = p3;
-	d4 = FLOAT_MAX;
-	color4 = pmVec30;
-	// SDFEllipsoid //
-	pmVec30 = vec3(1.0000000, 0.5000000, 0.2500000);
-	d4 = ellipsoid(p4, pmVec30);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p4 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	p5 = p4;
-	d5 = FLOAT_MAX;
-	color5 = pmVec30;
-	// SDFTorus //
-	pmVec20 = vec2(0.5000000, 0.1250000);
-	d5 = torus(p5.xyz, pmVec20);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p5 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
-	p6 = p5;
-	d6 = FLOAT_MAX;
-	color6 = pmVec30;
-	// SDFTorusSegment //
-	pmFloat0 = 0.333000;
-	pmVec20 = vec2(0.5000000, 0.1250000);
-	d6 = torusSegment(p6.xyz, pmVec20, pmFloat0);
-
-
-	// COMBAdd //
-	if (d6 < d5) {
-		d5 = d6;
-		color5 = color6; 
-	}
-	else if (false) {
-		color5 = color6; 
-	}
-
-	// COMBAdd //
-	if (d5 < d4) {
-		d4 = d5;
-		color4 = color5; 
-	}
-	else if (false) {
-		color4 = color5; 
-	}
-
-	// COMBAdd //
-	if (d4 < d3) {
-		d3 = d4;
-		color3 = color4; 
-	}
-	else if (false) {
-		color3 = color4; 
-	}
-
-	// COMBAdd //
-	if (d3 < d2) {
-		d2 = d3;
-		color2 = color3; 
-	}
-	else if (false) {
-		color2 = color3; 
-	}
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-	else if (false) {
-		color1 = color2; 
-	}
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-	else if (false) {
-		color0 = color1; 
-	}
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 2.0000000);
-	p0 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = pmVec30;
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = pmVec30;
-	// SDFCapsule //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	d2 = capsule(p2.xyz, pmFloat0, pmFloat1);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p2 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = pmVec30;
-	// SDFTaperedCapsule //
-	pmVec20 = vec2(0.5000000, 0.2500000);
-	pmFloat0 = 1.000000;
-d3 = taperedCapsule(p3.xyz, pmVec20, pmFloat0); 
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p3 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	p4 = p3;
-	d4 = FLOAT_MAX;
-	color4 = pmVec30;
-	// SDFCylinder //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	d4 = cylinder(p4.xyz, pmFloat0, pmFloat1);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p4 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
-	p5 = p4;
-	d5 = FLOAT_MAX;
-	color5 = pmVec30;
-	// SDFTaperedCylinder //
-	pmFloat0 = 1.000000;
-	pmVec20 = vec2(0.5000000, 0.2500000);
-	d5 = taperedCylinder(p5.xyz, pmFloat0, pmVec20);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p5 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p6 = p5;
-	d6 = FLOAT_MAX;
-	color6 = pmVec30;
-	// SDFRhombus //
-	pmVec20 = vec2(1.0000000, 0.5000000);
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.000000;
-	pmVec22 = vec2(0.0000000, 0.0000000);
-	d6 = rhombus(p6, pmVec20, 0, pmFloat0, pmFloat1, pmVec22);
-
-
-	// COMBAdd //
-	if (d6 < d5) {
-		d5 = d6;
-		color5 = color6; 
-	}
-	else if (false) {
-		color5 = color6; 
-	}
-
-	// COMBAdd //
-	if (d5 < d4) {
-		d4 = d5;
-		color4 = color5; 
-	}
-	else if (false) {
-		color4 = color5; 
-	}
-
-	// COMBAdd //
-	if (d4 < d3) {
-		d3 = d4;
-		color3 = color4; 
-	}
-	else if (false) {
-		color3 = color4; 
-	}
-
-	// COMBAdd //
-	if (d3 < d2) {
-		d2 = d3;
-		color2 = color3; 
-	}
-	else if (false) {
-		color2 = color3; 
-	}
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-	else if (false) {
-		color1 = color2; 
-	}
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-	else if (false) {
-		color0 = color1; 
-	}
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 2.0000000);
-	p0 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = pmVec30;
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = pmVec30;
-	// SDFEquilateralTriangle //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 1.000000;
-	pmFloat2 = 0.000000;
-	pmVec22 = vec2(0.0000000, 0.0000000);
-	d2 = equilateralTriangle(p2, pmFloat0, 0, pmFloat1, pmFloat2, pmVec22 );
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p2 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	p3 = p2;
-	d3 = FLOAT_MAX;
-	color3 = pmVec30;
-	// SDFIsoscelesTriangle //
-	pmFloat0 = 1.000000;
-	pmVec20 = vec2(1.0000000, 0.5000000);
-	pmFloat2 = 0.000000;
-	pmVec22 = vec2(0.0000000, 0.0000000);
-	d3 = isoscelesTriangle(p3, pmVec20, 0, pmFloat0, pmFloat2, pmVec22);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p3 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 0.0000000);
-	p4 = p3;
-	d4 = FLOAT_MAX;
-	color4 = pmVec30;
-	// SDFTriangle //
-	pmFloat0 = 1.000000;
-	pmVec20 = vec2(-0.5000000, -0.5000000);
-	pmVec21 = vec2(0.0000000, 0.5000000);
-	pmVec22 = vec2(0.5000000, 0.0000000);
-	pmFloat1 = 0.000000;
-	pmVec30 = vec2(0.0000000, 0.0000000).xyy;
-	d4 = triangle(p4, pmVec20, pmVec21, pmVec22, 0, pmFloat0, pmFloat1, pmVec22.xy);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p4 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p5 = p4;
-	d5 = FLOAT_MAX;
-	color5 = pmVec30;
-	// SDFPieSlice //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.250000;
-	pmFloat2 = 0.500000;
-	pmVec32.x = 0.000000;
-	pmVec22 = vec2(0.0000000, 0.0000000);
-	d5 = pieSlice(p5, pmFloat1, pmFloat2, 0, pmFloat0, pmVec32.x, pmVec22);
-
-
-	// OPTranslate //
-	pmVec30 = vec3(2.0000000, 0.0000000, 0.0000000);
-	p5 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(0.0000000, 0.0000000, 1.0000000);
-	p6 = p5;
-	d6 = FLOAT_MAX;
-	color6 = pmVec30;
-	// SDFPentagon //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	pmFloat2 = 0.000000;
-	pmVec22 = vec2(0.0000000, 0.0000000);
-	d6 = pentagon(p6, pmFloat1, 0, pmFloat0, pmFloat2, pmVec22);
-
-
-	// COMBAdd //
-	if (d6 < d5) {
-		d5 = d6;
-		color5 = color6; 
-	}
-	else if (false) {
-		color5 = color6; 
-	}
-
-	// COMBAdd //
-	if (d5 < d4) {
-		d4 = d5;
-		color4 = color5; 
-	}
-	else if (false) {
-		color4 = color5; 
-	}
-
-	// COMBAdd //
-	if (d4 < d3) {
-		d3 = d4;
-		color3 = color4; 
-	}
-	else if (false) {
-		color3 = color4; 
-	}
-
-	// COMBAdd //
-	if (d3 < d2) {
-		d2 = d3;
-		color2 = color3; 
-	}
-	else if (false) {
-		color2 = color3; 
-	}
-
-	// COMBAdd //
-	if (d2 < d1) {
-		d1 = d2;
-		color1 = color2; 
-	}
-	else if (false) {
-		color1 = color2; 
-	}
-
-	// COMBAdd //
-	if (d1 < d0) {
-		d0 = d1;
-		color0 = color1; 
-	}
-	else if (false) {
-		color0 = color1; 
-	}
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 0.0000000, 2.0000000);
-	p0 -= pmVec30; 
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	p1 = p0;
-	d1 = FLOAT_MAX;
-	color1 = pmVec30;
-
-	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
-	p2 = p1;
-	d2 = FLOAT_MAX;
-	color2 = pmVec30;
 	// SDFHexagon //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.950000;
 	pmFloat2 = 0.000000;
 	pmVec22 = vec2(0.0000000, 0.0000000);
-	d2 = hexagon(p2, pmFloat1, 0, pmFloat0, pmFloat2, pmVec22);
+	d3 = hexagon(p3, pmFloat1, 0, pmFloat0, pmFloat2, pmVec22);
 
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (false) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// OPRepeatCircle //
+	pmFloat0 = 3;
+	p1 = repeatCircle(p1.xyz, pmFloat0);
 
 	// OPTranslate //
-	pmVec30 = vec3(4.0000000, 0.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.200000;
+	pmFloat1 = 0.400000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBSubtractSmooth //
+	pmFloat0 = 0.025000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	d0 = subtractSmooth(d0, d1, pmFloat0, blend); 
+	color0 = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color0, color1, pmFloat2);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
 	p2 -= pmVec30; 
 
 	// SDFObject //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p3 = p2;
 	d3 = FLOAT_MAX;
 	color3 = pmVec30;
-	// SDFOctagon //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	pmFloat2 = 0.000000;
-	pmVec22 = vec2(0.0000000, 0.0000000);
-	d3 = octagon(p3, pmFloat1, 0, pmFloat0, pmFloat2, pmVec22);
 
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p3 -= pmVec30 * clamp(round(p3 / pmVec30), -pmVec31, pmVec31);
 
-	// OPTranslate //
-	pmVec30 = vec3(4.0000000, 0.0000000, 0.0000000);
-	p3 -= pmVec30; 
+	// OPRotate //
+	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
+	pmFloat0 = 0.083333;
+	p3 = rotateVec3(p3, pmVec30, pmFloat0);
 
 	// SDFObject //
-	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p4 = p3;
 	d4 = FLOAT_MAX;
 	color4 = pmVec30;
-	// SDFStar //
-	pmFloat0 = 1.000000;
-	pmFloat1 = 0.500000;
-	pmFloat2 = 0.500000;
-	pmVec20.x = 5.000000;
-	pmVec20.y = 0.000000;
+	// SDFHexagon //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.950000;
+	pmFloat2 = 0.000000;
 	pmVec22 = vec2(0.0000000, 0.0000000);
-	d4 = star(p4, pmVec20.x, pmFloat1, pmFloat2, 0, pmFloat0, pmVec20.y, pmVec22);
+	d4 = hexagon(p4, pmFloat1, 0, pmFloat0, pmFloat2, pmVec22);
 
 
 	// COMBAdd //
@@ -1102,6 +643,56 @@ d3 = taperedCapsule(p3.xyz, pmVec20, pmFloat0);
 		color1 = color2; 
 	}
 
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
+	p2 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p2 -= pmVec30 * clamp(round(p2 / pmVec30), -pmVec31, pmVec31);
+
+	// OPRepeatCircle //
+	pmFloat0 = 3;
+	p2 = repeatCircle(p2.xyz, pmFloat0);
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	p2 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p3 = p2;
+	d3 = FLOAT_MAX;
+	color3 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.200000;
+	pmFloat1 = 0.400000;
+	d3 = cylinder(p3.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d3 < d2) {
+		d2 = d3;
+		color2 = color3; 
+	}
+	else if (false) {
+		color2 = color3; 
+	}
+
+	// COMBSubtractSmooth //
+	pmFloat0 = 0.025000;
+	pmFloat1 = 0.000000;
+	pmFloat2 = 1.000000;
+	d1 = subtractSmooth(d1, d2, pmFloat0, blend); 
+	color1 = blendColors(clamp(blend + pmFloat1, 0.0, 1.0), color1, color2, pmFloat2);
+
 	// COMBAdd //
 	if (d1 < d0) {
 		d0 = d1;
@@ -1110,6 +701,286 @@ d3 = taperedCapsule(p3.xyz, pmVec20, pmFloat0);
 	else if (false) {
 		color0 = color1; 
 	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.5000000, 0.0000000, 0.8660254);
+	p1 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.5000000, 0.0000000, -0.8660254);
+	p1 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	p1 -= pmVec30; 
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
+	p1 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.5000000, 0.0000000, 0.8660254);
+	p1 -= pmVec30; 
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
+	p1 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+
+	// OPTranslate //
+	pmVec30 = vec3(0.5000000, 0.0000000, -0.8660254);
+	p1 -= pmVec30; 
+
+	// OPTranslate //
+	pmVec30 = vec3(1.0000000, 0.0000000, 1.7320508);
+	p1 -= pmVec30; 
+
+	// OPRepeat //
+	pmVec30 = vec3(2.0000000, 1.0000000, 3.4641016);
+	pmVec31 = vec3(2000.0000000, 0.0000000, 2000.0000000);
+	p1 -= pmVec30 * clamp(round(p1 / pmVec30), -pmVec31, pmVec31);
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	p2 = p1;
+	d2 = FLOAT_MAX;
+	color2 = pmVec30;
+	// SDFCylinder //
+	pmFloat0 = 0.100000;
+	pmFloat1 = 0.300000;
+	d2 = cylinder(p2.xyz, pmFloat0, pmFloat1);
+
+
+	// COMBAdd //
+	if (d2 < d1) {
+		d1 = d2;
+		color1 = color2; 
+	}
+	else if (false) {
+		color1 = color2; 
+	}
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
+	// OPRoundOff //
+	pmFloat0 = 0.030000;
+	d0 -= pmFloat0;
 
 }
 
@@ -1200,7 +1071,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(8.0000000, 10.0000000, -10.0000000) - p0;
+		rayDir = vec3(50.0000000, 50.0000000, -50.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -1213,8 +1084,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 200 : 0.0;
-				float ambLight = 200 * 0.25 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 5000 : 0.0;
+				float ambLight = 5000 * 0.2 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;
