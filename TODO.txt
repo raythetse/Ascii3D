@@ -1,32 +1,20 @@
 Required:
-- fix all things to use Axis enum rather than specific classes
 - ensure all property hooks exist/work
-- lots of built-in demos to illustrate all sdfs and ops
 - comment everything
 - consts wherever sensical
 - instructions for custom scene files
 - Add missing update vals for software rendering ops
-- fix color overwrite on add combos
 
 Optional:
 - add off/on to other combination types?  (only have on COMBAdd right now)
 - refactor execute function on operation child types
 - refactor serialization (inner) on operation types
 - Reusable groups (tried once, taking too long, try later when I have more time.)
-- more robust templating of animations?
 - light movement
 - bounding boxes/spheres/capsules for efficiency
-- change repeat operations to not rely on vec3
-- transparency/reflection
 - error handling on file loading
-- Input controls for animations?
 - improve ambient light, occlusion, and shadow functions
 - investigate rhombus axis issue
-- improve (reduce repetition of) mapped builder functions
-- investigate how non-symmetrical rotational repetition might be possible in this architecture (use an object instead of an operation perhaps?)
-
-Ongoing:
-- design/implement new SDFs, Operations, and Modifiers
 
 Scene Ideas
 - Seasonal themes outdoor scenes
