@@ -213,15 +213,16 @@ void GameEngine::selectBuiltInScene(bool noCustom)
         std::cout << "[7] Jigsaw - Domain Repetition tricks.\n";
         std::cout << "[8] Revolution - Dynamic animation of a star-shaped ring.\n";
         std::cout << "[9] Color Blend - Blending colors in varying fashion.\n";
-        std::cout << "[0] Elongation - Elongating a sphere on three Axes.\n";
+        std::cout << "[10] Elongation - Elongating a sphere on three Axes.\n";
+        std::cout << "[11] Smooth Exclude - Germophobic spheres? Avoid direct contact.\n";
         std::string line;
         if (std::getline(std::cin, line)) {
             std::stringstream ss(line);
             if (ss >> selection) {
                 switch (selection) {
                 case 1:
-                    m_scene = std::make_unique<RoboticArmScene>();
-                    //m_scene = std::make_unique<TestScene>();
+                    //m_scene = std::make_unique<ShapesScene>();
+                    m_scene = std::make_unique<TestScene>();
                     return;
                 case 2:
                     m_scene = std::make_unique<CombinationScene>();
@@ -247,8 +248,11 @@ void GameEngine::selectBuiltInScene(bool noCustom)
                 case 9:
                     m_scene = std::make_unique<ColorBlendScene>();
                     return;
-                case 0:
+                case 10:
                     m_scene = std::make_unique<ElongateScene>();
+                    return;
+                case 11:
+                    m_scene = std::make_unique<ExcludeSmoothScene>();
                     return;
                 }
             }

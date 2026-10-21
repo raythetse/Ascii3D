@@ -3,6 +3,7 @@
 #include "ColorBlendScene.h"
 #include "CombinationScene.h"
 #include "ElongateScene.h"
+#include "ExcludeSmoothScene.h"
 #include "ExclusionScene.h"
 #include "JigsawScene.h"
 #include "PumpkinScene.h"

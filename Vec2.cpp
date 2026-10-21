@@ -67,6 +67,16 @@ Vec2 Vec2::abs()
     return { std::abs(x), std::abs(y) };
 }
 
+Vec2 Vec2::fmod(Vec2 v) const
+{
+    return { std::fmod(x, v.x), std::fmod(y, v.y) };
+}
+
+Vec2 Vec2::fmod(double d) const
+{
+    return { std::fmod(x, d), std::fmod(y, d) };
+}
+
 void Vec2::normalize()
 {
     const double m = length();

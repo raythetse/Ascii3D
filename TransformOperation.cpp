@@ -12,37 +12,6 @@ void TransformOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 	strVec.push_back(ss.str());
 }
 
-void OPMirror::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	if (m_mirrorX) p.x = abs(p.x);
-	if (m_mirrorY) p.y = abs(p.y);
-	if (m_mirrorZ) p.z = abs(p.z);
-	if (colorOut) *colorOut = colorIn;
-}
-
-std::string OPMirror::getSwizzle() const
-{
-	std::string swizzle{ "." };
-	if (m_mirrorX) swizzle += 'x';
-	if (m_mirrorY) swizzle += 'y';
-	if (m_mirrorZ) swizzle += 'z';
-
-	return swizzle;
-}
-
-void OPMirror::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	ss << "\t// OPMirror //\n";
-	ss << "\tp" << level << getSwizzle() << " = abs(p" << level << getSwizzle() << "); \n\n";
-}
-
-void OPMirror::innerInnerSerialize(std::stringstream& ss) const
-{
-	ss << " mirrorX " << m_mirrorX;
-	ss << " mirrorY " << m_mirrorY;
-	ss << " mirrorZ " << m_mirrorZ;
-}
-
 void OPTranslate::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p -= m_translation;

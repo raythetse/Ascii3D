@@ -555,20 +555,6 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
 
     // Transformations
-    { "OPMirror", [](SDFBuilder& builder, std::stringstream& ss) {
-
-        bool mirrorX{ true };
-        bool mirrorY{};
-        bool mirrorZ{};
-        while (ss.peek() != EOF) {
-            std::string param;
-            ss >> param;
-            if (param == "mirrorX") ss >> mirrorX;
-            else if (param == "mirrorY") ss >> mirrorY;
-            else if (param == "mirrorZ") ss >> mirrorZ;
-        }
-        builder.operate<OPMirror>(mirrorX, mirrorY, mirrorZ);
-    } },
     { "OPTranslate", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 translation{ OPTranslate::DFLT_TRANSLATION };
 
@@ -692,6 +678,20 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "axis") ss >> axis;
         }
         builder.operate<OPRepeatCircle>(static_cast<Axis>(axis), repetitions);
+    } },
+    { "OPMirror", [](SDFBuilder& builder, std::stringstream& ss) {
+
+        bool mirrorX{ true };
+        bool mirrorY{};
+        bool mirrorZ{};
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "mirrorX") ss >> mirrorX;
+            else if (param == "mirrorY") ss >> mirrorY;
+            else if (param == "mirrorZ") ss >> mirrorZ;
+        }
+        builder.operate<OPMirror>(mirrorX, mirrorY, mirrorZ);
     } },
 
     // Property Modifiers

@@ -9,6 +9,7 @@ namespace MF {
     inline static const double TAU = 6.283185307179586;
     inline static const double ROOT2 = 1.4142135623730951;
     inline static const double ROOT3 = 1.7320508075688773;
+    inline static const double ROOT6 = 2.4494897427831780;
 #undef max
     inline static const double MAX_DOUBLE = std::numeric_limits<double>::max();
 

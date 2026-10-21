@@ -76,6 +76,8 @@ public:
 	Vec3 ceil() const;
 	Vec3 round() const;
 	Vec3 abs() const;
+	Vec3 fmod(Vec3 v) const;
+	Vec3 fmod(double d) const;
 	Vec3 operator-() const;
 	Vec3 operator-(const Vec3& p) const;
 	Vec3 operator*(const Vec3& p) const;

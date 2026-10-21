@@ -171,6 +171,16 @@ Vec3 Vec3::abs() const
     return { std::abs(x), std::abs(y), std::abs(z) };
 }
 
+Vec3 Vec3::fmod(Vec3 v) const
+{
+    return { std::fmod(x, v.x), std::fmod(y, v.y), std::fmod(z, v.z) };
+}
+
+Vec3 Vec3::fmod(double d) const
+{
+    return { std::fmod(x, d), std::fmod(y, d), std::fmod(z, d) };
+}
+
 Vec3 Vec3::operator-() const
 {
     return { -x, -y, -z };

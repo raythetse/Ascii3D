@@ -29,6 +29,8 @@ public:
 	Vec2 sin() const;
 	Vec2 cos() const;
 	Vec2 abs();
+	Vec2 fmod(Vec2 v) const;
+	Vec2 fmod(double d) const;
 	void normalize();
 	Vec2 rotate(const double rads) const;
 	Vec2 getNormal() const;

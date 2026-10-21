@@ -50,3 +50,20 @@ public:
 	OPRepeatCircle(Axis axis, size_t repetitions = DFLT_REPETITIONS) : DomainOperation(), m_axis(axis), m_repetitions(repetitions) {}
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
+
+class OPMirror : public TransformOperation
+{
+private:
+	bool m_mirrorX{ true };
+	bool m_mirrorY{ true };
+	bool m_mirrorZ{ true };
+	std::string getSwizzleForMirror() const;
+protected:
+	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
+	std::string getClassName() const { return "OPMirror"; }
+	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
+public:
+	OPMirror(bool mirrorX = true, bool mirrorY = false, bool mirrorZ = false)
+		: m_mirrorX(mirrorX), m_mirrorY(mirrorY), m_mirrorZ(mirrorZ) {};
+};

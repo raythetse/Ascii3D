@@ -163,6 +163,7 @@
     <ClCompile Include="CombinationScene.cpp" />
     <ClCompile Include="DomainOperation.cpp" />
     <ClCompile Include="ElongateScene.cpp" />
+    <ClCompile Include="ExcludeSmoothScene.cpp" />
     <ClCompile Include="ExclusionScene.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameTimer.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="DomainOperation.h" />
     <ClInclude Include="ElongateScene.h" />
     <ClInclude Include="Enumerations.h" />
+    <ClInclude Include="ExcludeSmoothScene.h" />
     <ClInclude Include="ExclusionScene.h" />
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="GameEngine.h" />

@@ -7,7 +7,8 @@ JigsawScene::JigsawScene()
     double nubSize{ 0.3 };
 
     add(SDFBuilder{}
-        // Hegaxons don't tessellate in a square grid, but we can use two grids with vertically spread rows to overcome this
+        // Hegaxons don't tessellate in a square grid.
+        // Hegaxonal repeats are possible but complicated, instead we can just offset some square grids to achieve the same effect
         .combine<COMBAdd, SDFObject>()()
             .combine<COMBAdd, SDFObject>()()
                 .operate<OPRepeat>(repeatLimits, repeatSpacing)
@@ -30,7 +31,6 @@ JigsawScene::JigsawScene()
                     .operate<OPRotate>(Vec3::Up, 1.0 / 12.0 )
                     .combine<COMBAdd, SDFHexagon>(OP2D_EXTRUDE, 0.95, 0.1)()
                         .stepBack(3)
-
 
             .combine<COMBSubtractSmooth, SDFObject>()(0.025)
                 .operate<OPTranslate>(Vec3{ 1.0, 0.0, MF::ROOT3 })
