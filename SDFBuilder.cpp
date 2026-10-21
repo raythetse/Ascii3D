@@ -554,30 +554,21 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushSDFObj<SDFTriangle>(static_cast<OP2D>(operation), point1, point2, point3, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
 
-    // Mirrors
-    { "OPMirrorX", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorX>();
-    } },
-    { "OPMirrorY", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorY>();
-    } },
-    { "OPMirrorZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorZ>();
-    } },
-    { "OPMirrorXY", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorXY>();
-    } },
-    { "OPMirrorXZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorXZ>();
-    } },
-    { "OPMirrorYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorYZ>();
-    } },
-    { "OPMirrorXYZ", [](SDFBuilder& builder, std::stringstream& ss) {
-        builder.operate<OPMirrorXYZ>();
-    } },
-
     // Transformations
+    { "OPMirror", [](SDFBuilder& builder, std::stringstream& ss) {
+
+        bool mirrorX{ true };
+        bool mirrorY{};
+        bool mirrorZ{};
+        while (ss.peek() != EOF) {
+            std::string param;
+            ss >> param;
+            if (param == "mirrorX") ss >> mirrorX;
+            else if (param == "mirrorY") ss >> mirrorY;
+            else if (param == "mirrorZ") ss >> mirrorZ;
+        }
+        builder.operate<OPMirror>(mirrorX, mirrorY, mirrorZ);
+    } },
     { "OPTranslate", [](SDFBuilder& builder, std::stringstream& ss) {
         Vec3 translation{ OPTranslate::DFLT_TRANSLATION };
 

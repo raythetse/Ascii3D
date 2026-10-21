@@ -52,7 +52,7 @@ BartScene::BartScene()
         .stepBack() // L1
 
         // Eye ridges
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.18, 0.35, 0.2 })
         .operate<OPRotate>(Vec3{ 1.0, 0.0, 0.5 }.getNormal(), 0.35)
         .combine<COMBAddSmooth, SDFTorus>(AXIS_Y, Vec2{ 0.20, 0.015 }, skinCol)(0.1) // L2
@@ -60,7 +60,7 @@ BartScene::BartScene()
 
         // Eyes
         .combine<COMBAdd, SDFObject>()() //L1
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.21, -0.05, -0.4 })
         .combine<COMBAdd, SDFSphere>(0.23)() // L2
 
@@ -71,7 +71,7 @@ BartScene::BartScene()
 
         //// Ears
         .combine<COMBAddSmooth, SDFObject>()(0.05) //L1
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.55, -0.35, 0.0 })
         .operate<OPRotate>(Vec3::Down, 0.12)
         .operate<OPRotate>(Vec3::Forward, 0.25)
@@ -120,7 +120,7 @@ BartScene::BartScene()
         // Left fingers
         .operate<OPTranslate>(Vec3{ 0.0, 0.12, 0.0 })
         .combine<COMBAddSmooth, SDFTaperedCapsule>(AXIS_Y, Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05) // L8
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.1, -0.02, 0.0 })
         .combine<COMBAddSmooth, SDFTaperedCapsule>(AXIS_Y, Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05) // L9
         .stepBack(3) // L6
@@ -155,7 +155,7 @@ BartScene::BartScene()
         // Right fingers
         .operate<OPTranslate>(Vec3{ 0.0, 0.12, 0.0 })
         .combine<COMBAddSmooth, SDFTaperedCapsule>(AXIS_Y, Vec2{ 0.035, 0.03 }, 0.14, skinCol)(0.05)
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.1, -0.02, 0.0 })
         .combine<COMBAddSmooth, SDFTaperedCapsule>(AXIS_Y, Vec2{ 0.035, 0.03 }, 0.125, skinCol)(0.05)
         .stepBack(3)
@@ -176,7 +176,7 @@ BartScene::BartScene()
         .stepBack() // L2
 
         // Pants
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.28, -1.4, 0.0 })
         .combine<COMBAddSmooth, SDFCylinder>(AXIS_Y, 0.3, 0.8, shortsCol)(0.1) // L3
         .operate<OPTranslate>(Vec3::Down * 0.55)
@@ -186,14 +186,14 @@ BartScene::BartScene()
 
         // Legs
         .combine<COMBAdd, SDFObject>()() // L1
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ 0.28, -3.0, 0.3 })
         .combine<COMBAdd, SDFCylinder>(AXIS_Y, 0.15, 1.0, skinCol)() // L2
         .stepBack(0) // L0
 
         // Shoes
         .combine<COMBAdd, SDFObject>()() // L1
-        .operate<OPMirrorX>()
+        .operate<OPMirror>()
         .operate<OPTranslate>(Vec3{ .28, -3.75, 0.35 })
         .combine<COMBAdd, SDFEllipsoid>(Vec3{ 0.275, 0.42, 0.7 }, shortsCol)() // L2
         .operate<OPTranslate>(Vec3::Backward * 0.2)

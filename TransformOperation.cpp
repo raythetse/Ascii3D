@@ -12,91 +12,35 @@ void TransformOperation::innerSerialize(std::vector<std::string>& strVec, size_t
 	strVec.push_back(ss.str());
 }
 
-void OPMirrorX::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+void OPMirror::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
-	p.x = abs(p.x);
+	if (m_mirrorX) p.x = abs(p.x);
+	if (m_mirrorY) p.y = abs(p.y);
+	if (m_mirrorZ) p.z = abs(p.z);
 	if (colorOut) *colorOut = colorIn;
 }
 
-void OPMirrorX::getShaderOpCalls(std::stringstream& ss, size_t level) const
+std::string OPMirror::getSwizzle() const
 {
-	ss << "\t// OPMirrorX //\n";
-	ss << "\tp" << level << ".x = abs(p" << level << ".x);\n\n";
+	std::string swizzle{ "." };
+	if (m_mirrorX) swizzle += 'x';
+	if (m_mirrorY) swizzle += 'y';
+	if (m_mirrorZ) swizzle += 'z';
+
+	return swizzle;
 }
 
-void OPMirrorY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
+void OPMirror::getShaderOpCalls(std::stringstream& ss, size_t level) const
 {
-	p.y = abs(p.y);
-	if (colorOut) *colorOut = colorIn;
+	ss << "\t// OPMirror //\n";
+	ss << "\tp" << level << getSwizzle() << " = abs(p" << level << getSwizzle() << "); \n\n";
 }
 
-void OPMirrorY::getShaderOpCalls(std::stringstream& ss, size_t level) const
+void OPMirror::innerInnerSerialize(std::stringstream& ss) const
 {
-	ss << "\t// OPMirrorY //\n";
-	ss << "\tp" << level << ".y = abs(p" << level << ".y);\n\n";
-}
-
-void OPMirrorZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p.z = abs(p.z);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPMirrorZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	ss << "\t// OPMirrorZ //\n";
-	ss << "\tp" << level << ".z = abs(p" << level << ".z);\n\n";
-}
-
-void OPMirrorXY::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p.x = abs(p.x);
-	p.y = abs(p.y);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPMirrorXY::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	ss << "\t// OPMirrorXY //\n";
-	ss << "\tp" << level << ".xy = abs(p" << level << ".xy);\n\n";
-}
-
-void OPMirrorXZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p.x = abs(p.x);
-	p.z = abs(p.z);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPMirrorXZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	ss << "\t// OPMirrorXZ //\n";
-	ss << "\tp" << level << ".xz = abs(p" << level << ".xz);\n\n";
-}
-
-void OPMirrorYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p.y = abs(p.y);
-	p.z = abs(p.z);
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPMirrorYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	ss << "\t// OPMirrorYZ //\n";
-	ss << "\tp" << level << ".yz = abs(p" << level << ".yz);\n\n";
-}
-
-void OPMirrorXYZ::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
-{
-	p = p.abs();
-	if (colorOut) *colorOut = colorIn;
-}
-
-void OPMirrorXYZ::getShaderOpCalls(std::stringstream& ss, size_t level) const
-{
-	ss << "\t// OPMirrorXYZ //\n";
-	ss << "\tp" << level << " = abs(p" << level << ");\n\n";
+	ss << " mirrorX " << m_mirrorX;
+	ss << " mirrorY " << m_mirrorY;
+	ss << " mirrorZ " << m_mirrorZ;
 }
 
 void OPTranslate::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const

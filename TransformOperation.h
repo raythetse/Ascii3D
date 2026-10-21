@@ -13,74 +13,21 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override {};
 };
 
-class OPMirrorX : public TransformOperation
+class OPMirror : public TransformOperation
 {
+private:
+	bool m_mirrorX{ true };
+	bool m_mirrorY{ true };
+	bool m_mirrorZ{ true };
+	std::string getSwizzle() const;
 protected:
 	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorX"; }
+	std::string getClassName() const { return "OPMirror"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
+	void innerInnerSerialize(std::stringstream& ss) const override;
 public:
-	OPMirrorX() {};
-};
-
-class OPMirrorY : public TransformOperation
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPMirrorY() {};
-};
-
-class OPMirrorZ : public TransformOperation
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPMirrorZ() {};
-};
-
-class OPMirrorXY : public TransformOperation
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorXY"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPMirrorXY() {};
-};
-
-class OPMirrorXZ : public TransformOperation
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorXZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPMirrorXZ() {};
-};
-
-class OPMirrorYZ : public TransformOperation
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorYZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPMirrorYZ() {};
-};
-
-class OPMirrorXYZ : public TransformOperation
-{
-protected:
-	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
-	std::string getClassName() const { return "OPMirrorXYZ"; }
-	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
-public:
-	OPMirrorXYZ() {};
+	OPMirror(bool mirrorX = true, bool mirrorY = false, bool mirrorZ = false)
+		: m_mirrorX(mirrorX), m_mirrorY(mirrorY), m_mirrorZ(mirrorZ) {};
 };
 
 class OPTranslate : public TransformOperation
@@ -95,7 +42,8 @@ protected:
 	void innerInnerSerialize(std::stringstream& ss) const override;
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
-	OPTranslate(Vec3 translation = DFLT_TRANSLATION) : m_translation(translation) {}
+	OPTranslate(Vec3 translation = DFLT_TRANSLATION)
+		: m_translation(translation) {}
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 

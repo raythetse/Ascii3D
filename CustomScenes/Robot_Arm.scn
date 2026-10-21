@@ -5,7 +5,7 @@ SDFObject color 1 1 1
 		OPTranslate translation 0 -2 0
 		COMBAdd onTime 1 offTime 0 phase 0
 		SDFObject color 1 1 1
-			OPMirrorXZ
+			OPMirror mirrorX 1 mirrorY 0 mirrorZ 1
 			COMBAdd onTime 1 offTime 0 phase 0
 			SDFObject color 1 1 1
 				OPTranslate translation 0.9 1.5 0.9
@@ -80,7 +80,7 @@ SDFObject color 1 1 1
 				SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFCylinder color 1 0.87 0 sideLength 1 radius 0.29 axis 2
-						OPMirrorZ
+						OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
 						OPTranslate translation 0 0 0.5
 						COMBAddSmooth smoothing 0.025 colorBlending 1 colorShifting 0
 						SDFCapsule color 1 0 0 radius 0.05 bodyLength 0.45 axis 0
@@ -116,7 +116,7 @@ SDFObject color 1 1 1
 				SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFCylinder color 1 0.87 0 sideLength 1 radius 0.29 axis 2
-						OPMirrorZ
+						OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
 						OPTranslate translation 0 0 0.5
 						COMBAddSmooth smoothing 0.025 colorBlending 1 colorShifting 0
 						SDFCapsule color 1 0 0 radius 0.05 bodyLength 0.45 axis 0
@@ -152,7 +152,7 @@ SDFObject color 1 1 1
 				SDFObject color 1 1 1
 					COMBAdd onTime 1 offTime 0 phase 0
 					SDFCylinder color 1 0.87 0 sideLength 0.625 radius 0.18 axis 2
-						OPMirrorZ
+						OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
 						OPTranslate translation 0 0 0.325
 						COMBAddSmooth smoothing 0.025 colorBlending 1 colorShifting 0
 						SDFCapsule color 1 0 0 radius 0.025 bodyLength 0.25 axis 0
@@ -178,13 +178,13 @@ SDFObject color 1 1 1
 						SDFCylinder color 0 0 1 sideLength 0.05 radius 0.15 axis 1
 							COMBAdd onTime 1 offTime 0 phase 0
 							SDFBox color 0.75 0.75 0.75 dimensions 0.2 0.2 0.05
-								OPMirrorX
+								OPMirror mirrorX 1 mirrorY 0 mirrorZ 0
 								OPTranslate translation 0.1 0.1 0
 								COMBAddSmooth smoothing 0.02 colorBlending 1 colorShifting 0
 								SDFCylinder color 0.75 0.75 0.75 sideLength 1 radius 0.025 axis 2
 									stepBack
 								stepBack
-							OPMirrorZ
+							OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
 							OPTranslate translation 0 0.425 0.4
 							ANLinearCycle3D propName translation forwardTime 0.25 0.25 0.25 delayTime1 2.75 2.75 2.75 backwardTime 0.25 0.25 0.25 delayTime2 2.75 2.75 2.75 phase 0.5 0.5 0.5 amplitude 0 0 0.07
 							COMBAdd onTime 1 offTime 0 phase 0
