@@ -2,6 +2,7 @@
 #include "Enumerations.h"
 #include "TransformOperation.h"
 
+// Domain operations are a very cheap way to repeat objects through domain repetitions (repeating objects throughout a grid or other similar construct)
 class DomainOperation : public TransformOperation
 {
 public:
@@ -16,8 +17,10 @@ protected:
 	DomainOperation(Vec3 spacing = DFLT_SPACING) : m_spacing(spacing) {};
 public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	virtual ~DomainOperation() = default;
 };
 
+// Repeat the object throughout a 3D grid.  Extents of repetition can be limited
 class OPRepeat : public DomainOperation
 {
 public:
@@ -34,7 +37,8 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
-class OPRepeatCircle : public DomainOperation // Naive operation, requires rotational symmetry or artifacting may occur
+// Repeat an object around a circle. Naive operation, requires rotational symmetry or artifacting may occur
+class OPRepeatCircle : public DomainOperation 
 {
 public:
 	static inline const size_t DFLT_REPETITIONS{ 10 };
@@ -51,6 +55,7 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// Repeat an object by mirroring over an axis
 class OPMirror : public TransformOperation
 {
 private:

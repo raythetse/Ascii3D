@@ -10,6 +10,8 @@
 
 class SDFScene;
 
+// Builds out a scene with a typical builder pattern allowing functions to be chained on a single extended statement.
+// Makes heavy templating use to keep code repetition to a minimum though this unfortunately can bog down VS Intellisense.
 class SDFBuilder {
     static const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, std::stringstream&)>> s_opMap;
 private:

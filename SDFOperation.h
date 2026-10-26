@@ -9,6 +9,7 @@
 #include "Vec2.h"
 #include "Vec3.h"
 
+// Operations for building an SDF scene tree. Operations can perform combinations, transformations, repetitions, and other functions.
 class SDFOperation
 {
 protected:
@@ -25,4 +26,5 @@ public:
 	virtual void resetAnimations();
 	virtual void serialize(std::vector<std::string>& strVec, size_t level) const;
 	virtual void getShaderCalls(std::stringstream& ss, size_t level) const;
+	virtual ~SDFOperation() = default;
 };

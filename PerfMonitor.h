@@ -5,6 +5,7 @@
 #include <vector>
 #include "Stopwatch.h"
 
+// Allows basic tracking of lamda execution times for performance monitoring
 class PerfMonitor
 {
 public:

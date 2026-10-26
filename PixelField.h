@@ -5,6 +5,7 @@
 #include "PixelSample.h"
 #include "VulkanManager.h"
 
+// Double buffered array of pixels samples from the scene to be rendered.
 class PixelField
 {
 private:

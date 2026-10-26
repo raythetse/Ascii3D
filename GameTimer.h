@@ -1,6 +1,7 @@
 #pragma once
 #include "Stopwatch.h"
 
+// The game timer allows for syncronized animations and regular rates of camera movement
 class GameTimer
 {
 private:

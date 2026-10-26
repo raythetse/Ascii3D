@@ -1,6 +1,7 @@
 #pragma once
 #include "SDFOperation.h"
 
+// Moves an object around in the scene
 class TransformOperation : public SDFOperation
 {
 protected:
@@ -11,8 +12,10 @@ protected:
 	TransformOperation() = default;
 public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override {};
+	virtual ~TransformOperation() = default;
 };
 
+// Moves the position of the object
 class OPTranslate : public TransformOperation
 {
 public:
@@ -30,6 +33,7 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// Rotates the objects
 class OPRotate : public TransformOperation
 {
 public:
@@ -51,6 +55,7 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// Creates a bouncing effect specifically for rolling a cube up and over its edges
 class OPCubeRollHeight : public TransformOperation
 {
 public:
@@ -74,6 +79,7 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// Controls a cube rolling around along axes.
 class OPCubeRoller : public TransformOperation
 {
 public:
@@ -97,6 +103,7 @@ public:
 	void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// Elongates and object along an axis by moving two halves in opposite directions.  For example, can turn a sphere into a capsule.
 class OPElongate : public TransformOperation
 {
 private:

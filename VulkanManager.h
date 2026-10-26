@@ -32,6 +32,7 @@ struct ShaderInputs {
     float pad2;
 };
 
+// Initializes Vulkan API and handles compiling and running the hardware marching shader.
 class VulkanManager {
 public:
     VulkanManager();

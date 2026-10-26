@@ -10,6 +10,7 @@
 template <typename T>
 concept AnimType =	std::same_as<T, double> || std::same_as<T, Vec2> || std::same_as<T, Vec3>;
 
+// Animations allow for dynamic adjustments of parameters for SDFObjects and Operations
 class Animation
 {
 private:
@@ -27,6 +28,7 @@ public:
 	void resetMods();
 	void serialize(std::vector<std::string>& strVec, size_t level);
 	bool getShaderCall(std::string& propName) const;
+	virtual ~Animation() = default;
 };
 
 template <AnimType T>
@@ -44,6 +46,7 @@ public:
 	void resetProperty() const override;
 };
 
+// Parameter must be reset for serialization
 template<AnimType T>
 inline void AnimatorTemplate<T>::resetProperty() const
 {
@@ -104,6 +107,7 @@ public:
 	using ANContinuous<Vec3>::ANContinuous;
 };
 
+// Sine wave based occilation
 template <AnimType T>
 class ANSmoothCycle : public AnimatorTemplate<T>
 {
@@ -157,7 +161,7 @@ public:
 	virtual void update() const override;
 };
 
-
+// Linear occilation - abrupt velocity changes, can stop and wait at extremes
 template <AnimType T>
 class ANLinearCycle : public AnimatorTemplate<T>
 {

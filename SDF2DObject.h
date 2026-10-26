@@ -4,7 +4,7 @@
 // The following SDFs are 2D shapes projected into 3D space with infite extrusion, limited extrusion, or revolution
 // SDFs are adapted from https://iquilezles.org/articles/distfunctions2d/
 // Extrusion/Revolution operations are adapted from https://iquilezles.org/articles/distfunctions/
-
+// The magnitude parameter has two possible functions: it is either the height of the extrusion or the radius of the revolution.
 class SDF2DObject : public SDFObject
 {
 public:
@@ -26,8 +26,10 @@ public:
 	void serializeInner(std::stringstream& ss) const override;
 	double signedDistanceInner(Vec3 p) const override;
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
+	virtual ~SDF2DObject() = default;
 };
 
+// Technically a parallelogram but typing that was ackward.  Defined by its width and height 
 class SDFRhombus : public SDF2DObject
 {
 public:
@@ -46,6 +48,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// Standard equilateral triangle
 class SDFEquilateralTriangle : public SDF2DObject
 {
 public:
@@ -66,6 +69,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// Standard Isosceles triangle
 class SDFIsoscelesTriangle : public SDF2DObject
 {
 public:
@@ -86,6 +90,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// Arbitrary triangle defined by three points.
 class SDFTriangle : public SDF2DObject
 {
 public:
@@ -110,6 +115,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// Part of a circle defined by its sweep (0.0 - 1.0 instead of degrees or radians)
 class SDFPieSlice : public SDF2DObject
 {
 public:
@@ -130,6 +136,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// A regular pentagon defined by the radius of the circle that circumscribes it
 class SDFPentagon : public SDF2DObject
 {
 public:
@@ -150,6 +157,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// A regular hexagon defined by the radius of the circle that circumscribes it
 class SDFHexagon : public SDF2DObject
 {
 public:
@@ -170,6 +178,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// A regular octagon defined by the radius of the circle that circumscribes it
 class SDFOctagon : public SDF2DObject
 {
 public:
@@ -190,6 +199,7 @@ public:
 	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
+// A regular star defined by the radius of the circle that circumscribes it and a ratio of its concavity
 class SDFStar : public SDF2DObject
 {
 public:

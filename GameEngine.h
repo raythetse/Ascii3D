@@ -11,6 +11,7 @@
 #include "SDFScene.h"
 #include "VulkanManager.h"
 
+// Manages initialization of scenes and the marching/rendering loops
 class GameEngine
 {
 private:

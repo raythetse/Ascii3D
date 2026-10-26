@@ -5,6 +5,7 @@
 #include "Vec2.h"
 #include "Vec3.h"
 
+// Axis objects can be initially alligned with the x, y, or z axis.
 class SDFAxisObject : public SDFObject
 {
 protected:
@@ -14,6 +15,7 @@ protected:
 	SDFAxisObject(Axis axis = AXIS_Y, Color color = Color::White) : SDFObject(color), m_axis(axis) {}
 };
 
+// Standard torus defined by its major and minor radii
 class SDFTorus : public SDFAxisObject
 {
 public:
@@ -31,6 +33,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A portion of a torus defined by its major and minor radii and the angle (0.0 - 1.0) that it sweeps out
 class SDFTorusSegment : public SDFAxisObject
 {
 public:
@@ -50,6 +53,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A cylinder with rounded off ends defined by its radius and body length
 class SDFCapsule : public SDFAxisObject
 {
 public:
@@ -69,6 +73,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A rounded-off cylinder with a tapering radius
 class SDFTaperedCapsule : public SDFAxisObject
 {
 public:
@@ -88,6 +93,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A non-rounded cylinder
 class SDFCylinder : public SDFAxisObject
 {
 public:
@@ -107,6 +113,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A non-rounded tapered cylinder
 class SDFTaperedCylinder : public SDFAxisObject
 {
 public:

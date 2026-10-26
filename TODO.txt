@@ -1,7 +1,4 @@
 Required:
-- ensure all property hooks exist/work
-- comment everything
-- consts wherever sensical
 - instructions for custom scene files
 - Add missing update vals for software rendering ops
 

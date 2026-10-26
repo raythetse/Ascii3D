@@ -52,6 +52,7 @@ SDFOperation* SDFObject::pushOperation(Args&&... args) {
 	return m_operations.back().get();
 }
 
+// A flat plane defined by a normal vector and an offset from the origin.
 class SDFPlane : public SDFObject
 {
 public:
@@ -71,6 +72,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A rectangular prism
 class SDFBox : public SDFObject
 {
 public:
@@ -88,6 +90,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A rectangular prism hollowed out with only its edges (with certain thickness) remaining
 class SDFBoxFrame : public SDFObject
 {
 public:
@@ -107,6 +110,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A sphere defined by its radius
 class SDFSphere : public SDFObject
 {
 public:
@@ -124,6 +128,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A regular octahedron (a pyramid mirrored over its base)
 class SDFCrystal : public SDFObject
 {
 public:
@@ -141,6 +146,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A cone defined by its height and the volume it sweeps out (0.5 is a 45 degree slope, 0.0 is infinitely thin)
 class SDFCone : public SDFObject
 {
 public:
@@ -160,6 +166,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// A portion of a sphere defined by its angle (sweep is 0.0-1.0 where 1.0 is a full sphere and 0.5 is a half-sphere)
 class SDFSolidAngle : public SDFObject
 {
 public:
@@ -179,6 +186,7 @@ public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
+// Ellipsoid defined by 3 independent radii.  This is technically not a perfect SDF and may cause artifacting in spefific scenarios.
 class SDFEllipsoid : public SDFObject
 {
 public:

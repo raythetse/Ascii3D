@@ -9,6 +9,7 @@
 
 class SDFBuilder;
 
+// A scene contains a root object for an object tree and the lights
 class SDFScene
 {
 private:

@@ -1,5 +1,7 @@
 #pragma once
 #include <chrono>
+
+// Timer for use with performance monitor
 class Stopwatch
 {
 private:

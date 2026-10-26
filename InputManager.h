@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include "Vec2.h"
 
+// Tracks keyboard and mouse input as well as window resized events while a scene loop is running.
 class InputManager
 {
 public:

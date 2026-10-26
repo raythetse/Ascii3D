@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "SDFScene.h"
 
+// Marches software rays through the scene to generate a PixelField for rendering
 class RayMarcher
 {
 private:

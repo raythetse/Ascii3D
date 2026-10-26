@@ -5,6 +5,7 @@
 #include "LightSource.h"
 #include "SDFObjectInc.h"
 
+// Builds out the structure and common functions of the hardward marching GLSL shader.
 class GLSLMarcher
 {
 public:

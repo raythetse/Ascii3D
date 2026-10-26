@@ -3,6 +3,7 @@
 #include <string>
 #include "Vec3.h"
 
+// A point light with power, ambient contribution, and color
 class LightSource
 {
 public:

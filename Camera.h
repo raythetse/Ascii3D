@@ -4,6 +4,7 @@
 #include <vector>
 #include <windows.h>
 
+// Handles the user viewpoint within the scene
 class Camera
 {
 private:

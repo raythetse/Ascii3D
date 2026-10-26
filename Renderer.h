@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include "PixelField.h"
+
+// Renders the PixelField to the console
 class Renderer
 {
 private:

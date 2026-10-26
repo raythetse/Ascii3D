@@ -3,6 +3,7 @@
 #include "SDFOperation.h"
 #include "SDFObjectInc.h"
 
+// Combinations allow two objects or object trees to be merged together in various ways.
 class CombinationOperation : public SDFOperation
 {
 private:
@@ -27,8 +28,10 @@ public:
 	virtual void resetAnimations() override;
 	void serialize(std::vector<std::string>& strVec, size_t level) const override;
 	void getShaderCalls(std::stringstream& ss, size_t level) const override;
+	virtual ~CombinationOperation() = default;
 };
 
+// Simple adding of objects together
 class COMBAdd : public CombinationOperation
 {
 protected:
@@ -41,6 +44,7 @@ public:
 		: CombinationOperation(std::move(combineObj), onTime, offTime, phase), m_overwriteColor(overwriteColor) {}
 };
 
+// Subtracting and object/group from the scene (cutting shaped holes in objects)
 class COMBSubtract : public CombinationOperation
 {
 protected:
@@ -51,6 +55,7 @@ public:
 	COMBSubtract(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
 };
 
+// Keeping only overlapped spaces between two objects/groups
 class COMBIntersect : public CombinationOperation
 {
 protected:
@@ -61,6 +66,7 @@ public:
 	COMBIntersect(std::unique_ptr<SDFObject> combineObj = nullptr) : CombinationOperation(std::move(combineObj)) {}
 };
 
+// Keeping only non-overlapped spaces betwen two objects/groups
 class COMBExclude : public CombinationOperation
 {
 private:
@@ -74,6 +80,7 @@ public:
 	COMBExclude(std::unique_ptr<SDFObject> combineObj = nullptr, ColorMode colorMode = COLORMODE_DOUBLE) : CombinationOperation(std::move(combineObj)), m_colorMode(colorMode) {}
 };
 
+// Smooth combinations perform the same operations as the previous combinations but with smoothy rounded edges/corners
 class SmoothCombination : public CombinationOperation
 {
 public:
