@@ -1,40 +1,15 @@
 SDFObject color 1 1 1
-	OPTranslate translation -2 1 0
-	COMBAdd onTime 1 offTime 0 phase 0
+	COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
 	SDFObject color 1 1 1
-		COMBAdd onTime 1 offTime 0 phase 0
-		SDFSphere color 0 0 1 radius 0.5
-			OPTranslate translation 0 1 0
-			COMBAddSmooth smoothing 0.5 colorBlending 1 colorShifting 0
-			ANSmoothCycle1D propName smoothing period 8 amplitude 0.5 phase 0
-			SDFSphere color 1 0 0 radius 0.5
-				stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFSphere color 1 1 1 radius 0.5
+			OPOnion magnitude 0.01
 			stepBack
 		stepBack
-	COMBAdd onTime 1 offTime 0 phase 0
-	SDFObject color 1 1 1
-		OPTranslate translation 2 0 0
-		COMBAdd onTime 1 offTime 0 phase 0
-		SDFSphere color 0 1 0 radius 0.5
-			OPTranslate translation 0 1 0
-			COMBAddSmooth smoothing 1 colorBlending 0 colorShifting 0
-			ANSmoothCycle1D propName colorBlending period 8 amplitude 5 phase 0
-			SDFSphere color 1 0.5 0 radius 0.5
-				stepBack
-			stepBack
-		stepBack
-	COMBAdd onTime 1 offTime 0 phase 0
-	SDFObject color 1 1 1
-		OPTranslate translation 4 0 0
-		COMBAdd onTime 1 offTime 0 phase 0
-		SDFSphere color 1 0.87 0 radius 0.5
-			OPTranslate translation 0 1 0
-			COMBAddSmooth smoothing 1 colorBlending 5 colorShifting 0
-			ANSmoothCycle1D propName colorShifting period 8 amplitude 1 phase 0
-			SDFSphere color 1 0 1 radius 0.5
-				stepBack
-			stepBack
+	OPTranslate translation 0 0 -0.5
+	COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 1
+	SDFBox color 1 0 0 dimensions 1 1 1
 		stepBack
 	stepBack
-LightSource position 8 10 -10 luminance 200 color 1 1 1 ambientPower 0.25
+LightSource position 8 8 -5 luminance 150 color 1 1 1 ambientPower 0.2
 end

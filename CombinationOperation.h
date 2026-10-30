@@ -12,6 +12,7 @@ private:
 	double m_phase{ 0.0 };
 	bool m_isOn{ true };
 protected:
+	bool m_overwriteColor{};
 	std::unique_ptr<SDFObject> m_combineObj{ nullptr };
 	void innerUpdate() override {}
 	virtual std::string getClassName() const = 0;
@@ -19,8 +20,8 @@ protected:
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const {};
 	virtual void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const;
 	virtual void combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const = 0;
-	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double onTime = 1.0, double offTime = 0.0, double phase = 0.0)
-		: m_combineObj(std::move(combineObj)), m_onTime(onTime), m_offTime(offTime), m_phase(phase) {}
+	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double onTime = 1.0, double offTime = 0.0, double phase = 0.0, bool overwriteColor = false)
+		: m_combineObj(std::move(combineObj)), m_onTime(onTime), m_offTime(offTime), m_phase(phase), m_overwriteColor(overwriteColor) {}
 public:
 	virtual void bindAnimation(std::unique_ptr<Animation> animation) override {};
 	void setCombineObject(std::unique_ptr<SDFObject> combineObj);
@@ -35,13 +36,12 @@ public:
 class COMBAdd : public CombinationOperation
 {
 protected:
-	bool m_overwriteColor{};
 	virtual void combine(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const override;
 	std::string getClassName() const override { return "COMBAdd"; }
 	void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	COMBAdd(std::unique_ptr<SDFObject> combineObj = nullptr, bool overwriteColor = false, double onTime = 1.0, double offTime = 0.0, double phase = 0.0)
-		: CombinationOperation(std::move(combineObj), onTime, offTime, phase), m_overwriteColor(overwriteColor) {}
+		: CombinationOperation(std::move(combineObj), onTime, offTime, phase, overwriteColor) {}
 };
 
 // Subtracting and object/group from the scene (cutting shaped holes in objects)

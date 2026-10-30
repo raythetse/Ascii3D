@@ -59,6 +59,7 @@ void CombinationOperation::innerSerialize(std::vector<std::string>& strVec, size
 	ss << " onTime " << m_onTime;
 	ss << " offTime " << m_offTime;
 	ss << " phase " << m_phase;
+	ss << " overwriteColor " << m_overwriteColor;
 	strVec.push_back(ss.str());
 }
 

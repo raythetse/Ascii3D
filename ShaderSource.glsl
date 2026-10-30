@@ -463,31 +463,25 @@ void sampleScene(in vec3 p0, in float maxDist, out float d0, out vec3 color0, in
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	color0 = pmVec30;
 
-if (isEnabled(2, 0.5, 0, time)) {
 	// SDFObject //
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p1 = p0;
 	d1 = FLOAT_MAX;
 	color1 = pmVec30;
-	// SDFSphere //
-	pmFloat0 = 0.500000;
-	d1 = sphere(p1, pmFloat0);
 
-
-	// OPTranslate //
-	pmVec30 = vec3(0.0000000, 1.0000000, 0.0000000);
-	p1 -= pmVec30; 
-
-if (isEnabled(1.435, 0.5, 0, time)) {
 	// SDFObject //
 	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
 	p2 = p1;
 	d2 = FLOAT_MAX;
 	color2 = pmVec30;
-	// SDFBox //
-	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
-	d2 = box(p2, pmVec30);
+	// SDFSphere //
+	pmFloat0 = 0.500000;
+	d2 = sphere(p2, pmFloat0);
 
+
+	// OPOnion //
+	pmFloat0 = 0.010000;
+	d2 = abs(d2) - pmFloat0; 
 
 	// COMBAdd //
 	if (d2 < d1) {
@@ -498,7 +492,6 @@ if (isEnabled(1.435, 0.5, 0, time)) {
 		color1 = color2; 
 	}
 
-}
 	// COMBAdd //
 	if (d1 < d0) {
 		d0 = d1;
@@ -508,7 +501,29 @@ if (isEnabled(1.435, 0.5, 0, time)) {
 		color0 = color1; 
 	}
 
-}
+	// OPTranslate //
+	pmVec30 = vec3(0.0000000, 0.0000000, -0.5000000);
+	p0 -= pmVec30; 
+
+	// SDFObject //
+	pmVec30 = vec3(1.0000000, 0.0000000, 0.0000000);
+	p1 = p0;
+	d1 = FLOAT_MAX;
+	color1 = pmVec30;
+	// SDFBox //
+	pmVec30 = vec3(1.0000000, 1.0000000, 1.0000000);
+	d1 = box(p1, pmVec30);
+
+
+	// COMBAdd //
+	if (d1 < d0) {
+		d0 = d1;
+		color0 = color1; 
+	}
+	else if (true) {
+		color0 = color1; 
+	}
+
 }
 
 
@@ -598,7 +613,7 @@ void main() {
 		pixels[outIndex].l = 0.0;
 
 		// SAMPLE LIGHT [0] //
-		rayDir = vec3(5.0000000, 5.0000000, -3.0000000) - p0;
+		rayDir = vec3(8.0000000, 8.0000000, -5.0000000) - p0;
 		lightDist = length(rayDir);
 		rayDir = normalize(rayDir);
 		rayLength = push.surfTolerance+0.001;
@@ -611,8 +626,8 @@ void main() {
 			rayLength += d0;
 			if (d0 < push.surfTolerance || rayLength >= lightDist) {
 				float attenuation = 1.0 / (lightDist * lightDist);
-				float directLight = (rayLength >= lightDist) ? attenuation * 100 : 0.0;
-				float ambLight = 100 * 0.2 * attenuation;
+				float directLight = (rayLength >= lightDist) ? attenuation * 150 : 0.0;
+				float ambLight = 150 * 0.2 * attenuation;
 				float dot = max(0.0, dot(rayDir, normal));
 				directLight *= dot;
 				float lightPower = directLight + ambLight;

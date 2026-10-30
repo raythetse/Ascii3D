@@ -276,7 +276,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.pushSDFObj<SDFCrystal>(edgeLength, color);
     } },
     { "SDFCylinder", [](SDFBuilder& builder, std::stringstream& ss) {
-        Color col{ Color::White };
+        Color color{ Color::White };
         double sideLength{ SDFCylinder::DFLT_SIDELENGTH };
         double radius{ SDFCylinder::DFLT_RADIUS };
         int axis{ Axis::AXIS_Y };
@@ -284,12 +284,12 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         while (ss.peek() != EOF) {
             std::string param;
             ss >> param;
-            if (param == "color") ss >> col;
+            if (param == "color") ss >> color;
             else if (param == "sideLength") ss >> sideLength;
             else if (param == "radius") ss >> radius;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFCylinder>(static_cast<Axis>(axis), radius, sideLength, col);
+        builder.pushSDFObj<SDFCylinder>(static_cast<Axis>(axis), radius, sideLength, color);
     } },
     { "SDFCone", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
