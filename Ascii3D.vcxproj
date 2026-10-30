@@ -193,7 +193,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SDFBuilder.cpp" />
     <ClCompile Include="SDFScene.cpp" />
-    <ClCompile Include="Soptwatch.cpp" />
+    <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TransformOperation.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
@@ -254,6 +254,7 @@
     <ClInclude Include="WalkingCubesScene.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="HOWTO.txt" />
     <Text Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

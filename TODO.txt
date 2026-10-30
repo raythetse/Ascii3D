@@ -12,6 +12,7 @@ Optional:
 - error handling on file loading
 - improve ambient light, occlusion, and shadow functions
 - investigate rhombus axis issue
+- change axis solution for repeat circle?
 
 Scene Ideas
 - Seasonal themes outdoor scenes

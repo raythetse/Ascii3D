@@ -177,7 +177,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "color") ss >> color;
             else if (param == "offset") ss >> offset;
         }
-        builder.pushSDFObj<SDFPlane>(normal, offset, color);
+        builder.pushSDFObj<SDFPlane>(normal.getNormal(), offset, color);
     } },
     { "SDFBox", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -589,7 +589,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "axis") ss >> axis;
             else if (param == "rotations") ss >> rotations;
         }
-        builder.operate<OPRotate>(axis, rotations);
+        builder.operate<OPRotate>(axis.getNormal(), rotations);
     } },
     { "OPCubeRoller", [](SDFBuilder& builder, std::stringstream& ss) {
         std::vector<Vec3> axes{ OPCubeRoller::DFLT_AXES };
@@ -606,7 +606,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
                 for (size_t i{}; i < numAxes; ++i) {
                     Vec3 axis{};
                     ss >> axis.x >> axis.y >> axis.z;
-                    axes.push_back(axis);
+                    axes.push_back(axis.getNormal());
                 }
             }
             else if (param == "quarterTurnTime") ss >> quarterTurnTime;
@@ -697,8 +697,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     // Property Modifiers
     { "ANContinuous1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        double amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
-        double phase{ ANSmoothCycle1D::DFLT_PHASE };
+        double amplitude{ ANContinuous1D::DFLT_AMPLITUDE };
+        double phase{ ANContinuous1D::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -711,8 +711,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "ANContinuous2D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec2 amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
-        Vec2 phase{ ANSmoothCycle1D::DFLT_PHASE };
+        Vec2 amplitude{ ANContinuous2D::DFLT_AMPLITUDE };
+        Vec2 phase{ ANContinuous2D::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;
@@ -725,8 +725,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
     } },
     { "ANContinuous3D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
-        Vec3 amplitude{ ANSmoothCycle1D::DFLT_AMPLITUDE };
-        Vec3 phase{ ANSmoothCycle1D::DFLT_PHASE };
+        Vec3 amplitude{ ANContinuous3D::DFLT_AMPLITUDE };
+        Vec3 phase{ ANContinuous3D::DFLT_PHASE };
 
         while (ss.peek() != EOF) {
             std::string param;

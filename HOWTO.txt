@@ -1,0 +1,500 @@
+ASCII Ray-Marcher - Ray Young
+
+- How to build a custom scene -
+
+A scene is build via a collection of objects, operations, and animations.
+Objects are added to the scene with combination operations, and manipulated
+with various transform, domain, and resurface operations.  The parameters
+of scene objects and operations can be altered over time via animations
+that bind the those parameters.
+
+Each scene should have a base SDFObject, one or more shapes, any number of
+operations, any number of animations, and one or more light sources.
+The scene builder will add a base object to your scene on loading a .scn
+file regardless of whether or not you declared one but failing to do so on
+the first line may result in unintended results, including the possible
+failure to load the file.
+
+[WIP NOTE: The current version of this application does not yet have robust
+error handling and will likely crash when loading ill-formed .scn files.]
+
+Here is an example of a very simple .scn file:
+
+SDFObject
+	COMBAdd
+	SDFSphere
+LightSource
+
+The first line acknowledges that we have an SDFObject at the root of our
+scene tree. More on empty SDFObjects later. The second line says we want
+to add an SDF object to our scene next. The following line says we want that
+object to be an SDFSphere. The final line declares a light source for the
+scene.
+
+When you load this scene you will see a white sphere lit by a single white
+light. You do not technically have to define a light source, but neglecting
+to do so  will result in incorrect rendering.  If fact you can load an empty
+scene file but naturally you will be rewarded with an empty scene.
+
+Next we will add an operation to our scene to manipulate the sphere's position.
+A raymarching scene operates in a stack pattern.  When we add an object to the
+stack it inherits all operations beneath it in a stack. Therefore in order to
+operate on our sphere we must add the operation before the sphere is added.
+
+SDFObject
+	OPTranslate
+	COMBAdd
+	SDFSphere
+LightSource
+
+Loading this .scn file will produce much the same results as the previous
+version but the sphere will appear slightly higher that before. That's 
+useful, but it is more useful to be able to move the sphere in more directions
+than just up. We can do this by added the "translation" parameter to the
+SDFSphere line followed by values for the translation.
+
+SDFObject
+	OPTranslate translation 2.0 2.0 -1.0
+	COMBAdd
+	SDFSphere
+LightSource
+
+Load the file to see the sphere has been moved up higher than before, and has
+also been moved to the right and is further from the viewpoint. Note that
+the loader does not require you to explicitly use floating point number
+formats for floating point values so the following .scn file works just as well.
+
+SDFObject
+	OPTranslate translation 2 2 -1
+	COMBAdd
+	SDFSphere
+LightSource
+
+Let's add another object to our scene. There are several objects you can add
+and you can find specifications for each object as well as operations and
+animations further down in this document. Notice that a combination is always
+followed by an SDF object of some kind. This is, afterall, the point of a
+combination - to combine objects withing the scene in various ways.
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFSphere
+		COMBAdd
+		SDFBox
+LightSource
+
+Load this .scn file to see a cube added to the scene. But where did our sphere
+go? Here we can see the effects of using operations in a stack. The translate
+operation was added before both the sphere AND the box were add and it therefore
+applies to both of them. You may have guessed that the box would have been added
+in the default position and the sphere would appear directly above is as the
+translate operation moved it up 1 unit, but both objects are in fact moved up
+together as one, so the box is directly overlapping the sphere and hiding it.
+We can fix this by using the stepBack keyword to move back down the stack:
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFSphere
+		stepBack
+	COMBAdd
+	SDFBox
+LightSource
+
+Running this produces that same result. Understand that every time we add an
+object to the scene we add it to the stack. The original object is at the base
+level, we then added a sphere, and next a box. Note the indentation used to
+illustrate this. Indentation is not required to create a valid .scn file but
+it is very useful to keep track of where you are in the stack while defining it.
+Note that stepBack is used at stack level 3 (SDFObject is level 0) and the 
+tranlate operation was declared at level 1. So we need to stepBack further in
+order to pop the translate operation off the stack.
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFSphere
+		stepBack
+	stepBack
+COMBAdd
+SDFBox
+LightSource
+
+This also doesn't work. The reason is that we have now stepped back to the
+same level as our base object. This is not allowed as everything in the scene
+must stem from one place and that place is the root SDFObject. The way to solve
+this is to always use empty SDFObjects as levels to stepBack onto when you want
+to move objects or groups of objects around independently (without inheriting
+previous operations). Let's try this .scn file.
+
+SDFObject
+	COMBAdd
+	SDFObject
+		OPTranslate translation 0 1 0
+		COMBAdd
+		SDFSphere
+			stepBack
+		stepBack
+	COMBAdd
+	SDFObject
+		COMBAdd
+		SDFBox
+LightSource
+
+Finally, loading this .scn file will give us a box at the bottom with our
+sphere perched on top! Note that the add operation for the SDFBox still happens
+at the same level as the translate operation, but since we moved back down the
+stack below the level of the operation, it is gone from the stack and no longer
+applies. It may seem excessive or feel inconvenient to add an extra empty
+SDFObject each time we add a visible object but we don't have to! There is
+another way we can achieve the same result:
+
+SDFObject
+	COMBAdd
+	SDFBox
+		OPTranslate translation 0 1 0
+		COMBAdd
+		SDFSphere
+LightSource
+
+This .scn file shows how order of operations and applying our operations at
+the appropriate point in the stack can simplify our approach. Note that changing
+the translation parameter will only move the sphere. Run the file to get the
+same visual results as the previous example.
+
+Different objects have there own parameters that can adjust their shape and
+size. Let's add some parameters to our sphere and box:
+
+SDFObject
+	COMBAdd
+	SDFBox dimensions 2 1 0.5 color 0 0 1.0
+		OPTranslate translation 0 1 0
+		COMBAdd
+		SDFSphere radius 0.75 color 1.0 0 0
+LightSource
+
+Now when we load the scene the box is twice as wide and the sphere is 50%
+wider as well. And of course the shapes are now rendered with the defined
+colors. There are many types of objects we can render each with thier own sets
+of parameters. Again, you can find them all listed out further down in this
+file.
+
+There are other kinds of combinations we can use. For example, lets try a
+smooth add operation:
+
+SDFObject
+	COMBAdd
+	SDFBox dimensions 2 1 0.5 color 0 0 1.0
+		OPTranslate translation 0 1 0
+		COMBAddSmooth
+		SDFSphere radius 0.75 color 1.0 0 0
+LightSource
+
+See how our shapes are now physically blended together both with surface an color
+smoothing. Let's try a subtraction:
+
+SDFObject
+	COMBAdd
+	SDFBox dimensions 2 1 0.5 color 0 0 1.0
+		OPTranslate translation 0 1 0
+		COMBSubtract
+		SDFSphere radius 0.75 color 1.0 0 0
+LightSource
+
+Now our sphere has disappeared... but it has left an impression where it used
+to overlap the box! This is a very useful way to create complex custom shapes.
+Next lets look at the intersection combination:
+
+SDFObject
+	COMBAdd
+	SDFBox dimensions 2 1 0.5 color 0 0 1.0
+		OPTranslate translation 0 1 0
+		COMBIntersect
+		SDFSphere radius 0.75 color 1.0 0 0
+LightSource
+
+Now we are left with just the piece where the two shapes overlapped! Again, 
+very useful for creating more complex and interesting shapes! There are also
+smooth versions of the subtract and intersect combinations for you to try.
+
+Let's try rotating an object. We'll use a new object, the torus, for this
+example:
+
+SDFObject
+	COMBAdd
+	SDFTorus radii 1.5 0.25
+LightSource
+
+Now let's rotate it with an operation:
+
+SDFObject
+	OPRotate axis 0 1 0 rotations 0.125
+	COMBAdd
+	SDFTorus radii 1.5 0.25
+LightSource
+
+Ok, there is our torus... but it's not rotating? Actually, it is rotating,
+but it is rotating along the vertical y axis so it just looks like it is not
+rotating. There are two ways we can change this - we can change the initial
+orientation of the torus or we can change the axis of rotation for our
+animation. First, let's reorientate our torus:
+
+SDFObject
+	COMBAdd
+	SDFTorus radii 1.5 0.25 axis 0
+LightSource
+
+Now our torus is orientated along the x axis.  Values for the axis parameter
+are [0=x, 1=y, 2=z] with 1 (y) being the default value. Parameters will all
+default to a predetermined value if you do not provide one, so keep this in
+mind if things are not working as expected. Now lets try with the rotation
+operation again but we will use a different axis:
+
+SDFObject
+	OPRotate axis 0.5 1 .875 rotations 0.125
+	COMBAdd
+	SDFTorus radii 1.5 0.25
+LightSource
+
+Now we have a new orientation for our torus entirely. Note that it is
+good practice to use normalized vectors for rotational axes, but this
+application will automatically normalize the axis on loading here. Otherwise
+the excess magnitude of your vector would affect the number of rotations.
+
+Now lets animate the rotation to add some life to our scene!
+
+SDFObject
+	OPRotate axis 0.5 1 .875 rotations 0.125
+	ANContinuous1D propName rotations
+	COMBAdd
+	SDFTorus radii 1.5 0.25
+LightSource
+
+The ANContinuous1D animation binds to a single-value property (in this case
+the "rotations" property) and then continually adds to it while the scene
+runs. Animations always attempt to bind to the previous operation or object
+declared and must provide a propName that is valid for the operation or
+object. If it fails to do so, it will simply not be added to the scene.
+Multiple animations can be applied to the same operation or object, but if
+they both bind to the same property then the latter animation will override
+the former meaning the former animation will still have no effect while
+still performing its calculations, so be sure not to bind to the same
+property.
+
+Most properties that can be provided upon declaration of an object or
+operation can be animated. There are 3 types of animations - continuous,
+linear cycle, and smooth cycle - each with a version for 1D, 2D, and 3D.
+Note that at this time animations cannot be applied to light sources.
+
+Let's look at an example of applying animations to combination operations
+and object parameters.  First we'll make a scene without :
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFBoxFrame dimensions 2 1 1 edgeThickness 0.25
+		OPTranslate translation 0 1 0
+		COMBAddSmooth
+		SDFSphere radius 0.75
+LightSource
+
+Now lets add an animation that adjusts the smoothing factor of the smooth 
+add operation:
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFBoxFrame dimensions 2 1 1 edgeThickness 0.25
+		OPTranslate translation 0 1 0
+		COMBAddSmooth
+		ANSmoothCycle1D propName smoothing amplitude 0.5 period 4
+		SDFSphere radius 0.75
+LightSource
+
+The smoothing factor of the combination function will now animate. Here,
+we are using a smooth cycle animation function which uses a sine function.
+Note that earlier we said that a combination is always followed by an
+object. In this case, however, the object does not follow as the very next
+entry but rather follows after any animations that apply to the combination
+itself. There still must be an object that follows before further
+operations can be added otherwise uncertain behaviour will occur,
+possibly including crashes.
+
+Now lets animate some properties on our box frame object:
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFBoxFrame dimensions 2 1 1 edgeThickness 0.25
+		ANLinearCycle3D propName dimensions amplitude 0.25 0.3 0.35
+		ANSmoothCycle1D propName edgeThickness amplitude 0.1 period 2.31
+		OPTranslate translation 0 1 0
+		COMBAddSmooth
+		ANSmoothCycle1D propName smoothing amplitude 0.5 period 4
+		SDFSphere radius 0.75
+LightSource
+
+Here we see that we can animate multiple properties on an object at the
+same time. We also see that we use a 3D animation to animate a 3D property
+such as a box frame's dimensions. Each dimension of the property can be
+animated independently with the same animation.
+
+Next we will see how we can repeat the same object multiple times in a scene.
+
+SDFObject
+	OPRepeat limits 2 0 1
+	COMBAdd
+	SDFSphere
+LightSource
+
+This single repeat operation takes a single sphere object and repeats it 
+fifteen times. The limits determine how many times in each on each axis
+to repeat the sphere. 0 means no additional repeat, while other numbers
+mean to repeat the object that many times in BOTH directions along that
+axis. It is important to note that the mathematics involved in domain
+repetition requires objects being repeated to be centred and symmetrical,
+otherwise rendering errors may occur, though in some cases they may be
+minor enough to not be noticeable. Your mileage may vary.
+
+We can also repeat objects in a circle:
+
+SDFObject
+	OPRepeatCircle axis 2 repetitions 5
+	OPTranslate translation 2.0
+	COMBAdd
+	SDFSphere
+LightSource
+
+Here we can repeat around whichever axis we please and however many times
+we please. If we attempt to repeat a large number of times, the objects
+will overlap since they will be wider than the slice they occupy:
+
+SDFObject
+	OPRepeatCircle axis 2 repetitions 20
+	OPTranslate translation 2.0
+	COMBAdd
+	SDFSphere
+LightSource
+
+We should also note the use of the translate operation here. If we do not
+first translate before adding our object, the repetition will happen
+around the centre of the sphere meaning we will just be repeating the
+sphere in its same position. Since the sphere has rotational symmetry
+it will come out just looking like the same sphere. If we use a different
+object we can see what happens when we don't translate:
+
+SDFObject
+	OPRepeatCircle axis 2 repetitions 3
+	COMBAdd
+	SDFTorus axis 2
+LightSource
+
+If you are keen on spacial operations you may think we wouldn't need to
+change the axis on our torus from y to z for this to work, but the
+repeat operation actually reorientates the repeated objects to its target
+axis before the repeat so this must be taken into account.
+
+There is one operation and one combination that actually operate on the
+inside of objects. The results of these operations can only be seen if
+we follow these up with subtraction operations to reveal the inside.
+Let's look at the onion operation as an example.
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFObject
+		COMBAdd
+		SDFSphere
+			OPOnion
+			stepBack
+		stepBack
+	OPTranslate translation 0 0 -0.5
+	COMBSubtract
+	SDFBox dimensions 2 2 1
+LightSource
+
+See that our sphere is now hollowed out. We could not have known this
+without subtracting a part of the sphere to see inside. We can repeat
+this operation multiple times:
+
+SDFObject
+	OPTranslate translation 0 1 0
+	COMBAdd
+	SDFObject
+		COMBAdd
+		SDFSphere
+			OPOnion magnitude 0.25
+			OPOnion magnitude 0.1
+			stepBack
+		stepBack
+	OPTranslate translation 0 0 -0.5
+	COMBSubtract
+	SDFBox dimensions 2 2 1
+LightSource
+
+We now get concentric nested spheres. The exlude combination also
+requires a subtraction to reveal its interior effects.
+
+Lets switch back to animations. It is useful to have an animation that
+is somewhat less consistent. Let's take a look at the linear animations.
+
+SDFObject
+	OPTranslate 0 1 0
+	ANLinearCycle3D propName translation amplitude 1 0.5 0.5 forwardTime 0 2.471 3.14 delayTime1 1 1.2 1.35 backwardTime 3.04 0 2.776 delayTime2 1.34 1.15 0.956
+	COMBAdd
+	SDFSphere
+LightSource
+
+There is a lot more going on here with so many parameters. So what does
+each do? We are defining 3 cyclical paths our object will move, one for
+each axis. Lets just pretend we are only using one axis and just look
+at the first of each value, the x axis value. First, the amplitude
+tells the animation how far to move the object in each direction. The
+forwardTime parameter tells the animation how long it takes the object
+to move forward along the entire translation. The delayTime1 parameter
+tells the animation to hold position for that length of time once it
+reaches the forward position. We then do the same thing in the other
+direction with the backwardTime and delayTime 2 parameters. If this is
+not clear, try changing all the y and z parameters to 0 so you can
+watch what happens on just the x axis.
+
+SDFObject
+	OPTranslate 0 1 0
+	ANLinearCycle3D propName translation amplitude 1 0 0 forwardTime 0 0 0 delayTime1 1 0 0 backwardTime 3.04 0 0 delayTime2 1.34 0 0
+	COMBAdd
+	SDFSphere
+LightSource
+
+Note that a forwardTime or backwardTime of 0 is valid and this will
+cause the object to jump instantly across the whole translation.
+
+There is one combination that has its own timed action without using
+an animation. Let's take another look at the add combination.
+
+SDFObject
+	COMBAdd onTime 2.0 offTime 0.5
+	SDFSphere
+		OPTranslate translation 0 1 0
+		COMBAdd onTime 1.435 offTime 0.5
+		SDFBox
+LightSource
+
+These parameters allow us to turn an object on and off according
+to a schedule. Note that objects further up the stack will also be
+turned off, but those higher objects can also be turned off
+independently.
+
+Hopefully this lessons will help you to begin building out your own
+fun scenes. Now we will list all objects, combinations, operations,
+and animations you can use to build your scenes including all their
+parameters (properties). Remember that all parameters (with the exception
+of the propName for animations) has a default value and does not need
+to be explicitly defined for ever entry. Parameters can also be listen
+in any order as long as they are always followed the the appropriate
+number of valid values.
+
+- SDF Objects - 
+
+[SDFObject - a blank object that acts as a new layer pushed onto the stack.]
+SDFObject

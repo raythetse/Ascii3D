@@ -1,0 +1,7 @@
+SDFObject
+	COMBAdd onTime 2.0 offTime 0.5
+	SDFSphere
+		OPTranslate translation 0 1 0
+		COMBAdd onTime 1.435 offTime 0.5
+		SDFBox
+LightSource
