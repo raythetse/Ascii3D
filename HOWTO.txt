@@ -631,10 +631,12 @@ In the case of revolve, the following parameters can be used:
 	revolveRotations - the number of times to rotate the shape before it is revolved
 	revolveRotateOffset - the offset of the center of rotation for the revolveRotations parameter
 
-
 SDFRhombus - a 2D rhombus that can be extruded or revolved into a ring
 eg. SDFRhombus color 1 1 0.5 dimensions 1.0 1.5 operation 0 magnitude 1.0
 	dimensions - width and length of the rhombus
+
+SDFTriangle - a triangle with arbitrary 2D vertices defined by point1, point2, and point3
+eg. SDFTriangle color 0 1 1 point1 -1 0 point2 0 1 point3 0.5 -1.5 operation 0 magnitude 0.75
 
 SDFEquilateralTriangle - A triangle with sides of equal length
 eg. SDFEquilateralTriangle color 0.5 0.5 0.0 base 2.0 operation 1 magnitude 2.5 revolveRotations 0.0 revolveRotateOffset
@@ -656,3 +658,70 @@ eg. SDFPentagon color 1 0 1 radius 2.74 operation 0 magnitude 3.0
 SDFHexagon - a regular hexagon
 eg. SDFHexagon color 0 0 0.25 radius 1.75 operation 0 magnitude 1.0
 	radius - the radius of the circle that touches all the points of the hexagon
+
+SDFOctagon - a regular octagon
+eg. SDFOctagon color 0 0 0.25 radius 1.75 operation 0 magnitude 1.0
+	radius - the radius of the circle that touches all the points of the octagon
+
+SDFStar - a star with an arbitrary number of points
+eg. SDFStar color 1 1 0 radius 2.0 numPoints 5 ratio 0.5 operation 0 magnitude 0.5
+	radius - the radius of the circle that touches all the points of the star
+	numPoints - the number of points of the star
+	ratio - defines the distance of the inner corners relative to the radius
+
+
+- OPERATIONS -
+
+OPTranslate - moves objects by a vector
+eg. OPTranslate translation 1 2.4 5.2
+	translation - the vector to move the object
+
+OPRotate - rotate an object around a vector axis. The vector will be
+automatically normalized.
+eg. OPRotate axis 1 0 0 rotations 0.75
+	axis - the vector to rotate around
+	rotations - the number of full rotations (1.0 = one full rotation)
+
+OPElongate - Elongates objects along an axis
+eg. OPElongate axis 1 length 1.0 offset 0.25
+	axis - the axis (0=x, 1=y, 2=z) to elongate on
+	offset - a distance along the axis that is the center of the elongation
+
+OPRoundOff - rounds-off objects by inflating them. Note that this does not work
+well with subtractions. Use a smooth subtraction if experiencing edges that do
+not round-off.
+eg. OPRoundOff magnitude 0.05
+	magnitude - the amount to inflate the objects
+
+OPOnion - Hollows out an object leaving a shell of defined thickness. Requires
+a subsequent subtraction combination to reveal the inside.
+eg. OPOnion magnitude 0.1
+	magnitude - the thickness of the shell.
+
+OPInsideOut - Turns solid space to empty space and vice-versa
+eg. OPInsideOut
+
+OPRepeat - Repeats the object a certain number of times in each direction along
+the x/y/z axes. Note that non-symmetrical objects may result in artefacting.
+eg. OPRepeat spacing 2 1 1 limits 1 1 0
+	spacing - the size of each repeating cell
+	limits - how many times to repeat each object in each direction
+
+OPRepeatCircle - Repeats the object in a circular pattern. Use OPTranslate
+following OPRepeatCircle to control the radius of the circle.
+eg. OPRepeatCircle axis 2 repetitions 8
+	axis - the axis (0=x, 1=y, 2=z) to revolve around.
+	repetitions - the number times the object will be repeated
+
+OPMirror - Mirrors the object over the selected axes. By default it mirrors over
+just the x axis. 1=true, 0=false.
+eg. OPMirror mirrorX 1 mirrorY 0 mirrorZ 1
+	mirrorX - whether or not to mirror over the x axis (yz plane)
+	mirrorX - whether or not to mirror over the y axis (xz plane)
+	mirrorX - whether or not to mirror over the z axis (xy plane)
+
+- ANIMATIONS - 
+
+There are 3 main types of animations - continuous, SmoothCycle, and LinearCycle.
+Each has a 1D 2D and 3D variant.
+	

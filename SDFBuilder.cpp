@@ -694,7 +694,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.operate<OPMirror>(mirrorX, mirrorY, mirrorZ);
     } },
 
-    // Property Modifiers
+    // Animations
     { "ANContinuous1D", [](SDFBuilder& builder, std::stringstream& ss) {
         std::string propName;
         double amplitude{ ANContinuous1D::DFLT_AMPLITUDE };
