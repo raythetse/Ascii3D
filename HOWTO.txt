@@ -717,11 +717,53 @@ OPMirror - Mirrors the object over the selected axes. By default it mirrors over
 just the x axis. 1=true, 0=false.
 eg. OPMirror mirrorX 1 mirrorY 0 mirrorZ 1
 	mirrorX - whether or not to mirror over the x axis (yz plane)
-	mirrorX - whether or not to mirror over the y axis (xz plane)
-	mirrorX - whether or not to mirror over the z axis (xy plane)
+	mirrorY - whether or not to mirror over the y axis (xz plane)
+	mirrorZ - whether or not to mirror over the z axis (xy plane)
 
 - ANIMATIONS - 
 
 There are 3 main types of animations - continuous, SmoothCycle, and LinearCycle.
-Each has a 1D 2D and 3D variant.
+Each has a 1D, 2D, and 3D variant. Each must reference a valid property name of
+the object or operation it is animating. These property names are the same as
+the parameter names for each object an operation. Though in some instances, a
+mismatch of dimensions might still run, some will not. It is important to use
+the animation variant that matches the dimensions of the property you are
+animating. Use the propName parameter to reference the property you wish to
+animate.
 	
+ABContinuous - continuously increases the property value by the amplitude
+
+ANContinuous1D propName rotations amplitude 1.0 phase 0.5
+ANContinuous2D propName radii amplitude 0.45 0.22 phase 1.0 1.25
+ANContinuous3D propName translation amplitude 0.25 0.5 0.75 phase 0.0 1.0 2.0
+	amplitude - the amount to increase the property per second
+	phase - the amount of time into the animation to start
+
+ANSmoothCycle - smoothly oscillate the property value with a sine function
+
+ANSmoothCycle1D propName rotations period 4.0 amplitude 2.0 phase 0.25
+ANSmoothCycle2D propName radii period 2.0 4.0 amplitude 1.0 2.0 phase 1.75 0.25
+ANSmoothCycle3D propName translation period 2.0 4.0 5.5 amplitude 0.25 1.0 2.0 phase 1.75 0.25 1.25
+	period - the amount of time to complete one oscillation cycle
+	amplitude - the maximum distance (both positive and negative) from the starting value
+	phase - the amount of time into the animation to start
+
+ANLinearCycle - animate the values with constant rates over distinct phases.
+The animation is split into a forward motion, a delay, a return motion, and a
+second delay. Each phase has its own duration. The cycle time is the sum of all
+four phases. A phase time of 0 means the object will instantly snap to the opposite
+end of the animation.
+
+ANLinearCycle1D propName rotations forwardTime 1.0 delayTime1 0.5 backwardTime 0.0 delayTime2 1.0 amplitude 2.0 phase 0.5
+ANLinearCycle2D propName radii forwardTime 1.0 2.0 delayTime1 0.5 0.25 backwardTime 0.0 0.15 delayTime2 1.0 2.0 amplitude 2.0 2.0 phase 0.5 1.5
+ANLinearCycle3D propName translation forwardTime 1.0 1.0 0.5 delayTime1 0.5 0.0 0.5 backwardTime 0.0 5.0 1.25 delayTime2 1.0 1.0 1.0 amplitude 2.0 2.1 2.2 phase 0.5 0.5 0.0
+	forwardTime - the time to animate the forward phase
+	delayTime1 - the time to hold the value steady at the end of the forward phase
+	backwardTime - the time to animate the backward phase
+	delayTime2 - the time to hold the value steady at the end of the backward phase
+	amplitude - the maximum distance (both positive and negative) from the starting value
+	phase - the amount of time into the animation to start
+
+LightSource - A light source to light the scene. These are not a part of the stack and can be
+defined at any point in the .scn file except for the first line, though it is best to define
+them all together at the end of the file. At this time, light sources cannot be animated
