@@ -10,8 +10,15 @@ that bind the those parameters.
 
 The scene automatically has a camera at position x=0.0, y=1.8, z=-5.0 and
 pointing directly forward along the z axis (+z). The units should be
-considered to be in meters. The scene will be drawn to a maximum distance
-of 100 meters from the current camera position.
+considered to be in meters. This gives a decent approximation of a human
+point-of-view with a ground plane at the origin, though the user can move
+the camera freely while the scene runs. There is no object collision.
+
+The scene will be drawn to a maximum distance of 100 meters from the
+current camera position. The camera viewport is dynamic based on the size
+of your terminal window and the dimensions of your current font. In most
+cases the horizontal field of view in a default terminal window should be
+approximately 90 degrees.
 
 Each scene should have a base SDFObject, one or more shapes, any number of
 operations, any number of animations, and one or more light sources.
@@ -558,7 +565,8 @@ SDFObject - empty objects, use to add layer to stack without adding/subtracting 
 eg. SDFObject color 1 0.5 0.25
 	color - rgb color ranging 0.0-1.0 on each channel
 
-SDFPlane - ground plane with normal vector and offset
+SDFPlane - ground plane with normal vector and offset. A ground plane with normal 0 1 0
+and offset 0 should be a natural ground plane for the initial camera position.
 eg SDFPlane color 1 0 0 normal 0 1 0 offset -1.5
 	normal - vector 3 defining the up vector of the plane
 	offset - offsets the plane along the normal vector from the origin point
