@@ -2,18 +2,27 @@ ASCII Ray-Marcher - Ray Young
 
 - How to build a custom scene -
 
-A scene is build via a collection of objects, operations, and animations.
+A scene is built via a collection of objects, operations, and animations.
 Objects are added to the scene with combination operations, and manipulated
 with various transform, domain, and resurface operations.  The parameters
 of scene objects and operations can be altered over time via animations
 that bind the those parameters.
+
+The scene automatically has a camera at position x=0.0, y=1.8, z=-5.0 and
+pointing directly forward along the z axis (+z). The units should be
+considered to be in meters. The scene will be drawn to a maximum distance
+of 100 meters from the current camera position.
 
 Each scene should have a base SDFObject, one or more shapes, any number of
 operations, any number of animations, and one or more light sources.
 The scene builder will add a base object to your scene on loading a .scn
 file regardless of whether or not you declared one but failing to do so on
 the first line may result in unintended results, including the possible
-failure to load the file.
+failure to load the file. All keywords are case sensitive. If you wish to
+add comments, it is recommended that you use the standard double-slash (//)
+at the start of a line for clarity, but since any line that doesn't start
+with a valid keyword will be ignored, you can technically use nearly any
+choice of denotation for a comment line.
 
 [WIP NOTE: The current version of this application does not yet have robust
 error handling and will likely crash when loading ill-formed .scn files.]
@@ -37,9 +46,10 @@ to do so  will result in incorrect rendering.  If fact you can load an empty
 scene file but naturally you will be rewarded with an empty scene.
 
 Next we will add an operation to our scene to manipulate the sphere's position.
-A raymarching scene operates in a stack pattern.  When we add an object to the
-stack it inherits all operations beneath it in a stack. Therefore in order to
-operate on our sphere we must add the operation before the sphere is added.
+A raymarching scene operates in a stack pattern. When we add an object to the
+stack it inherits all operations beneath it in a stack (there are some
+exceptions to this we will mention later). Therefore in order to operate on
+our sphere we must add the operation before the sphere is added.
 
 SDFObject
 	OPTranslate
@@ -361,7 +371,7 @@ We can also repeat objects in a circle:
 
 SDFObject
 	OPRepeatCircle axis 2 repetitions 5
-	OPTranslate translation 2.0
+	OPTranslate translation 2.0 0 0
 	COMBAdd
 	SDFSphere
 LightSource
@@ -372,12 +382,13 @@ will overlap since they will be wider than the slice they occupy:
 
 SDFObject
 	OPRepeatCircle axis 2 repetitions 20
-	OPTranslate translation 2.0
+	OPTranslate translation 2.0 0 0
 	COMBAdd
 	SDFSphere
 LightSource
 
-We should also note the use of the translate operation here. If we do not
+We should also note the use of the translate operation here. The translation
+should be purely along the x-axis to work correctly. If we do not
 first translate before adding our object, the repetition will happen
 around the centre of the sphere meaning we will just be repeating the
 sphere in its same position. Since the sphere has rotational symmetry
@@ -398,7 +409,10 @@ axis before the repeat so this must be taken into account.
 There is one operation and one combination that actually operate on the
 inside of objects. The results of these operations can only be seen if
 we follow these up with subtraction operations to reveal the inside.
-Let's look at the onion operation as an example.
+Note that the OPOnion operation in this example is one exception to the
+rule that operations come before the objects they operate on. The other
+two examples of this are OPInsideOut and OPRoundOff. Let's look at the
+onion operation as an example.
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -440,7 +454,7 @@ Lets switch back to animations. It is useful to have an animation that
 is somewhat less consistent. Let's take a look at the linear animations.
 
 SDFObject
-	OPTranslate 0 1 0
+	OPTranslate translation 0 1 0
 	ANLinearCycle3D propName translation amplitude 1 0.5 0.5 forwardTime 0 2.471 3.14 delayTime1 1 1.2 1.35 backwardTime 3.04 0 2.776 delayTime2 1.34 1.15 0.956
 	COMBAdd
 	SDFSphere
@@ -513,10 +527,10 @@ eg. COMBIntersect
 
 COMBExclude - subtract intersecting volumes from the scene stack, combine with subtraction to see interior effect
 eg. COMBExclude colorMode 3
-	colorMode - 0-3, 1 = shapes retain their color
-					 2 = shapes gain color of original
-					 3 = internal surfaces get added color, outer surfaces retain original
-				     4 = same as three but colors are swapped according to proximity
+	colorMode - 0-3, 0 = shapes retain their color
+					 1 = shapes gain color of original
+					 2 = internal surfaces get added color, outer surfaces retain original
+				     3 = same as three but colors are swapped according to proximity
 
 The following combinations share 3 parameters so we will only define them once:
 	smoothing - distance to smooth over
@@ -529,8 +543,8 @@ eg. COMBAddSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
 COMBSubtractSmooth - subtract with smoothed edges
 eg. COMBSubtractSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
 
-COMBInteractSmooth - intersect with smoothed edges
-eg. COMBInteractSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
+COMBIntersectSmooth - intersect with smoothed edges
+eg. COMBIntersectSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
 
 COMBExcludeSmooth - exclude with smoothed edges
 eg. COMBExcludeSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
@@ -598,7 +612,7 @@ eg. SDFTorusSegment color 0 0 1 radii 2.5 0.5 axis 0 sweep 0.5
 SDFCapsule - A classic pill shape
 eg. SDFCapsule color 1 0 1 radius 0.5 bodyLength 2.0 axis 3
 	radius - the radius of the capsule
-	length - the length of the capsule (not including the rounding, rounding adds the radius at both ends)
+	bodyLength - the length of the capsule (not including the rounding, rounding adds the radius at both ends)
 	axis - the axis that the body aligns with (0=x, 1=y, 2=z)
 
 SDFCylinder - A classic cylinder shape
@@ -685,21 +699,8 @@ eg. OPRotate axis 1 0 0 rotations 0.75
 OPElongate - Elongates objects along an axis
 eg. OPElongate axis 1 length 1.0 offset 0.25
 	axis - the axis (0=x, 1=y, 2=z) to elongate on
+	length - the length of the elongation along the axis
 	offset - a distance along the axis that is the center of the elongation
-
-OPRoundOff - rounds-off objects by inflating them. Note that this does not work
-well with subtractions. Use a smooth subtraction if experiencing edges that do
-not round-off.
-eg. OPRoundOff magnitude 0.05
-	magnitude - the amount to inflate the objects
-
-OPOnion - Hollows out an object leaving a shell of defined thickness. Requires
-a subsequent subtraction combination to reveal the inside.
-eg. OPOnion magnitude 0.1
-	magnitude - the thickness of the shell.
-
-OPInsideOut - Turns solid space to empty space and vice-versa
-eg. OPInsideOut
 
 OPRepeat - Repeats the object a certain number of times in each direction along
 the x/y/z axes. Note that non-symmetrical objects may result in artefacting.
@@ -720,6 +721,24 @@ eg. OPMirror mirrorX 1 mirrorY 0 mirrorZ 1
 	mirrorY - whether or not to mirror over the y axis (xz plane)
 	mirrorZ - whether or not to mirror over the z axis (xy plane)
 
+The final three operations are resurface operations. Unlike other operations that
+come before the objects they operate on are added to the stack, these operations
+operate on objects already on the stack.
+
+OPRoundOff - rounds-off objects by inflating them. Note that this does not work
+well with subtractions. Use a smooth subtraction if experiencing edges that do
+not round-off.
+eg. OPRoundOff magnitude 0.05
+	magnitude - the amount to inflate the objects
+
+OPOnion - Hollows out an object leaving a shell of defined thickness. Requires
+a subsequent subtraction combination to reveal the inside.
+eg. OPOnion magnitude 0.1
+	magnitude - the thickness of the shell.
+
+OPInsideOut - Turns solid space to empty space and vice-versa
+eg. OPInsideOut
+
 - ANIMATIONS - 
 
 There are 3 main types of animations - continuous, SmoothCycle, and LinearCycle.
@@ -733,20 +752,20 @@ animate.
 	
 ABContinuous - continuously increases the property value by the amplitude
 
-ANContinuous1D propName rotations amplitude 1.0 phase 0.5
-ANContinuous2D propName radii amplitude 0.45 0.22 phase 1.0 1.25
-ANContinuous3D propName translation amplitude 0.25 0.5 0.75 phase 0.0 1.0 2.0
-	amplitude - the amount to increase the property per second
-	phase - the amount of time into the animation to start
+eg. ANContinuous1D propName rotations amplitude 1.0 phase 0.5
+	ANContinuous2D propName radii amplitude 0.45 0.22 phase 1.0 1.25
+	ANContinuous3D propName translation amplitude 0.25 0.5 0.75 phase 0.0 1.0 2.0
+		amplitude - the amount to increase the property per second
+		phase - the amount of time into the animation to start
 
 ANSmoothCycle - smoothly oscillate the property value with a sine function
 
-ANSmoothCycle1D propName rotations period 4.0 amplitude 2.0 phase 0.25
-ANSmoothCycle2D propName radii period 2.0 4.0 amplitude 1.0 2.0 phase 1.75 0.25
-ANSmoothCycle3D propName translation period 2.0 4.0 5.5 amplitude 0.25 1.0 2.0 phase 1.75 0.25 1.25
-	period - the amount of time to complete one oscillation cycle
-	amplitude - the maximum distance (both positive and negative) from the starting value
-	phase - the amount of time into the animation to start
+eg. ANSmoothCycle1D propName rotations period 4.0 amplitude 2.0 phase 0.25
+	ANSmoothCycle2D propName radii period 2.0 4.0 amplitude 1.0 2.0 phase 1.75 0.25
+	ANSmoothCycle3D propName translation period 2.0 4.0 5.5 amplitude 0.25 1.0 2.0 phase 1.75 0.25 1.25
+		period - the amount of time to complete one oscillation cycle
+		amplitude - the maximum distance (both positive and negative) from the starting value
+		phase - the amount of time into the animation to start
 
 ANLinearCycle - animate the values with constant rates over distinct phases.
 The animation is split into a forward motion, a delay, a return motion, and a
@@ -754,16 +773,27 @@ second delay. Each phase has its own duration. The cycle time is the sum of all
 four phases. A phase time of 0 means the object will instantly snap to the opposite
 end of the animation.
 
-ANLinearCycle1D propName rotations forwardTime 1.0 delayTime1 0.5 backwardTime 0.0 delayTime2 1.0 amplitude 2.0 phase 0.5
-ANLinearCycle2D propName radii forwardTime 1.0 2.0 delayTime1 0.5 0.25 backwardTime 0.0 0.15 delayTime2 1.0 2.0 amplitude 2.0 2.0 phase 0.5 1.5
-ANLinearCycle3D propName translation forwardTime 1.0 1.0 0.5 delayTime1 0.5 0.0 0.5 backwardTime 0.0 5.0 1.25 delayTime2 1.0 1.0 1.0 amplitude 2.0 2.1 2.2 phase 0.5 0.5 0.0
-	forwardTime - the time to animate the forward phase
-	delayTime1 - the time to hold the value steady at the end of the forward phase
-	backwardTime - the time to animate the backward phase
-	delayTime2 - the time to hold the value steady at the end of the backward phase
-	amplitude - the maximum distance (both positive and negative) from the starting value
-	phase - the amount of time into the animation to start
+eg. ANLinearCycle1D propName rotations forwardTime 1.0 delayTime1 0.5 backwardTime 0.0 delayTime2 1.0 amplitude 2.0 phase 0.5
+	ANLinearCycle2D propName radii forwardTime 1.0 2.0 delayTime1 0.5 0.25 backwardTime 0.0 0.15 delayTime2 1.0 2.0 amplitude 2.0 2.0 phase 0.5 1.5
+	ANLinearCycle3D propName translation forwardTime 1.0 1.0 0.5 delayTime1 0.5 0.0 0.5 backwardTime 0.0 5.0 1.25 delayTime2 1.0 1.0 1.0 amplitude 2.0 2.1 2.2 phase 0.5 0.5 0.0
+		forwardTime - the time to animate the forward phase
+		delayTime1 - the time to hold the value steady at the end of the forward phase
+		backwardTime - the time to animate the backward phase
+		delayTime2 - the time to hold the value steady at the end of the backward phase
+		amplitude - the maximum distance (both positive and negative) from the starting value
+		phase - the amount of time into the animation to start
 
 LightSource - A light source to light the scene. These are not a part of the stack and can be
 defined at any point in the .scn file except for the first line, though it is best to define
 them all together at the end of the file. At this time, light sources cannot be animated
+eg. LightSource position 2.0 5.0 -3.0 luminance 150.0 ambientPower 0.2 color 1.0 1.0 1.0
+	position - the absolute position of the light source
+	luminance - the power of the light directly at its source. Attentuates by 1.0 / (distance * distance)
+	ambientPower - the amount of the light that still affects the surface even if it is shadowed or facing away (0.0-1.0)
+	color - the color of the light
+
+stepBack - removes the top object from the stack and return to the previous level.
+Note: it is not required to stepBack to the base level at the end of the file though
+it is recommended for consistency and to facilitate any future edits to the .scn file.
+A stepBack that moves beyond the base layer will be ignored, but should be avoided for
+clarity.
