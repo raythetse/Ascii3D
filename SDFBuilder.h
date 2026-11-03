@@ -51,7 +51,7 @@ SDFBuilder& SDFBuilder::pushSDFObj(Args&&... args)
 {
     auto* comb = dynamic_cast<CombinationOperation*>(m_lastOp);
     if (!comb) {
-        // report: shape without a preceding combination
+        std::cout << "Error: cannot add an object without a preceding combination operation.\n";
         return *this;
     }
     auto obj = std::make_unique<T>(std::forward<Args>(args)...);

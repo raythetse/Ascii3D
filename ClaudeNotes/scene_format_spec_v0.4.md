@@ -1,26 +1,26 @@
 # .scn scene format: spec for the scene-generator prompt (v0.4, DRAFT)
 
-Draft 2026-11-02 for review. Supersedes v0.3. Sources: HOWTO.txt (working tree),
-SDFBuilder.cpp/.h, CombinationOperation.*, SDFObject.*, SDFAxisObject.h,
-SDF2DObject.*, TransformOperation.*, DomainOperation.*, ResurfaceOperation.*,
-Animation.h, LightSource.h, Vec3.h.
+Draft 2026-11-02, revised 2026-11-03, for review. Supersedes v0.3. Sources:
+HOWTO.txt, SDFBuilder.cpp/.h, CombinationOperation.*, SDFObject.*,
+SDFAxisObject.h, SDF2DObject.*, TransformOperation.*, DomainOperation.*,
+ResurfaceOperation.*, Animation.h, LightSource.h, Vec3.h, as of commit d0fb8f1.
 
-**Loader versions.** The loader at HEAD (b6454a0) and the uncommitted working
-tree behave differently on malformed input (Appendix A). This spec describes a
-**strict subset that loads the same way under both**. The generator and the
-validator target that subset. Items marked **[CONFIRM]** are unresolved.
+**Strict subset.** The loader accepts more than this spec allows, and it
+usually ignores mistakes without saying so (Appendix A). The generator and the
+validator follow the stricter rules here, so every file means exactly what it says.
 
 Changes from v0.3 are listed in Appendix B.
 
 ## 1. Lexical rules (strict subset)
 
 - Plain text, one entry per line. LF or CRLF line endings are both fine.
-- **No blank lines and no whitespace-only lines.** (Working tree: fatal.)
-- **No trailing whitespace.** (Working tree: fatal on any line that has parameters.)
+- **No blank lines and no whitespace-only lines.** (The loader ignores them;
+  this is a style rule.)
+- **No trailing whitespace.** (The loader ignores it; this is a style rule.)
 - Leading tabs for indentation are allowed and ignored. Use them for readability.
 - Separate tokens with single spaces. **Commas are not part of the format.**
-  (HEAD turned commas into spaces; that was removed on purpose, so `1,2,3` is
-  fatal in the working tree.)
+  A comma breaks the value it is in, and the rest of that line is silently
+  dropped (`color 1,0,0` loads as 1 0 1).
 - Keywords and parameter names are case sensitive.
 - A line whose first token is not a keyword is ignored. Comments use `// text`.
   A misspelled keyword is silently dropped too, so the validator must flag
@@ -56,10 +56,10 @@ LightSource ...           <- one or more, at the end
 - **Line 1 must be exactly `SDFObject`.** The loader never parses line 1. It
   always creates its own white root, so parameters on line 1 do nothing, and if
   line 1 is real content, that content is lost.
-- **Never emit a `stepBack` at root depth.** Because of a loader bug (Appendix A),
-  the first root-level `stepBack` pops the real root. After that, any
-  stack line uses a dangling pointer. The serializer writes one as a trailing
-  line before the lights. That only works because nothing but lights follows it.
+- **Never emit a `stepBack` at root depth.** The loader ignores it, so it does
+  nothing, but it usually means the levels were miscounted. The serializer
+  writes one as a trailing line before the lights; the validator warns about it
+  instead of rejecting the file.
 - `LightSource` lines are not stack entries. Put them all after the last stack line.
 
 ## 4. The stack model
@@ -70,9 +70,8 @@ LightSource ...           <- one or more, at the end
 2. **Every non-root shape is introduced by exactly one combination line,** written
    directly before it. Only `AN*` lines (and comments) may sit between the
    combination and its shape. A combination with no shape crashes the program
-   (Section 5). A shape without its own combination crashes it at HEAD and is
-   dropped silently in the working tree. A dropped shape also unbalances every
-   later `stepBack`.
+   (Section 5). A shape without its own combination is skipped. A skipped shape
+   also unbalances every later `stepBack`.
 3. Transform/domain operations (`OPTranslate`, `OPRotate`, `OPElongate`,
    `OPRepeat`, `OPRepeatCircle`, `OPMirror`) are written BEFORE the shapes they
    affect. They apply to every shape added after them in the same level,
@@ -367,7 +366,7 @@ Parameters
 Structure (track depth and the "previous meaningful line")
 10. Every `SDF*` line on lines 2+ is preceded by a `COMB*`, with only `AN*` or
     comments in between. Every `COMB*` is followed by exactly one shape.
-11. `stepBack` never at root depth. At the end of the stack lines, depth equals
+11. `stepBack` never at root depth (warning: the loader ignores it). At the end of the stack lines, depth equals
     the root (warning if not; trailing levels are closed implicitly).
 12. Subtract/Intersect/Exclude (incl. smooth) need an earlier shape in the same level.
 13. `LightSource` lines all come after the last stack line; at least one exists.
@@ -382,32 +381,27 @@ Animations
 
 ## Appendix A: loader behavior and known bugs
 
-Applies to both HEAD and the working tree unless noted.
-
 - `loadSerialized` starts at index 1, so line 1 is never parsed.
-- **Dangling root.** `SDFScene(fileName)` calls `SDFBuilder{}.loadSerialized(...)`.
-  The constructor pushes root A. `loadSerialized` replaces `m_baseObject` (A is
-  destroyed) and pushes root B, leaving `m_objChain = [A (dangling), B]`. The first
-  root-level `stepBack` pops B. Later ones are no-ops (`size() == 1`), but any
-  `OP*`/`COMB*`/`AN*` after that uses dangling A. Fix: `m_objChain.clear()` in
-  `loadSerialized` before the push.
+- `loadSerialized` clears the stack before pushing its root, and `stepBack`
+  never pops the last level, so a `stepBack` at root depth is ignored.
 - Combination without a shape: null dereference (Section 5).
-- `pushSDFObj`. HEAD: unchecked `dynamic_cast` (crash if the last op was not a
-  combination), and a second shape replaces the first (use-after-free).
-  Working tree: returns early without a report, and clears `m_lastOp` so a
-  combination takes one shape. A skipped shape is not pushed, so its children
-  and its `stepBack` apply to the parent level.
+- `pushSDFObj` skips the shape if the previous operation was not a combination,
+  and clears `m_lastOp` after a shape, so a combination takes exactly one shape.
+  A skipped shape is not pushed, so its children and its `stepBack` apply to
+  the parent level.
 - Parameter loop: unknown names are skipped (their values are read as names and
   skipped too); extra values are read as names; `axis 1.0` reads 1.
-- Malformed values (non-numeric, too few, bool not 0/1). HEAD: failbit; the rest
-  of the line is silently dropped, and earlier values on the line keep their
-  defaults or partial reads. Working tree: `ss.fail()` after a line prints
-  `Failed to parse line i` and `std::exit(1)`. `i` is 0-based, so the file line is
-  `i + 1`. It also fires on blank lines and trailing whitespace.
-- Commas. HEAD: replaced with spaces. Working tree: not replaced (fatal);
-  the removal is intentional, and commas are no longer part of the format.
+- Malformed values (non-numeric, too few, bool not 0/1) set failbit, which ends
+  the parameter loop, so the rest of the line is silently dropped. Values read
+  earlier on the line are kept. In a vec2/vec3 the failing component becomes 0
+  and later components keep their defaults. There is no message and no line
+  number. (A check that would exit is in `loadSerialized`, commented out.)
+- Blank lines and trailing whitespace are harmless: a blank line's keyword is
+  empty and ignored, and trailing whitespace only makes one extra empty read.
+- Commas are not replaced. `1,0,0` reads 1, then fails at the comma (see
+  malformed values). This is intentional: commas are not part of the format.
 - Negative values into `size_t` (`repetitions`, `numPoints`) wrap to huge values
-  and do not set failbit, so even the working tree does not catch them.
+  and do not set failbit, so nothing catches them.
 - Out-of-range enum ints are `static_cast` without a check.
 - Animations: unchecked `reinterpret_cast` binding (Section 8); `OPRepeatCircle`
   `repetitions` is a `size_t` bound as double.
@@ -416,8 +410,9 @@ Applies to both HEAD and the working tree unless noted.
 
 - Added a defaults column and per-keyword animatable properties with dimensions.
 - Line 1 is skipped (root params ignored); never emit a root-level `stepBack`
-  (v0.3 said "stepBack past the root is ignored").
-- Strict lexical subset: no blank lines, no trailing whitespace.
+  (the loader ignores it, but the generator should not write one).
+- Strict lexical subset: no blank lines, no trailing whitespace (style rules;
+  the loader ignores both).
 - Commas are no longer separators (intentional loader change; v0.3 said commas become spaces).
 - Every shape gets a closing `stepBack` in the examples (balanced files).
 - Plain combinations take no animations; Subtract/Intersect take no params.
@@ -430,8 +425,10 @@ Applies to both HEAD and the working tree unless noted.
 - The complete example scene has been rendered and confirmed.
 - Lighting: the 1.5 x d^2 rule is now a guideline that artistic intent
   overrides. Jack_O_Lantern is low light by design.
-- HOWTO corrections (colorMode 3 typo, inverse-square sentence) are now in the
-  working-tree HOWTO.txt and are removed from the open list.
+- HOWTO corrections (colorMode 3 typo, inverse-square sentence) are now in
+  HOWTO.txt and are removed from the open list.
+- Describes one loader (commit d0fb8f1). The earlier draft compared the old
+  committed loader with uncommitted edits; those comparisons are removed.
 
 ## Still open
 
