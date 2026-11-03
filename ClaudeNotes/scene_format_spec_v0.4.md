@@ -198,7 +198,7 @@ revolveRotations 1D, revolveRotateOffset 2D. `operation` cannot be animated.
 | `SDFIsoscelesTriangle` | `dimensions` vec2 (1 0.5) | dimensions 2D |
 | `SDFPieSlice` | `sweep` 0.25, `radius` 0.5 | sweep 1D, radius 1D |
 | `SDFPentagon`, `SDFHexagon`, `SDFOctagon` | `radius` 0.5 | radius 1D |
-| `SDFStar` | `radius` 0.5, `numPoints` int (5, >= 1), `ratio` 0.5 | radius 1D, ratio 1D, numPoints 1D [CONFIRM: renders?] |
+| `SDFStar` | `radius` 0.5, `numPoints` int (5, >= 1), `ratio` 0.5 | radius 1D, ratio 1D, numPoints 1D |
 
 ## 7. Operations
 
@@ -255,8 +255,8 @@ In 2D/3D variants every numeric param is a vec2/vec3 (one value per component).
 - **The dimension must match the property.** `BindToProperty` is an unchecked
   `reinterpret_cast`. A 3D animation on a 1D property (e.g. `ANContinuous3D
   propName radius`) writes past the field and corrupts memory. A 1D animation
-  on a vec3 animates only the first component in the C++ path (GLSL path
-  [CONFIRM]).
+  on a vec3 animates only the first component in the C++ path, and the GLSL
+  shader fails to compile (confirmed 2026-11-03).
 - Never put two animations on the same property of the same target. The later one wins.
 - Lights cannot be animated.
 
@@ -274,9 +274,14 @@ In 2D/3D variants every numeric param is a vec2/vec3 (one value per component).
 - Brightness falls off as luminance / distance squared (double the distance needs 4x the power).
 - HOWTO guidance: luminance 150 gives decent light at 10 m. Ambient 0.1-0.2 for
   a nearby light, 0.4-0.5 for a large distant light (outdoor scene).
-- **[CONFIRM]** Generator rule from v0.3: luminance = 1.5 x d^2. Jack_O_Lantern's
-  main light is luminance 50 at about 11 m with ambient 0.5, far below that
-  rule (about 180). Re-check against renders before relying on the rule.
+- Starting point for a normally lit scene: luminance = 1.5 x d^2 (d = distance
+  in meters from the light to the main subject). This is a guideline for a
+  decent amount of light, not a requirement. Artistic intent overrides it.
+  Go lower for dim or moody scenes and higher for bright ones. If the user's
+  request gives no lighting mood, use the guideline.
+- Example of intentional low light: Jack_O_Lantern's main light is luminance
+  50 at about 11 m with ambient 0.5. That is well below the guideline (about
+  180), which is by design. The high ambient keeps shapes readable in the dark.
 - At least one light is required.
 
 ## 10. Worked examples
@@ -308,9 +313,8 @@ LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1
 Note: both examples put operations at root level, so they move the whole scene.
 That is fine for a one-object scene. For more objects, use the wrapper pattern.
 
-Complete scene (ground, red sphere, blue box). **UNTESTED**: now in
-CustomScenes/CustomScene.scn (uncommitted). Render it before using it as a
-prompt example (handoff item 6).
+Complete scene (ground, red sphere, blue box). Rendered and confirmed correct
+(2026-11-03, from CustomScenes/CustomScene.scn). Safe to use as a prompt example.
 ```
 SDFObject
 	COMBAdd
@@ -418,15 +422,17 @@ Applies to both HEAD and the working tree unless noted.
 - Every shape gets a closing `stepBack` in the examples (balanced files).
 - Plain combinations take no animations; Subtract/Intersect take no params.
 - Animation attachment rule corrected (after `stepBack`/`LightSource` = wrong target).
-- Dimension-mismatch and `repetitions` animation hazards.
+- Dimension-mismatch and `repetitions` animation hazards (1D on a vec3 fails
+  GLSL compilation).
 - `SDFTaperedCylinder` uses `sideLength`.
 - `OPRepeat` default makes 27 copies; `OPRotate` default is half a turn.
 - `OPCubeRollHeight`, `OPCubeRoller` listed as excluded.
+- The complete example scene has been rendered and confirmed.
+- Lighting: the 1.5 x d^2 rule is now a guideline that artistic intent
+  overrides. Jack_O_Lantern is low light by design.
 - HOWTO corrections (colorMode 3 typo, inverse-square sentence) are now in the
   working-tree HOWTO.txt and are removed from the open list.
 
 ## Still open
 
-- Render the Section 10 complete scene (handoff item 6).
-- Lighting rule vs Jack's values (Section 9).
-- 1D animation on a vec3 property in the GLSL path; `SDFStar numPoints` animation.
+- None at this time.
