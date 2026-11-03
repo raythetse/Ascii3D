@@ -42,6 +42,7 @@ SDFBuilder& SDFBuilder::color(Vec3 color)
 SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
 {
     m_baseObject = std::make_unique<SDFObject>();
+    m_objChain.clear();
     m_objChain.push_back(m_baseObject.get());
 
     for (size_t i{ 1 }; i < strVec.size(); ++i) {

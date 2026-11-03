@@ -1,35 +1,53 @@
+================================================================================
 ASCII Ray-Marcher - Ray Young
+How to build a custom scene (.scn file)
+================================================================================
 
-- How to build a custom scene -
+CONTENTS
+
+    Part 1  Tutorial
+    Part 2  Reference
+            2.1  Conventions used in the reference
+            2.2  Combinations
+            2.3  SDF objects
+            2.4  Operations
+            2.5  Animations
+            2.6  Light sources
+            2.7  stepBack
+
+
+================================================================================
+PART 1 - TUTORIAL
+================================================================================
 
 A scene is built via a collection of objects, operations, and animations.
 Objects are added to the scene with combination operations, and manipulated
-with various transform, domain, and resurface operations.  The parameters
-of scene objects and operations can be altered over time via animations
-that bind the those parameters.
+with various transform, domain, and resurface operations. The parameters of
+scene objects and operations can be altered over time via animations that bind
+to those parameters.
 
 The scene automatically has a camera at position x=0.0, y=1.8, z=-5.0 and
 pointing directly forward along the z axis (+z). The units should be
 considered to be in meters. This gives a decent approximation of a human
-point-of-view with a ground plane at the origin, though the user can move
-the camera freely while the scene runs. There is no object collision.
+point-of-view with a ground plane at the origin, though the user can move the
+camera freely while the scene runs. There is no object collision.
 
-The scene will be drawn to a maximum distance of 100 meters from the
-current camera position. The camera viewport is dynamic based on the size
-of your terminal window and the dimensions of your current font. In most
-cases the horizontal field of view in a default terminal window should be
-approximately 90 degrees.
+The scene will be drawn to a maximum distance of 100 meters from the current
+camera position. The camera viewport is dynamic based on the size of your
+terminal window and the dimensions of your current font. In most cases the
+horizontal field of view in a default terminal window should be approximately
+90 degrees.
 
 Each scene should have a base SDFObject, one or more shapes, any number of
-operations, any number of animations, and one or more light sources.
-The scene builder will add a base object to your scene on loading a .scn
-file regardless of whether or not you declared one but failing to do so on
-the first line may result in unintended results, including the possible
-failure to load the file. All keywords are case sensitive. If you wish to
-add comments, it is recommended that you use the standard double-slash (//)
-at the start of a line for clarity, but since any line that doesn't start
-with a valid keyword will be ignored, you can technically use nearly any
-choice of denotation for a comment line.
+operations, any number of animations, and one or more light sources. The scene
+builder will add a base object to your scene on loading a .scn file regardless
+of whether or not you declared one, but failing to do so on the first line may
+result in unintended results, including the possible failure to load the file.
+All keywords are case sensitive. If you wish to add comments, it is
+recommended that you use the standard double-slash (//) at the start of a line
+for clarity, but since any line that doesn't start with a valid keyword will be
+ignored, you can technically use nearly any choice of denotation for a comment
+line.
 
 [WIP NOTE: The current version of this application does not yet have robust
 error handling and will likely crash when loading ill-formed .scn files.]
@@ -41,22 +59,21 @@ SDFObject
 	SDFSphere
 LightSource
 
-The first line acknowledges that we have an SDFObject at the root of our
-scene tree. More on empty SDFObjects later. The second line says we want
-to add an SDF object to our scene next. The following line says we want that
-object to be an SDFSphere. The final line declares a light source for the
-scene.
+The first line acknowledges that we have an SDFObject at the root of our scene
+tree. More on empty SDFObjects later. The second line says we want to add an
+SDF object to our scene next. The following line says we want that object to
+be an SDFSphere. The final line declares a light source for the scene.
 
 When you load this scene you will see a white sphere lit by a single white
-light. You do not technically have to define a light source, but neglecting
-to do so  will result in incorrect rendering.  If fact you can load an empty
-scene file but naturally you will be rewarded with an empty scene.
+light. You do not technically have to define a light source, but neglecting to
+do so will result in incorrect rendering. In fact you can load an empty scene
+file but naturally you will be rewarded with an empty scene.
 
-Next we will add an operation to our scene to manipulate the sphere's position.
-A raymarching scene operates in a stack pattern. When we add an object to the
-stack it inherits all operations beneath it in a stack (there are some
-exceptions to this we will mention later). Therefore in order to operate on
-our sphere we must add the operation before the sphere is added.
+Next we will add an operation to our scene to manipulate the sphere's
+position. A raymarching scene operates in a stack pattern. When we add an
+object to the stack it inherits all operations beneath it in the stack (there
+are some exceptions to this we will mention later). Therefore in order to
+operate on our sphere we must add the operation before the sphere is added.
 
 SDFObject
 	OPTranslate
@@ -65,10 +82,10 @@ SDFObject
 LightSource
 
 Loading this .scn file will produce much the same results as the previous
-version but the sphere will appear slightly higher that before. That's 
-useful, but it is more useful to be able to move the sphere in more directions
-than just up. We can do this by added the "translation" parameter to the
-SDFSphere line followed by values for the translation.
+version but the sphere will appear slightly higher than before. That's useful,
+but it is more useful to be able to move the sphere in more directions than
+just up. We can do this by adding the "translation" parameter to the
+OPTranslate line followed by values for the translation.
 
 SDFObject
 	OPTranslate translation 2.0 2.0 1.0
@@ -77,9 +94,9 @@ SDFObject
 LightSource
 
 Load the file to see the sphere has been moved up higher than before, and has
-also been moved to the right and is further from the viewpoint. Note that
-the loader does not require you to explicitly use floating point number
-formats for floating point values so the following .scn file works just as well.
+also been moved to the right and is further from the viewpoint. Note that the
+loader does not require you to explicitly use floating point number formats
+for floating point values so the following .scn file works just as well.
 
 SDFObject
 	OPTranslate translation 2 2 1
@@ -89,9 +106,9 @@ LightSource
 
 Let's add another object to our scene. There are several objects you can add
 and you can find specifications for each object as well as operations and
-animations further down in this document. Notice that a combination is always
-followed by an SDF object of some kind. This is, afterall, the point of a
-combination - to combine objects withing the scene in various ways.
+animations in Part 2 of this document. Notice that a combination is always
+followed by an SDF object of some kind. This is, after all, the point of a
+combination - to combine objects within the scene in various ways.
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -103,12 +120,13 @@ LightSource
 
 Load this .scn file to see a cube added to the scene. But where did our sphere
 go? Here we can see the effects of using operations in a stack. The translate
-operation was added before both the sphere AND the box were add and it therefore
-applies to both of them. You may have guessed that the box would have been added
-in the default position and the sphere would appear directly above is as the
-translate operation moved it up 1 unit, but both objects are in fact moved up
-together as one, so the box is directly overlapping the sphere and hiding it.
-We can fix this by using the stepBack keyword to move back down the stack:
+operation was added before both the sphere AND the box were added and it
+therefore applies to both of them. You may have guessed that the box would
+have been added in the default position and the sphere would appear directly
+above it as the translate operation moved it up 1 unit, but both objects are
+in fact moved up together as one, so the box is directly overlapping the
+sphere and hiding it. We can fix this by using the stepBack keyword to move
+back down the stack:
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -119,13 +137,13 @@ SDFObject
 	SDFBox
 LightSource
 
-Running this produces that same result. Understand that every time we add an
+Running this produces the same result. Understand that every time we add an
 object to the scene we add it to the stack. The original object is at the base
 level, we then added a sphere, and next a box. Note the indentation used to
-illustrate this. Indentation is not required to create a valid .scn file but
-it is very useful to keep track of where you are in the stack while defining it.
-Note that stepBack is used at stack level 3 (SDFObject is level 0) and the 
-tranlate operation was declared at level 1. So we need to stepBack further in
+illustrate this. Indentation is not required to create a valid .scn file but it
+is very useful to keep track of where you are in the stack while defining it.
+Note that stepBack is used at stack level 3 (SDFObject is level 0) and the
+translate operation was declared at level 1. So we need to stepBack further in
 order to pop the translate operation off the stack.
 
 SDFObject
@@ -140,10 +158,10 @@ LightSource
 
 This also doesn't work. The reason is that we have now stepped back to the
 same level as our base object. This is not allowed as everything in the scene
-must stem from one place and that place is the root SDFObject. The way to solve
-this is to always use empty SDFObjects as levels to stepBack onto when you want
-to move objects or groups of objects around independently (without inheriting
-previous operations). Let's try this .scn file.
+must stem from one place and that place is the root SDFObject. The way to
+solve this is to always use empty SDFObjects as levels to stepBack onto when
+you want to move objects or groups of objects around independently (without
+inheriting previous operations). Let's try this .scn file.
 
 SDFObject
 	COMBAdd
@@ -160,12 +178,12 @@ SDFObject
 LightSource
 
 Finally, loading this .scn file will give us a box at the bottom with our
-sphere perched on top! Note that the add operation for the SDFBox still happens
-at the same level as the translate operation, but since we moved back down the
-stack below the level of the operation, it is gone from the stack and no longer
-applies. It may seem excessive or feel inconvenient to add an extra empty
-SDFObject each time we add a visible object but we don't have to! There is
-another way we can achieve the same result:
+sphere perched on top! Note that the add operation for the SDFBox still
+happens at the same level as the translate operation, but since we moved back
+down the stack below the level of the operation, it is gone from the stack and
+no longer applies. It may seem excessive or feel inconvenient to add an extra
+empty SDFObject each time we add a visible object but we don't have to! There
+is another way we can achieve the same result:
 
 SDFObject
 	COMBAdd
@@ -176,11 +194,11 @@ SDFObject
 LightSource
 
 This .scn file shows how order of operations and applying our operations at
-the appropriate point in the stack can simplify our approach. Note that changing
-the translation parameter will only move the sphere. Run the file to get the
-same visual results as the previous example.
+the appropriate point in the stack can simplify our approach. Note that
+changing the translation parameter will only move the sphere. Run the file to
+get the same visual results as the previous example.
 
-Different objects have there own parameters that can adjust their shape and
+Different objects have their own parameters that can adjust their shape and
 size. Let's add some parameters to our sphere and box:
 
 SDFObject
@@ -193,11 +211,10 @@ LightSource
 
 Now when we load the scene the box is twice as wide and the sphere is 50%
 wider as well. And of course the shapes are now rendered with the defined
-colors. There are many types of objects we can render each with thier own sets
-of parameters. Again, you can find them all listed out further down in this
-file.
+colors. There are many types of objects we can render each with their own sets
+of parameters. Again, you can find them all listed in Part 2 of this file.
 
-There are other kinds of combinations we can use. For example, lets try a
+There are other kinds of combinations we can use. For example, let's try a
 smooth add operation:
 
 SDFObject
@@ -208,8 +225,8 @@ SDFObject
 		SDFSphere radius 0.75 color 1.0 0 0
 LightSource
 
-See how our shapes are now physically blended together both with surface an color
-smoothing. Let's try a subtraction:
+See how our shapes are now physically blended together both with surface and
+color smoothing. Let's try a subtraction:
 
 SDFObject
 	COMBAdd
@@ -221,7 +238,7 @@ LightSource
 
 Now our sphere has disappeared... but it has left an impression where it used
 to overlap the box! This is a very useful way to create complex custom shapes.
-Next lets look at the intersection combination:
+Next let's look at the intersection combination:
 
 SDFObject
 	COMBAdd
@@ -231,7 +248,7 @@ SDFObject
 		SDFSphere radius 0.75 color 1.0 0 0
 LightSource
 
-Now we are left with just the piece where the two shapes overlapped! Again, 
+Now we are left with just the piece where the two shapes overlapped! Again,
 very useful for creating more complex and interesting shapes! There are also
 smooth versions of the subtract and intersect combinations for you to try.
 
@@ -251,8 +268,8 @@ SDFObject
 	SDFTorus radii 1.5 0.25
 LightSource
 
-Ok, there is our torus... but it's not rotating? Actually, it is rotating,
-but it is rotating along the vertical y axis so it just looks like it is not
+Ok, there is our torus... but it's not rotating? Actually, it is rotating, but
+it is rotating along the vertical y axis so it just looks like it is not
 rotating. There are two ways we can change this - we can change the initial
 orientation of the torus or we can change the axis of rotation for our
 animation. First, let's reorientate our torus:
@@ -262,11 +279,12 @@ SDFObject
 	SDFTorus radii 1.5 0.25 axis 0
 LightSource
 
-Now our torus is orientated along the x axis.  Values for the axis parameter
+Now our torus is orientated along the x axis. Values for the axis parameter
 are [0=x, 1=y, 2=z] with 1 (y) being the default value. Parameters will all
-default to a predetermined value if you do not provide one, so keep this in
-mind if things are not working as expected. Now lets try with the rotation
-operation again but we will use a different axis:
+default to a predetermined value if you do not provide one (see the Default
+column in Part 2), so keep this in mind if things are not working as expected.
+Now let's try with the rotation operation again but we will use a different
+axis:
 
 SDFObject
 	OPRotate axis 0.5 1 .875 rotations 0.125
@@ -274,12 +292,12 @@ SDFObject
 	SDFTorus radii 1.5 0.25
 LightSource
 
-Now we have a new orientation for our torus entirely. Note that it is
-good practice to use normalized vectors for rotational axes, but this
-application will automatically normalize the axis on loading here. Otherwise
-the excess magnitude of your vector would affect the number of rotations.
+Now we have a new orientation for our torus entirely. Note that it is good
+practice to use normalized vectors for rotational axes, but this application
+will automatically normalize the axis on loading here. Otherwise the excess
+magnitude of your vector would affect the number of rotations.
 
-Now lets animate the rotation to add some life to our scene!
+Now let's animate the rotation to add some life to our scene!
 
 SDFObject
 	OPRotate axis 0.5 1 .875 rotations 0.125
@@ -295,17 +313,16 @@ declared and must provide a propName that is valid for the operation or
 object. If it fails to do so, it will simply not be added to the scene.
 Multiple animations can be applied to the same operation or object, but if
 they both bind to the same property then the latter animation will override
-the former meaning the former animation will still have no effect while
-still performing its calculations, so be sure not to bind to the same
-property.
+the former, meaning the former animation will have no effect while still
+performing its calculations, so be sure not to bind to the same property.
 
 Most properties that can be provided upon declaration of an object or
 operation can be animated. There are 3 types of animations - continuous,
-linear cycle, and smooth cycle - each with a version for 1D, 2D, and 3D.
-Note that at this time animations cannot be applied to light sources.
+linear cycle, and smooth cycle - each with a version for 1D, 2D, and 3D. Note
+that at this time animations cannot be applied to light sources.
 
-Let's look at an example of applying animations to combination operations
-and object parameters.  First we'll make a scene without :
+Let's look at an example of applying animations to combination operations and
+object parameters. First we'll make a scene without animations:
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -316,8 +333,8 @@ SDFObject
 		SDFSphere radius 0.75
 LightSource
 
-Now lets add an animation that adjusts the smoothing factor of the smooth 
-add operation:
+Now let's add an animation that adjusts the smoothing factor of the smooth add
+operation:
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -329,16 +346,15 @@ SDFObject
 		SDFSphere radius 0.75
 LightSource
 
-The smoothing factor of the combination function will now animate. Here,
-we are using a smooth cycle animation function which uses a sine function.
-Note that earlier we said that a combination is always followed by an
-object. In this case, however, the object does not follow as the very next
-entry but rather follows after any animations that apply to the combination
-itself. There still must be an object that follows before further
-operations can be added otherwise uncertain behaviour will occur,
-possibly including crashes.
+The smoothing factor of the combination function will now animate. Here, we
+are using a smooth cycle animation function which uses a sine function. Note
+that earlier we said that a combination is always followed by an object. In
+this case, however, the object does not follow as the very next entry but
+rather follows after any animations that apply to the combination itself.
+There still must be an object that follows before further operations can be
+added, otherwise uncertain behaviour will occur, possibly including crashes.
 
-Now lets animate some properties on our box frame object:
+Now let's animate some properties on our box frame object:
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -352,10 +368,10 @@ SDFObject
 		SDFSphere radius 0.75
 LightSource
 
-Here we see that we can animate multiple properties on an object at the
-same time. We also see that we use a 3D animation to animate a 3D property
-such as a box frame's dimensions. Each dimension of the property can be
-animated independently with the same animation.
+Here we see that we can animate multiple properties on an object at the same
+time. We also see that we use a 3D animation to animate a 3D property such as
+a box frame's dimensions. Each dimension of the property can be animated
+independently with the same animation.
 
 Next we will see how we can repeat the same object multiple times in a scene.
 
@@ -365,14 +381,14 @@ SDFObject
 	SDFSphere
 LightSource
 
-This single repeat operation takes a single sphere object and repeats it 
-fifteen times. The limits determine how many times in each on each axis
-to repeat the sphere. 0 means no additional repeat, while other numbers
-mean to repeat the object that many times in BOTH directions along that
-axis. It is important to note that the mathematics involved in domain
-repetition requires objects being repeated to be centred and symmetrical,
-otherwise rendering errors may occur, though in some cases they may be
-minor enough to not be noticeable. Your mileage may vary.
+This single repeat operation takes a single sphere object and repeats it
+fifteen times. The limits determine how many times on each axis to repeat the
+sphere. 0 means no additional repeat, while other numbers mean to repeat the
+object that many times in BOTH directions along that axis. It is important to
+note that the mathematics involved in domain repetition requires objects being
+repeated to be centred and symmetrical, otherwise rendering errors may occur,
+though in some cases they may be minor enough to not be noticeable. Your
+mileage may vary.
 
 We can also repeat objects in a circle:
 
@@ -383,9 +399,9 @@ SDFObject
 	SDFSphere
 LightSource
 
-Here we can repeat around whichever axis we please and however many times
-we please. If we attempt to repeat a large number of times, the objects
-will overlap since they will be wider than the slice they occupy:
+Here we can repeat around whichever axis we please and however many times we
+please. If we attempt to repeat a large number of times, the objects will
+overlap since they will be wider than the slice they occupy:
 
 SDFObject
 	OPRepeatCircle axis 2 repetitions 20
@@ -395,12 +411,12 @@ SDFObject
 LightSource
 
 We should also note the use of the translate operation here. The translation
-should be purely along the x-axis to work correctly. If we do not
-first translate before adding our object, the repetition will happen
-around the centre of the sphere meaning we will just be repeating the
-sphere in its same position. Since the sphere has rotational symmetry
-it will come out just looking like the same sphere. If we use a different
-object we can see what happens when we don't translate:
+should be purely along the x-axis to work correctly. If we do not first
+translate before adding our object, the repetition will happen around the
+centre of the sphere meaning we will just be repeating the sphere in its same
+position. Since the sphere has rotational symmetry it will come out just
+looking like the same sphere. If we use a different object we can see what
+happens when we don't translate:
 
 SDFObject
 	OPRepeatCircle axis 2 repetitions 3
@@ -408,18 +424,17 @@ SDFObject
 	SDFTorus axis 2
 LightSource
 
-If you are keen on spacial operations you may think we wouldn't need to
-change the axis on our torus from y to z for this to work, but the
-repeat operation actually reorientates the repeated objects to its target
-axis before the repeat so this must be taken into account.
+If you are keen on spatial operations you may think we wouldn't need to change
+the axis on our torus from y to z for this to work, but the repeat operation
+actually reorientates the repeated objects to its target axis before the
+repeat so this must be taken into account.
 
-There is one operation and one combination that actually operate on the
-inside of objects. The results of these operations can only be seen if
-we follow these up with subtraction operations to reveal the inside.
-Note that the OPOnion operation in this example is one exception to the
-rule that operations come before the objects they operate on. The other
-two examples of this are OPInsideOut and OPRoundOff. Let's look at the
-onion operation as an example.
+There is one operation and one combination that actually operate on the inside
+of objects. The results of these operations can only be seen if we follow
+these up with subtraction operations to reveal the inside. Note that the
+OPOnion operation in this example is one exception to the rule that operations
+come before the objects they operate on. The other two examples of this are
+OPInsideOut and OPRoundOff. Let's look at the onion operation as an example.
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -435,9 +450,9 @@ SDFObject
 	SDFBox dimensions 2 2 1
 LightSource
 
-See that our sphere is now hollowed out. We could not have known this
-without subtracting a part of the sphere to see inside. We can repeat
-this operation multiple times:
+See that our sphere is now hollowed out. We could not have known this without
+subtracting a part of the sphere to see inside. We can repeat this operation
+multiple times:
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -454,11 +469,11 @@ SDFObject
 	SDFBox dimensions 2 2 1
 LightSource
 
-We now get concentric nested spheres. The exlude combination also
-requires a subtraction to reveal its interior effects.
+We now get concentric nested spheres. The exclude combination also requires a
+subtraction to reveal its interior effects.
 
-Lets switch back to animations. It is useful to have an animation that
-is somewhat less consistent. Let's take a look at the linear animations.
+Let's switch back to animations. It is useful to have an animation that is
+somewhat less consistent. Let's take a look at the linear animations.
 
 SDFObject
 	OPTranslate translation 0 1 0
@@ -467,17 +482,19 @@ SDFObject
 	SDFSphere
 LightSource
 
-There is a lot more going on here with so many parameters. So what does
-each do? We are defining 3 cyclical paths our object will move, one for
-each axis. Lets just pretend we are only using one axis and just look
-at the first of each value, the x axis value. First, the amplitude
-tells the animation how far to move the object in each direction. The
-forwardTime parameter tells the animation how long it takes the object
-to move forward along the entire translation. The delayTime1 parameter
-tells the animation to hold position for that length of time once it
-reaches the forward position. We then do the same thing in the other
-direction with the backwardTime and delayTime 2 parameters. If this is
-not clear, try changing all the y and z parameters to 0 so you can
+(Each .scn entry must stay on a single line, so long example lines like the
+one above are not wrapped.)
+
+There is a lot more going on here with so many parameters. So what does each
+do? We are defining 3 cyclical paths our object will move, one for each axis.
+Let's just pretend we are only using one axis and just look at the first of
+each value, the x axis value. First, the amplitude tells the animation how far
+to move the object in each direction. The forwardTime parameter tells the
+animation how long it takes the object to move forward along the entire
+translation. The delayTime1 parameter tells the animation to hold position for
+that length of time once it reaches the forward position. We then do the same
+thing in the other direction with the backwardTime and delayTime2 parameters.
+If this is not clear, try changing all the y and z parameters to 0 so you can
 watch what happens on just the x axis.
 
 SDFObject
@@ -487,11 +504,11 @@ SDFObject
 	SDFSphere
 LightSource
 
-Note that a forwardTime or backwardTime of 0 is valid and this will
-cause the object to jump instantly across the whole translation.
+Note that a forwardTime or backwardTime of 0 is valid and this will cause the
+object to jump instantly across the whole translation.
 
-There is one combination that has its own timed action without using
-an animation. Let's take another look at the add combination.
+There is one combination that has its own timed action without using an
+animation. Let's take another look at the add combination.
 
 SDFObject
 	COMBAdd onTime 2.0 offTime 0.5
@@ -501,312 +518,620 @@ SDFObject
 		SDFBox
 LightSource
 
-These parameters allow us to turn an object on and off according
-to a schedule. Note that objects further up the stack will also be
-turned off, but those higher objects can also be turned off
-independently.
+These parameters allow us to turn an object on and off according to a
+schedule. Note that objects further up the stack will also be turned off, but
+those higher objects can also be turned off independently.
 
-Hopefully this lessons will help you to begin building out your own
-fun scenes. Now we will list all objects, combinations, operations,
-and animations you can use to build your scenes including all their
-parameters (properties). Remember that all parameters (with the exception
-of the propName for animations) has a default value and does not need
-to be explicitly defined for ever entry. Parameters can also be listen
-in any order as long as they are always followed the the appropriate
-number of valid values.
+Hopefully these lessons will help you to begin building out your own fun
+scenes. Part 2 lists all objects, combinations, operations, and animations you
+can use to build your scenes, including all their parameters (properties).
+Remember that all parameters (with the exception of the propName for
+animations) have a default value and do not need to be explicitly defined for
+every entry. Parameters can also be listed in any order as long as they are
+always followed by the appropriate number of valid values.
 
 
-- COMBINATIONS -
-
-COMBAdd - add an object to the scene stack
-eg. COMBAdd onTime 1.0 offTime 0.5 phase 0.5 overwriteColor 0
-	onTime - how long to show the object
-	offTime - how long to hide the object
-	phase - how far into the off/on cycle to start
-	overwriteColor - whether or not to overwrite the existing object's color with that of the added object
+================================================================================
+PART 2 - REFERENCE
+================================================================================
 
 
-COMBSubtract - subtract an objects shape from objects on the scene stack
-eg. COMBSubtract
+2.1  CONVENTIONS USED IN THE REFERENCE
+--------------------------------------------------------------------------------
 
-COMBIntersect - subtract non-intersecting volumes from the scene stack
-eg. COMBIntersect
+Each entry gives the keyword, a short description, an example line, and a table
+of its parameters with their types and default values. A parameter you leave out
+of a line takes its default value.
 
-COMBExclude - subtract intersecting volumes from the scene stack, combine with subtraction to see interior effect
-eg. COMBExclude colorMode 3
-	colorMode - 0-3, 0 = shapes retain their color
-					 1 = shapes gain color of original
-					 2 = internal surfaces get added color, outer surfaces retain original
-				     3 = same as 2 but colors are swapped according to proximity
+    Type    Meaning
+    float   a single number (integers are accepted, eg. 2 or 2.0)
+    int     a whole number
+    bool    0 = false, 1 = true
+    vec2    two numbers, eg. 1.0 0.5
+    vec3    three numbers, eg. 1.0 0.5 0.25
+    name    the name of another parameter (used by propName)
+    varies  float, vec2 or vec3 to match the 1D, 2D or 3D animation variant
 
-The following combinations share 3 parameters so we will only define them once:
-	smoothing - distance to smooth over
-	colorBlending - distance to blend colors over smoothed sections
-	colorShifting - shifting the color smoothing closer to one object or the other
-
-COMBAddSmooth - add with smoothed intersection.
-eg. COMBAddSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
-
-COMBSubtractSmooth - subtract with smoothed edges
-eg. COMBSubtractSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
-
-COMBIntersectSmooth - intersect with smoothed edges
-eg. COMBIntersectSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
-
-COMBExcludeSmooth - exclude with smoothed edges
-eg. COMBExcludeSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
+Axis values are 0 = x, 1 = y, 2 = z. Colors are r g b with each channel ranging
+0.0-1.0. Times are in seconds.
 
 
-- SDF Objects -
+2.2  COMBINATIONS
+--------------------------------------------------------------------------------
 
-All SDF objects have an RBG color parameter with each channel ranging from 0.0-1.0
+COMBAdd
+    Adds an object to the scene stack. Note that the properties of COMBAdd
+    cannot be bound to an animation since they handle their own animations.
+    Attempts to bind an animator to them will be ignored.
 
-SDFObject - empty objects, use to add layer to stack without adding/subtracting shapes
-eg. SDFObject color 1 0.5 0.25
-	color - rgb color ranging 0.0-1.0 on each channel
+    eg. COMBAdd onTime 1.0 offTime 0.5 phase 0.5 overwriteColor 0
 
-SDFPlane - ground plane with normal vector and offset. A ground plane with normal 0 1 0
-and offset 0 should be a natural ground plane for the initial camera position.
-eg SDFPlane color 1 0 0 normal 0 1 0 offset -1.5
-	normal - vector 3 defining the up vector of the plane
-	offset - offsets the plane along the normal vector from the origin point
+    Parameter            Type   Default     Description
+    onTime               float  1.0         How long to show the object
+    offTime              float  0.0         How long to hide the object (0 =
+                                            always shown)
+    phase                float  0.0         How far into the off/on cycle to
+                                            start
+    overwriteColor       bool   0           Whether or not to overwrite the
+                                            existing object's color with that of
+                                            the added object
 
-SDFBox - 6 sides with 90 degree angles
-eg. SDFBox color 1 0 0 dimensions 2.5 1.0 2.5
-	dimensions - edge length of each dimension
+COMBSubtract
+    Subtracts an object's shape from objects on the scene stack.
 
-SDFBoxFrame - Box with only edges rendered with given thickness
-eg. SDFBoxFrame color 1 0 0 edgeThickness 0.1 dimensions 2 2 1.5
-	dimensions - edge length of each dimension
-	edgeThickness - thickness of rendered edges
+    eg. COMBSubtract
 
-SDFSphere - A sphere defined by a radius
-eg. SDFSphere color 0 0.5 1 radius 1.5
-	radius - the radius of the sphere
+    No parameters.
 
-SDFEllipsoid - Ellipsoid with 3 independent radii
-eg. SDFEllipsoid color 1 1 1 radii 1.0 0.5 0.25
-	radii - individual radii for each axis
+COMBIntersect
+    Subtracts non-intersecting volumes from the scene stack.
 
-SDFCrystal - A regular octahedron
-eg. SDFCrystal color 0 0 0.5 edgeLength 1.3
-	edgeLength - the length of every edge of the crystal
+    eg. COMBIntersect
 
-SDFCone - A standard cone pointing up
-eg. SDFCone color 1 1 1 height 1.0 sweep 0.5
-	height - the height of the cone
-	sweep - the angle of the cones sides (0.0 - 1.0). 0 produces a line
+    No parameters.
 
-SDFSolidAngle - A section of a sphere defined by an angle radiating from the center
-eg. SDFSolidAngle color 0.4 0.2 1.0 radius 0.55 sweep 0.25
-	radius - the radius of the sphere
-	sweep - the angle (0.0 - 1.0)
+COMBExclude
+    Subtracts intersecting volumes from the scene stack. Combine with a
+    subtraction to see the interior effect.
 
-The following objects (SDFTorus throughSDFTaperedCylinder) have an axis parameter
-which aligns the object along the selected axis.
-The axes are: 0=x, 1=y, 2=z. 1 (y) is the default axis.
+    eg. COMBExclude colorMode 3
 
-SDFTorus - A donut shape defined by 2 radii, major and minor
-eg. SDFTorus color 0 0 1 radii 2.5 0.5 axis 0
-	radii - the major and minor radii
-	axis - the axis that passes through the hole (0=x, 1=y, 2=z)
+    Parameter            Type   Default     Description
+    colorMode            int    0           How colors are assigned (see below)
 
-SDFTorusSegment - A donut shape defined by 2 radii, major and minor - limited to a partial angle
-eg. SDFTorusSegment color 0 0 1 radii 2.5 0.5 axis 0 sweep 0.5
-	radii - the major and minor radii
-	sweep - the portion of the ring that is rendered (0.0-1.0)
-	axis - the axis that passes through the hole (0=x, 1=y, 2=z)
+    colorMode values:
+        0 = shapes retain their color
+        1 = shapes gain color of original
+        2 = internal surfaces get added color, outer surfaces retain original
+        3 = same as 2 but colors are swapped according to proximity
 
-SDFCapsule - A classic pill shape
-eg. SDFCapsule color 1 0 1 radius 0.5 bodyLength 2.0 axis 2
-	radius - the radius of the capsule
-	bodyLength - the length of the capsule (not including the rounding, rounding adds the radius at both ends)
-	axis - the axis that the body aligns with (0=x, 1=y, 2=z)
+The following four smooth combinations share these parameters:
 
-SDFCylinder - A classic cylinder shape
-eg. SDFCylinder color 0 1 0 sideLength 1.0 radius 0.25 axis 1
-	sideLength - the length of the cylinder
-	radius - the radius of the cylinder
-	axis - the axis that the body aligns with (0=x, 1=y, 2=z)
+    Parameter            Type   Default     Description
+    smoothing            float  0.5         Distance to smooth over
+    colorBlending        float  1.0         Distance to blend colors over
+                                            smoothed sections
+    colorShifting        float  0.0         Shifts the color smoothing closer to
+                                            one object or the other
 
-SDFTaperedCapsule - A pill shape but the radius decreases/increases along its length
-eg. SDFTaperedCapsule color 1 1 1 bodyLength 2.5 radii 1.0 0.5 axis 2
-	bodyLength - the length of the capsule not including the rounded ends
-	radii - individual radii for each end of the capsule
-	axis - the axis that the body aligns with (0=x, 1=y, 2=z)
+COMBAddSmooth
+    Add with a smoothed intersection.
 
-SDFTaperedCylinder - A cylinder shape but the radius decreases/increases along its length
-eg. SDFTaperedCylinder color 0.5 0.5 0.5 bodyLength 1.5 radii 0.2 0.5 axis 0
-	bodyLength - the length of the capsule
-	radii - individual radii for each end of the capsule
-	axis - the axis that the body aligns with (0=x, 1=y, 2=z)
+    eg. COMBAddSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
 
-The following SDF objects are 2D shapes that can be made 3D with 3 different operations:
-The operations are:
-	0 - extrusion
-	1 - revolve
-	2 - infinite column
-Extrusion is the default operation.
-In the case of extrusion, the magnitude parameter defines the height of the extrusion.
-In the case of revolve, the following parameters can be used:
-	magnitude - The radius of the ring around which the shape is revolved
-	revolveRotations - the number of times to rotate the shape before it is revolved
-	revolveRotateOffset - the offset of the center of rotation for the revolveRotations parameter
+    Parameters: the shared smooth parameters above.
 
-SDFRhombus - a 2D rhombus that can be extruded or revolved into a ring
-eg. SDFRhombus color 1 1 0.5 dimensions 1.0 1.5 operation 0 magnitude 1.0
-	dimensions - width and length of the rhombus
+COMBSubtractSmooth
+    Subtract with smoothed edges.
 
-SDFTriangle - a triangle with arbitrary 2D vertices defined by point1, point2, and point3
-eg. SDFTriangle color 0 1 1 point1 -1 0 point2 0 1 point3 0.5 -1.5 operation 0 magnitude 0.75
+    eg. COMBSubtractSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
 
-SDFEquilateralTriangle - A triangle with sides of equal length
-eg. SDFEquilateralTriangle color 0.5 0.5 0.0 base 2.0 operation 1 magnitude 2.5 revolveRotations 0.0 revolveRotateOffset 0.1 0.25
-	base - the length of the sides
-	
-SDFIsoscelesTriangle - A triangle with two equal sides and the third may be different.
-eg. SDFIsoscelesTriangle color 0 0 1 dimensions 1 2 magnitude 2.0 operation 1 revolveRotations 0.234 revolveRotateOffset 0.2 0.0
-	dimensions - the width and height of the triangle
+    Parameters: the shared smooth parameters above.
 
-SDFPieSlice - A segment of a circle like a piece of pie
-eg. SDFPieSlice color 1 1 1 sweep 0.2 radius 1.0 operation 0 magnitude 0.1
-	sweep - the angle of the circle to render (0.0-1.0)
-	radius - the radius of the circle
+COMBIntersectSmooth
+    Intersect with smoothed edges.
 
-SDFPentagon - a regular pentagon
-eg. SDFPentagon color 1 0 1 radius 2.74 operation 0 magnitude 3.0
-	radius - the radius of the circle that touches all the points of the pentagon
+    eg. COMBIntersectSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
 
-SDFHexagon - a regular hexagon
-eg. SDFHexagon color 0 0 0.25 radius 1.75 operation 0 magnitude 1.0
-	radius - the radius of the circle that touches all the points of the hexagon
+    Parameters: the shared smooth parameters above.
 
-SDFOctagon - a regular octagon
-eg. SDFOctagon color 0 0 0.25 radius 1.75 operation 0 magnitude 1.0
-	radius - the radius of the circle that touches all the points of the octagon
+COMBExcludeSmooth
+    Exclude with smoothed edges.
 
-SDFStar - a star with an arbitrary number of points
-eg. SDFStar color 1 1 0 radius 2.0 numPoints 5 ratio 0.5 operation 0 magnitude 0.5
-	radius - the radius of the circle that touches all the points of the star
-	numPoints - the number of points of the star
-	ratio - defines the distance of the inner corners relative to the radius
+    eg. COMBExcludeSmooth smoothing 0.25 colorBlending 1.0 colorShifting 0.0
+
+    Parameters: the shared smooth parameters above.
 
 
-- OPERATIONS -
+2.3  SDF OBJECTS
+--------------------------------------------------------------------------------
 
-OPTranslate - moves objects by a vector
-eg. OPTranslate translation 1 2.4 5.2
-	translation - the vector to move the object
+All SDF objects share this parameter:
 
-OPRotate - rotate an object around a vector axis. The vector will be
-automatically normalized.
-eg. OPRotate axis 1 0 0 rotations 0.75
-	axis - the vector to rotate around
-	rotations - the number of full rotations (1.0 = one full rotation)
+    Parameter            Type   Default     Description
+    color                vec3   1 1 1       RGB color, each channel ranging
+                                            0.0-1.0
 
-OPElongate - Elongates objects along an axis
-eg. OPElongate axis 1 length 1.0 offset 0.25
-	axis - the axis (0=x, 1=y, 2=z) to elongate on
-	length - the length of the elongation along the axis
-	offset - a distance along the axis that is the center of the elongation
+SDFObject
+    An empty object. Use it to add a layer to the stack without adding or
+    subtracting shapes.
 
-OPRepeat - Repeats the object a certain number of times in each direction along
-the x/y/z axes. Note that non-symmetrical objects may result in artefacting.
-eg. OPRepeat spacing 2 1 1 limits 1 1 0
-	spacing - the size of each repeating cell
-	limits - how many times to repeat each object in each direction
+    eg. SDFObject color 1 0.5 0.25
 
-OPRepeatCircle - Repeats the object in a circular pattern. Use OPTranslate
-following OPRepeatCircle to control the radius of the circle.
-eg. OPRepeatCircle axis 2 repetitions 8
-	axis - the axis (0=x, 1=y, 2=z) to revolve around.
-	repetitions - the number times the object will be repeated
+    Parameters: color only.
 
-OPMirror - Mirrors the object over the selected axes. By default it mirrors over
-just the x axis. 1=true, 0=false.
-eg. OPMirror mirrorX 1 mirrorY 0 mirrorZ 1
-	mirrorX - whether or not to mirror over the x axis (yz plane)
-	mirrorY - whether or not to mirror over the y axis (xz plane)
-	mirrorZ - whether or not to mirror over the z axis (xy plane)
+SDFPlane
+    A ground plane with a normal vector and an offset. A plane with normal 0 1 0
+    and offset 0 should be a natural ground plane for the initial camera
+    position.
 
-The final three operations are resurface operations. Unlike other operations that
-come before the objects they operate on are added to the stack, these operations
-operate on objects already on the stack.
+    eg. SDFPlane color 1 0 0 normal 0 1 0 offset -1.5
 
-OPRoundOff - rounds-off objects by inflating them. Note that this does not work
-well with subtractions. Use a smooth subtraction if experiencing edges that do
-not round-off.
-eg. OPRoundOff magnitude 0.05
-	magnitude - the amount to inflate the objects
+    Parameter            Type   Default     Description
+    normal               vec3   0 1 0       The up vector of the plane
+                                            (automatically normalized)
+    offset               float  0.0         Offsets the plane along the normal
+                                            vector from the origin point
 
-OPOnion - Hollows out an object leaving a shell of defined thickness. Requires
-a subsequent subtraction combination to reveal the inside.
-eg. OPOnion magnitude 0.1
-	magnitude - the thickness of the shell.
+SDFBox
+    A box with 6 sides and 90 degree angles.
 
-OPInsideOut - Turns solid space to empty space and vice-versa
-eg. OPInsideOut
+    eg. SDFBox color 1 0 0 dimensions 2.5 1.0 2.5
 
-- ANIMATIONS - 
+    Parameter            Type   Default     Description
+    dimensions           vec3   1 1 1       Edge length of each dimension
 
-There are 3 main types of animations - continuous, SmoothCycle, and LinearCycle.
+SDFBoxFrame
+    A box with only its edges rendered, at a given thickness.
+
+    eg. SDFBoxFrame color 1 0 0 edgeThickness 0.1 dimensions 2 2 1.5
+
+    Parameter            Type   Default     Description
+    dimensions           vec3   1 1 1       Edge length of each dimension
+    edgeThickness        float  0.1         Thickness of the rendered edges
+
+SDFSphere
+    A sphere defined by a radius.
+
+    eg. SDFSphere color 0 0.5 1 radius 1.5
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the sphere
+
+SDFEllipsoid
+    An ellipsoid with 3 independent radii.
+
+    eg. SDFEllipsoid color 1 1 1 radii 1.0 0.5 0.25
+
+    Parameter            Type   Default     Description
+    radii                vec3   1 0.5 0.25  Individual radii for each axis
+
+SDFCrystal
+    A regular octahedron.
+
+    eg. SDFCrystal color 0 0 0.5 edgeLength 1.3
+
+    Parameter            Type   Default     Description
+    edgeLength           float  1.0         The length of every edge of the
+                                            crystal
+
+SDFCone
+    A standard cone pointing up.
+
+    eg. SDFCone color 1 1 1 height 1.0 sweep 0.5
+
+    Parameter            Type   Default     Description
+    height               float  1.0         The height of the cone
+    sweep                float  0.5         The angle of the cone's sides
+                                            (0.0-1.0). 0 produces a line
+
+SDFSolidAngle
+    A section of a sphere defined by an angle radiating from the center.
+
+    eg. SDFSolidAngle color 0.4 0.2 1.0 radius 0.55 sweep 0.25
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the sphere
+    sweep                float  0.25        The angle (0.0-1.0)
+
+The following objects (SDFTorus through SDFTaperedCylinder) have an axis
+parameter which aligns the object along the selected axis (0=x, 1=y, 2=z). 1 (y)
+is the default axis.
+
+SDFTorus
+    A donut shape defined by 2 radii, major and minor.
+
+    eg. SDFTorus color 0 0 1 radii 2.5 0.5 axis 0
+
+    Parameter            Type   Default     Description
+    radii                vec2   1 0.25      The major and minor radii
+    axis                 int    1           The axis that passes through the
+                                            hole
+
+SDFTorusSegment
+    A donut shape defined by 2 radii, major and minor, limited to a partial
+    angle.
+
+    eg. SDFTorusSegment color 0 0 1 radii 2.5 0.5 axis 0 sweep 0.5
+
+    Parameter            Type   Default     Description
+    radii                vec2   1 0.25      The major and minor radii
+    sweep                float  0.25        The portion of the ring that is
+                                            rendered (0.0-1.0)
+    axis                 int    1           The axis that passes through the
+                                            hole
+
+SDFCapsule
+    A classic pill shape.
+
+    eg. SDFCapsule color 1 0 1 radius 0.5 bodyLength 2.0 axis 2
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the capsule
+    bodyLength           float  1.0         The length of the capsule, not
+                                            including the rounding (the rounding
+                                            adds the radius at both ends)
+    axis                 int    1           The axis that the body aligns with
+
+SDFCylinder
+    A classic cylinder shape.
+
+    eg. SDFCylinder color 0 1 0 sideLength 1.0 radius 0.25 axis 1
+
+    Parameter            Type   Default     Description
+    sideLength           float  1.0         The length of the cylinder
+    radius               float  0.5         The radius of the cylinder
+    axis                 int    1           The axis that the body aligns with
+
+SDFTaperedCapsule
+    A pill shape whose radius decreases/increases along its length.
+
+    eg. SDFTaperedCapsule color 1 1 1 bodyLength 2.5 radii 1.0 0.5 axis 2
+
+    Parameter            Type   Default     Description
+    bodyLength           float  1.0         The length of the capsule, not
+                                            including the rounded ends
+    radii                vec2   0.5 0.25    Individual radii for each end of the
+                                            capsule
+    axis                 int    1           The axis that the body aligns with
+
+SDFTaperedCylinder
+    A cylinder shape whose radius decreases/increases along its length.
+
+    eg. SDFTaperedCylinder color 0.5 0.5 0.5 sideLength 1.5 radii 0.2 0.5 axis 0
+
+    Parameter            Type   Default     Description
+    sideLength           float  1.0         The length of the cylinder
+    radii                vec2   0.5 0.25    Individual radii for each end of the
+                                            cylinder
+    axis                 int    1           The axis that the body aligns with
+
+The following SDF objects are 2D shapes that can be made 3D with 3 different
+operations: 0 = extrusion, 1 = revolve, 2 = infinite column. Extrusion is the
+default operation. In the case of extrusion, the magnitude parameter defines the
+height of the extrusion. In the case of revolve, magnitude is the radius of the
+ring around which the shape is revolved, and the two revolve parameters can also
+be used. They all share these parameters:
+
+    Parameter            Type   Default     Description
+    operation            int    0           0 = extrusion, 1 = revolve, 2 =
+                                            infinite column
+    magnitude            float  1.0         Extrusion: the height of the
+                                            extrusion. Revolve: the radius of
+                                            the ring around which the shape is
+                                            revolved
+    revolveRotations     float  0.0         The number of times to rotate the
+                                            shape before it is revolved
+    revolveRotateOffset  vec2   0 0         The offset of the center of rotation
+                                            for the revolveRotations parameter
+
+SDFRhombus
+    A 2D rhombus that can be extruded or revolved into a ring.
+
+    eg. SDFRhombus color 1 1 0.5 dimensions 1.0 1.5 operation 0 magnitude 1.0
+
+    Parameter            Type   Default     Description
+    dimensions           vec2   1 0.5       Width and length of the rhombus
+
+SDFTriangle
+    A triangle with arbitrary 2D vertices defined by point1, point2, and point3.
+
+    eg. SDFTriangle color 0 1 1 point1 -1 0 point2 0 1 point3 0.5 -1.5 operation 0 magnitude 0.75
+
+    Parameter            Type   Default     Description
+    point1               vec2   -0.5 -0.5   The first vertex
+    point2               vec2   0 0.5       The second vertex
+    point3               vec2   0.5 0       The third vertex
+
+SDFEquilateralTriangle
+    A triangle with sides of equal length.
+
+    eg. SDFEquilateralTriangle color 0.5 0.5 0.0 base 2.0 operation 1 magnitude 2.5 revolveRotations 0.0 revolveRotateOffset 0.1 0.25
+
+    Parameter            Type   Default     Description
+    base                 float  1.0         The length of the sides
+
+SDFIsoscelesTriangle
+    A triangle with two equal sides; the third may be different.
+
+    eg. SDFIsoscelesTriangle color 0 0 1 dimensions 1 2 magnitude 2.0 operation 1 revolveRotations 0.234 revolveRotateOffset 0.2 0.0
+
+    Parameter            Type   Default     Description
+    dimensions           vec2   1 0.5       The width and height of the triangle
+
+SDFPieSlice
+    A segment of a circle, like a piece of pie.
+
+    eg. SDFPieSlice color 1 1 1 sweep 0.2 radius 1.0 operation 0 magnitude 0.1
+
+    Parameter            Type   Default     Description
+    sweep                float  0.25        The angle of the circle to render
+                                            (0.0-1.0)
+    radius               float  0.5         The radius of the circle
+
+SDFPentagon
+    A regular pentagon.
+
+    eg. SDFPentagon color 1 0 1 radius 2.74 operation 0 magnitude 3.0
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the circle that
+                                            touches all the points of the
+                                            pentagon
+
+SDFHexagon
+    A regular hexagon.
+
+    eg. SDFHexagon color 0 0 0.25 radius 1.75 operation 0 magnitude 1.0
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the circle that
+                                            touches all the points of the
+                                            hexagon
+
+SDFOctagon
+    A regular octagon.
+
+    eg. SDFOctagon color 0 0 0.25 radius 1.75 operation 0 magnitude 1.0
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the circle that
+                                            touches all the points of the
+                                            octagon
+
+SDFStar
+    A star with an arbitrary number of points.
+
+    eg. SDFStar color 1 1 0 radius 2.0 numPoints 5 ratio 0.5 operation 0 magnitude 0.5
+
+    Parameter            Type   Default     Description
+    radius               float  0.5         The radius of the circle that
+                                            touches all the points of the star
+    numPoints            int    5           The number of points of the star
+    ratio                float  0.5         The distance of the inner corners
+                                            relative to the radius
+
+
+2.4  OPERATIONS
+--------------------------------------------------------------------------------
+
+OPTranslate
+    Moves objects by a vector.
+
+    eg. OPTranslate translation 1 2.4 5.2
+
+    Parameter            Type   Default     Description
+    translation          vec3   0 1 0       The vector to move the object by
+
+OPRotate
+    Rotates an object around a vector axis. The vector will be automatically
+    normalized.
+
+    eg. OPRotate axis 1 0 0 rotations 0.75
+
+    Parameter            Type   Default     Description
+    axis                 vec3   0 1 0       The vector to rotate around
+    rotations            float  0.5         The number of full rotations (1.0 =
+                                            one full rotation)
+
+OPElongate
+    Elongates objects along an axis.
+
+    eg. OPElongate axis 1 length 1.0 offset 0.25
+
+    Parameter            Type   Default     Description
+    axis                 int    1           The axis (0=x, 1=y, 2=z) to elongate
+                                            on
+    length               float  1.0         The length of the elongation along
+                                            the axis
+    offset               float  0.0         A distance along the axis that is
+                                            the center of the elongation
+
+OPRepeat
+    Repeats the object a certain number of times in each direction along the
+    x/y/z axes. Note that non-symmetrical objects may result in artefacting.
+
+    eg. OPRepeat spacing 2 1 1 limits 1 1 0
+
+    Parameter            Type   Default     Description
+    spacing              vec3   1 1 1       The size of each repeating cell
+    limits               vec3   1 1 1       How many times to repeat the object
+                                            in each direction (the default makes
+                                            3 x 3 x 3 = 27 copies)
+
+OPRepeatCircle
+    Repeats the object in a circular pattern. Use OPTranslate following
+    OPRepeatCircle to control the radius of the circle.
+
+    eg. OPRepeatCircle axis 2 repetitions 8
+
+    Parameter            Type   Default     Description
+    axis                 int    1           The axis (0=x, 1=y, 2=z) to revolve
+                                            around
+    repetitions          int    10          The number of times the object will
+                                            be repeated
+
+OPMirror
+    Mirrors the object over the selected axes. By default it mirrors over just
+    the x axis.
+
+    eg. OPMirror mirrorX 1 mirrorY 0 mirrorZ 1
+
+    Parameter            Type   Default     Description
+    mirrorX              bool   1           Whether or not to mirror over the x
+                                            axis (yz plane)
+    mirrorY              bool   0           Whether or not to mirror over the y
+                                            axis (xz plane)
+    mirrorZ              bool   0           Whether or not to mirror over the z
+                                            axis (xy plane)
+
+The final three operations are resurface operations. Unlike other operations,
+which come before the objects they operate on are added to the stack, these
+operations operate on objects already on the stack.
+
+OPRoundOff
+    Rounds-off objects by inflating them. Note that this does not work well with
+    subtractions. Use a smooth subtraction if experiencing edges that do not
+    round-off.
+
+    eg. OPRoundOff magnitude 0.05
+
+    Parameter            Type   Default     Description
+    magnitude            float  0.01        The amount to inflate the objects
+
+OPOnion
+    Hollows out an object leaving a shell of defined thickness. Requires a
+    subsequent subtraction combination to reveal the inside.
+
+    eg. OPOnion magnitude 0.1
+
+    Parameter            Type   Default     Description
+    magnitude            float  0.01        The thickness of the shell
+
+OPInsideOut
+    Turns solid space to empty space and vice-versa.
+
+    eg. OPInsideOut
+
+    No parameters.
+
+
+2.5  ANIMATIONS
+--------------------------------------------------------------------------------
+
+There are 3 main types of animations - Continuous, SmoothCycle, and LinearCycle.
 Each has a 1D, 2D, and 3D variant. Each must reference a valid property name of
 the object or operation it is animating. These property names are the same as
-the parameter names for each object an operation. Though in some instances, a
+the parameter names for each object and operation. Though in some instances a
 mismatch of dimensions might still run, some will not. It is important to use
 the animation variant that matches the dimensions of the property you are
 animating. Use the propName parameter to reference the property you wish to
 animate.
-	
-ANContinuous - continuously increases the property value by the amplitude
 
-eg. ANContinuous1D propName rotations amplitude 1.0 phase 0.5
-	ANContinuous2D propName radii amplitude 0.45 0.22 phase 1.0 1.25
-	ANContinuous3D propName translation amplitude 0.25 0.5 0.75 phase 0.0 1.0 2.0
-		amplitude - the amount to increase the property per second
-		phase - the amount of time into the animation to start
+All animations share this parameter:
 
-ANSmoothCycle - smoothly oscillate the property value with a sine function
+    Parameter            Type   Default     Description
+    propName             name   (none)      Required. The property to animate
 
-eg. ANSmoothCycle1D propName rotations period 4.0 amplitude 2.0 phase 0.25
-	ANSmoothCycle2D propName radii period 2.0 4.0 amplitude 1.0 2.0 phase 1.75 0.25
-	ANSmoothCycle3D propName translation period 2.0 4.0 5.5 amplitude 0.25 1.0 2.0 phase 1.75 0.25 1.25
-		period - the amount of time to complete one oscillation cycle
-		amplitude - the maximum distance (both positive and negative) from the starting value
-		phase - the amount of time into the animation to start
+In the tables below, each numeric parameter is a float, vec2 or vec3 to match
+the 1D, 2D or 3D variant, and its default applies to every component.
 
-ANLinearCycle - animate the values with constant rates over distinct phases.
-The animation is split into a forward motion, a delay, a return motion, and a
-second delay. Each phase has its own duration. The cycle time is the sum of all
-four phases. A phase time of 0 means the object will instantly snap to the opposite
-end of the animation.
+ANContinuous1D / ANContinuous2D / ANContinuous3D
+    Continuously increases the property value by the amplitude.
 
-eg. ANLinearCycle1D propName rotations forwardTime 1.0 delayTime1 0.5 backwardTime 0.0 delayTime2 1.0 amplitude 2.0 phase 0.5
-	ANLinearCycle2D propName radii forwardTime 1.0 2.0 delayTime1 0.5 0.25 backwardTime 0.0 0.15 delayTime2 1.0 2.0 amplitude 2.0 2.0 phase 0.5 1.5
-	ANLinearCycle3D propName translation forwardTime 1.0 1.0 0.5 delayTime1 0.5 0.0 0.5 backwardTime 0.0 5.0 1.25 delayTime2 1.0 1.0 1.0 amplitude 2.0 2.1 2.2 phase 0.5 0.5 0.0
-		forwardTime - the time to animate the forward phase
-		delayTime1 - the time to hold the value steady at the end of the forward phase
-		backwardTime - the time to animate the backward phase
-		delayTime2 - the time to hold the value steady at the end of the backward phase
-		amplitude - the maximum distance (both positive and negative) from the starting value
-		phase - the amount of time into the animation to start
+    eg. ANContinuous1D propName rotations amplitude 1.0 phase 0.5
+        ANContinuous2D propName radii amplitude 0.45 0.22 phase 1.0 1.25
+        ANContinuous3D propName translation amplitude 0.25 0.5 0.75 phase 0.0 1.0 2.0
 
-LightSource - A light source to light the scene. These are not a part of the stack and can be
-defined at any point in the .scn file except for the first line, though it is best to define
-them all together at the end of the file. At this time, light sources cannot be animated.
-A light's power attenuates with distance [luminance / (distance * distance)]. A decent illumination
-may be 150 at a distance of 10 meters. If you double the distance, multiply the power by 4.
-Lower ambient power values (perhaps 0.1-0.2) work well for light sources close to the objects
-, while a higher value (perhaps 0.4-0.5) works well for larger more distant lights such as for an
-outdoor scene.
-eg. LightSource position 2.0 5.0 -3.0 luminance 150.0 ambientPower 0.2 color 1.0 1.0 1.0
-	position - the absolute position of the light source
-	luminance - the power of the light directly at its source. Attentuates by 1.0 / (distance * distance)
-	ambientPower - the amount of the light that still affects the surface even if it is shadowed or facing away (0.0-1.0)
-	color - the color of the light
+    Parameter            Type   Default     Description
+    amplitude            varies 1.0         The amount to increase the property
+                                            per second
+    phase                varies 0.0         The amount of time into the
+                                            animation to start
 
-stepBack - removes the top object from the stack and return to the previous level.
-Note: it is not required to stepBack to the base level at the end of the file though
-it is recommended for consistency and to facilitate any future edits to the .scn file.
-A stepBack that moves beyond the base layer will be ignored, but should be avoided for
-clarity.
+ANSmoothCycle1D / ANSmoothCycle2D / ANSmoothCycle3D
+    Smoothly oscillates the property value with a sine function.
+
+    eg. ANSmoothCycle1D propName rotations period 4.0 amplitude 2.0 phase 0.25
+        ANSmoothCycle2D propName radii period 2.0 4.0 amplitude 1.0 2.0 phase 1.75 0.25
+        ANSmoothCycle3D propName translation period 2.0 4.0 5.5 amplitude 0.25 1.0 2.0 phase 1.75 0.25 1.25
+
+    Parameter            Type   Default     Description
+    period               varies 1.0         The amount of time to complete one
+                                            oscillation cycle
+    amplitude            varies 1.0         The maximum distance (both positive
+                                            and negative) from the starting
+                                            value
+    phase                varies 0.0         The amount of time into the
+                                            animation to start
+
+ANLinearCycle1D / ANLinearCycle2D / ANLinearCycle3D
+    Animates the values with constant rates over distinct phases. The animation
+    is split into a forward motion, a delay, a return motion, and a second
+    delay. Each phase has its own duration. The cycle time is the sum of all
+    four phases. A phase time of 0 means the object will instantly snap to the
+    opposite end of the animation.
+
+    eg. ANLinearCycle1D propName rotations forwardTime 1.0 delayTime1 0.5 backwardTime 0.0 delayTime2 1.0 amplitude 2.0 phase 0.5
+        ANLinearCycle2D propName radii forwardTime 1.0 2.0 delayTime1 0.5 0.25 backwardTime 0.0 0.15 delayTime2 1.0 2.0 amplitude 2.0 2.0 phase 0.5 1.5
+        ANLinearCycle3D propName translation forwardTime 1.0 1.0 0.5 delayTime1 0.5 0.0 0.5 backwardTime 0.0 5.0 1.25 delayTime2 1.0 1.0 1.0 amplitude 2.0 2.1 2.2 phase 0.5 0.5 0.0
+
+    Parameter            Type   Default     Description
+    forwardTime          varies 1.0         The time to animate the forward
+                                            phase
+    delayTime1           varies 1.0         The time to hold the value steady at
+                                            the end of the forward phase
+    backwardTime         varies 1.0         The time to animate the backward
+                                            phase
+    delayTime2           varies 1.0         The time to hold the value steady at
+                                            the end of the backward phase
+    amplitude            varies 1.0         The maximum distance (both positive
+                                            and negative) from the starting
+                                            value
+    phase                varies 0.0         The amount of time into the
+                                            animation to start
+
+
+2.6  LIGHT SOURCES
+--------------------------------------------------------------------------------
+
+LightSource
+    A light source to light the scene. These are not a part of the stack and can
+    be defined at any point in the .scn file except for the first line, though
+    it is best to define them all together at the end of the file. At this time,
+    light sources cannot be animated.
+
+    A light's power attenuates with distance [luminance / (distance *
+    distance)]. A decent illumination may be 150 at a distance of 10 meters. If
+    you double the distance, multiply the power by 4. Lower ambient power values
+    (perhaps 0.1-0.2) work well for light sources close to the objects, while a
+    higher value (perhaps 0.4-0.5) works well for larger, more distant lights
+    such as for an outdoor scene.
+
+    eg. LightSource position 2.0 5.0 -3.0 luminance 150.0 ambientPower 0.2 color 1.0 1.0 1.0
+
+    Parameter            Type   Default     Description
+    position             vec3   5 5 -3      The absolute position of the light
+                                            source
+    luminance            float  100.0       The power of the light directly at
+                                            its source. Attenuates by 1.0 /
+                                            (distance * distance)
+    ambientPower         float  0.2         The amount of the light that still
+                                            affects the surface even if it is
+                                            shadowed or facing away (0.0-1.0)
+    color                vec3   1 1 1       The color of the light
+
+
+2.7  stepBack
+--------------------------------------------------------------------------------
+
+stepBack
+    Removes the top object from the stack and returns to the previous level.
+    Note: it is not required to stepBack to the base level at the end of the
+    file, though it is recommended for consistency and to facilitate any future
+    edits to the .scn file. A stepBack that moves beyond the base layer will be
+    ignored, but should be avoided for clarity.
+
+    eg. stepBack
+
+    No parameters.
