@@ -1,0 +1,7 @@
+SDFObject
+	ANContinuous3D propName color amplitude 1 1 1 phase 0 0 0
+	COMBAdd
+	SDFSphere color 1 0 0 radius 1
+		stepBack
+	ANContinuous1D propName radius amplitude 0.1 phase 0
+LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1

@@ -1,0 +1,7 @@
+SDFObject
+	COMBAdd
+	SDFSphere color 1 0 0 radius 1
+		stepBack
+LightSource positon 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1
+LightSource position 2 5 -3 luminance 150 luminance 100 ambientPower 0.2 color 1 1 1
+LightSource position 2 5 luminance 150 ambientPower 0.2 color 1 1 1

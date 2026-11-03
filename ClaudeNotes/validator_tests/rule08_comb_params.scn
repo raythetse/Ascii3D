@@ -1,0 +1,11 @@
+SDFObject
+	COMBAdd
+	SDFSphere color 1 0 0 radius 1
+		stepBack
+	COMBSubtract onTime 1 offTime 0 phase 0
+	SDFBox color 1 1 1 dimensions 1 1 1
+		stepBack
+	COMBExclude colorMode 1 phase 0
+	SDFBox color 1 1 1 dimensions 0.5 2 0.5
+		stepBack
+LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1

@@ -1,0 +1,8 @@
+SDFObject
+	OPRotate axis 0 0 0 rotations 0.5
+	OPRepeatCircle axis 3 repetitions 0
+	OPTranslate translation 2 0 0
+	COMBAdd
+	SDFStar color 1 1 0 operation 0 magnitude 1 revolveRotations 0 revolveRotateOffset 0 0 radius 0.5 numPoints 0 ratio 0.5
+		stepBack
+LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1
