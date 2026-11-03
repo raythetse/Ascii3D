@@ -359,7 +359,8 @@ Parameters
 6. Numeric values; int fields are integers; bools are 0/1.
 7. `axis` (int) 0-2, `operation` 0-2, `colorMode` 0-3; `repetitions`,
    `numPoints` >= 1; `SDFPlane normal` and `OPRotate axis` non-zero.
-8. Plain `COMBSubtract`/`COMBIntersect` take no params; `COMBExclude` only `colorMode`.
+8. Plain `COMBSubtract`/`COMBIntersect` take no params; `COMBExclude` only `colorMode`
+   (warning: the loader ignores them; the serializer writes `onTime`/`offTime`/`phase` on them).
 9. Generator-only (warning): `OPCubeRollHeight`/`OPCubeRoller` are not allowed;
    every parameter is written explicitly.
 

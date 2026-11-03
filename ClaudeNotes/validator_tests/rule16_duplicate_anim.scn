@@ -1,0 +1,7 @@
+SDFObject
+	COMBAdd
+	SDFSphere color 1 0 0 radius 1
+		ANContinuous1D propName radius amplitude 0.1 phase 0
+		ANSmoothCycle1D propName radius period 1 amplitude 0.2 phase 0
+		stepBack
+LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1

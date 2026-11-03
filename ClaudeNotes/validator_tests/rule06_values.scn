@@ -1,0 +1,8 @@
+SDFObject
+	OPMirror mirrorX 2 mirrorY 0 mirrorZ 0
+	OPRepeatCircle axis 1.0 repetitions 6
+	OPTranslate translation 2 0 0
+	COMBAdd
+	SDFSphere color 1 0 0 radius 1
+		stepBack
+LightSource position 2 5 -3 luminance bright ambientPower 0.2 color 1 1 1

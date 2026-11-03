@@ -1,0 +1,16 @@
+SDFObject
+	COMBAdd onTime 1 offTime 0 phase 0
+	ANContinuous1D propName onTime amplitude 1 phase 0
+	SDFSphere color 1 0 0 radius 1
+		ANContinuous3D propName radius amplitude 1 1 1 phase 0 0 0
+		ANContinuous1D propName raduis amplitude 1 phase 0
+		ANContinuous1D amplitude 1 phase 0
+		stepBack
+	OPRepeatCircle axis 1 repetitions 6
+	ANContinuous1D propName repetitions amplitude 1 phase 0
+	OPTranslate translation 2 0 0
+	ANContinuous1D propName translation amplitude 1 phase 0
+	COMBAdd
+	SDFBox color 0 0 1 dimensions 0.5 0.5 0.5
+		stepBack
+LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1
