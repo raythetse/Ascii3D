@@ -51,10 +51,10 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
         if (s_opMap.contains(opName)) {
             s_opMap.at(opName)(*this, ss);
         }
-        if (ss.fail()) {
-            std::cout << "\nFailed to parse line " << i << '\n';
-            std::exit(1);
-        }
+        //if (ss.fail()) {
+        //    std::cout << "\nFailed to parse line " << i << '\n';
+        //    std::exit(1);
+        //}
     }
     return *this;
 }

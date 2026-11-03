@@ -32,7 +32,7 @@ protected:
 public:
 	SDFObject(Color color = Color::White)
 		: m_color{ color } {}
-	~SDFObject();
+	virtual ~SDFObject();
 	void update();
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	SDFOperation* pushOperation(std::unique_ptr<SDFOperation> operation);
