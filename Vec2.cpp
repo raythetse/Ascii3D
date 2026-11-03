@@ -1,4 +1,3 @@
-#pragma once
 #include "Vec2.h"
 #include <cmath>
 #include <format>
@@ -27,29 +26,29 @@ double Vec2::dot(const Vec2& p) const
     return x * p.x + y * p.y;
 }
 
-Vec2 Vec2::maximum(const double m)
+Vec2 Vec2::maximum(const double m) const
 {
     return { m > x ? m : x, m > y ? m : y };
 }
 
-Vec2 Vec2::minimum(const double m)
+Vec2 Vec2::minimum(const double m) const
 {
     return { m < x ? m : x, m < y ? m : y };
 }
 
-Vec2 Vec2::maximum(const Vec2 m)
+Vec2 Vec2::maximum(const Vec2 m) const
 {
     return Vec2{ x > m.x ? x : m.x, y > m.y ? y : m.y };
 }
 
-Vec2 Vec2::minimum(const Vec2 m)
+Vec2 Vec2::minimum(const Vec2 m) const
 {
     return Vec2{ x < m.x ? x : m.x, y < m.y ? y : m.y };
 }
 
-Vec2 Vec2::cross(const Vec2& p)
+Vec2 Vec2::cross(const Vec2& p) const
 {
-    return (x * p.y - y * p.x);
+    return x * p.y - y * p.x;
 }
 
 Vec2 Vec2::sin() const
@@ -62,7 +61,7 @@ Vec2 Vec2::cos() const
     return { std::cos(x), std::cos(y) };
 }
 
-Vec2 Vec2::abs()
+Vec2 Vec2::abs() const
 {
     return { std::abs(x), std::abs(y) };
 }
@@ -81,7 +80,8 @@ void Vec2::normalize()
 {
     const double m = length();
     if (!m) return;
-    x /= m; y /= m;
+    x /= m;
+    y /= m;
 }
 
 Vec2 Vec2::rotate(const double rads) const
@@ -143,49 +143,57 @@ Vec2 Vec2::operator/(const double d) const noexcept
 
 Vec2& Vec2::operator+=(const Vec2& p)
 {
-    x += p.x; y += p.y;
+    x += p.x;
+    y += p.y;
     return *this;
 }
 
 Vec2& Vec2::operator-=(const Vec2& p)
 {
-    x -= p.x; y -= p.y;
+    x -= p.x;
+    y -= p.y;
     return *this;
 }
 
 Vec2& Vec2::operator*=(const Vec2& p)
 {
-    x *= p.x; y *= p.y;
+    x *= p.x;
+    y *= p.y;
     return *this;
 }
 
 Vec2& Vec2::operator/=(const Vec2& p)
 {
-    x = p.x == 0.0 ? 0.0 : x / p.x; y = p.y == 0.0 ? 0.0 : p.y;
+    x = p.x == 0.0 ? 0.0 : x / p.x;
+    y = p.y == 0.0 ? 0.0 : y / p.y;
     return *this;
 }
 
 Vec2& Vec2::operator+=(const double d)
 {
-    x += d; y += d;
+    x += d;
+    y += d;
     return *this;
 }
 
 Vec2& Vec2::operator-=(const double d)
 {
-    x -= d; y -= d;
+    x -= d;
+    y -= d;
     return *this;
 }
 
 Vec2& Vec2::operator*=(const double d)
 {
-    x *= d; y *= d;
+    x *= d;
+    y *= d;
     return *this;
 }
 
 Vec2& Vec2::operator/=(const double d)
 {
-    x = d == 0.0 ? 0.0 : x / d; y = d == 0.0 ? 0.0 : d;
+    x = d == 0.0 ? 0.0 : x / d;
+    y = d == 0.0 ? 0.0 : y / d;
     return *this;
 }
 

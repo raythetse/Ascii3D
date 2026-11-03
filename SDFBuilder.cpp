@@ -1,4 +1,3 @@
-#pragma once
 #include "SDFBuilder.h"
 #include "SDFObjectInc.h"
 #include "SDFScene.h"
@@ -45,14 +44,16 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
     m_baseObject = std::make_unique<SDFObject>();
     m_objChain.push_back(m_baseObject.get());
 
-    SDFBuilder builder{};
     for (size_t i{ 1 }; i < strVec.size(); ++i) {
-        std::replace(strVec[i].begin(), strVec[i].end(), ',', ' ');
         std::stringstream ss{ strVec[i] };
         std::string opName;
         ss >> opName;
         if (s_opMap.contains(opName)) {
             s_opMap.at(opName)(*this, ss);
+        }
+        if (ss.fail()) {
+            std::cout << "\nFailed to parse line " << i << '\n';
+            std::exit(1);
         }
     }
     return *this;
@@ -601,7 +602,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "axes") {
                 axes.clear();
-                int numAxes{};
+                size_t numAxes{};
                 ss >> numAxes;
                 for (size_t i{}; i < numAxes; ++i) {
                     Vec3 axis{};

@@ -1,7 +1,11 @@
 #pragma once
+#include <concepts>
 #include <functional>
+#include <memory>
 #include <sstream>
+#include <string>
 #include <unordered_map>
+#include <vector>
 #include "Animation.h"
 #include "LightSource.h"
 #include "SDFObjectInc.h"
@@ -19,8 +23,7 @@ private:
     std::vector<SDFObject*> m_objChain;
     std::vector<std::unique_ptr<LightSource>> m_lights;
     SDFOperation* m_lastOp{};
-    template<typename T, typename... Args>
-        requires (std::is_base_of_v<SDFObject, T> || std::same_as<SDFObject, T>)
+    template <std::derived_from<SDFObject> T, typename... Args>
     SDFBuilder& pushSDFObj(Args&&... args);
     bool m_lastAddedObj{ true };
 public:
@@ -43,13 +46,18 @@ public:
     SDFBuilder& loadSerialized(std::vector<std::string>& strVec);
 };
 
-template<typename T, typename ...Args>
-    requires (std::is_base_of_v<SDFObject, T> || std::same_as<SDFObject, T>)
-SDFBuilder& SDFBuilder::pushSDFObj(Args && ...args)
+template <std::derived_from<SDFObject> T, typename... Args>
+SDFBuilder& SDFBuilder::pushSDFObj(Args&&... args)
 {
+    auto* comb = dynamic_cast<CombinationOperation*>(m_lastOp);
+    if (!comb) {
+        // report: shape without a preceding combination
+        return *this;
+    }
     auto obj = std::make_unique<T>(std::forward<Args>(args)...);
     m_objChain.push_back(obj.get());
-    dynamic_cast<CombinationOperation*>(m_lastOp)->setCombineObject(std::move(obj));
+    comb->setCombineObject(std::move(obj));
+    m_lastOp = nullptr;          // a combination takes exactly one shape
     m_lastAddedObj = true;
     return *this;
 }

@@ -71,7 +71,7 @@ than just up. We can do this by added the "translation" parameter to the
 SDFSphere line followed by values for the translation.
 
 SDFObject
-	OPTranslate translation 2.0 2.0 -1.0
+	OPTranslate translation 2.0 2.0 1.0
 	COMBAdd
 	SDFSphere
 LightSource
@@ -82,7 +82,7 @@ the loader does not require you to explicitly use floating point number
 formats for floating point values so the following .scn file works just as well.
 
 SDFObject
-	OPTranslate translation 2 2 -1
+	OPTranslate translation 2 2 1
 	COMBAdd
 	SDFSphere
 LightSource
@@ -481,7 +481,7 @@ not clear, try changing all the y and z parameters to 0 so you can
 watch what happens on just the x axis.
 
 SDFObject
-	OPTranslate 0 1 0
+	OPTranslate translation 0 1 0
 	ANLinearCycle3D propName translation amplitude 1 0 0 forwardTime 0 0 0 delayTime1 1 0 0 backwardTime 3.04 0 0 delayTime2 1.34 0 0
 	COMBAdd
 	SDFSphere
@@ -537,7 +537,7 @@ eg. COMBExclude colorMode 3
 	colorMode - 0-3, 0 = shapes retain their color
 					 1 = shapes gain color of original
 					 2 = internal surfaces get added color, outer surfaces retain original
-				     3 = same as three but colors are swapped according to proximity
+				     3 = same as 2 but colors are swapped according to proximity
 
 The following combinations share 3 parameters so we will only define them once:
 	smoothing - distance to smooth over
@@ -618,7 +618,7 @@ eg. SDFTorusSegment color 0 0 1 radii 2.5 0.5 axis 0 sweep 0.5
 	axis - the axis that passes through the hole (0=x, 1=y, 2=z)
 
 SDFCapsule - A classic pill shape
-eg. SDFCapsule color 1 0 1 radius 0.5 bodyLength 2.0 axis 3
+eg. SDFCapsule color 1 0 1 radius 0.5 bodyLength 2.0 axis 2
 	radius - the radius of the capsule
 	bodyLength - the length of the capsule (not including the rounding, rounding adds the radius at both ends)
 	axis - the axis that the body aligns with (0=x, 1=y, 2=z)
@@ -661,11 +661,11 @@ SDFTriangle - a triangle with arbitrary 2D vertices defined by point1, point2, a
 eg. SDFTriangle color 0 1 1 point1 -1 0 point2 0 1 point3 0.5 -1.5 operation 0 magnitude 0.75
 
 SDFEquilateralTriangle - A triangle with sides of equal length
-eg. SDFEquilateralTriangle color 0.5 0.5 0.0 base 2.0 operation 1 magnitude 2.5 revolveRotations 0.0 revolveRotateOffset
+eg. SDFEquilateralTriangle color 0.5 0.5 0.0 base 2.0 operation 1 magnitude 2.5 revolveRotations 0.0 revolveRotateOffset 0.1 0.25
 	base - the length of the sides
 	
 SDFIsoscelesTriangle - A triangle with two equal sides and the third may be different.
-eg. SDFTriangle color 0 0 1 dimensions 1 2 magnitude 2.0 operation 1 revolveRotations 0.234 revolveRotateOffset 0.2 0.0
+eg. SDFIsoscelesTriangle color 0 0 1 dimensions 1 2 magnitude 2.0 operation 1 revolveRotations 0.234 revolveRotateOffset 0.2 0.0
 	dimensions - the width and height of the triangle
 
 SDFPieSlice - A segment of a circle like a piece of pie
@@ -758,7 +758,7 @@ the animation variant that matches the dimensions of the property you are
 animating. Use the propName parameter to reference the property you wish to
 animate.
 	
-ABContinuous - continuously increases the property value by the amplitude
+ANContinuous - continuously increases the property value by the amplitude
 
 eg. ANContinuous1D propName rotations amplitude 1.0 phase 0.5
 	ANContinuous2D propName radii amplitude 0.45 0.22 phase 1.0 1.25
@@ -793,7 +793,12 @@ eg. ANLinearCycle1D propName rotations forwardTime 1.0 delayTime1 0.5 backwardTi
 
 LightSource - A light source to light the scene. These are not a part of the stack and can be
 defined at any point in the .scn file except for the first line, though it is best to define
-them all together at the end of the file. At this time, light sources cannot be animated
+them all together at the end of the file. At this time, light sources cannot be animated.
+A light's power attenuates with distance [luminance / (distance * distance)]. A decent illumination
+may be 150 at a distance of 10 meters. If you double the distance, multiply the power by 4.
+Lower ambient power values (perhaps 0.1-0.2) work well for light sources close to the objects
+, while a higher value (perhaps 0.4-0.5) works well for larger more distant lights such as for an
+outdoor scene.
 eg. LightSource position 2.0 5.0 -3.0 luminance 150.0 ambientPower 0.2 color 1.0 1.0 1.0
 	position - the absolute position of the light source
 	luminance - the power of the light directly at its source. Attentuates by 1.0 / (distance * distance)

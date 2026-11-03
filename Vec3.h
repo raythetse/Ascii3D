@@ -55,13 +55,13 @@ public:
 	Vec3(const double v) : x(v), y(v), z(v) {}
 	double length() const;
 	double distance(const Vec3& p) const;
-	double dot(const Vec3& p);
+	double dot(const Vec3& p) const;
 	Vec3 maximum(double max) const;
 	Vec3 minimum(double min) const;
 	Vec3 clamp(double min, double max) const;
 	Vec3 clamp(Vec3 min, Vec3 max) const;
 	Vec3 saturate() const;
-	Vec3 cross(const Vec3& p);
+	Vec3 cross(const Vec3& p) const;
 	Vec3 lerp(Vec3 v, double weight) const;
 	Vec3 sin() const;
 	Vec3 cos() const;
@@ -71,7 +71,7 @@ public:
 	Vec3 rotateYAxis(const double rads) const ;
 	Vec3 rotateZAxis(const double rads) const ;
 	Vec3 getNormal() const ;
-	Vec3 quantize(size_t level);
+	Vec3 quantize(size_t level) const;
 	Vec3 floor() const;
 	Vec3 ceil() const;
 	Vec3 round() const;
@@ -81,13 +81,12 @@ public:
 	Vec3 operator-() const;
 	Vec3 operator-(const Vec3& p) const;
 	Vec3 operator*(const Vec3& p) const;
-	Vec3 operator/(const Vec3& p) const;
+	Vec3 operator/(const Vec3& p) const noexcept;
 	Vec3 operator+(const Vec3& p) const;
-	Vec3& operator=(const Vec3& p);
 	Vec3& operator+=(const Vec3& p);
 	Vec3& operator-=(const Vec3& p);
 	Vec3& operator*=(const Vec3& p);
-	Vec3& operator/=(const Vec3& p);
+	Vec3& operator/=(const Vec3& p) noexcept;
 	Vec3 operator+(const double d) const;
 	Vec3 operator-(const double d) const;
 	Vec3 operator*(const double d) const;
@@ -97,7 +96,7 @@ public:
 	Vec3& operator-=(const double d);
 	Vec3& operator*=(const double d);
 	Vec3& operator/=(const double d);
-	bool operator==(const Vec3& p) const;
+	bool operator==(const Vec3& p) const = default;
 	bool operator==(double d) const;
 	explicit operator bool() const;
 

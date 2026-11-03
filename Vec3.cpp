@@ -53,7 +53,7 @@ double Vec3::distance(const Vec3& p) const
     return (p - *this).length();
 }
 
-double Vec3::dot(const Vec3& p)
+double Vec3::dot(const Vec3& p) const
 {
     return x * p.x + y * p.y + z * p.z;
 }
@@ -83,7 +83,7 @@ Vec3 Vec3::saturate() const
     return Vec3::clamp(0.0, 1.0);
 }
 
-Vec3 Vec3::cross(const Vec3& p)
+Vec3 Vec3::cross(const Vec3& p) const
 {
     return { y * p.z - z * p.y, z * p.x - x * p.z, x * p.y - y * p.x };
 }
@@ -145,7 +145,7 @@ Vec3 Vec3::getNormal() const
     return !m ? Vec3{} : Vec3{ x / m, y / m, z / m };
 }
 
-Vec3 Vec3::quantize(size_t level)
+Vec3 Vec3::quantize(size_t level) const
 {
     if (level <= 0) return *this;
     return { std::round(level * x) / level, std::round(level * y) / level, std::round(level * z) / level };
@@ -153,7 +153,7 @@ Vec3 Vec3::quantize(size_t level)
 
 Vec3 Vec3::floor() const
 {
-    return { x - std::floor(x), y - std::floor(y), z - std::floor(z) };
+    return { std::floor(x), std::floor(y), std::floor(z) };
 }
 
 Vec3 Vec3::ceil() const
@@ -201,15 +201,9 @@ Vec3 Vec3::operator*(const Vec3& p) const
     return { x * p.x, y * p.y, z * p.z };
 }
 
-Vec3 Vec3::operator/(const Vec3& p) const
+Vec3 Vec3::operator/(const Vec3& p) const noexcept
 {
     return { p.x == 0.0 ? 0.0 : x / p.x, p.y == 0.0 ? 0.0 : y / p.y, p.z == 0.0 ? 0.0 : z / p.z };
-}
-
-Vec3& Vec3::operator=(const Vec3& p)
-{
-    x = p.x; y = p.y; z = p.z;
-    return *this;
 }
 
 Vec3& Vec3::operator+=(const Vec3& p)
@@ -230,9 +224,9 @@ Vec3& Vec3::operator*=(const Vec3& p)
     return *this;
 }
 
-Vec3& Vec3::operator/=(const Vec3& p)
+Vec3& Vec3::operator/=(const Vec3& p) noexcept
 {
-    x = p.x == 0 ? 0 : p.x;
+    x = p.x == 0.0 ? 0.0 : x / p.x;
     y = p.y == 0.0 ? 0.0 : y / p.y;
     z = p.z == 0.0 ? 0.0 : z / p.z;
     return *this;
@@ -280,11 +274,7 @@ Vec3& Vec3::operator*=(const double d)
 
 Vec3& Vec3::operator/=(const double d)
 {
-    return *this /= (d) ? Vec3{ d } : Vec3{ 1.0 };
-}
-
-bool Vec3::operator==(const Vec3& p) const {
-    return (x == p.x && y == p.y && z == p.z);
+    return *this /= Vec3{ d };
 }
 
 bool Vec3::operator==(const double d) const {

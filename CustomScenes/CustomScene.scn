@@ -1,15 +1,22 @@
-SDFObject color 1 1 1
-	COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
-	SDFObject color 1 1 1
-		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
-		SDFSphere color 1 1 1 radius 0.5
-			OPOnion magnitude 0.01
+SDFObject
+	COMBAdd
+	SDFObject
+		COMBAdd
+		SDFPlane color 0.4 0.4 0.4 normal 0 1 0 offset 0
 			stepBack
 		stepBack
-	OPTranslate translation 0 0 -0.5
-	COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 1
-	SDFBox color 1 0 0 dimensions 1 1 1
+	COMBAdd
+	SDFObject
+		OPTranslate translation 0 1 3
+		COMBAdd
+		SDFSphere radius 1 color 1 0 0
+			stepBack
 		stepBack
-	stepBack
-LightSource position 8 8 -5 luminance 150 color 1 1 1 ambientPower 0.2
-end
+	COMBAdd
+	SDFObject
+		OPTranslate translation 2.5 0.5 3
+		COMBAdd
+		SDFBox dimensions 1 1 1 color 0 0 1
+			stepBack
+		stepBack
+LightSource position 2 6 -2 luminance 150 ambientPower 0.2 color 1 1 1
