@@ -11,7 +11,7 @@ protected:
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	TransformOperation() = default;
 public:
-	void bindAnimation(std::unique_ptr<Animation> animation) override {};
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override { return BindResult::UnknownProperty; }
 	virtual ~TransformOperation() = default;
 };
 
@@ -30,7 +30,7 @@ protected:
 public:
 	OPTranslate(Vec3 translation = DFLT_TRANSLATION)
 		: m_translation(translation) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
 // Rotates the objects
@@ -52,7 +52,7 @@ protected:
 public:
 	OPRotate(Vec3 axis = DFLT_AXIS, double rotations = DFLT_ROTATIONS)
 		: m_axis(axis), m_rotations(rotations) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
 // Creates a bouncing effect specifically for rolling a cube up and over its edges
@@ -76,7 +76,7 @@ protected:
 public:
 	OPCubeRollHeight(double cubeHeight = DFLT_CUBEHEIGHT, double period = DFLT_PERIOD, double phase = DFLT_PHASE)
 		: m_cubeHeight(cubeHeight), m_period(period), m_phase(phase) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
 // Controls a cube rolling around along axes.
@@ -100,7 +100,7 @@ protected:
 public:
 	OPCubeRoller(std::vector<Vec3> axes = DFLT_AXES, double quarterTurnTime = DFLT_QUARTERTURNTIME, double phase = DFLT_PHASE)
 		: m_axes(axes), m_quarterTurnTime(quarterTurnTime), m_phase(phase) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
 // Elongates and object along an axis by moving two halves in opposite directions.  For example, can turn a sphere into a capsule.
@@ -124,5 +124,5 @@ protected:
 public:
 	OPElongate(Axis axis = AXIS_Y, double length = DFLT_LENGTH, double offset = DFLT_OFFSET)
 		: m_axis(axis), m_length(length), m_offset(offset) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };

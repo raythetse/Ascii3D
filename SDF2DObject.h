@@ -21,11 +21,11 @@ protected:
 		: SDFObject(color), m_operation(operation), m_magnitude(magnitude), m_revolveRotations(revolveRotations), m_revolveRotateOffset(revolveRotateOffset) {}
 	virtual double signedDistanceInnerInner(Vec3 p) const = 0;
 	virtual void serializeInnerInner(std::stringstream& ss) const = 0;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) = 0;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) = 0;
 public:
 	void serializeInner(std::stringstream& ss) const override;
 	double signedDistanceInner(Vec3 p) const override;
-	virtual void bindAnimation(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 	virtual ~SDF2DObject() = default;
 };
 
@@ -45,7 +45,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_dimensions(dimensions) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // Standard equilateral triangle
@@ -66,7 +66,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_base(base) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // Standard Isosceles triangle
@@ -87,7 +87,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_dimensions(dimensions) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // Arbitrary triangle defined by three points.
@@ -112,7 +112,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_point1(point1), m_point2(point2), m_point3(point3) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // Part of a circle defined by its sweep (0.0 - 1.0 instead of degrees or radians)
@@ -133,7 +133,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_sweep(sweep), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // A regular pentagon defined by the radius of the circle that circumscribes it
@@ -154,7 +154,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // A regular hexagon defined by the radius of the circle that circumscribes it
@@ -175,7 +175,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // A regular octagon defined by the radius of the circle that circumscribes it
@@ -196,7 +196,7 @@ public:
 		, double revolveRotations = DFLT_REVOLVEROTATIONS, Vec2 revolveRotateOffset = DFLT_REVOLVEROTATEOFFSET, Color color = Color::White)
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_radius(radius) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };
 
 // A regular star defined by the radius of the circle that circumscribes it and a ratio of its concavity
@@ -223,5 +223,5 @@ public:
 		: SDF2DObject(operation, magnitude, revolveRotations, revolveRotateOffset, color), m_numPoints(numPoints)
 		, m_numPointsD(static_cast<double>(numPoints)), m_radius(radius), m_ratio(ratio) {}
 	double signedDistanceInnerInner(Vec3 p) const override;
-	virtual void bindAnimationInner(std::unique_ptr<Animation> animation) override;
+	virtual BindResult bindAnimationInner(std::unique_ptr<Animation> animation) override;
 };

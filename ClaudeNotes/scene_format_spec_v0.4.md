@@ -4,7 +4,8 @@ Draft 2026-11-02, revised 2026-11-03, for review. Supersedes v0.3. Sources:
 HOWTO.txt, SDFBuilder.cpp/.h, CombinationOperation.*, SDFObject.*,
 SDFAxisObject.h, SDF2DObject.*, TransformOperation.*, DomainOperation.*,
 ResurfaceOperation.*, Animation.h, LightSource.h, Vec3.h, as of commit d0fb8f1,
-plus the 2026-11-04 loader fixes (commit ecf5f72).
+plus the 2026-11-04 loader fixes (commit ecf5f72) and the animation binding
+fix that followed them.
 
 **Strict subset.** The loader accepts more than this spec allows. For many
 mistakes it now prints a warning with the line number and recovers, but some
@@ -226,11 +227,12 @@ revolveRotations 1D, revolveRotateOffset 2D. `operation` cannot be animated.
   `2 0 1` gives 5 x 1 x 3 = 15 copies. Keep repeated shapes centered and symmetrical.
 - `OPRepeatCircle`: follow it with an `OPTranslate` purely along x to set the
   circle's radius. Copies are first re-oriented to the target axis. **Never animate
-  `repetitions`.** It is a `size_t`, and the animation writes a double into it
-  (memory corruption).
+  `repetitions`.** The loader now binds it safely (to a double copy of the
+  count), but fractional counts are untested visually, so the generator still
+  excludes it.
 - `OPRoundOff` looks poor combined with subtractions.
-- `rotMat` is accepted by `OPRotate::bindAnimation` but is internal and overwritten
-  every frame. Never use it.
+- `rotMat` (`OPRotate`) and `axes` (`OPCubeRoller`) are not animatable. The
+  loader used to accept them; it now warns and drops the animation.
 - Not for the generator: `OPCubeRollHeight` (`cubeHeight` 1, `period` 1, `phase` 0)
   and `OPCubeRoller` (`axes` N then N vec3s, default fwd/right/back/left;
   `quarterTurnTime` 0.5, `phase` 0). They are undocumented and used by the walking-cubes demo.
@@ -254,13 +256,14 @@ In 2D/3D variants every numeric param is a vec2/vec3 (one value per component).
 - Never animate the root (line 1 is not parsed anyway).
 
 **Validity:**
-- `propName` must be in the target's Animatable list (Sections 5-7). An unknown
-  or missing `propName` drops the animation silently.
-- **The dimension must match the property.** `BindToProperty` is an unchecked
-  `reinterpret_cast`. A 3D animation on a 1D property (e.g. `ANContinuous3D
-  propName radius`) writes past the field and corrupts memory. A 1D animation
-  on a vec3 animates only the first component in the C++ path, and the GLSL
-  shader fails to compile (confirmed 2026-11-03).
+- `propName` must be in the target's Animatable list (Sections 5-7). The
+  loader warns about and drops an animation with an unknown or missing
+  `propName` (`no animatable property 'radios' ...`).
+- **The dimension must match the property.** The loader checks this and warns
+  about and drops a mismatch (`ANContinuous3D does not match the type of
+  'radius'`). Before the fix, binding was an unchecked `reinterpret_cast`: a 3D
+  animation on a 1D property wrote past the field and corrupted memory, and a
+  1D animation on a vec3 made the GLSL shader fail to compile (confirmed 2026-11-03).
 - Never put two animations on the same property of the same target. The later one wins.
 - Lights cannot be animated.
 
@@ -388,9 +391,10 @@ Animations
 ## Appendix A: loader behavior and known bugs
 
 Describes the loader after the 2026-11-04 fixes (commit ecf5f72,
-`SDFBuilder.cpp/.h`, `SDFObject::popOperation`). The loader now prints
-`Warning (line N): ...` to stdout and recovers instead of crashing or
-silently misplacing things. It still never rejects a file. The generator and
+`SDFBuilder.cpp/.h`, `SDFObject::popOperation`) and the animation binding
+fix (`Animation.h` `bindTo`/`attach`, every `bindAnimation`). The loader now
+collects `Line N: ...` warnings, which the app shows before rendering a custom
+scene, and recovers instead of crashing or silently misplacing things. It still never rejects a file. The generator and
 validator rules in this spec are unchanged: a file that triggers any
 warning is invalid.
 
@@ -416,10 +420,18 @@ warning is invalid.
 - An animation after `stepBack`, after `LightSource`, or directly after line 1
   has no target: warned and dropped. (Previously it bound to the parent shape
   or to whatever came before.) The other attachment rules in Section 8 are unchanged.
-- An unknown or missing `propName` is still dropped silently.
-- Still unchecked: `reinterpret_cast` binding, so a dimension mismatch corrupts
-  memory (Section 8), and `OPRepeatCircle` `repetitions` is a `size_t` bound as
-  double. Not fixed; the validator must catch these.
+- An unknown or missing `propName` is warned and dropped. So is an animation
+  whose dimension does not match the property: binding is typed
+  (`Animation::bindTo<T>` with a `dynamic_cast` to `AnimatorTemplate<T>`),
+  replacing the unchecked `reinterpret_cast`. A rejected animation is never
+  stored, so it is never updated.
+- `OPRepeatCircle` `repetitions` binds to a double copy of the count
+  (`m_repetitionsD`, like `SDFStar` `numPoints`), which `execute` and the
+  shader use. `OPRotate rotMat` and `OPCubeRoller axes` are no longer
+  animatable (the first was internal, the second a `std::vector`).
+- `animateComb` (C++ scenes only) warns when there is no combination to target.
+- Still unchecked: two animations on the same property (both are kept; the
+  later one wins).
 
 **Lines and parameters**
 - An unknown first token is warned (`unknown keyword 'COMBadd'`) and the line
@@ -479,6 +491,10 @@ warning is invalid.
   animations with no target are dropped; out-of-range enums, counts < 1 and zero
   direction vectors fall back to defaults. `SDFPlane::DFLT_NORMAL` no longer
   depends on static initialization order. The spec's rules are unchanged.
+- Animation binding fix (2026-11-04, Appendix A): unknown `propName`s and
+  dimension mismatches are warned and dropped instead of being ignored or
+  corrupting memory; `repetitions` binds safely; `rotMat` and `axes` are no
+  longer animatable. The spec's rules are unchanged.
 
 ## Still open
 

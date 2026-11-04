@@ -13,7 +13,7 @@ protected:
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	ResurfaceOperation(double magnitude) : m_magnitude(magnitude) {}
 public:
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 	virtual ~ResurfaceOperation() = default;
 };
 

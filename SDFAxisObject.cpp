@@ -48,16 +48,11 @@ double SDFTorus::signedDistanceInner(Vec3 p) const
     return Vec2{ Vec2{p.x, p.z}.length() - m_radii.x, p.y }.length() - m_radii.y;
 }
 
-void SDFTorus::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SDFTorus::bindAnimation(std::unique_ptr<Animation> animation)
 {
-    if (animation->propName() == "color") {
-        animation->BindToProperty(&m_color);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "radii") {
-        animation->BindToProperty(&m_radii);
-        m_animations.push_back(std::move(animation));
-    }
+    if (animation->propName() == "color") return attach(m_animations, std::move(animation), m_color);
+    if (animation->propName() == "radii") return attach(m_animations, std::move(animation), m_radii);
+    return BindResult::UnknownProperty;
 }
 
 void SDFTorusSegment::serializeInner(std::stringstream& ss) const
@@ -86,20 +81,12 @@ double SDFTorusSegment::signedDistanceInner(Vec3 p) const
     return sqrt(p.dot(p) + m_radii.x * m_radii.x - 2.0 * m_radii.x * k) - m_radii.y;
 }
 
-void SDFTorusSegment::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SDFTorusSegment::bindAnimation(std::unique_ptr<Animation> animation)
 {
-    if (animation->propName() == "color") {
-        animation->BindToProperty(&m_color);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "radii") {
-        animation->BindToProperty(&m_radii);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "sweep") {
-        animation->BindToProperty(&m_sweep);
-        m_animations.push_back(std::move(animation));
-    }
+    if (animation->propName() == "color") return attach(m_animations, std::move(animation), m_color);
+    if (animation->propName() == "radii") return attach(m_animations, std::move(animation), m_radii);
+    if (animation->propName() == "sweep") return attach(m_animations, std::move(animation), m_sweep);
+    return BindResult::UnknownProperty;
 }
 
 void SDFCapsule::serializeInner(std::stringstream& ss) const
@@ -126,20 +113,12 @@ double SDFCapsule::signedDistanceInner(Vec3 p) const
     return p.length() - m_radius;
 }
 
-void SDFCapsule::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SDFCapsule::bindAnimation(std::unique_ptr<Animation> animation)
 {
-    if (animation->propName() == "color") {
-        animation->BindToProperty(&m_color);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "radius") {
-        animation->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "bodyLength") {
-        animation->BindToProperty(&m_bodyLength);
-        m_animations.push_back(std::move(animation));
-    }
+    if (animation->propName() == "color") return attach(m_animations, std::move(animation), m_color);
+    if (animation->propName() == "radius") return attach(m_animations, std::move(animation), m_radius);
+    if (animation->propName() == "bodyLength") return attach(m_animations, std::move(animation), m_bodyLength);
+    return BindResult::UnknownProperty;
 }
 
 void SDFTaperedCapsule::serializeInner(std::stringstream& ss) const
@@ -170,20 +149,12 @@ double SDFTaperedCapsule::signedDistanceInner(Vec3 p) const
     return q.dot(Vec2{ a, b }) - m_radii.x;
 }
 
-void SDFTaperedCapsule::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SDFTaperedCapsule::bindAnimation(std::unique_ptr<Animation> animation)
 {
-    if (animation->propName() == "color") {
-        animation->BindToProperty(&m_color);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "bodyLength") {
-        animation->BindToProperty(&m_bodyLength);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "radii") {
-        animation->BindToProperty(&m_radii);
-        m_animations.push_back(std::move(animation));
-    }
+    if (animation->propName() == "color") return attach(m_animations, std::move(animation), m_color);
+    if (animation->propName() == "bodyLength") return attach(m_animations, std::move(animation), m_bodyLength);
+    if (animation->propName() == "radii") return attach(m_animations, std::move(animation), m_radii);
+    return BindResult::UnknownProperty;
 }
 
 void SDFCylinder::serializeInner(std::stringstream& ss) const
@@ -210,20 +181,12 @@ double SDFCylinder::signedDistanceInner(Vec3 p) const
     return std::min(std::max(d.x, d.y), 0.0) + d.maximum(0.0).length();
 }
 
-void SDFCylinder::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SDFCylinder::bindAnimation(std::unique_ptr<Animation> animation)
 {
-    if (animation->propName() == "color") {
-        animation->BindToProperty(&m_color);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "radius") {
-        animation->BindToProperty(&m_radius);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "sideLength") {
-        animation->BindToProperty(&m_sideLength);
-        m_animations.push_back(std::move(animation));
-    }
+    if (animation->propName() == "color") return attach(m_animations, std::move(animation), m_color);
+    if (animation->propName() == "radius") return attach(m_animations, std::move(animation), m_radius);
+    if (animation->propName() == "sideLength") return attach(m_animations, std::move(animation), m_sideLength);
+    return BindResult::UnknownProperty;
 }
 
 void SDFTaperedCylinder::serializeInner(std::stringstream& ss) const
@@ -255,18 +218,10 @@ double SDFTaperedCylinder::signedDistanceInner(Vec3 p) const
     return s * std::sqrt(std::min(ca.dot(ca), cb.dot(cb)));
 }
 
-void SDFTaperedCylinder::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SDFTaperedCylinder::bindAnimation(std::unique_ptr<Animation> animation)
 {
-    if (animation->propName() == "color") {
-        animation->BindToProperty(&m_color);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "radii") {
-        animation->BindToProperty(&m_radii);
-        m_animations.push_back(std::move(animation));
-    }
-    else if (animation->propName() == "sideLength") {
-        animation->BindToProperty(&m_sideLength);
-        m_animations.push_back(std::move(animation));
-    }
+    if (animation->propName() == "color") return attach(m_animations, std::move(animation), m_color);
+    if (animation->propName() == "radii") return attach(m_animations, std::move(animation), m_radii);
+    if (animation->propName() == "sideLength") return attach(m_animations, std::move(animation), m_sideLength);
+    return BindResult::UnknownProperty;
 }

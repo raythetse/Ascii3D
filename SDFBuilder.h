@@ -35,6 +35,8 @@ private:
     std::vector<std::string> m_warnings;   // collected, not printed: rendering overwrites the console
     void warn(std::string_view msg);
     void discardPendingCombination();
+    template <typename Target>
+    void bindChecked(Target& target, std::unique_ptr<Animation> animation);
     template <typename E>
     E toEnum(int value, E maxValue, E dflt, std::string_view name);
     size_t toCount(long long value, size_t dflt, std::string_view name);
@@ -102,10 +104,10 @@ template <typename T, typename... Args>
     requires (std::is_base_of_v<Animation, T>)
 SDFBuilder& SDFBuilder::animate(Args&&... args) {
     if (m_lastAddedObj) {
-        m_objChain.back()->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+        bindChecked(*m_objChain.back(), std::make_unique<T>(std::forward<Args>(args)...));
     }
     else if (m_lastOp) {
-        m_lastOp->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+        bindChecked(*m_lastOp, std::make_unique<T>(std::forward<Args>(args)...));
     }
     else {
         warn("animation has no target (after stepBack, LightSource or line 1); dropped");
@@ -118,7 +120,28 @@ template <typename T, typename... Args>
 SDFBuilder& SDFBuilder::animateComb(Args&&... args) {
     CombinationOperation* combOp = dynamic_cast<CombinationOperation*>(m_lastOp);
     if (combOp) {
-        combOp->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+        bindChecked(*combOp, std::make_unique<T>(std::forward<Args>(args)...));
+    }
+    else {
+        warn("combination animation has no combination to target; dropped");
     }
     return *this;
+}
+
+// Binds the animation and warns if the target rejected it (the target destroys a rejected animation)
+template <typename Target>
+void SDFBuilder::bindChecked(Target& target, std::unique_ptr<Animation> animation)
+{
+    std::string className{ animation->getClassName() };
+    std::string propName{ animation->propName() };
+    switch (target.bindAnimation(std::move(animation))) {
+    case BindResult::Bound:
+        break;
+    case BindResult::UnknownProperty:
+        warn("no animatable property '" + propName + "' on the preceding shape or operation; " + className + " dropped");
+        break;
+    case BindResult::WrongDimension:
+        warn(className + " does not match the type of '" + propName + "'; animation dropped");
+        break;
+    }
 }
