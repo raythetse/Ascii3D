@@ -35,6 +35,11 @@ SDFOperation* SDFObject::pushOperation(std::unique_ptr<SDFOperation> operation)
     return ptr;
 }
 
+void SDFObject::popOperation()
+{
+    if (!m_operations.empty()) m_operations.pop_back();
+}
+
 void SDFObject::setColor(Color color)
 {
     m_color = color;

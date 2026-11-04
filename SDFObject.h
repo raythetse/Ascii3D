@@ -36,6 +36,7 @@ public:
 	void update();
 	virtual double signedDistance(Vec3 p, Color* colorOut = nullptr) const;
 	SDFOperation* pushOperation(std::unique_ptr<SDFOperation> operation);
+	void popOperation();
 	template <typename T, typename... Args>
 	SDFOperation* pushOperation(Args&&... args);
 	void setColor(Color color);
@@ -56,7 +57,7 @@ SDFOperation* SDFObject::pushOperation(Args&&... args) {
 class SDFPlane : public SDFObject
 {
 public:
-	inline const static Vec3 DFLT_NORMAL{ Vec3::Up };
+	inline const static Vec3 DFLT_NORMAL{ 0.0, 1.0, 0.0 };
 	inline const static double DFLT_OFFSET{ 0.0 };
 private:
 	Vec3 m_normal{};

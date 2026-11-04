@@ -39,6 +39,7 @@ private:
 	bool selectSceneType();
 	void selectBuiltInScene(bool noCustom);
 	bool selectCustomScene();
+	bool confirmLoadWarnings(const std::string& sceneName);
 	void marchHardware();
 	bool handleInput();
 	void update();

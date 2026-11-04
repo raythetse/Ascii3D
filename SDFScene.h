@@ -15,6 +15,7 @@ class SDFScene
 private:
 	std::unique_ptr<SDFObject> m_baseObject{};
 	std::vector<std::unique_ptr<LightSource>> m_lights{};
+	std::vector<std::string> m_loadWarnings{};
 protected:
 	virtual void buildScene() {};
 	void add(SDFBuilder& obj);
@@ -25,6 +26,7 @@ public:
 	void update();
 	SDFObject* baseObject() { return m_baseObject.get(); }
 	std::vector<std::unique_ptr<LightSource>>& lights() { return m_lights; }
+	const std::vector<std::string>& loadWarnings() const { return m_loadWarnings; }
 	bool serialize(std::vector<std::string>& strVec) const;
 	std::string buildComputeShader() const;
 };

@@ -284,11 +284,42 @@ bool GameEngine::selectCustomScene()
             std::stringstream ss(line);
             if (ss >> selection && selection >= 1 && selection <= scenes.size()) {
                 m_scene = std::make_unique<SDFScene>(scenes[selection - 1]);
-                return true;
+                if (confirmLoadWarnings(scenes[selection - 1])) return true;
+                m_scene.reset();
+                inputFailed = false;
+                continue;
             }
         }
         inputFailed = true;
     }
+}
+
+// The loader recovers from malformed lines, but its warnings would be overwritten
+// by the first rendered frame, so show them here before rendering starts.
+// Returns true to render the scene, false to go back to the scene list.
+bool GameEngine::confirmLoadWarnings(const std::string& sceneName)
+{
+    const auto& warnings = m_scene->loadWarnings();
+    if (warnings.empty()) return true;
+
+    // Leave room for the header and the prompt so the list fits on screen.
+    const size_t maxShown = m_dimensions.second > 8 ? m_dimensions.second - 8 : 1;
+
+    std::cout << "\033[2J\033[1;1H";
+    std::cout << sceneName << " loaded with " << warnings.size()
+              << (warnings.size() == 1 ? " warning" : " warnings")
+              << ". The affected lines were skipped or replaced with defaults.\n\n";
+    for (size_t i{}; i < warnings.size() && i < maxShown; ++i) {
+        std::cout << "  " << warnings[i] << '\n';
+    }
+    if (warnings.size() > maxShown) {
+        std::cout << "  ... and " << (warnings.size() - maxShown) << " more\n";
+    }
+    std::cout << "\n[ENTER] = Render anyway\n[B] = Back to scene list\n" << std::flush;
+
+    std::string line;
+    if (!std::getline(std::cin, line)) return true;
+    return !(line == "b" || line == "B");
 }
 
 void GameEngine::marchHardware()
