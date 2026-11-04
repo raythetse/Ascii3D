@@ -1,6 +1,7 @@
 #include "SDFScene.h"
 #include "FileHandler.h"
 #include "GLSLMarcher.h"
+#include "SceneValidator.h"
 
 std::string SDFScene::buildComputeShader() const
 {
@@ -15,9 +16,22 @@ SDFScene::SDFScene(std::string fileName)
 {
     std::vector<std::string> strVec;
     FileHandler::readSDFScene(strVec, fileName);
+
+    // The validator explains problems against the format spec; keep the ones where the
+    // loader loads something other than what the line says (style rules are left out)
+    std::string text;
+    for (const auto& line : strVec) text += line + '\n';
+    for (const auto& finding : SceneValidator::validate(text)) {
+        if (SceneValidator::affectsLoading(finding)) {
+            m_loadWarnings.push_back("Line " + std::to_string(finding.line) + ": [rule "
+                + std::to_string(finding.rule) + "] " + finding.message);
+        }
+    }
+
     SDFBuilder builder;
     builder.loadSerialized(strVec);
-    m_loadWarnings = builder.getWarnings();
+    // The loader's own warnings are the fallback, in case it catches something the validator misses
+    if (m_loadWarnings.empty()) m_loadWarnings = builder.getWarnings();
     add(builder);
 }
 

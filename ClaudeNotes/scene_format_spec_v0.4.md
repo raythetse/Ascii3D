@@ -352,7 +352,13 @@ has two quirks the generator must NOT copy: `color` on line 1 and a trailing
 root-level `stepBack`. It also puts `onTime`/`offTime`/`phase` on
 `COMBSubtract`/`COMBIntersect`, where they are ignored.
 
-## 11. Validator rules (Python)
+## 11. Validator rules
+
+Implemented in `SceneValidator.h/.cpp`, with one test fixture per rule in
+`Tests/fixtures/` (tests: `Tests/SceneValidatorTests.cpp`). Check a file from
+the command line with `Ascii3D.exe --validate FILE...`. The app runs the
+validator on every custom scene before loading it. Its warnings screen shows the errors, except rules 2 and 4, which the
+loader tolerates. Warnings (style and generator rules) are not shown.
 
 Lexical
 1. Line 1 is exactly `SDFObject`.
@@ -495,6 +501,11 @@ warning is invalid.
   dimension mismatches are warned and dropped instead of being ignored or
   corrupting memory; `repetitions` binds safely; `rotMat` and `axes` are no
   longer animatable. The spec's rules are unchanged.
+- Validator ported from Python to C++ (`SceneValidator`, run by the app
+  before loading a custom scene, and by `Ascii3D.exe --validate`); the Python
+  version is removed and its fixtures moved to `Tests/fixtures/`. Validator messages updated to describe the fixed loader (it
+  drops or skips, rather than crashing or corrupting memory). The rules are
+  unchanged.
 
 ## Still open
 

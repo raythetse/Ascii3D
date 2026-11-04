@@ -4,4 +4,5 @@
     <Platform Name="x86" />
   </Configurations>
   <Project Path="Ascii3D.vcxproj" Id="23c2edbd-2779-4514-b335-233aaef739d5" />
+  <Project Path="Tests/Ascii3DTests.vcxproj" Id="fcbdd3cc-3236-4182-a921-d8da87a89b55" />
 </Solution>

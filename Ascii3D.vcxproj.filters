@@ -138,6 +138,9 @@
     <ClCompile Include="SDFScene.cpp">
       <Filter>Source Files\SDF</Filter>
     </ClCompile>
+    <ClCompile Include="SceneValidator.cpp">
+      <Filter>Source Files\SDF</Filter>
+    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
@@ -309,6 +312,9 @@
       <Filter>Header Files\SDF\DemoScenes</Filter>
     </ClInclude>
     <ClInclude Include="SDFScene.h">
+      <Filter>Header Files\SDF</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneValidator.h">
       <Filter>Header Files\SDF</Filter>
     </ClInclude>
     <ClInclude Include="GLSLMarcher.h">
