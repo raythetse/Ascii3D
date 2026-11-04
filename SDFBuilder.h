@@ -1,9 +1,11 @@
 #pragma once
 #include <concepts>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 #include "Animation.h"
@@ -26,6 +28,16 @@ private:
     template <std::derived_from<SDFObject> T, typename... Args>
     SDFBuilder& pushSDFObj(Args&&... args);
     bool m_lastAddedObj{ true };
+
+    // Loader diagnostics and recovery (used by loadSerialized).
+    size_t m_lineNo{};      // 1-based line being loaded; 0 outside loadSerialized
+    size_t m_skipDepth{};   // > 0 while skipping the subtree of a rejected shape
+    void warn(std::string_view msg) const;
+    void discardPendingCombination();
+    template <typename E>
+    E toEnum(int value, E maxValue, E dflt, std::string_view name) const;
+    size_t toCount(long long value, size_t dflt, std::string_view name) const;
+    Vec3 toDirection(Vec3 value, Vec3 dflt, std::string_view name) const;
 public:
     SDFBuilder();
     std::unique_ptr<SDFObject> getBaseObject();
@@ -51,7 +63,8 @@ SDFBuilder& SDFBuilder::pushSDFObj(Args&&... args)
 {
     auto* comb = dynamic_cast<CombinationOperation*>(m_lastOp);
     if (!comb) {
-        std::cout << "Error: cannot add an object without a preceding combination operation.\n";
+        warn("shape has no preceding combination; shape and its children skipped");
+        m_skipDepth = 1;     // skip lines until this shape's own stepBack
         return *this;
     }
     auto obj = std::make_unique<T>(std::forward<Args>(args)...);
@@ -91,6 +104,9 @@ SDFBuilder& SDFBuilder::animate(Args&&... args) {
     }
     else if (m_lastOp) {
         m_lastOp->bindAnimation(std::move(std::make_unique<T>(std::forward<Args>(args)...)));
+    }
+    else {
+        warn("animation has no target (after stepBack, LightSource or line 1); dropped");
     }
     return *this;
 }

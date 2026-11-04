@@ -19,11 +19,15 @@ std::vector<std::unique_ptr<LightSource>> SDFBuilder::getLights()
 SDFBuilder& SDFBuilder::addLightSource(Vec3 position, double luminance, Color color, double ambientPower)
 {
     m_lights.push_back(std::make_unique<LightSource>(position, luminance, color, ambientPower));
+    m_lastOp = nullptr;          // an animation after a light has no target
+    m_lastAddedObj = false;
     return *this;
 }
 
 SDFBuilder& SDFBuilder::stepBack(size_t steps)
 {
+    m_lastOp = nullptr;          // an animation after stepBack has no target
+    m_lastAddedObj = false;
     if (!steps) steps = m_objChain.size() - 1;
     for (size_t i{}; i < steps; ++i)
     {
@@ -39,24 +43,99 @@ SDFBuilder& SDFBuilder::color(Vec3 color)
     return *this;
 }
 
+void SDFBuilder::warn(std::string_view msg) const
+{
+    if (m_lineNo) std::cout << "Warning (line " << m_lineNo << "): " << msg << '\n';
+    else std::cout << "Warning: " << msg << '\n';
+}
+
+// A combination whose shape never arrived would be dereferenced as null later
+// (update, combine, serialize, shader generation). Only AN* lines may sit between
+// a COMB* and its shape, so a pending combination is always the last operation
+// of the current level.
+void SDFBuilder::discardPendingCombination()
+{
+    if (!dynamic_cast<CombinationOperation*>(m_lastOp)) return;
+    warn("combination has no shape; combination dropped");
+    m_objChain.back()->popOperation();
+    m_lastOp = nullptr;
+}
+
+template <typename E>
+E SDFBuilder::toEnum(int value, E maxValue, E dflt, std::string_view name) const
+{
+    if (value < 0 || value > static_cast<int>(maxValue)) {
+        warn(std::string{ name } + " " + std::to_string(value) + " out of range 0-"
+            + std::to_string(static_cast<int>(maxValue)) + "; using default");
+        return dflt;
+    }
+    return static_cast<E>(value);
+}
+
+size_t SDFBuilder::toCount(long long value, size_t dflt, std::string_view name) const
+{
+    if (value < 1) {
+        warn(std::string{ name } + " " + std::to_string(value) + " must be >= 1; using default");
+        return dflt;
+    }
+    return static_cast<size_t>(value);
+}
+
+Vec3 SDFBuilder::toDirection(Vec3 value, Vec3 dflt, std::string_view name) const
+{
+    if (value.length() == 0.0) {
+        warn(std::string{ name } + " is a zero vector; using default");
+        return dflt.getNormal();
+    }
+    return value.getNormal();
+}
+
 SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
 {
     m_baseObject = std::make_unique<SDFObject>();
     m_objChain.clear();
     m_objChain.push_back(m_baseObject.get());
+    m_lastOp = nullptr;
+    m_lastAddedObj = false;      // line 1 is not parsed, so nothing to animate yet
+    m_skipDepth = 0;
 
     for (size_t i{ 1 }; i < strVec.size(); ++i) {
+        m_lineNo = i + 1;
         std::stringstream ss{ strVec[i] };
         std::string opName;
         ss >> opName;
-        if (s_opMap.contains(opName)) {
-            s_opMap.at(opName)(*this, ss);
+
+        // Skip the whole subtree of a rejected shape, through its own stepBack.
+        if (m_skipDepth) {
+            if (opName.starts_with("SDF")) ++m_skipDepth;
+            else if (opName == "stepBack") --m_skipDepth;
+            continue;
         }
-        //if (ss.fail()) {
-        //    std::cout << "\nFailed to parse line " << i << '\n';
-        //    std::exit(1);
-        //}
+
+        if (!s_opMap.contains(opName)) {
+            if (!opName.empty() && !opName.starts_with("//") && opName != "end")
+                warn("unknown keyword '" + opName + "'; line ignored");
+            continue;
+        }
+
+        // Only animations may come between a combination and its shape.
+        if (!opName.starts_with("SDF") && !opName.starts_with("AN"))
+            discardPendingCombination();
+
+        s_opMap.at(opName)(*this, ss);
+
+        // failbit is set at every normal end of line too (peek() after eofbit), so only
+        // leftover text means a bad value. A bad or missing LAST value is not detected.
+        if (ss.fail()) {
+            ss.clear();
+            std::string rest;
+            std::getline(ss, rest);
+            if (rest.find_first_not_of(" \t\r") != std::string::npos)
+                warn("could not parse value; rest of line ignored: '" + rest + "'");
+        }
     }
+    m_lineNo = 0;
+    discardPendingCombination();   // a COMB* at the end of the stack
     return *this;
 }
 
@@ -97,7 +176,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             ss >> param;
             if (param == "colorMode") ss >> colorMode;
         }
-        builder.operate<COMBExclude>(nullptr, static_cast<ColorMode>(colorMode));
+        builder.operate<COMBExclude>(nullptr, builder.toEnum(colorMode, COLORMODE_INTERNALDOUBLE, COLORMODE_DOUBLE, "colorMode"));
     }},
     { "COMBAddSmooth", [](SDFBuilder& builder, std::stringstream& ss) {
         double smoothing{ SmoothCombination::DFLT_SMOOTHING };
@@ -179,7 +258,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "color") ss >> color;
             else if (param == "offset") ss >> offset;
         }
-        builder.pushSDFObj<SDFPlane>(normal.getNormal(), offset, color);
+        builder.pushSDFObj<SDFPlane>(builder.toDirection(normal, SDFPlane::DFLT_NORMAL, "normal"), offset, color);
     } },
     { "SDFBox", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -231,7 +310,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radii") ss >> radii;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTorus>(static_cast<Axis>(axis), radii, color);
+        builder.pushSDFObj<SDFTorus>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), radii, color);
     } },
     { "SDFTorusSegment", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -247,7 +326,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "sweep") ss >> sweep;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTorusSegment>(static_cast<Axis>(axis), radii, sweep, color);
+        builder.pushSDFObj<SDFTorusSegment>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), radii, sweep, color);
     } },
     { "SDFCapsule", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -263,7 +342,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "bodyLength") ss >> bodyLength;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFCapsule>(static_cast<Axis>(axis), radius, bodyLength, color);
+        builder.pushSDFObj<SDFCapsule>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), radius, bodyLength, color);
     } },
     { "SDFCrystal", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -291,7 +370,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radius") ss >> radius;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFCylinder>(static_cast<Axis>(axis), radius, sideLength, color);
+        builder.pushSDFObj<SDFCylinder>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), radius, sideLength, color);
     } },
     { "SDFCone", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -347,7 +426,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radii") ss >> radii;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTaperedCapsule>(static_cast<Axis>(axis), radii, bodyLength, color);
+        builder.pushSDFObj<SDFTaperedCapsule>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), radii, bodyLength, color);
     } },
     { "SDFTaperedCylinder", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -363,7 +442,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "radii") ss >> radii;
             else if (param == "axis") ss >> axis;
         }
-        builder.pushSDFObj<SDFTaperedCylinder>(static_cast<Axis>(axis), radii, bodyLength, color);
+        builder.pushSDFObj<SDFTaperedCylinder>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), radii, bodyLength, color);
     } },
     { "SDFRhombus", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -383,7 +462,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFRhombus>(static_cast<OP2D>(operation), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFRhombus>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFEquilateralTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -403,7 +482,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFEquilateralTriangle>(static_cast<OP2D>(operation), base, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFEquilateralTriangle>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), base, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFIsoscelesTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -423,7 +502,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFIsoscelesTriangle>(static_cast<OP2D>(operation), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFIsoscelesTriangle>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), dimensions, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFPieSlice", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -445,7 +524,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFPieSlice>(static_cast<OP2D>(operation), sweep, radius, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFPieSlice>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), sweep, radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFPentagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -465,7 +544,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFPentagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFPentagon>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFHexagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -485,7 +564,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFHexagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFHexagon>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFOctagon", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -505,14 +584,14 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFOctagon>(static_cast<OP2D>(operation), radius, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFOctagon>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), radius, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFStar", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
         double radius{ SDFStar::DFLT_RADIUS };
         double ratio{ SDFStar::DFLT_RATIO };
         double magnitude{ SDFStar::DFLT_MAGNITUDE };
-        size_t numPoints{ SDFStar::DFLT_NUMPOINT };
+        long long numPoints{ static_cast<long long>(SDFStar::DFLT_NUMPOINT) };   // signed so negatives are caught
         int operation{ SDFStar::DFLT_OPERATION };
         double revolveRotations{ SDFStar::DFLT_REVOLVEROTATIONS };
         Vec2 revolveRotateOffset{ SDFStar::DFLT_REVOLVEROTATEOFFSET };
@@ -529,7 +608,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFStar>(static_cast<OP2D>(operation), numPoints, radius, ratio, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFStar>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"),
+            builder.toCount(numPoints, SDFStar::DFLT_NUMPOINT, "numPoints"), radius, ratio, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
     { "SDFTriangle", [](SDFBuilder& builder, std::stringstream& ss) {
         Color color{ Color::White };
@@ -553,7 +633,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "revolveRotations") ss >> revolveRotations;
             else if (param == "revolveRotateOffset") ss >> revolveRotateOffset;
         }
-        builder.pushSDFObj<SDFTriangle>(static_cast<OP2D>(operation), point1, point2, point3, magnitude, revolveRotations, revolveRotateOffset, color);
+        builder.pushSDFObj<SDFTriangle>(builder.toEnum(operation, OP2D_INFINITE, SDF2DObject::DFLT_OPERATION, "operation"), point1, point2, point3, magnitude, revolveRotations, revolveRotateOffset, color);
     } },
 
     // Transformations
@@ -591,7 +671,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "axis") ss >> axis;
             else if (param == "rotations") ss >> rotations;
         }
-        builder.operate<OPRotate>(axis.getNormal(), rotations);
+        builder.operate<OPRotate>(builder.toDirection(axis, OPRotate::DFLT_AXIS, "axis"), rotations);
     } },
     { "OPCubeRoller", [](SDFBuilder& builder, std::stringstream& ss) {
         std::vector<Vec3> axes{ OPCubeRoller::DFLT_AXES };
@@ -628,7 +708,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             else if (param == "offset") ss >> offset;
             else if (param == "axis") ss >> axis;
         }
-        builder.operate<OPElongate>(static_cast<Axis>(axis), length, offset);
+        builder.operate<OPElongate>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"), length, offset);
     } },
 
     // Resurface Ops
@@ -670,7 +750,7 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
         builder.operate<OPRepeat>(limits, spacing);
     } },
     { "OPRepeatCircle", [](SDFBuilder& builder, std::stringstream& ss) {
-        size_t repetitions{ OPRepeatCircle::DFLT_REPETITIONS };
+        long long repetitions{ static_cast<long long>(OPRepeatCircle::DFLT_REPETITIONS) };   // signed so negatives are caught
         int axis{ AXIS_Y };
 
         while (ss.peek() != EOF) {
@@ -679,7 +759,8 @@ const std::unordered_map<std::string, std::function<void(SDFBuilder& builder, st
             if (param == "repetitions") ss >> repetitions;
             else if (param == "axis") ss >> axis;
         }
-        builder.operate<OPRepeatCircle>(static_cast<Axis>(axis), repetitions);
+        builder.operate<OPRepeatCircle>(builder.toEnum(axis, AXIS_Z, AXIS_Y, "axis"),
+            builder.toCount(repetitions, OPRepeatCircle::DFLT_REPETITIONS, "repetitions"));
     } },
     { "OPMirror", [](SDFBuilder& builder, std::stringstream& ss) {
 

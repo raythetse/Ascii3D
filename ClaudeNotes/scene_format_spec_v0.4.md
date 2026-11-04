@@ -3,11 +3,14 @@
 Draft 2026-11-02, revised 2026-11-03, for review. Supersedes v0.3. Sources:
 HOWTO.txt, SDFBuilder.cpp/.h, CombinationOperation.*, SDFObject.*,
 SDFAxisObject.h, SDF2DObject.*, TransformOperation.*, DomainOperation.*,
-ResurfaceOperation.*, Animation.h, LightSource.h, Vec3.h, as of commit d0fb8f1.
+ResurfaceOperation.*, Animation.h, LightSource.h, Vec3.h, as of commit d0fb8f1,
+plus the 2026-11-04 loader fixes (branch SceneFileValidator).
 
-**Strict subset.** The loader accepts more than this spec allows, and it
-usually ignores mistakes without saying so (Appendix A). The generator and the
-validator follow the stricter rules here, so every file means exactly what it says.
+**Strict subset.** The loader accepts more than this spec allows. For many
+mistakes it now prints a warning with the line number and recovers, but some
+are still ignored silently, and it never rejects a file (Appendix A). The
+generator and the validator follow the stricter rules here, so every file
+means exactly what it says. A file that makes the loader warn is invalid.
 
 Changes from v0.3 are listed in Appendix B.
 
@@ -19,12 +22,13 @@ Changes from v0.3 are listed in Appendix B.
 - **No trailing whitespace.** (The loader ignores it; this is a style rule.)
 - Leading tabs for indentation are allowed and ignored. Use them for readability.
 - Separate tokens with single spaces. **Commas are not part of the format.**
-  A comma breaks the value it is in, and the rest of that line is silently
-  dropped (`color 1,0,0` loads as 1 0 1).
+  A comma breaks the value it is in, and the rest of that line is dropped
+  with a warning (`color 1,0,0` loads as 1 0 1).
 - Keywords and parameter names are case sensitive.
 - A line whose first token is not a keyword is ignored. Comments use `// text`.
-  A misspelled keyword is silently dropped too, so the validator must flag
-  near-misses.
+  The loader warns about a misspelled keyword but does not suggest the
+  intended one, so the validator must flag near-misses. A misspelled
+  parameter name is still dropped silently.
 - The optional last line `end` (the serializer writes it) is ignored like a comment.
 - A line is `Keyword` followed by zero or more `paramName value...` pairs, in any
   order. Each parameter gets exactly its value count (vec3 = 3, vec2 = 2). Never
@@ -69,9 +73,9 @@ LightSource ...           <- one or more, at the end
    to the level they are written in.
 2. **Every non-root shape is introduced by exactly one combination line,** written
    directly before it. Only `AN*` lines (and comments) may sit between the
-   combination and its shape. A combination with no shape crashes the program
-   (Section 5). A shape without its own combination is skipped. A skipped shape
-   also unbalances every later `stepBack`.
+   combination and its shape. A combination with no shape is dropped with a
+   warning (Section 5). A shape without its own combination is skipped with a
+   warning, together with everything up to its own closing `stepBack`.
 3. Transform/domain operations (`OPTranslate`, `OPRotate`, `OPElongate`,
    `OPRepeat`, `OPRepeatCircle`, `OPMirror`) are written BEFORE the shapes they
    affect. They apply to every shape added after them in the same level,
@@ -143,10 +147,11 @@ LightSource ...           <- one or more, at the end
   3 like 2, with colors swapped by proximity.
 - Subtract, Intersect and Exclude (and their smooth versions) need something
   already present in the same level to act on.
-- **Combination with no shape = crash.** `update()`, `combine()`,
-  `serialize()`, `resetAnimations()` and shader generation all dereference
-  the combination's object without a null check. This covers `COMBAdd COMBAdd`,
-  a `COMB*` at the end of the stack, and a `COMB*` followed by an `OP*` line.
+- **Combination with no shape:** the loader drops it with a warning. This
+  covers `COMBAdd COMBAdd`, a `COMB*` at the end of the stack, and a `COMB*`
+  followed by an `OP*` line. The renderer itself would still crash on one:
+  `update()`, `combine()`, `serialize()`, `resetAnimations()` and shader
+  generation all dereference the combination's object without a null check.
 - Animations: plain combinations accept **none**. `CombinationOperation::bindAnimation`
   is empty, so `onTime`/`offTime`/`phase` cannot be animated and the animation is
   dropped. Smooth combinations accept 1D animations on `smoothing`,
@@ -244,8 +249,8 @@ In 2D/3D variants every numeric param is a vec2/vec3 (one value per component).
 - After a shape line, the animation binds to that shape.
 - After an `OP*` or `COMB*` line, it binds to that operation.
 - After another `AN*` line, it binds to the same target as that animation.
-- After `stepBack` or `LightSource`, it binds to the wrong target (the parent
-  shape, or whatever came before). **Never put an animation there.**
+- After `stepBack` or `LightSource`, it has no target and is dropped with a
+  warning. **Never put an animation there.**
 - Never animate the root (line 1 is not parsed anyway).
 
 **Validity:**
@@ -382,30 +387,67 @@ Animations
 
 ## Appendix A: loader behavior and known bugs
 
+Describes the loader after the 2026-11-04 fixes (branch SceneFileValidator,
+`SDFBuilder.cpp/.h`, `SDFObject::popOperation`). The loader now prints
+`Warning (line N): ...` to stdout and recovers instead of crashing or
+silently misplacing things. It still never rejects a file. The generator and
+validator rules in this spec are unchanged: a file that triggers any
+warning is invalid.
+
+**Structure**
 - `loadSerialized` starts at index 1, so line 1 is never parsed.
-- `loadSerialized` clears the stack before pushing its root, and `stepBack`
-  never pops the last level, so a `stepBack` at root depth is ignored.
-- Combination without a shape: null dereference (Section 5).
-- `pushSDFObj` skips the shape if the previous operation was not a combination,
-  and clears `m_lastOp` after a shape, so a combination takes exactly one shape.
-  A skipped shape is not pushed, so its children and its `stepBack` apply to
-  the parent level.
-- Parameter loop: unknown names are skipped (their values are read as names and
-  skipped too); extra values are read as names; `axis 1.0` reads 1.
-- Malformed values (non-numeric, too few, bool not 0/1) set failbit, which ends
-  the parameter loop, so the rest of the line is silently dropped. Values read
-  earlier on the line are kept. In a vec2/vec3 the failing component becomes 0
-  and later components keep their defaults. There is no message and no line
-  number. (A check that would exit is in `loadSerialized`, commented out.)
-- Blank lines and trailing whitespace are harmless: a blank line's keyword is
-  empty and ignored, and trailing whitespace only makes one extra empty read.
-- Commas are not replaced. `1,0,0` reads 1, then fails at the comma (see
-  malformed values). This is intentional: commas are not part of the format.
-- Negative values into `size_t` (`repetitions`, `numPoints`) wrap to huge values
-  and do not set failbit, so nothing catches them.
-- Out-of-range enum ints are `static_cast` without a check.
-- Animations: unchecked `reinterpret_cast` binding (Section 8); `OPRepeatCircle`
-  `repetitions` is a `size_t` bound as double.
+- `loadSerialized` resets the stack and builder state before pushing its root.
+  `stepBack` never pops the last level, so a `stepBack` at root depth is
+  ignored (no warning).
+- **Combination without a shape:** dropped with a warning. Before running any
+  line that is not `AN*` or `SDF*`, and again at end of file, a combination
+  still waiting for its shape is removed from the current level. This covers
+  `COMBAdd COMBAdd`, `COMB*` followed by `OP*`/`stepBack`/`LightSource`, and a
+  `COMB*` at the end of the stack. (The renderer still dereferences a null
+  combination object, but the loader no longer produces one.)
+- **Shape without a combination:** warned and skipped together with its whole
+  subtree. Every line is ignored until that shape's own closing `stepBack`
+  (nested shapes and their `stepBack`s are counted). Later lines keep their
+  correct depth. A skipped shape with no closing `stepBack` skips the rest of
+  the stack lines, including the lights.
+- A combination takes exactly one shape (`m_lastOp` is cleared after a shape).
+
+**Animations**
+- An animation after `stepBack`, after `LightSource`, or directly after line 1
+  has no target: warned and dropped. (Previously it bound to the parent shape
+  or to whatever came before.) The other attachment rules in Section 8 are unchanged.
+- An unknown or missing `propName` is still dropped silently.
+- Still unchecked: `reinterpret_cast` binding, so a dimension mismatch corrupts
+  memory (Section 8), and `OPRepeatCircle` `repetitions` is a `size_t` bound as
+  double. Not fixed; the validator must catch these.
+
+**Lines and parameters**
+- An unknown first token is warned (`unknown keyword 'COMBadd'`) and the line
+  is ignored. Blank lines, `//` comments and `end` are ignored silently.
+- Unknown parameter names are still skipped silently (their values are read
+  as names and skipped too). Extra values are read as names. `axis 1.0` reads 1.
+- A malformed value (non-numeric, comma, too few values) sets failbit, which
+  ends the parameter loop. If unparsed text remains, it is warned
+  (`could not parse value; rest of line ignored: ',0,0 radius 2'`). Values
+  read earlier on the line are kept. In a vec2/vec3, the failing component
+  becomes 0 and later components keep their defaults.
+- **Not detected:** a bad or missing value at the very end of a line
+  (`overwriteColor 2`, `radius` with no value). failbit is also set at every
+  normal end of line (`peek()` after eofbit), so these cases look identical
+  from outside the handler. A bool other than 0/1 then loads as MSVC leaves it
+  (`2` loads as 1).
+- Trailing whitespace and CRLF are harmless.
+- Commas are not replaced. `1,0,0` reads 1, then fails at the comma (warned).
+  This is intentional: commas are not part of the format.
+
+**Value checks (warn and use the default)**
+- `axis` (int), `operation`, `colorMode` outside 0-2 / 0-2 / 0-3.
+- `repetitions`, `numPoints` < 1 (read as signed, so negatives no longer wrap).
+- Zero-length `SDFPlane normal` or `OPRotate axis` (falls back to 0 1 0).
+  `SDFPlane::DFLT_NORMAL` is now a literal; it used to copy `Vec3::Up` from
+  another translation unit and could be zero, depending on static
+  initialization order.
+- Not checked: zero vectors in `OPCubeRoller axes` (excluded from the generator).
 
 ## Appendix B: changes from v0.3
 
@@ -417,7 +459,8 @@ Animations
 - Commas are no longer separators (intentional loader change; v0.3 said commas become spaces).
 - Every shape gets a closing `stepBack` in the examples (balanced files).
 - Plain combinations take no animations; Subtract/Intersect take no params.
-- Animation attachment rule corrected (after `stepBack`/`LightSource` = wrong target).
+- Animation attachment rule corrected (after `stepBack`/`LightSource` = no
+  valid target; now dropped with a warning).
 - Dimension-mismatch and `repetitions` animation hazards (1D on a vec3 fails
   GLSL compilation).
 - `SDFTaperedCylinder` uses `sideLength`.
@@ -430,6 +473,12 @@ Animations
   HOWTO.txt and are removed from the open list.
 - Describes one loader (commit d0fb8f1). The earlier draft compared the old
   committed loader with uncommitted edits; those comparisons are removed.
+- Loader fixes (2026-11-04, Appendix A): warnings with line numbers;
+  combinations with no shape are dropped instead of crashing; a shape with no
+  combination is skipped with its whole subtree, so later depths stay correct;
+  animations with no target are dropped; out-of-range enums, counts < 1 and zero
+  direction vectors fall back to defaults. `SDFPlane::DFLT_NORMAL` no longer
+  depends on static initialization order. The spec's rules are unchanged.
 
 ## Still open
 
