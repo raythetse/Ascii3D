@@ -294,8 +294,9 @@ bool GameEngine::selectCustomScene()
     }
 }
 
-// The loader recovers from malformed lines, but its warnings would be overwritten
-// by the first rendered frame, so show them here before rendering starts.
+// The loader recovers from malformed lines, but the problems found (validator findings,
+// else loader warnings; see SDFScene) would be overwritten by the first rendered frame,
+// so show them here before rendering starts.
 // Returns true to render the scene, false to go back to the scene list.
 bool GameEngine::confirmLoadWarnings(const std::string& sceneName)
 {
@@ -303,12 +304,13 @@ bool GameEngine::confirmLoadWarnings(const std::string& sceneName)
     if (warnings.empty()) return true;
 
     // Leave room for the header and the prompt so the list fits on screen.
-    const size_t maxShown = m_dimensions.second > 8 ? m_dimensions.second - 8 : 1;
+    const size_t maxShown = m_dimensions.second > 9 ? m_dimensions.second - 9 : 1;
 
     std::cout << "\033[2J\033[1;1H";
-    std::cout << sceneName << " loaded with " << warnings.size()
-              << (warnings.size() == 1 ? " warning" : " warnings")
-              << ". The affected lines were skipped or replaced with defaults.\n\n";
+    std::cout << sceneName << " has " << warnings.size()
+              << (warnings.size() == 1 ? " problem" : " problems")
+              << ". The loader skips the affected lines or uses defaults.\n"
+              << "Rule numbers refer to ClaudeNotes/scene_format_spec_v0.4.md, section 11.\n\n";
     for (size_t i{}; i < warnings.size() && i < maxShown; ++i) {
         std::cout << "  " << warnings[i] << '\n';
     }

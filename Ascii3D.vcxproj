@@ -193,6 +193,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SDFBuilder.cpp" />
     <ClCompile Include="SDFScene.cpp" />
+    <ClCompile Include="SceneValidator.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TransformOperation.cpp" />
     <ClCompile Include="Vec2.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SDFBuilder.h" />
     <ClInclude Include="SDFScene.h" />
+    <ClInclude Include="SceneValidator.h" />
     <ClInclude Include="Stopwatch.h" />
     <ClInclude Include="TransformOperation.h" />
     <ClInclude Include="Vec2.h" />
