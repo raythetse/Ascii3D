@@ -1,0 +1,16 @@
+SDFObject
+// Deliberately malformed: demonstrates the loader's warning screen.
+	COMBAdd
+	COMBAdd
+	SDFSphere radius 1 color 1,0,0
+		stepBack
+	ANContinuous1D propName radius amplitude 1
+	OPRepeatCircle axis 5 repetitions -3
+	COMBadd
+	SDFBox dimensions 1 1 1
+		stepBack
+	COMBAdd
+	SDFPlane normal 0 0 0
+		stepBack
+	COMBSubtract
+LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1

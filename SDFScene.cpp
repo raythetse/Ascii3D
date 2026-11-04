@@ -15,7 +15,10 @@ SDFScene::SDFScene(std::string fileName)
 {
     std::vector<std::string> strVec;
     FileHandler::readSDFScene(strVec, fileName);
-    add(SDFBuilder{}.loadSerialized(strVec));
+    SDFBuilder builder;
+    builder.loadSerialized(strVec);
+    m_loadWarnings = builder.getWarnings();
+    add(builder);
 }
 
 void SDFScene::add(SDFBuilder& builder)

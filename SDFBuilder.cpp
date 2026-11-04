@@ -43,10 +43,15 @@ SDFBuilder& SDFBuilder::color(Vec3 color)
     return *this;
 }
 
-void SDFBuilder::warn(std::string_view msg) const
+void SDFBuilder::warn(std::string_view msg)
 {
-    if (m_lineNo) std::cout << "Warning (line " << m_lineNo << "): " << msg << '\n';
-    else std::cout << "Warning: " << msg << '\n';
+    if (m_lineNo) m_warnings.push_back("Line " + std::to_string(m_lineNo) + ": " + std::string{ msg });
+    else m_warnings.push_back("End of file: " + std::string{ msg });
+}
+
+std::vector<std::string> SDFBuilder::getWarnings()
+{
+    return std::move(m_warnings);
 }
 
 // A combination whose shape never arrived would be dereferenced as null later
@@ -62,30 +67,35 @@ void SDFBuilder::discardPendingCombination()
 }
 
 template <typename E>
-E SDFBuilder::toEnum(int value, E maxValue, E dflt, std::string_view name) const
+E SDFBuilder::toEnum(int value, E maxValue, E dflt, std::string_view name)
 {
     if (value < 0 || value > static_cast<int>(maxValue)) {
         warn(std::string{ name } + " " + std::to_string(value) + " out of range 0-"
-            + std::to_string(static_cast<int>(maxValue)) + "; using default");
+            + std::to_string(static_cast<int>(maxValue)) + "; using default "
+            + std::to_string(static_cast<int>(dflt)));
         return dflt;
     }
     return static_cast<E>(value);
 }
 
-size_t SDFBuilder::toCount(long long value, size_t dflt, std::string_view name) const
+size_t SDFBuilder::toCount(long long value, size_t dflt, std::string_view name)
 {
     if (value < 1) {
-        warn(std::string{ name } + " " + std::to_string(value) + " must be >= 1; using default");
+        warn(std::string{ name } + " " + std::to_string(value) + " must be >= 1; using default "
+            + std::to_string(dflt));
         return dflt;
     }
     return static_cast<size_t>(value);
 }
 
-Vec3 SDFBuilder::toDirection(Vec3 value, Vec3 dflt, std::string_view name) const
+Vec3 SDFBuilder::toDirection(Vec3 value, Vec3 dflt, std::string_view name)
 {
     if (value.length() == 0.0) {
-        warn(std::string{ name } + " is a zero vector; using default");
-        return dflt.getNormal();
+        const Vec3 fallback = dflt.getNormal();
+        std::ostringstream os;
+        os << fallback;
+        warn(std::string{ name } + " is a zero vector; using default " + os.str());
+        return fallback;
     }
     return value.getNormal();
 }
@@ -98,6 +108,7 @@ SDFBuilder& SDFBuilder::loadSerialized(std::vector<std::string>& strVec)
     m_lastOp = nullptr;
     m_lastAddedObj = false;      // line 1 is not parsed, so nothing to animate yet
     m_skipDepth = 0;
+    m_warnings.clear();
 
     for (size_t i{ 1 }; i < strVec.size(); ++i) {
         m_lineNo = i + 1;

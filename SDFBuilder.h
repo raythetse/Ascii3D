@@ -32,16 +32,18 @@ private:
     // Loader diagnostics and recovery (used by loadSerialized).
     size_t m_lineNo{};      // 1-based line being loaded; 0 outside loadSerialized
     size_t m_skipDepth{};   // > 0 while skipping the subtree of a rejected shape
-    void warn(std::string_view msg) const;
+    std::vector<std::string> m_warnings;   // collected, not printed: rendering overwrites the console
+    void warn(std::string_view msg);
     void discardPendingCombination();
     template <typename E>
-    E toEnum(int value, E maxValue, E dflt, std::string_view name) const;
-    size_t toCount(long long value, size_t dflt, std::string_view name) const;
-    Vec3 toDirection(Vec3 value, Vec3 dflt, std::string_view name) const;
+    E toEnum(int value, E maxValue, E dflt, std::string_view name);
+    size_t toCount(long long value, size_t dflt, std::string_view name);
+    Vec3 toDirection(Vec3 value, Vec3 dflt, std::string_view name);
 public:
     SDFBuilder();
     std::unique_ptr<SDFObject> getBaseObject();
     std::vector<std::unique_ptr<LightSource>> getLights();
+    std::vector<std::string> getWarnings();
 	template <std::derived_from<SDFOperation> T, typename... Args>
     SDFBuilder& operate(Args&&... args);
     template <std::derived_from<CombinationOperation> T, std::derived_from<SDFObject> U, typename... ArgsT>
