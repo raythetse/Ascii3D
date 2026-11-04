@@ -4,7 +4,7 @@ Draft 2026-11-02, revised 2026-11-03, for review. Supersedes v0.3. Sources:
 HOWTO.txt, SDFBuilder.cpp/.h, CombinationOperation.*, SDFObject.*,
 SDFAxisObject.h, SDF2DObject.*, TransformOperation.*, DomainOperation.*,
 ResurfaceOperation.*, Animation.h, LightSource.h, Vec3.h, as of commit d0fb8f1,
-plus the 2026-11-04 loader fixes (branch SceneFileValidator).
+plus the 2026-11-04 loader fixes (commit ecf5f72).
 
 **Strict subset.** The loader accepts more than this spec allows. For many
 mistakes it now prints a warning with the line number and recovers, but some
@@ -387,7 +387,7 @@ Animations
 
 ## Appendix A: loader behavior and known bugs
 
-Describes the loader after the 2026-11-04 fixes (branch SceneFileValidator,
+Describes the loader after the 2026-11-04 fixes (commit ecf5f72,
 `SDFBuilder.cpp/.h`, `SDFObject::popOperation`). The loader now prints
 `Warning (line N): ...` to stdout and recovers instead of crashing or
 silently misplacing things. It still never rejects a file. The generator and
