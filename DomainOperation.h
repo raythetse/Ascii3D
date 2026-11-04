@@ -16,7 +16,7 @@ protected:
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const = 0;
 	DomainOperation(Vec3 spacing = DFLT_SPACING) : m_spacing(spacing) {};
 public:
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 	virtual ~DomainOperation() = default;
 };
 
@@ -34,7 +34,7 @@ protected:
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
 	OPRepeat(Vec3 limits = DFLT_LIMITS, Vec3 spacing = DFLT_SPACING) : DomainOperation(spacing), m_limits(limits) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
 // Repeat an object around a circle. Naive operation, requires rotational symmetry or artifacting may occur
@@ -45,14 +45,15 @@ public:
 private:
 	Axis m_axis;
 	size_t m_repetitions;
+	double m_repetitionsD;	// animatable copy of m_repetitions, as used by execute and the shader
 protected:
 	void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const override;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 	std::string getClassName() const override { return "OPRepeatCircle"; }
 	virtual void getShaderOpCalls(std::stringstream& ss, size_t level) const override;
 public:
-	OPRepeatCircle(Axis axis, size_t repetitions = DFLT_REPETITIONS) : DomainOperation(), m_axis(axis), m_repetitions(repetitions) {}
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	OPRepeatCircle(Axis axis, size_t repetitions = DFLT_REPETITIONS) : DomainOperation(), m_axis(axis), m_repetitions(repetitions), m_repetitionsD(static_cast<double>(repetitions)) {}
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 };
 
 // Repeat an object by mirroring over an axis

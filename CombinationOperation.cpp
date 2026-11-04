@@ -183,20 +183,12 @@ void COMBExclude::innerSerialize(std::vector<std::string>& strVec, size_t level)
 	strVec.push_back(ss.str());
 }
 
-void SmoothCombination::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult SmoothCombination::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "smoothing") {
-		animation->BindToProperty(&m_smoothing);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "colorBlending") {
-		animation->BindToProperty(&m_colorBlending);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "colorShifting") {
-		animation->BindToProperty(&m_colorShifting);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "smoothing") return attach(m_animations, std::move(animation), m_smoothing);
+	if (animation->propName() == "colorBlending") return attach(m_animations, std::move(animation), m_colorBlending);
+	if (animation->propName() == "colorShifting") return attach(m_animations, std::move(animation), m_colorShifting);
+	return BindResult::UnknownProperty;
 }
 
 void SmoothCombination::innerSerialize(std::vector<std::string>& strVec, size_t level) const

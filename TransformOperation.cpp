@@ -31,12 +31,10 @@ void OPTranslate::getShaderOpCalls(std::stringstream& ss, size_t level) const
 	ss << "\tp" << level << " -= pmVec30; \n\n";
 }
 
-void OPTranslate::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPTranslate::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "translation") {
-		animation->BindToProperty(&m_translation);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "translation") return attach(m_animations, std::move(animation), m_translation);
+	return BindResult::UnknownProperty;
 }
 
 void OPRotate::innerUpdate()
@@ -65,20 +63,11 @@ void OPRotate::getShaderOpCalls(std::stringstream& ss, size_t level) const
 	ss << "\tp" << level << " = rotateVec3(p" << level << ", pmVec30, pmFloat0);\n\n";
 }
 
-void OPRotate::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPRotate::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "axis") {
-		animation->BindToProperty(&m_axis);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "rotations") {
-		animation->BindToProperty(&m_rotations);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "rotMat") {
-		animation->BindToProperty(&m_rotMat);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "axis") return attach(m_animations, std::move(animation), m_axis);
+	if (animation->propName() == "rotations") return attach(m_animations, std::move(animation), m_rotations);
+	return BindResult::UnknownProperty;
 }
 
 void OPCubeRollHeight::innerUpdate() {
@@ -116,20 +105,12 @@ void OPCubeRollHeight::getShaderOpCalls(std::stringstream& ss, size_t level) con
 	ss << "\tp" << level << ".y -= pmFloat0;\n\n";
 }
 
-void OPCubeRollHeight::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPCubeRollHeight::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "cubeHeight") {
-		animation->BindToProperty(&m_cubeHeight);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "period") {
-		animation->BindToProperty(&m_period);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "phase") {
-		animation->BindToProperty(&m_phase);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "cubeHeight") return attach(m_animations, std::move(animation), m_cubeHeight);
+	if (animation->propName() == "period") return attach(m_animations, std::move(animation), m_period);
+	if (animation->propName() == "phase") return attach(m_animations, std::move(animation), m_phase);
+	return BindResult::UnknownProperty;
 }
 
 void OPCubeRoller::innerUpdate() {
@@ -176,20 +157,11 @@ void OPCubeRoller::getShaderOpCalls(std::stringstream& ss, size_t level) const
 	++numRollers;
 }
 
-void OPCubeRoller::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPCubeRoller::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "axes") {
-		animation->BindToProperty(&m_axes);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "phase") {
-		animation->BindToProperty(&m_phase);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "quarterTurnTime") {
-		animation->BindToProperty(&m_quarterTurnTime);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "phase") return attach(m_animations, std::move(animation), m_phase);
+	if (animation->propName() == "quarterTurnTime") return attach(m_animations, std::move(animation), m_quarterTurnTime);
+	return BindResult::UnknownProperty;
 }
 
 void OPElongate::innerUpdate() {
@@ -203,16 +175,11 @@ void OPElongate::innerInnerSerialize(std::stringstream& ss) const
 	ss << " axis " << m_axis;
 }
 
-void OPElongate::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPElongate::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "length") {
-		animation->BindToProperty(&m_length);
-		m_animations.push_back(std::move(animation));
-	}
-	else if (animation->propName() == "offset") {
-		animation->BindToProperty(&m_offset);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "length") return attach(m_animations, std::move(animation), m_length);
+	if (animation->propName() == "offset") return attach(m_animations, std::move(animation), m_offset);
+	return BindResult::UnknownProperty;
 }
 
 double OPElongate::executeTerm(double d) const

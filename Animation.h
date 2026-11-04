@@ -2,7 +2,9 @@
 #include <concepts>
 #include <functional>
 #include <sstream>
+#include <memory>
 #include <string>
+#include <vector>
 #include "MathFunctions.h"
 #include "GameTimer.h"
 #include "Vec3.h"
@@ -10,19 +12,27 @@
 template <typename T>
 concept AnimType =	std::same_as<T, double> || std::same_as<T, Vec2> || std::same_as<T, Vec3>;
 
+template <AnimType T>
+class AnimatorTemplate;
+
+// Outcome of SDFObject::bindAnimation / SDFOperation::bindAnimation
+enum class BindResult { Bound, UnknownProperty, WrongDimension };
+
 // Animations allow for dynamic adjustments of parameters for SDFObjects and Operations
 class Animation
 {
 private:
 	std::string m_propName;
 protected:
-	virtual std::string getClassName() const = 0;
 	virtual void serializeInner(std::stringstream& ss) const = 0;
 	virtual void getShaderCallInner(std::string& call) const = 0;
 	Animation(std::string_view propName) : m_propName(propName) {}
 public:
+	virtual std::string getClassName() const = 0;
 	std::string_view propName() { return m_propName; }
-	virtual void BindToProperty(void* ref) = 0;
+	// Binds to a property of matching type; false (and unbound) if this animation animates a different type
+	template <AnimType T>
+	bool bindTo(T& property);
 	virtual void update() const = 0;
 	virtual void resetProperty() const = 0;
 	void resetMods();
@@ -42,9 +52,27 @@ protected:
 public:
 	AnimatorTemplate(std::string_view propName, T amplitude, T phase)
 		: Animation(propName), m_amplitude(amplitude), m_phase(phase) {}
-	void BindToProperty(void* ref) override { m_ptr = reinterpret_cast<T*>(ref); m_initVal = *m_ptr; }
+	void bind(T& property) { m_ptr = &property; m_initVal = property; }
 	void resetProperty() const override;
 };
+
+template <AnimType T>
+bool Animation::bindTo(T& property)
+{
+	auto* typed = dynamic_cast<AnimatorTemplate<T>*>(this);
+	if (!typed) return false;
+	typed->bind(property);
+	return true;
+}
+
+// Binds animation to property and stores it in animations. On WrongDimension the animation is destroyed
+template <AnimType T>
+BindResult attach(std::vector<std::unique_ptr<Animation>>& animations, std::unique_ptr<Animation> animation, T& property)
+{
+	if (!animation->bindTo(property)) return BindResult::WrongDimension;
+	animations.push_back(std::move(animation));
+	return BindResult::Bound;
+}
 
 // Parameter must be reset for serialization
 template<AnimType T>

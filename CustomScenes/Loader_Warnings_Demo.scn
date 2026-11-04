@@ -12,5 +12,12 @@ SDFObject
 	COMBAdd
 	SDFPlane normal 0 0 0
 		stepBack
+	COMBAdd
+	SDFSphere radius 1
+	ANContinuous3D propName radius amplitude 1 1 1
+	ANSmoothCycle1D propName radios period 2 amplitude 0.5
+		OPRepeatCircle axis 1 repetitions 6
+		ANContinuous1D propName repetitions amplitude 0.5
+		stepBack
 	COMBSubtract
 LightSource position 2 5 -3 luminance 150 ambientPower 0.2 color 1 1 1

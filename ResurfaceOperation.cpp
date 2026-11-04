@@ -1,12 +1,10 @@
 #include "ResurfaceOperation.h"
 #include <sstream>
 
-void ResurfaceOperation::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult ResurfaceOperation::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "magnitude") {
-		animation->BindToProperty(&m_magnitude);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "magnitude") return attach(m_animations, std::move(animation), m_magnitude);
+	return BindResult::UnknownProperty;
 }
 
 void ResurfaceOperation::innerSerialize(std::vector<std::string>& strVec, size_t level) const

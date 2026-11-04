@@ -23,7 +23,7 @@ protected:
 	CombinationOperation(std::unique_ptr<SDFObject> combineObj, double onTime = 1.0, double offTime = 0.0, double phase = 0.0, bool overwriteColor = false)
 		: m_combineObj(std::move(combineObj)), m_onTime(onTime), m_offTime(offTime), m_phase(phase), m_overwriteColor(overwriteColor) {}
 public:
-	virtual void bindAnimation(std::unique_ptr<Animation> animation) override {};
+	virtual BindResult bindAnimation(std::unique_ptr<Animation> animation) override { return BindResult::UnknownProperty; }
 	void setCombineObject(std::unique_ptr<SDFObject> combineObj);
 	virtual void update() override;
 	virtual void resetAnimations() override;
@@ -92,7 +92,7 @@ protected:
 	double m_colorBlending;
 	double m_colorShifting;
 	void blendColors(double blendRate, Vec3 colorIn, Vec3* colorOut) const;
-	void bindAnimation(std::unique_ptr<Animation> animation) override;
+	BindResult bindAnimation(std::unique_ptr<Animation> animation) override;
 	void innerSerialize(std::vector<std::string>& strVec, size_t level) const override;
 public:
 	SmoothCombination(std::unique_ptr<SDFObject> combineObj, double smoothing = DFLT_SMOOTHING, double colorBlending = DFLT_COLORBLENDING, double colorShifting = DFLT_COLORSHIFTING)

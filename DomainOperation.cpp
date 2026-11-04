@@ -39,12 +39,10 @@ void DomainOperation::innerSerialize(std::vector<std::string>& strVec, size_t le
 	strVec.push_back(ss.str());
 }
 
-void DomainOperation::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult DomainOperation::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "spacing") {
-		animation->BindToProperty(&m_spacing);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "spacing") return attach(m_animations, std::move(animation), m_spacing);
+	return BindResult::UnknownProperty;
 }
 
 void OPRepeat::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
@@ -75,24 +73,18 @@ void OPRepeat::getShaderOpCalls(std::stringstream& ss, size_t level) const
 	ss << "\tp" << level << " -= pmVec30 * clamp(round(p" << level << " / pmVec30), -pmVec31, pmVec31);\n\n";
 }
 
-void OPRepeat::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPRepeat::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "spacing") {
-		animation->BindToProperty(&m_spacing);
-		m_animations.push_back(std::move(animation));
-		return;
-	}
-	else if (animation->propName() == "limits") {
-		animation->BindToProperty(&m_limits);
-		m_animations.push_back(std::move(animation));
-	}
+	if (animation->propName() == "spacing") return attach(m_animations, std::move(animation), m_spacing);
+	if (animation->propName() == "limits") return attach(m_animations, std::move(animation), m_limits);
+	return BindResult::UnknownProperty;
 }
 
 void OPRepeatCircle::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const
 {
 	p = getPForAxis(p, m_axis);
 
-	double r = static_cast<double>(m_repetitions);
+	double r = m_repetitionsD;
 	double b = MF::TAU / r;
 	double a = std::atan2(p.z, p.x);
 
@@ -125,17 +117,14 @@ void OPRepeatCircle::getShaderOpCalls(std::stringstream & ss, size_t level) cons
 {
 	std::string propName{ "" };
 	ss << "\t// OPRepeatCircle //\n";
-	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "repetitions") ? propName : std::to_string(m_repetitions)) << ";\n";
+	ss << "\tpmFloat0 = " << (getShaderAnimationCalls(propName = "repetitions") ? propName : std::to_string(m_repetitionsD)) << ";\n";
 	ss << "\tp" << level << " = repeatCircle(p" << level << getPSwizzleForAxis(m_axis) << ", pmFloat0);\n\n";
 }
 
-void OPRepeatCircle::bindAnimation(std::unique_ptr<Animation> animation)
+BindResult OPRepeatCircle::bindAnimation(std::unique_ptr<Animation> animation)
 {
-	if (animation->propName() == "repetitions") {
-		animation->BindToProperty(&m_repetitions);
-		m_animations.push_back(std::move(animation));
-		return;
-	}
+	if (animation->propName() == "repetitions") return attach(m_animations, std::move(animation), m_repetitionsD);
+	return BindResult::UnknownProperty;
 }
 
 void OPMirror::execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const

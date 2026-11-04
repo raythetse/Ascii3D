@@ -22,7 +22,7 @@ protected:
 public:
 	virtual void update();
 	virtual void execute(Vec3& p, double& distanceA, const Color colorIn, Color* colorOut) const = 0;
-	virtual void bindAnimation(std::unique_ptr<Animation> animation) = 0;
+	virtual BindResult bindAnimation(std::unique_ptr<Animation> animation) = 0;
 	virtual void resetAnimations();
 	virtual void serialize(std::vector<std::string>& strVec, size_t level) const;
 	virtual void getShaderCalls(std::stringstream& ss, size_t level) const;
