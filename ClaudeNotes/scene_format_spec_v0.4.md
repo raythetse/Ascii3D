@@ -247,6 +247,33 @@ revolveRotations 1D, revolveRotateOffset 2D. `operation` cannot be animated.
 
 In 2D/3D variants every numeric param is a vec2/vec3 (one value per component).
 
+**How each type computes its value** (`Animation.h/.cpp`; the GLSL versions in
+`GLSLMarcher.cpp` match). `init` is the property's value as written in the
+file, and `t` is the scene time in seconds. All animations in a scene share
+the same `t`, so cycles of equal length stay in sync.
+
+**`phase` is in seconds for every type**: it shifts the animation's clock,
+so `phase 0.25` behaves as if the scene had started 0.25 s earlier.
+
+- `ANContinuous`: `init + (t + phase) * amplitude`.
+- `ANSmoothCycle`: `init + sin(2π * (t + phase) / period) * amplitude`.
+  The value swings between `init - amplitude` and `init + amplitude` and
+  starts at `init`, rising. Half a cycle out of step is `phase` = `period / 2`.
+- `ANLinearCycle`: the cycle is `forwardTime`, `delayTime1`, `backwardTime`,
+  `delayTime2`, repeating. A progress value runs 0 -> 1 during
+  `forwardTime`, holds at 1, runs 1 -> 0 during `backwardTime` and holds at 0.
+  The value is `init + (2 * progress - 1) * amplitude`. **It is centered on
+  `init`:** progress 0 gives `init - amplitude` and progress 1 gives
+  `init + amplitude`. At `t = 0` the cycle starts at progress 0, so the value
+  starts at `init - amplitude`, not at `init`. To move from A (progress 0)
+  to B (progress 1), write `init = (A + B) / 2` and `amplitude = (B - A) / 2`.
+
+Example: a jump that starts at the top (y offset 0.25) and lands at 0 is
+`OPTranslate translation 0 0.125 0` followed by `ANLinearCycle3D propName
+translation ... amplitude 0 -0.125 0`. Writing `0.25` and `-0.25` makes the
+jump twice as high (0.5 down to 0). CustomScenes/Basketball_Shot.scn uses
+this for its jump, its ball arc and its ball drop.
+
 **Attachment rule** (from `SDFBuilder::animate`):
 - After a shape line, the animation binds to that shape.
 - After an `OP*` or `COMB*` line, it binds to that operation.
@@ -506,6 +533,15 @@ warning is invalid.
   version is removed and its fixtures moved to `Tests/fixtures/`. Validator messages updated to describe the fixed loader (it
   drops or skips, rather than crashing or corrupting memory). The rules are
   unchanged.
+- Animation value formulas added to Section 8 (2026-11-05).
+  `ANLinearCycle` is centered on the written value
+  (`init +/- amplitude`); a generated scene got this wrong.
+- `ANSmoothCycle` `phase` changed from a fraction of the period to seconds
+  (2026-11-05, `Animation.cpp` and `GLSLMarcher.cpp`), so all three types
+  use the same unit. A file with a non-zero `phase` and a `period` other than
+  1 now animates differently. In this repository that was only
+  Juggling_Clown.scn, which was written expecting seconds.
+  `RainbowScene.cpp` converts its phases to seconds.
 
 ## Still open
 
