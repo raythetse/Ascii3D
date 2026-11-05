@@ -147,7 +147,7 @@ Vec3 Vec3::getNormal() const
 
 Vec3 Vec3::quantize(size_t level) const
 {
-    if (level <= 0) return *this;
+    if (level == 0) return *this;	// level is a size_t, so 0 is the only invalid value
     return { std::round(level * x) / level, std::round(level * y) / level, std::round(level * z) / level };
 }
 
@@ -250,11 +250,6 @@ Vec3 Vec3::operator*(const double d) const
 Vec3 Vec3::operator/(const double d) const
 {
     return d == 0.0 ? Vec3::Zero : *this / Vec3{ d };
-}
-
-Vec3& Vec3::operator=(const double d)
-{
-    return *this = Vec3{ d };
 }
 
 Vec3& Vec3::operator+=(const double d)

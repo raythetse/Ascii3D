@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClCompile Include="SceneLoadTests.cpp" />
     <ClCompile Include="SceneValidatorTests.cpp" />
+    <ClCompile Include="VecTests.cpp" />
     <!-- The engine itself, minus the program entry point -->
     <ClCompile Include="..\*.cpp" Exclude="..\Ascii3D.cpp" />
   </ItemGroup>

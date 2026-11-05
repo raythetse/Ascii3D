@@ -1,6 +1,7 @@
 #pragma once
 #include <istream>
 #include <ostream>
+#include <string>
 
 class Vec2
 {
@@ -25,7 +26,8 @@ public:
 	Vec2 minimum(const double m) const;
 	Vec2 maximum(const Vec2 m) const;
 	Vec2 minimum(const Vec2 m) const;
-	Vec2 cross(const Vec2& p) const;
+	// The z component of the 3D cross product (a scalar; the signed parallelogram area)
+	double cross(const Vec2& p) const;
 	Vec2 sin() const;
 	Vec2 cos() const;
 	Vec2 abs() const;
@@ -51,7 +53,7 @@ public:
 	Vec2& operator-=(const double d);
 	Vec2& operator*=(const double d);
 	Vec2& operator/=(const double d);
-	bool operator==(const Vec2& p) const;
+	bool operator==(const Vec2& p) const = default;
 	bool operator==(const double d) const;
 	std::string getShader() const;
 };

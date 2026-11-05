@@ -91,7 +91,6 @@ public:
 	Vec3 operator-(const double d) const;
 	Vec3 operator*(const double d) const;
 	Vec3 operator/(const double d) const;
-	Vec3& operator=(const double d);
 	Vec3& operator+=(const double d);
 	Vec3& operator-=(const double d);
 	Vec3& operator*=(const double d);
