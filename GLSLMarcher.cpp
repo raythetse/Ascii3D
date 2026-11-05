@@ -127,15 +127,15 @@ bool isEnabled(float onTime, float offTime, float phase, float time) {
 
 // OPERATION FUNCTIONS //
 float smoothCycle1D(float initVal, float period, float amplitude, float phase, float time) {
-    return initVal + sin(TAU * (time + (phase * period)) / period) * amplitude;
+    return initVal + sin(TAU * (time + phase) / period) * amplitude;
 }
 
 vec2 smoothCycle2D(vec2 initVal, vec2 period, vec2 amplitude, vec2 phase, float time) {
-    return initVal + sin(TAU * (vec2(time) + (phase * period)) / period) * amplitude;
+    return initVal + sin(TAU * (vec2(time) + phase) / period) * amplitude;
 }
 
 vec3 smoothCycle3D(vec3 initVal, vec3 period, vec3 amplitude, vec3 phase, float time) {
-    return initVal + sin(TAU * (vec3(time) + (phase * period)) / period) * amplitude;
+    return initVal + sin(TAU * (vec3(time) + phase) / period) * amplitude;
 }
 
 float linearCycle1D(float initVal, float amplitude, float forwardTime, float delayTime1, float backwardTime, float delayTime2, float phase, float time) {

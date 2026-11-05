@@ -43,7 +43,7 @@ void ANSmoothCycle1D::getShaderCallInner(std::string& call) const
 
 void ANSmoothCycle1D::update() const
 {
-    *m_ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + (m_phase * m_period)) / m_period) * m_amplitude;
+    *m_ptr = m_initVal + std::sin(MF::TAU * (GameTimer::gameTime() + m_phase) / m_period) * m_amplitude;
 }
 
 void ANSmoothCycle2D::getShaderCallInner(std::string& call) const
@@ -53,7 +53,7 @@ void ANSmoothCycle2D::getShaderCallInner(std::string& call) const
 
 void ANSmoothCycle2D::update() const
 {
-    *m_ptr = m_initVal + ((Vec2{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
+    *m_ptr = m_initVal + ((Vec2{ GameTimer::gameTime() } + m_phase) * MF::TAU / m_period).sin() * m_amplitude;
 }
 
 void ANSmoothCycle3D::getShaderCallInner(std::string& call) const
@@ -63,7 +63,7 @@ void ANSmoothCycle3D::getShaderCallInner(std::string& call) const
 
 void ANSmoothCycle3D::update() const
 {
-    *m_ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase * m_period) * MF::TAU / m_period).sin() * m_amplitude;
+    *m_ptr = m_initVal + ((Vec3{ GameTimer::gameTime() } + m_phase) * MF::TAU / m_period).sin() * m_amplitude;
 }
 
 void ANLinearCycle1D::getShaderCallInner(std::string& call) const
