@@ -150,24 +150,39 @@ SDFObject
 					stepBack
 				stepBack
 			stepBack
-		// Ball. Outer group: after the shot reaches the rim (t = 1.5 s) it drops
-		// through the net to the floor in 0.5 s, rests, and snaps back at t = 3 s.
+		// Ball, in three nested groups, one animation each. Timeline (3 s loop):
+		//   0.0-1.5  shot: arc from the hands to the rim
+		//   1.5-2.0  drop through the net to the floor
+		//   2.0      snaps into the hands of the standing shooter
+		//   2.0-2.4  held overhead while he stands
+		//   2.4-3.0  rises with him into the next jump
+		// The phase values (seconds) shift each cycle so its segments line up with this.
 		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
 		SDFObject color 1 1 1
-			// y offset 0 while shooting (progress 1), -2.92 on the floor (progress 0)
-			OPTranslate translation 0 -1.46 0
-			ANLinearCycle3D propName translation forwardTime 0 0 0 delayTime1 1.5 1.5 1.5 backwardTime 0.5 0.5 0.5 delayTime2 1 1 1 amplitude 0 1.46 0 phase 0 0 0
-			// Inner group: the shot itself, a circular arc (center 0.528 2.348, radius 1.952)
-			// from the hands (-1.40 2.65) over a 4.3 m apex to the rim (2.35 3.05) in 1.5 s
+			// Outer group: follows the shooter's jump, but only while he holds the ball.
+			// y offset -0.25 (standing) at progress 0, 0 (top of the jump) at progress 1.
+			// Cycle from t = 2.4: rise 0.6 s, hold 0 for 2.0 s, snap to -0.25 at t = 2.0, hold 0.4 s.
+			OPTranslate translation 0 -0.125 0
+			ANLinearCycle3D propName translation forwardTime 0.6 0.6 0.6 delayTime1 2 2 2 backwardTime 0 0 0 delayTime2 0.4 0.4 0.4 amplitude 0 0.125 0 phase 0.6 0.6 0.6
+			// Middle group: the drop. y offset 0 at progress 0, -2.92 (floor) at progress 1.
+			// Cycle from t = 1.5: fall 0.5 s, snap back to 0 at t = 2.0, hold 2.5 s.
 			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
 			SDFObject color 1 1 1
-				OPTranslate translation 0.528 2.348 0
-				// rotations -0.4753 at the hands (progress 0), -0.0585 at the rim (progress 1)
-				OPRotate axis 0 0 1 rotations -0.2669
-				ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 1.5 backwardTime 0 delayTime2 0 amplitude 0.2084 phase 0
-				OPTranslate translation 1.952 0 0
+				OPTranslate translation 0 -1.46 0
+				ANLinearCycle3D propName translation forwardTime 0.5 0.5 0.5 delayTime1 0 0 0 backwardTime 0 0 0 delayTime2 2.5 2.5 2.5 amplitude 0 -1.46 0 phase 1.5 1.5 1.5
+				// Inner group: the shot itself, a circular arc (center 0.528 2.348, radius 1.952)
+				// from the hands (-1.40 2.65) over a 4.3 m apex to the rim (2.35 3.05).
+				// rotations -0.4753 at the hands (progress 0), -0.0585 at the rim (progress 1).
+				// Cycle from t = 0: sweep 1.5 s, hold at the rim 0.5 s, snap back at t = 2.0, hold 1 s.
 				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
-				SDFSphere radius 0.12 color 0.95 0.45 0.1
+				SDFObject color 1 1 1
+					OPTranslate translation 0.528 2.348 0
+					OPRotate axis 0 0 1 rotations -0.2669
+					ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 0.5 backwardTime 0 delayTime2 1 amplitude 0.2084 phase 0
+					OPTranslate translation 1.952 0 0
+					COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+					SDFSphere radius 0.12 color 0.95 0.45 0.1
+						stepBack
 					stepBack
 				stepBack
 			stepBack
