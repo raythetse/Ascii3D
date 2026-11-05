@@ -82,16 +82,30 @@
     <ClCompile Include="SceneLoadTests.cpp" />
     <ClCompile Include="SceneValidatorTests.cpp" />
     <ClCompile Include="VecTests.cpp" />
-    <!-- The engine itself, minus the program entry point -->
-    <ClCompile Include="..\*.cpp" Exclude="..\Ascii3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestPaths.h" />
   </ItemGroup>
+  <!--
+    The engine itself, minus the program entry point. The Visual Studio IDE doesn't support
+    wildcards in project items (https://aka.ms/cpp/projectwildcards), so the wildcard uses an
+    item type the IDE ignores, and AddEngineSources turns it into ClCompile during the build.
+    New engine .cpp files are picked up automatically. They appear in Solution Explorer under
+    Ascii3D, not here.
+  -->
   <ItemGroup>
-    <None Include="fixtures\*.scn" />
+    <_EngineSource Include="..\*.cpp" Exclude="..\Ascii3D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Target Name="AddEngineSources" AfterTargets="BuildGenerateSources">
+    <ItemGroup>
+      <ClCompile Include="@(_EngineSource)" />
+    </ItemGroup>
+  </Target>
+  <!-- Also run it for IntelliSense, so engine files opened in the editor get this project's settings -->
+  <PropertyGroup>
+    <ComputeCompileInputsTargets>AddEngineSources;$(ComputeCompileInputsTargets)</ComputeCompileInputsTargets>
+  </PropertyGroup>
 </Project>
