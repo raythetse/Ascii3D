@@ -1,0 +1,176 @@
+SDFObject
+	// Hardwood floor
+	COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+	SDFObject color 1 1 1
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFPlane normal 0 1 0 offset 0 color 0.8 0.55 0.3
+			stepBack
+		stepBack
+	// Everything else is built in a local frame (shooter on the left, facing +x),
+	// then turned about y for a three-quarter view
+	COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+	SDFObject color 1 1 1
+		OPTranslate translation -0.5 0 3
+		OPRotate axis 0 1 0 rotations 0.06
+		// Free-throw line
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation -1.5 0 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFBox dimensions 0.05 0.02 3.6 color 1 1 1
+				stepBack
+			stepBack
+		// Hoop: base, pole, arm, backboard, target square, bracket, rim, net
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 3.3 0.15 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFBox dimensions 0.8 0.3 0.8 color 0.15 0.15 0.2
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 3.3 1.7 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFCylinder radius 0.09 sideLength 3.4 axis 1 color 0.5 0.5 0.55
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 3.02 3.35 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFBox dimensions 0.55 0.1 0.1 color 0.5 0.5 0.55
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 2.73 3.35 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFBox dimensions 0.05 1.05 1.8 color 1 1 1
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 2.7 3.28 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFBoxFrame dimensions 0.06 0.45 0.59 edgeThickness 0.025 color 1 0.3 0
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 2.64 3.05 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFBox dimensions 0.14 0.04 0.06 color 1 0.4 0
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 2.35 3.05 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFTorus radii 0.23 0.02 axis 1 color 1 0.4 0
+				stepBack
+			stepBack
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			OPTranslate translation 2.35 2.85 0
+			OPRepeatCircle axis 1 repetitions 12
+			OPTranslate translation 0.2 0 0
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFCapsule radius 0.018 bodyLength 0.36 axis 1 color 1 1 1
+				stepBack
+			stepBack
+		// Shooter, at the top of a jump shot at t = 0: lands, stands, then jumps again
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			// ANLinearCycle swings between init - amplitude (progress 0) and init + amplitude
+			// (progress 1). Here: y 0.25 at t = 0 (top of the jump), 0 while standing.
+			OPTranslate translation -1.75 0.125 0
+			ANLinearCycle3D propName translation forwardTime 0.3 0.3 0.3 delayTime1 2.1 2.1 2.1 backwardTime 0.6 0.6 0.6 delayTime2 0 0 0 amplitude 0 -0.125 0 phase 0 0 0
+			// Sneakers
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
+				OPTranslate translation 0.05 0.07 0.12
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFEllipsoid radii 0.14 0.07 0.06 color 1 1 1
+					stepBack
+				stepBack
+			// Legs
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
+				OPTranslate translation 0 0.5 0.11
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFCapsule radius 0.08 bodyLength 0.75 axis 1 color 0.55 0.38 0.26
+					stepBack
+				stepBack
+			// Shorts
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPTranslate translation 0 0.92 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFEllipsoid radii 0.17 0.2 0.24 color 0.7 0.05 0.05
+					stepBack
+				stepBack
+			// Jersey
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPTranslate translation 0 1.3 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFEllipsoid radii 0.15 0.33 0.22 color 0.85 0.1 0.1
+					stepBack
+				stepBack
+			// Head
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPTranslate translation 0 1.78 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFSphere radius 0.12 color 0.55 0.38 0.26
+					stepBack
+				stepBack
+			// Arms raised for the shot: shoulder, upper arm, elbow, forearm, hand
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPMirror mirrorX 0 mirrorY 0 mirrorZ 1
+				OPTranslate translation 0 1.55 0.15
+				OPRotate axis 0 0 1 rotations 0.0936
+				OPTranslate translation 0 0.18 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFCapsule radius 0.055 bodyLength 0.36 axis 1 color 0.55 0.38 0.26
+					stepBack
+				OPTranslate translation 0 0.18 0
+				OPRotate axis 0 0 1 rotations -0.0546
+				OPTranslate translation 0 0.205 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFCapsule radius 0.05 bodyLength 0.41 axis 1 color 0.55 0.38 0.26
+					stepBack
+				OPTranslate translation 0 0.235 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFSphere radius 0.06 color 0.55 0.38 0.26
+					stepBack
+				stepBack
+			stepBack
+		// Ball. Outer group: after the shot reaches the rim (t = 1.5 s) it drops
+		// through the net to the floor in 0.5 s, rests, and snaps back at t = 3 s.
+		COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+		SDFObject color 1 1 1
+			// y offset 0 while shooting (progress 1), -2.92 on the floor (progress 0)
+			OPTranslate translation 0 -1.46 0
+			ANLinearCycle3D propName translation forwardTime 0 0 0 delayTime1 1.5 1.5 1.5 backwardTime 0.5 0.5 0.5 delayTime2 1 1 1 amplitude 0 1.46 0 phase 0 0 0
+			// Inner group: the shot itself, a circular arc (center 0.528 2.348, radius 1.952)
+			// from the hands (-1.40 2.65) over a 4.3 m apex to the rim (2.35 3.05) in 1.5 s
+			COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+			SDFObject color 1 1 1
+				OPTranslate translation 0.528 2.348 0
+				// rotations -0.4753 at the hands (progress 0), -0.0585 at the rim (progress 1)
+				OPRotate axis 0 0 1 rotations -0.2669
+				ANLinearCycle1D propName rotations forwardTime 1.5 delayTime1 1.5 backwardTime 0 delayTime2 0 amplitude 0.2084 phase 0
+				OPTranslate translation 1.952 0 0
+				COMBAdd onTime 1 offTime 0 phase 0 overwriteColor 0
+				SDFSphere radius 0.12 color 0.95 0.45 0.1
+					stepBack
+				stepBack
+			stepBack
+		stepBack
+LightSource position 1 5 -2 luminance 120 ambientPower 0.25 color 1 0.97 0.9
+LightSource position 0.5 8 4 luminance 60 ambientPower 0 color 1 1 1
