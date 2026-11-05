@@ -46,7 +46,7 @@ Vec2 Vec2::minimum(const Vec2 m) const
     return Vec2{ x < m.x ? x : m.x, y < m.y ? y : m.y };
 }
 
-Vec2 Vec2::cross(const Vec2& p) const
+double Vec2::cross(const Vec2& p) const
 {
     return x * p.y - y * p.x;
 }
@@ -195,10 +195,6 @@ Vec2& Vec2::operator/=(const double d)
     x = d == 0.0 ? 0.0 : x / d;
     y = d == 0.0 ? 0.0 : y / d;
     return *this;
-}
-
-bool Vec2::operator==(const Vec2& p) const {
-    return (x == p.x && y == p.y);
 }
 
 bool Vec2::operator==(const double d) const {

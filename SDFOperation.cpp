@@ -1,4 +1,3 @@
-#pragma once
 #include "SDFOperation.h"
 
 void SDFOperation::update()
