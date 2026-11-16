@@ -4,17 +4,7 @@ A real-time ray-marcher that renders 3D signed-distance-field (SDF) scenes as co
 
 It's a personal project for practicing modern C++ features (see [AI assistance](#ai-assistance)).
 
-<!-- TODO: demo video. Edit this file in GitHub's web editor and drag a short (10-20 s) .mp4
-     onto this spot; GitHub uploads it and inserts a link that plays inline. Optionally add a
-     link to a longer walkthrough on YouTube below it. -->
-
-> **TODO (demo video):** Suggested built-in scenes to record, on a GPU device:
-> - **[2] Combination**: add, subtract and intersect, with the smooth versions in the back row.
-> - **[5] Worms**: partial tori combined into continuous moving worms (animation plus combinations).
-> - **[7] Jigsaw**: domain repetition.
-> - **[9] Color Blend**: smooth color blending between shapes.
->
-> A short clip of `Loader_Warnings_Demo.scn` showing the warnings screen would also show off the custom-scene tooling.
+https://github.com/user-attachments/assets/0caee4a0-887b-49bf-9fc4-8497a4bf8be5
 
 ## Features
 
