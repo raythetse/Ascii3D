@@ -9,6 +9,9 @@ InputManager& InputManager::instance()
 
 InputManager::InputManager()
 {
+	// Best guess at the host window. Under older Windows Terminal versions the pseudo-window's
+	// owner is the Terminal window; since 1.25 it has none, and processMouseEvents learns the
+	// real host from the first click.
 	m_console = GetConsoleWindow();
 	HWND realWindow = GetAncestor(m_console, GA_ROOTOWNER);
 	m_console = (realWindow != NULL) ? realWindow : m_console;
@@ -58,7 +61,24 @@ void InputManager::processKeyEvents(INPUT_RECORD inputRecord)
 void InputManager::processMouseEvents(INPUT_RECORD inputRecord)
 {
 	MOUSE_EVENT_RECORD mer = inputRecord.Event.MouseEvent;
-	m_holdMouse = m_holdMouse || (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED && !mer.dwEventFlags);
+	if (mer.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED && !mer.dwEventFlags) {
+		// A click only reaches us while the window hosting us has focus, so the foreground
+		// window is that host. Under Windows Terminal, GetConsoleWindow() returns an invisible
+		// pseudo-window, and since Terminal 1.25 its owner is no longer the Terminal window.
+		HWND host = GetForegroundWindow();
+		if (host != NULL && host != m_console) {
+			m_console = host;
+			m_hostChanged = true;
+		}
+		m_holdMouse = true;
+	}
+}
+
+void InputManager::processFocusEvents(INPUT_RECORD inputRecord)
+{
+	// Covers switching to another tab of the same Terminal window, where the foreground
+	// window doesn't change (if the host forwards focus events)
+	if (!inputRecord.Event.FocusEvent.bSetFocus) m_holdMouse = false;
 }
 
 void InputManager::processWindowResizeEvents(INPUT_RECORD inputRecord)
@@ -92,6 +112,9 @@ void InputManager::processInputEvents()
 			case MOUSE_EVENT:
 				processMouseEvents(inputBuffer[i]);
 				break;
+			case FOCUS_EVENT:
+				processFocusEvents(inputBuffer[i]);
+				break;
 			case WINDOW_BUFFER_SIZE_EVENT:
 				processWindowResizeEvents(inputBuffer[i]);
 				m_windowResized = true;
@@ -108,9 +131,11 @@ void InputManager::processMouseMovement()
 	if (m_holdMouse) {
 		POINT cursorPos;
 		GetCursorPos(&cursorPos);
-		if (m_windowResized) {
+		if (m_windowResized || m_hostChanged) {
+			// The centre just moved; the cursor's offset from it isn't mouse motion
 			m_mouseMotion = { 0.0 };
 			m_windowResized = false;
+			m_hostChanged = false;
 		}
 		else {
 			m_mouseMotion = { static_cast<double>(cursorPos.x - m_windowCentre.x), static_cast<double>(cursorPos.y - m_windowCentre.y) };
@@ -121,7 +146,7 @@ void InputManager::processMouseMovement()
 
 void InputManager::acquireCentre()
 {
-	if (!m_windowResized) return;
+	if (!m_windowResized && !m_hostChanged) return;
 
 	RECT rect;
 	if (GetWindowRect(m_console, &rect)) {

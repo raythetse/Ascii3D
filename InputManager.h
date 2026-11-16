@@ -20,19 +20,21 @@ private:
 	std::unordered_map<unsigned short, KeyState> m_keyMap{};
 	std::vector<std::function<void(size_t, size_t)>> m_resizeCallbacks;
 	Vec2 m_mouseMotion{};
-	HWND m_console;
+	HWND m_console;		// The window hosting us; under Windows Terminal, learned from the first click
 	HANDLE m_input;
 	HANDLE m_output;
 	POINT m_windowCentre;
 	bool m_holdMouse{ true };
 	bool m_isActiveWindow{ true };
 	bool m_windowResized{ true };
+	bool m_hostChanged{ false };	// Recompute the centre from the new host window
 
 	InputManager();
 	~InputManager() {}
 
 	void processKeyEvents(INPUT_RECORD inputRecord);
 	void processMouseEvents(INPUT_RECORD inputRecord);
+	void processFocusEvents(INPUT_RECORD inputRecord);
 	void processWindowResizeEvents(INPUT_RECORD inputRecord);
 	void processInputEvents();
 	void processMouseMovement();
