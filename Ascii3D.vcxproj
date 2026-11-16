@@ -156,7 +156,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Ascii3D.cpp" />
-    <ClCompile Include="BartScene.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorBlendScene.cpp" />
     <ClCompile Include="CombinationOperation.cpp" />
@@ -206,7 +205,6 @@
     <ClCompile Include="WormsScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BartScene.h" />
     <ClInclude Include="ColorBlendScene.h" />
     <ClInclude Include="CombinationOperation.h" />
     <ClInclude Include="CombinationScene.h" />

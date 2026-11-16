@@ -1,5 +1,4 @@
 #pragma once
-#include "BartScene.h"
 #include "ColorBlendScene.h"
 #include "CombinationScene.h"
 #include "ElongateScene.h"

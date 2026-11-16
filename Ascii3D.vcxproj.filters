@@ -183,9 +183,6 @@
     <ClCompile Include="Animation.cpp">
       <Filter>Source Files\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="BartScene.cpp">
-      <Filter>Source Files\SDF\DemoScenes\CustomScenes</Filter>
-    </ClCompile>
     <ClCompile Include="RoboticArmScene.cpp">
       <Filter>Source Files\SDF\DemoScenes\CustomScenes</Filter>
     </ClCompile>
@@ -334,9 +331,6 @@
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="BartScene.h">
-      <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>
     </ClInclude>
     <ClInclude Include="RoboticArmScene.h">
       <Filter>Header Files\SDF\DemoScenes\CustomScenes</Filter>

@@ -253,5 +253,5 @@ SDFObject color 1 1 1
 			stepBack
 		stepBack
 	stepBack
-LightSource position 10 16 -10 luminance 250 color 1 1 1 ambientPower 0.5
+LightSource position 10 16 -10 luminance 450 color 1 1 1 ambientPower 0.5
 end
