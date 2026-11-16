@@ -76,6 +76,7 @@ bool GameEngine::handleInput()
     if (InputManager::keyDown('R')) GameTimer::reset(GameTimer::isPaused());
     if (InputManager::keyJustPushed(VK_UP)) m_camera.changeMoveSpeed(1.0);
     if (InputManager::keyJustPushed(VK_DOWN)) m_camera.changeMoveSpeed(-1.0);
+    if (InputManager::keyJustPushed('T')) m_perfMonitor.toggleMetrics();
 
     if (InputManager::keyJustPushed('M') && InputManager::keyDown(VK_CONTROL)) {
         std::vector<std::string> strVec{};
@@ -125,6 +126,7 @@ bool GameEngine::selectRenderer()
             std::cout << "[BACKSPACE] = reset position\n";
             std::cout << "[P] = Pause/Unpause animations\n";
             std::cout << "[R] = Restart animation\n";
+            std::cout << "[T] = Toggle performance metrics\n";
             std::cout << "[CTRL M] = Save scene to CustomScene.scn\n";
             std::cout << "[CTRL -/+] = Decrease/Increase font size (affects performance)\n";
             std::cout << "[CTRL 0] = Reset to default font size\n";

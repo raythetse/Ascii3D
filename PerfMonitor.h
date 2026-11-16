@@ -23,10 +23,12 @@ private:
     std::vector<double> m_sampleTotals;
     std::vector<std::queue<double>> m_sampleSets;
     size_t m_sampleSize;
+    bool m_displayMetrics{};
 public:
     PerfMonitor(size_t sampleSize = 100);
     size_t add(std::string monitorName, TimeUnit unit = Milli);
     double sample(size_t monitorId, std::function<void()> op);
     void printMonitors(size_t precision = 3);
+    void toggleMetrics();
 };
 

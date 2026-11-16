@@ -40,6 +40,8 @@ double PerfMonitor::sample(size_t monitorId, std::function<void()> op)
 
 void PerfMonitor::printMonitors(size_t precision)
 {
+    if (!m_displayMetrics) return;
+
     std::string buffer{};
     std::cout << std::setprecision(3);
     buffer += "\033[1;1H\033[37m";
@@ -67,4 +69,9 @@ void PerfMonitor::printMonitors(size_t precision)
         }
     }
     std::cout << buffer;
+}
+
+void PerfMonitor::toggleMetrics()
+{
+    m_displayMetrics = !m_displayMetrics;
 }
