@@ -116,7 +116,7 @@ bool GameEngine::selectRenderer()
     int selection{ -1 };
 
     std::function<void(bool)> prompt = [&selection, &deviceProps](bool controls) {
-        std::cout << "\033[2J\033[1;1H";
+        std::cout << "\033[2J\033[1;1H" << "\033[1;1H\033[37m";
         if (controls) {
             std::cout << "==============================================================\n";
             std::cout << "[ESCAPE] = Close Scene\n";
@@ -170,7 +170,7 @@ bool GameEngine::selectRenderer()
 
 bool GameEngine::selectSceneType()
 {
-    std::cout << "\033[2J\033[1;1H"; // clear console
+    std::cout << "\033[2J\033[1;1H" << "\033[1;1H\033[37m";; // clear console, reset color
     std::cout << "Select a scene-type (WARNING: Custom scenes may run very poorly on CPU Renderer)\n\n";
     std::cout << "[1] Built-In (Simple hard-coded demo scenes)\n[2] Custom (Defined in the \\CustomScenes folder)\n[3] Back to device selection\n";
 
@@ -203,7 +203,7 @@ void GameEngine::selectBuiltInScene(bool noCustom)
     int selection{};
 
     while (true) {
-        std::cout << "\033[2J\033[1;1H";
+        std::cout << "\033[2J\033[1;1H" << "\033[1;1H\033[37m";
         if (noCustom) std::cout << "No Custom Scenes found\n\n";
         std::cout << "Choose a Built-In Scene\n\n";
         std::cout << "[1] Shapes - Collection of Raymarched shapes.\n";
