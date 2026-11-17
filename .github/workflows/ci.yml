@@ -1,0 +1,62 @@
+# Builds the app and the unit tests on Windows, then runs the tests.
+name: CI
+
+on:
+  # Every branch, so a branch is checked before its pull request is opened
+  push:
+  pull_request:
+    branches: [main]
+
+# The workflow only reads the repository
+permissions:
+  contents: read
+
+# A newer push to the same branch cancels the run still going for the old one
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    # windows-latest is Windows Server 2025 with Visual Studio 2026, which has the v145 toolset
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # Pinned to a commit (tag v1.7.0): a third-party action runs with the job's token,
+      # and a tag can be moved to different code, a commit can't
+      - name: Install Vulkan SDK
+        uses: jakoch/install-vulkan-sdk-action@d17de7e2f5e50efb5d2123efed18497d3c58c533 # v1.7.0
+        with:
+          vulkan_version: 1.4.357.0
+          # vulkan-1.dll: the runner has no GPU driver to provide it
+          install_runtime: true
+          cache: true
+
+      # The test DLL imports vulkan-1.dll and shaderc_shared.dll, so they must be on PATH
+      # when vstest loads it. Nothing renders, so no Vulkan device is needed.
+      - name: Put Vulkan DLLs on PATH
+        shell: pwsh
+        run: |
+          foreach ($dll in "Bin\shaderc_shared.dll", "runtime\x64\vulkan-1.dll") {
+            if (-not (Test-Path "$env:VULKAN_SDK\$dll")) { throw "Missing $env:VULKAN_SDK\$dll" }
+          }
+          "$env:VULKAN_SDK\Bin" >> $env:GITHUB_PATH
+          "$env:VULKAN_SDK\runtime\x64" >> $env:GITHUB_PATH
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - name: Build Ascii3D (Release x64)
+        run: msbuild Ascii3D.vcxproj /p:Configuration=Release /p:Platform=x64 /m /nologo
+
+      - name: Build tests (Debug x64)
+        run: msbuild Tests\Ascii3DTests.vcxproj /p:Configuration=Debug /p:Platform=x64 /m /nologo
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vstest = & $vswhere -latest -products * -find "**\TestPlatform\vstest.console.exe" | Select-Object -First 1
+          & $vstest Tests\x64\Debug\Ascii3DTests.dll
+          exit $LASTEXITCODE

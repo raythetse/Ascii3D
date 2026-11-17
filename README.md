@@ -1,5 +1,7 @@
 # Ascii3D
 
+[![CI](https://github.com/raythetse/Ascii3D/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/raythetse/Ascii3D/actions/workflows/ci.yml)
+
 A real-time ray-marcher that renders 3D signed-distance-field (SDF) scenes as colored ASCII in the Windows console. Written in C++20, it has two renderers: a CPU ray-marcher, and a Vulkan compute renderer that generates a GLSL shader from the scene and compiles it at load time.
 
 It's a personal project for practicing modern C++ features (see [AI assistance](#ai-assistance)).
