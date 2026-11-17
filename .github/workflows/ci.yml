@@ -45,7 +45,7 @@ jobs:
           "$env:VULKAN_SDK\Bin" >> $env:GITHUB_PATH
           "$env:VULKAN_SDK\runtime\x64" >> $env:GITHUB_PATH
 
-      - uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@v3
 
       - name: Build Ascii3D (Release x64)
         run: msbuild Ascii3D.vcxproj /p:Configuration=Release /p:Platform=x64 /m /nologo
@@ -58,5 +58,9 @@ jobs:
         run: |
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $vstest = & $vswhere -latest -products * -find "**\TestPlatform\vstest.console.exe" | Select-Object -First 1
-          & $vstest Tests\x64\Debug\Ascii3DTests.dll
-          exit $LASTEXITCODE
+          & $vstest Tests\x64\Debug\Ascii3DTests.dll /logger:"trx;LogFileName=results.trx" /ResultsDirectory:TestResults
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # vstest exits 0 when it finds no tests, so check that some ran
+          $counters = ([xml](Get-Content TestResults\results.trx)).TestRun.ResultSummary.Counters
+          "Tests: $($counters.passed) passed of $($counters.total)" >> $env:GITHUB_STEP_SUMMARY
+          if ([int]$counters.total -eq 0) { throw "No tests were run" }
