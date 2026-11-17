@@ -2,10 +2,14 @@
 name: CI
 
 on:
-  # Every branch, so a branch is checked before its pull request is opened
+  # main only: a branch with an open pull request is checked by the pull_request trigger,
+  # so a push trigger on every branch would run CI twice for each push
   push:
+    branches: [main]
   pull_request:
     branches: [main]
+  # A "Run workflow" button in the Actions tab, to check any branch before opening its PR
+  workflow_dispatch:
 
 # The workflow only reads the repository
 permissions:
