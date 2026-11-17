@@ -4,7 +4,7 @@ A real-time ray-marcher that renders 3D signed-distance-field (SDF) scenes as co
 
 It's a personal project for practicing modern C++ features (see [AI assistance](#ai-assistance)).
 
-https://github.com/user-attachments/assets/0caee4a0-887b-49bf-9fc4-8497a4bf8be5
+https://github.com/user-attachments/assets/3be83872-2316-492d-bfbd-bf0899470c95
 
 ## Features
 
