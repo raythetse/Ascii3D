@@ -49,9 +49,6 @@ for clarity, but since any line that doesn't start with a valid keyword will be
 ignored, you can technically use nearly any choice of denotation for a comment
 line.
 
-[WIP NOTE: The current version of this application does not yet have robust
-error handling and will likely crash when loading ill-formed .scn files.]
-
 Here is an example of a very simple .scn file:
 
 SDFObject
@@ -352,7 +349,7 @@ that earlier we said that a combination is always followed by an object. In
 this case, however, the object does not follow as the very next entry but
 rather follows after any animations that apply to the combination itself.
 There still must be an object that follows before further operations can be
-added, otherwise uncertain behaviour will occur, possibly including crashes.
+added, otherwise validation errors will occur.
 
 Now let's animate some properties on our box frame object:
 
