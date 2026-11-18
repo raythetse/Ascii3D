@@ -124,6 +124,7 @@
       <Profile>false</Profile>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>vulkan-1.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Manifest>
@@ -148,6 +149,8 @@
       <Profile>false</Profile>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;shaderc_shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <!-- vulkan-1.dll comes with the GPU driver. Loading it on first use lets the app start without it (see GameEngine.cpp). -->
+      <DelayLoadDLLs>vulkan-1.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <Manifest>
@@ -248,6 +251,7 @@
     <ClInclude Include="TransformOperation.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="RayMarcher.h" />
     <ClInclude Include="SDFObject.h" />
     <ClInclude Include="PixelSample.h" />
@@ -256,6 +260,9 @@
   <ItemGroup>
     <Text Include="HOWTO.txt" />
     <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ascii3D.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

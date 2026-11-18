@@ -1,0 +1,15 @@
+Ascii3D's download includes the third-party software below. Ascii3D's own license is in LICENSE.txt.
+
+shaderc_shared.dll comes from the LunarG Vulkan SDK (https://vulkan.lunarg.com/). It contains:
+
+  shaderc         https://github.com/google/shaderc
+                  Apache License 2.0, see licenses\shaderc.txt
+  glslang         https://github.com/KhronosGroup/glslang
+                  BSD-3-Clause and other licenses, see licenses\glslang.txt
+  SPIRV-Tools     https://github.com/KhronosGroup/SPIRV-Tools
+                  Apache License 2.0, see licenses\SPIRV-Tools.txt
+  SPIRV-Headers   https://github.com/KhronosGroup/SPIRV-Headers
+                  MIT-style Khronos license, see licenses\SPIRV-Headers.txt
+
+msvcp140*.dll and vcruntime140*.dll are the Microsoft Visual C++ runtime, redistributed under
+the Visual Studio license terms for distributable code.

@@ -20,6 +20,18 @@ https://github.com/user-attachments/assets/3be83872-2316-492d-bfbd-bf0899470c95
 - **Custom scenes.** Scenes are plain-text `.scn` files. A built-in validator checks them, from the command line or before a scene loads, and the current scene can be saved back to a file.
 - **Performance readout.** Per-frame update, march and render timings are drawn in the corner.
 
+## Download
+
+Prebuilt Windows x64 builds are on the [Releases](https://github.com/raythetse/Ascii3D/releases) page. Unzip the whole folder and run `Ascii3D.exe`. It needs 64-bit Windows 10 or 11; the Vulkan renderer also needs a GPU driver with Vulkan 1.3, and without one only the CPU renderer is offered. The zip includes the DLLs it needs, so neither Visual Studio nor the Vulkan SDK has to be installed.
+
+**The exe isn't code-signed**, and few people have downloaded it, so Windows SmartScreen or an antivirus program may warn about it or delete it. Microsoft Defender's machine-learning detections, with names ending in `!ml`, often flag new unsigned programs like this one. Every release is built by the [CI workflow](https://github.com/raythetse/Ascii3D/actions/workflows/ci.yml) from the source in this repository, and its release notes link the exact workflow run and commit and list the SHA-256 hashes of the zip and the exe. You can also check that an exe came from that workflow with the [GitHub CLI](https://cli.github.com/):
+
+```bat
+gh attestation verify Ascii3D.exe --repo raythetse/Ascii3D
+```
+
+If your antivirus flags a download whose hash matches the release notes, please report it as a false positive to the antivirus vendor (for Microsoft Defender, [submit the file to Microsoft](https://www.microsoft.com/en-us/wdsi/filesubmission)) and [open an issue](https://github.com/raythetse/Ascii3D/issues) here. If you'd rather not run a prebuilt exe, [build it from source](#building).
+
 ## Requirements
 
 - Windows (the console, input and window handling use the Win32 API).
