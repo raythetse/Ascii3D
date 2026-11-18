@@ -17,7 +17,9 @@ permissions:
 
 # A newer push to the same branch cancels the run still going for the old one
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # head_ref (the PR's branch) is set only for pull_request runs, so a PR run never shares
+  # a group with main, even when it starts after the PR has merged
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
