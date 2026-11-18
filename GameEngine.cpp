@@ -12,6 +12,27 @@
 #include "SDFBuilder.h"
 #include "SDFOperationInc.h"
 
+namespace {
+    // Returns nullptr when Vulkan can't be used, and the menu then offers only the CPU renderer
+    std::unique_ptr<VulkanManager> tryCreateVulkanManager()
+    {
+        // vulkan-1.dll comes with the GPU driver, and it's delay-loaded (see Ascii3D.vcxproj) so the
+        // app can start without it. If it's missing, the first Vulkan call raises a structured
+        // exception, which C++ catch can't handle, so check that it loads before calling anything.
+        // A static local is initialized once, the first time this runs.
+        static const bool vulkanLoaded{ LoadLibraryW(L"vulkan-1.dll") != nullptr };
+        if (!vulkanLoaded) return nullptr;
+
+        try {
+            return std::make_unique<VulkanManager>();
+        }
+        catch (const std::runtime_error&) {
+            // vkCreateInstance failed: e.g. vulkan-1.dll is there but no GPU driver is
+            return nullptr;
+        }
+    }
+}
+
 GameEngine::GameEngine(double sceneDepth, double tolerance)
 	: m_sceneDepth{ sceneDepth }, m_surTolerance(tolerance), m_rayMarcher{ sceneDepth, tolerance }
 {
@@ -39,7 +60,7 @@ GameEngine::GameEngine(double sceneDepth, double tolerance)
 void GameEngine::run()
 {
     while (true) {
-        m_vulkanManager = std::make_unique<VulkanManager>();
+        m_vulkanManager = tryCreateVulkanManager();
 
         if (!selectRenderer()) break;
 
@@ -112,7 +133,8 @@ void GameEngine::march()
 
 bool GameEngine::selectRenderer()
 {
-    auto& deviceProps = m_vulkanManager->enumerateDevices();
+    static const std::vector<VkPhysicalDeviceProperties> noDevices;
+    const auto& deviceProps = m_vulkanManager ? m_vulkanManager->enumerateDevices() : noDevices;
     int selection{ -1 };
 
     std::function<void(bool)> prompt = [&selection, &deviceProps](bool controls) {
@@ -140,6 +162,7 @@ bool GameEngine::selectRenderer()
         }
         std::cout << "      Rendering Devices\n\n";
         std::cout << "[1] - CPU (Slow mode)\n";
+        if (deviceProps.empty()) std::cout << "      (No Vulkan 1.3 GPU found, so the CPU is the only choice)\n";
 
         for (size_t i{}; i < deviceProps.size(); ++i) {
             std::cout << "[" << (i + 2) << "] - " << deviceProps[i].deviceName << '\n';

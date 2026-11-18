@@ -1,4 +1,5 @@
-# Builds the app and the unit tests on Windows, then runs the tests.
+# Builds the app and the unit tests on Windows, runs the tests, and packages the app as a zip.
+# A pushed vX.Y.Z tag also publishes that zip as a draft GitHub Release.
 name: CI
 
 on:
@@ -6,12 +7,13 @@ on:
   # so a push trigger on every branch would run CI twice for each push
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
     branches: [main]
   # A "Run workflow" button in the Actions tab, to check any branch before opening its PR
   workflow_dispatch:
 
-# The workflow only reads the repository
+# The workflow only reads the repository; the release job below asks for more
 permissions:
   contents: read
 
@@ -26,9 +28,27 @@ jobs:
   build-and-test:
     # windows-latest is Windows Server 2025 with Visual Studio 2026, which has the v145 toolset
     runs-on: windows-latest
+    # The release job downloads the zip by this name
+    outputs:
+      zip-name: ${{ steps.package.outputs.zip-name }}
 
     steps:
       - uses: actions/checkout@v5
+
+      # Fail before the long build if the tag and Version.h disagree, so the exe's file
+      # properties always show the version the release is named after
+      - name: Check the tag matches Version.h
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $h = Get-Content Version.h -Raw
+          $version = ('MAJOR', 'MINOR', 'PATCH' | ForEach-Object {
+            if ($h -notmatch "#define ASCII3D_VERSION_$_ (\d+)") { throw "Version.h has no ASCII3D_VERSION_$_" }
+            $Matches[1]
+          }) -join '.'
+          if ("v$version" -ne $env:GITHUB_REF_NAME) {
+            throw "Tag $env:GITHUB_REF_NAME doesn't match Version.h ($version). Update Version.h, or delete the tag and tag v$version."
+          }
 
       # Pinned to a commit (tag v1.7.0): a third-party action runs with the job's token,
       # and a tag can be moved to different code, a commit can't
@@ -70,3 +90,74 @@ jobs:
           $counters = ([xml](Get-Content TestResults\results.trx)).TestRun.ResultSummary.Counters
           "Tests: $($counters.passed) passed of $($counters.total)" >> $env:GITHUB_STEP_SUMMARY
           if ([int]$counters.total -eq 0) { throw "No tests were run" }
+
+      # Every run packages the app, so a pull request checks the packaging too, and its zip can be
+      # downloaded from the run's page to try before tagging a release
+      - name: Package
+        id: package
+        shell: pwsh
+        run: ./Packaging/package.ps1
+
+      # Pinned to a commit, like the Vulkan action: on a tag, the release job publishes this file
+      - name: Upload the zip
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          path: ${{ steps.package.outputs.zip }}
+          # Upload the zip as it is, rather than zipped again inside another zip
+          archive: false
+          if-no-files-found: error
+
+  release:
+    # Only for a pushed version tag, and only after the build and tests have passed
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    # This job alone gets write access, and only for what it does
+    permissions:
+      contents: write     # create the release
+      id-token: write     # sign the build provenance attestation
+      attestations: write # store it
+
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build-and-test.outputs.zip-name }}
+
+      - name: Extract the exe
+        env:
+          ZIP: ${{ needs.build-and-test.outputs.zip-name }}
+        run: unzip -j "$ZIP" '*/Ascii3D.exe'
+
+      # A signed record that these exact files were built by this workflow from this commit.
+      # Anyone can check it with: gh attestation verify Ascii3D.exe --repo OWNER/REPO
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            ${{ needs.build-and-test.outputs.zip-name }}
+            Ascii3D.exe
+
+      # A draft, so the release can be downloaded and tried on a clean PC before it's public.
+      # gh comes preinstalled on GitHub's runners.
+      - name: Create a draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ZIP: ${{ needs.build-and-test.outputs.zip-name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          zip_sha=$(sha256sum "$ZIP" | cut -d' ' -f1)
+          exe_sha=$(sha256sum Ascii3D.exe | cut -d' ' -f1)
+          cat > notes.md <<NOTES
+          Windows x64 build of Ascii3D $GITHUB_REF_NAME. Download \`$ZIP\`, unzip it and run \`Ascii3D.exe\`. README.txt in the zip has the details.
+
+          **Ascii3D.exe isn't code-signed**, so SmartScreen or antivirus software may warn about it. See [Download](https://github.com/$GH_REPO#download) in the README for what to do.
+
+          It was built from commit $GITHUB_SHA by [this workflow run]($RUN_URL). To check a download:
+          - SHA-256 of \`$ZIP\`: \`$zip_sha\`
+          - SHA-256 of \`Ascii3D.exe\`: \`$exe_sha\`
+          - Build provenance: \`gh attestation verify Ascii3D.exe --repo $GH_REPO\`
+          NOTES
+          # --generate-notes adds the merged pull requests below these notes
+          gh release create "$GITHUB_REF_NAME" "$ZIP" --draft --verify-tag \
+            --title "Ascii3D $GITHUB_REF_NAME" --notes-file notes.md --generate-notes

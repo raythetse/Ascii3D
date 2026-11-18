@@ -1,0 +1,34 @@
+// The version information shown in Ascii3D.exe's Properties > Details tab.
+// The version number comes from Version.h, so change it there.
+#include <winres.h>
+#include "Version.h"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     ASCII3D_VERSION_MAJOR, ASCII3D_VERSION_MINOR, ASCII3D_VERSION_PATCH, 0
+PRODUCTVERSION  ASCII3D_VERSION_MAJOR, ASCII3D_VERSION_MINOR, ASCII3D_VERSION_PATCH, 0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        // 0409 = US English, 04B0 = code page 1200 (UTF-16); must match the Translation value below
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "ProductName",      "Ascii3D"
+            VALUE "FileDescription",  "Ascii3D ASCII ray-marcher for the Windows console"
+            VALUE "FileVersion",      ASCII3D_VERSION_STRING
+            VALUE "ProductVersion",   ASCII3D_VERSION_STRING
+            VALUE "InternalName",     "Ascii3D"
+            VALUE "OriginalFilename", "Ascii3D.exe"
+            VALUE "LegalCopyright",   "Copyright (c) 2026 Ray Young. MIT License."
+            VALUE "Comments",         "https://github.com/raythetse/Ascii3D"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END

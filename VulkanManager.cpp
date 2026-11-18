@@ -15,9 +15,13 @@ VulkanManager::VulkanManager()
     instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instanceInfo.pApplicationInfo = &appInfo;
 
+    // Debug builds only: the validation layer comes with the Vulkan SDK, so most machines don't
+    // have it, and asking for a missing layer makes vkCreateInstance fail. It also slows every call.
+#ifndef NDEBUG
     const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
     instanceInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
     instanceInfo.ppEnabledLayerNames = validationLayers.data();
+#endif
 
     if (vkCreateInstance(&instanceInfo, nullptr, &m_Instance) != VK_SUCCESS) {
         throw std::runtime_error{ "Failed to create Vulkan Instance!" };
